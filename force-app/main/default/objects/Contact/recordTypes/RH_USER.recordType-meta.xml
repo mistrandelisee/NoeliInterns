@@ -64,4 +64,19 @@
             <default>false</default>
         </values>
     </picklistValues>
+    <picklistValues>
+        <picklist>RH_Role__c</picklist>
+        <values>
+            <fullName>Base User</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>CEO</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Team Leader</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
 </RecordType>

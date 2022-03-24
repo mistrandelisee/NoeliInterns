@@ -88,27 +88,30 @@ public class RH_ContactTriggerHandler {
     }
     public static User addEmployee(Contact con,Id ProfileId){
         Map<String, Object> mapReturn = new Map<String, Object>();
-        string alias=(String.isNotBlank(con.FirstName )? con.FirstName.left(3) : 'x' ) +''+(String.isNotBlank(con.LastName )? con.LastName.left(3) : 'x') ;
-        string nickname=(String.isNotBlank(con.FirstName )? con.FirstName.left(19) : 'x' ) +' '+(String.isNotBlank(con.LastName )? con.LastName.left(20) : 'x') ;
-        //String password =alias+System.now().getTime();                
-        User u=new User(Alias = alias,
-                            CommunityNickname=nickname,
-                            Email =con.Email,
-                            Title =con.Title,
-                            Contact__c = con.Id,
-                            Password__c = con.Id,
-                            FirstName =con.FirstName,
-                            LastName =con.LastName,
-                            Phone =con.Phone,
-                            Department =con.Department,
-                            UserName =String.isNotBlank(con.username__c) ? formatUsername(con.username__c) : formatUsername(con.LastName),
-                            ProfileId = ProfileId,
-                            EmailEncodingKey ='UTF-8',
-                            LanguageLocaleKey = 'it' ,
-                            LocaleSidKey ='it_IT' ,
-                            TimeZoneSidKey = 'Europe/Rome' ,
-                            IsActive=true
-                        );
+        //Id ProfileId = [SELECT ID FROM Profile WHERE Name ='Custom Identity User'].Id;
+      
+       
+            string alias=(String.isNotBlank(con.FirstName )? con.FirstName.left(3) : 'x' ) +''+(String.isNotBlank(con.LastName )? con.LastName.left(3) : 'x') ;
+            string nickname=(String.isNotBlank(con.FirstName )? con.FirstName.left(19) : 'x' ) +' '+(String.isNotBlank(con.LastName )? con.LastName.left(20) : 'x') ;
+            //String password =alias+System.now().getTime();                
+            User u=new User(Alias = alias,
+                                CommunityNickname=nickname,
+                                Email =con.Email,
+                                Title =con.Title,
+                                Contact__c = con.Id,
+                                Password__c = con.Id,
+                                FirstName =con.FirstName,
+                                LastName =con.LastName,
+                                Phone =con.Phone,
+                                Department =con.Department,
+                                UserName =String.isNotBlank(con.username__c) ? formatUsername(con.username__c) : formatUsername(con.LastName),
+                                ProfileId = ProfileId,
+                                EmailEncodingKey ='UTF-8',
+                                LanguageLocaleKey = 'it' ,
+                                LocaleSidKey ='it_IT' ,
+                                TimeZoneSidKey = 'Europe/Rome' ,
+                                IsActive=true
+                            );
         return u;
 
     }
