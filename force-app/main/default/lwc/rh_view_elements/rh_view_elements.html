@@ -1,0 +1,51 @@
+<template>
+    <div>
+    {dataSize} records
+    </div>
+
+    <div style="height: 300px;">
+        <lightning-datatable
+        hide-checkbox-column
+        class="table-test"
+        key-field="id"
+        data={recordsToShow}
+        columns={columns}
+        onrowaction={goToDetail}
+        >
+        </lightning-datatable>
+    </div>
+ 
+    
+    <lightning-layout class="slds-m-top_small">
+        <lightning-layout-item size="2" class="slds-m-top_xx-small text">
+            {pageIndex} di {totalPages} pagine
+        </lightning-layout-item>
+
+        <!-- <template if:true={paginate}> -->
+        <lightning-layout-item size="5" >
+            <lightning-button-group>
+                <template if:false={isFirstIndex}>
+                    <lightning-button variant="label-hidden" icon-name="utility:jump_to_left" onclick={handlePreviousStart} class="page" disabled={disableAction}>
+                    </lightning-button>
+                    <lightning-button  variant="label-hidden" icon-name="utility:chevronleft" onclick={handlePrevious} class="page" disabled={disableAction}>
+                    </lightning-button>
+                </template>
+                
+                <template for:each={indexesToShow} for:item="pg" >
+                
+                <lightning-button label={pg.key} key={pg.key} data-key={pg.key} onclick={handleIndexChange}  class={pg.class} disabled={disableAction}></lightning-button>
+                
+                </template>
+                <template if:false={isLastIndex}>
+                    <lightning-button  variant="label-hidden" icon-name="utility:chevronright" icon-position="right" onclick={handleNext} class="page" disabled={disableAction}> </lightning-button>
+                    <lightning-button  variant="label-hidden" icon-name="utility:jump_to_right" onclick={handleNextEnd} class="page" disabled={disableAction}> </lightning-button>
+                </template>
+            </lightning-button-group>
+        </lightning-layout-item>
+        
+        <lightning-layout-item size="5" >
+         <lightning-combobox label ="Visualizza"  variant="label-inline"  options={options} value={op} onchange={handleChangeSize} disabled={disableAction}></lightning-combobox>
+        </lightning-layout-item>
+
+</lightning-layout> 
+</template>
