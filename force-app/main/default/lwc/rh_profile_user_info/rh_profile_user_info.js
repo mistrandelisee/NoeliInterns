@@ -1,14 +1,17 @@
 import { api, LightningElement } from 'lwc';
+import { labels } from 'c/rh_label';
 const EDIT_ACTION='Edit';
+const SAVE_ACTION='Save';
+const FROMINFO='USER-INFO';
 export default class Rh_profile_user_info extends LightningElement {
+    l={...labels};
     @api
-    mode;
-    @api
-    recordId;
-    
+    title
     record;
     @api
     fieldInputs;
+    @api
+    fieldOutputs;
     @api
     action;
     actionAvailable=[];
@@ -59,15 +62,38 @@ export default class Rh_profile_user_info extends LightningElement {
                 ly_lg:'6'
             }
         ];
+        this.fieldOutputs=this.fieldOutputs || [
+            {
+                label:'Last Name',
+                name:'LastName',
+                value: 'Miatrsn'
+                
+            },
+            {
+                label:'First Name',
+                name:'FirstName',
+                value: '',
+            },
+            {
+                label:'Email',
+                name:'Email',
+                value: '',
+            },
+            {
+                label:'Phone',
+                name:'FirstName',
+                value: '',
+            }
+        ];
     }
     connectedCallback(){
         //this.initDefault();
         this.actionAvailable =[
             {
                 variant:"base",
-                label:"Edit",
+                label:this.l.Edit,
                 name:"Edit",
-                title:"Looks like a link",
+                title:this.l.Edit,
                 iconName:"utility:edit",
                 class:"slds-m-left_x-small"
             },
@@ -84,7 +110,7 @@ export default class Rh_profile_user_info extends LightningElement {
             record={...record,...result.obj};
             // this.emp[TYPE_FIELD_NAME]=this.empType;
 
-            this.callParent('Save',record)
+            this.callParent(SAVE_ACTION,record)
         }else{
             console.log(`Is not valid `);
         }
@@ -108,10 +134,14 @@ export default class Rh_profile_user_info extends LightningElement {
 
     callParent(actionName,data){
         var actionEvt =new CustomEvent('action',
-         {detail: { action : actionName,data }}
+         {detail: { action : actionName,from:FROMINFO,data }}
       );
       console.log("Watch: actionName ->"+actionName); /*eslint-disable-line*/
       
       this.dispatchEvent(actionEvt);
     }
+    @api
+     cancel(){
+        this.action='';
+     }
 }

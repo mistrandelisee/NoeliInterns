@@ -2,10 +2,10 @@
     
     <template if:false={editMode}>
         <c-rh_display_fields 
-            title="User Informations"
+            title={title}
             iconsrc="standard:people"
             column="2"
-            output-fields={fieldInputs}
+            output-fields={fieldOutputs}
             onaction={handleAction}
             action-available={actionAvailable}
             has-action></c-rh_display_fields>
@@ -13,15 +13,15 @@
     <template if:true={editMode}>
         <lightning-card class="custom-card">
             <h3 slot="title">
-                <lightning-icon icon-name="utility:edit" size="small"></lightning-icon>
-                Edit User Information
+                <lightning-icon icon-name="utility:edit" size="small" class="slds-p-right_small"></lightning-icon>
+                {title}
             </h3>
             <c-rh_dynamic_form inputs-items={fieldInputs}></c-rh_dynamic_form>
             <div class="card-footer" slot="footer">
                 <div class="slds-clearfix">
                     <div class="slds-float_right">
-                        <lightning-button variant="base" label="Cancel" data-action-name="Edit" title="Looks like a link" icon-name="utility:close" onclick={handleCancel} class="slds-m-left_x-small"></lightning-button>
-                        <lightning-button variant="base" label="Save" data-action-name="Edit" title="Looks like a link" icon-name="utility:save" onclick={handleSave} class="slds-m-left_x-small"></lightning-button>
+                        <lightning-button variant="base" label={l.Cancel} data-action-name="Cancel" title={l.Cancel} icon-name="utility:close" onclick={handleCancel} class="slds-m-left_x-small"></lightning-button>
+                        <lightning-button variant="base" label={l.Save} data-action-name="Edit" title={l.Save} icon-name="utility:save" onclick={handleSave} class="slds-m-left_medium"></lightning-button>
 
                     </div>
                 </div>

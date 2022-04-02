@@ -1,6 +1,8 @@
 import { api, LightningElement, track } from 'lwc';
 import RH_Icons from '@salesforce/resourceUrl/RH_Icons';
-
+const SUCCESS_VARIANT='success';
+const WARNING_VARIANT='warning';
+const ERROR_VARIANT='error';
 export default class RH_toast extends LightningElement {
     @track title
     @track type = '';
@@ -30,11 +32,11 @@ export default class RH_toast extends LightningElement {
         console.log('@@@RH_Icons' + RH_Icons);
         var icon = '';
         if (this.type)
-            if (this.type.toLowerCase() === 'error')
+            if (this.type.toLowerCase() == ERROR_VARIANT.toLowerCase())
                 icon = RH_Icons + '/Icons/' + 'conferma_check.svg';
-            else if (this.type.toLowerCase() === 'success')
+            else if (this.type.toLowerCase() == SUCCESS_VARIANT.toLowerCase())
                 icon = RH_Icons + '/Icons/' + 'conferma_check.svg';
-            else if (this.type.toLowerCase() === 'warning')
+            else if (this.type.toLowerCase() == WARNING_VARIANT.toLowerCase())
                 icon = RH_Icons + '/Icons/' + 'conferma_check.svg';
         return icon;
     }
@@ -47,11 +49,11 @@ export default class RH_toast extends LightningElement {
     get outerClass() {
         var bacground = '';
         if (this.type)
-            if (this.type.toLowerCase() === 'error')
+            if (this.type.toLowerCase() == ERROR_VARIANT.toLowerCase())
                 bacground = 'errorColor';
-            else if (this.type.toLowerCase() === 'success')
+            else if (this.type.toLowerCase() ==SUCCESS_VARIANT.toLowerCase())
                 bacground = 'succesColor'
-            else if (this.type.toLowerCase() === 'warning')
+            else if (this.type.toLowerCase() ==WARNING_VARIANT.toLowerCase())
                 bacground = 'warningColor'
         return 'slds-notify slds-notify_toast float_right slds-theme_' + this.type + ' ' + bacground;
     }

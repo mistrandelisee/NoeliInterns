@@ -1,64 +1,57 @@
 <template>
     <template if:true={isView}>
-        <section class="sect">
-            <div class="slds-grid slds-wrap">
-                <div class="slds-col sldssize_1-of-1 slds-large-size_6-of-12">
-                    <table>
-                        <tr class="campo"><td><b>Name: </b></td><td>Value</td></tr>
-                        <tr class="campo"><td><b>LastName:    </b></td><td>  Value</td></tr>
-                        <tr class="campo"><td><b>Email: </b></td><td>Value</td></tr>
-                        <tr class="campo"><td><b>Account Name: </b></td><td>Value</td></tr>
-                        <tr class="campo"><td><b>RH Role: </b></td><td>Value</td></tr>
-                        <tr class="campo"><td><b>RH User: </b></td><td>Value</td></tr>
-                    </table>
-                    <button class="slds-button" onclick={handlechange}>Edit</button> 
-                </div>
-            </div>
-        </section>
+        <!-- <section class="sect">
+            <lightning-layout multiple-rows>
+                <template if:true={userInfo} for:each={userInfo} for:item="item">
+                        <lightning-layout-item key={item.name} size="6" medium-device-size="6" padding="around-small">
+                            <p><lightning-formatted-text value={item.name} ></lightning-formatted-text></p>
+                        </lightning-layout-item>
+                        <lightning-layout-item key={item.value} size="6" medium-device-size="6" padding="around-small">
+                            <p><lightning-formatted-text value={item.value} ></lightning-formatted-text></p>
+                        </lightning-layout-item>
+                </template>
+                <button class="slds-button" onclick={handleedit}>Edit</button> 
+            </lightning-layout>
+        </section>    -->
+        <c-rh_display_fields 
+        title="Extra Fields Informations"
+        iconsrc="utility:note"
+        column="2"
+        onaction={handleedit}
+        output-fields={userInfo}
+        has-action></c-rh_display_fields>
+        <!--   action-available={actionAvailable}-->
     </template>
 
     <template if:false={isView}>
+        <!-- <c-extra_fields user-info={userInfo}></c-extra_fields> -->
+
         <section class="sect">
             <lightning-layout multiple-rows>
-                    <lightning-layout-item size="6" medium-device-size="5" padding="around-small">
-                        <lightning-input type="text"  class="input"  data-id="Name"> </lightning-input>
-                    </lightning-layout-item>
-                    <lightning-layout-item size="6" medium-device-size="5" padding="around-small">
-                                <lightning-input type="text"  class="input"  data-id="Name"> </lightning-input>
-                    </lightning-layout-item>
-                    <lightning-layout-item size="6" medium-device-size="2" padding="around-small">
-                        <lightning-button-group>
-                            <lightning-button  icon-name="utility:close" variant="destructive" size="small"></lightning-button>
-                            <lightning-button   icon-name="utility:check" variant="success" size="small"></lightning-button>
-                        </lightning-button-group>
-                    </lightning-layout-item>
-
-                    <lightning-layout-item size="6" medium-device-size="5" padding="around-small">
-                        <lightning-input type="text"  class="input"  data-id="Name"> </lightning-input>
-                    </lightning-layout-item>
-                    <lightning-layout-item size="6" medium-device-size="5" padding="around-small">
-                        <lightning-input type="text"  class="input"  data-id="Name"> </lightning-input>
-                    </lightning-layout-item>
-                    <lightning-layout-item size="6" medium-device-size="2" padding="around-small">
-                        <lightning-button-group>
-                            <lightning-button  icon-name="utility:close" variant="destructive" size="small"></lightning-button>
-                            <lightning-button   icon-name="utility:check" variant="success" size="small"></lightning-button>
-                        </lightning-button-group>
-                    </lightning-layout-item>
+                <template if:true={userInfo} for:each={userInfo} for:item="item">
+                    <template if:false={item.hide}>
+                        <lightning-layout-item size="6" key={item.name} medium-device-size="5" padding="around-small">
+                            <lightning-input type="text"  class="input" data-id="label" data-input={item.index}  value={item.name} key={item.index} > </lightning-input>
+                        </lightning-layout-item>
                     
-                    <lightning-layout-item size="6" medium-device-size="5" padding="around-small">
-                        <lightning-input type="text"  class="input"  data-id="Name"> </lightning-input>
-                    </lightning-layout-item>
-                    <lightning-layout-item size="6" medium-device-size="5" padding="around-small">
-                        <lightning-input class="input" type="text"  data-id="Name"> </lightning-input>
-                    </lightning-layout-item>
-                    <lightning-layout-item size="6" medium-device-size="2" padding="around-small">
-                        <lightning-button-group>
-                            <lightning-button  icon-name="utility:close" variant="destructive" size="small"></lightning-button>
-                            <lightning-button   icon-name="utility:check" variant="success" size="small"></lightning-button>
-                        </lightning-button-group>
-                    </lightning-layout-item>
-            </lightning-layout>      
+                        <lightning-layout-item size="6" key={item.value} medium-device-size="5" padding="around-small">
+                                    <lightning-input type="text"  class="input" data-id="value" data-input={item.index} value={item.value}  > </lightning-input>
+                        </lightning-layout-item>
+                        <lightning-layout-item  key={item.value} size="6" medium-device-size="2" padding="around-small">
+                            <lightning-button-group>
+                                <lightning-button  icon-name="utility:close" variant="destructive" data-id={item.index} size="small" onclick={handledelte} ></lightning-button>
+                                <lightning-button   icon-name="utility:check" variant="success" data-id={item.index} size="small" onclick={handlesave}></lightning-button>
+                            </lightning-button-group>
+                        </lightning-layout-item>
+                    </template>
+                </template>
+                <lightning-layout-item size="6" medium-device-size="5" padding="around-small">
+                    <lightning-button   icon-name="utility:add"  size="small" data-id="ind" onclick={addnewitem}></lightning-button>   
+                </lightning-layout-item>
+                <lightning-layout-item size="6" medium-device-size="5" padding="around-small">
+                    <lightning-button   icon-name="utility:save" variant="brand"  size="small" data-id="ind" onclick={save}></lightning-button>   
+                </lightning-layout-item>
+                </lightning-layout>      
         </section>
     </template>
 </template>

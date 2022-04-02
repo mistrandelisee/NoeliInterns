@@ -1,13 +1,14 @@
 import { api, LightningElement } from 'lwc';
-const EDIT_ACTION='ResetPWD';
+import { labels } from 'c/rh_label';
+const RESET_ACTION='Reset';
+const FROMRESETPWD='ResetPWD';
+
 export default class Rh_profile_reset_password extends LightningElement {
-    label={
-        resetPassword:"Reset Password"
-    }
+    l={...labels}
     @api
-    mode;
+    title;
     @api
-    recordId;
+    iconsrc;
     
     record;
     @api
@@ -20,13 +21,13 @@ export default class Rh_profile_reset_password extends LightningElement {
         this.action=event.detail.action;
     }
     get editMode(){
-        return this.action==EDIT_ACTION;
+        return this.action==RESET_ACTION;
     }
     initDefault(){
         this.fieldInputs= [
             {
-                label:'Current Password',
-                placeholder:'Enter your Last Name',
+                label:this.l.CurrentPassword,
+                placeholder:this.l.CurrentPasswordPlc,
                 name:'oldpassword',
                 value: '',
                 type: 'password',
@@ -35,33 +36,39 @@ export default class Rh_profile_reset_password extends LightningElement {
                 ly_lg:'12'
             },
             {
-                label:'New PassWord',
-                placeholder:'Enter your First Name',
+                label:this.l.NewPassword,
+                placeholder:this.l.NewPasswordPlc,
                 name:'newPassword',
                 value: '',
                 type: 'password',
                 required:true,
-                ly_md:'12', 
-                ly_lg:'12'
+                ly_md:'6', 
+                ly_lg:'6'
             },
             {
-                label:'Repeat Password',
+                label:this.l.RepeatPassword,
+                placeholder:this.l.RepeatPasswordPlc,
                 name:'verifyNewPassword',
                 required:true,
                 value: '',
                 maxlength:100,
                 type:'password',
-                ly_md:'12', 
-                ly_lg:'12'
+                ly_md:'6', 
+                ly_lg:'6'
             },
         ];
     }
     connectedCallback(){
         this.initDefault();
      }
+     @api
+     cancel(){
+        this.action='';
+     }
      handleClick(){
-        this.action=EDIT_ACTION;
+        this.action=RESET_ACTION;
     }
+
     handleCancel(){
         this.action='';
     }
@@ -72,7 +79,7 @@ export default class Rh_profile_reset_password extends LightningElement {
             record={...record,...result.obj};
             // this.emp[TYPE_FIELD_NAME]=this.empType;
 
-            this.callParent('Save',record)
+            this.callParent(RESET_ACTION,record)
         }else{
             console.log(`Is not valid `);
         }
@@ -96,7 +103,7 @@ export default class Rh_profile_reset_password extends LightningElement {
 
     callParent(actionName,data){
         var actionEvt =new CustomEvent('action',
-         {detail: { action : actionName,data }}
+         {detail: { action : actionName,from:FROMRESETPWD, data }}
       );
       console.log("Watch: actionName ->"+actionName); /*eslint-disable-line*/
       

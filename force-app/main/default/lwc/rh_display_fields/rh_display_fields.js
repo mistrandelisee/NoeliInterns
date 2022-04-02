@@ -102,7 +102,7 @@ export default class Rh_display_fields extends LightningElement {
         ];
     }
     connectedCallback(){
-       // this.initDefault();
+       this.initDefault();
        this.initDefaultAction();
     }
     handleClick(event){

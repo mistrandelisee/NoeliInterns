@@ -21,6 +21,7 @@
                         min={item.min}
                         max-length={item.maxlength}
                         pattern={item.pattern}
+                        read-only={item.readOnly}
                         onchange={handleChanged}
                        
                         ></lightning-input>
@@ -36,6 +37,7 @@
                             class={item.className}
                             value={item.value}
                             max-length={item.maxlength}
+                            read-only={item.readOnly}
                             onchange={handleChanged}
                          >
 
@@ -51,6 +53,7 @@
                                 placeholder={item.placeholder}
                                 options={item.options}
                                 onchange={handleChanged}
+                                read-only={item.readOnly}
                                 required={item.required}
                                 
                         ></lightning-combobox>

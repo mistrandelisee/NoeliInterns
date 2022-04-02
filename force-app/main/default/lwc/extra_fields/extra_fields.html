@@ -1,0 +1,21 @@
+<template>
+    <section class="sect">
+        <lightning-layout multiple-rows>
+            <template if:true={userInfo} for:each={userInfo} for:item="item">
+                <lightning-layout-item size="6" key={item.name} medium-device-size="5" padding="around-small">
+                    <lightning-input type="text"  class="input" value={item.name}  data-id={item.name}> </lightning-input>
+                </lightning-layout-item>
+                <lightning-layout-item size="6" key={item.value} medium-device-size="5" padding="around-small">
+                            <lightning-input type="text"  class="input" value={item.value}  data-id={item.value}> </lightning-input>
+                </lightning-layout-item>
+                <lightning-layout-item  key={item.value} size="6" medium-device-size="2" padding="around-small">
+                    <lightning-button-group>
+                        <lightning-button  icon-name="utility:close" variant="destructive" size="small" onclick={handledelte} ></lightning-button>
+                        <lightning-button   icon-name="utility:check" variant="success" size="small" onclick={handlesave}></lightning-button>
+                    </lightning-button-group>
+                </lightning-layout-item>
+            </template>
+                
+        </lightning-layout>      
+    </section>
+</template>
