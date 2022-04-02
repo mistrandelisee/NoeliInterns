@@ -14,7 +14,18 @@
                                     class="slds-form-element slds-form-element_edit slds-form-element_readonly slds-form-element_stacked slds-hint-parent">
                                     <span class="slds-form-element__label">{field.label}</span>
                                     <div class="slds-form-element__control">
-                                        <div class="slds-form-element__static">{field.value}</div>
+                                        <div class="slds-form-element__static">
+                                            
+                                            <template if:true={field.isLink}>
+                                                <a href={field.href} data-name={field.name} onclick={goToLink} class={field.class}>
+                                                    {field.value}
+                                                    </a>
+                                            </template>
+                                            <template if:false={field.isLink}>
+                                                 {field.value}
+                                            </template>
+                                            
+                                        </div>
                                         <!-- <button class="slds-button slds-button_icon" title="Edit: Location">
                                             <svg class="slds-button__icon slds-button__icon_hint" aria-hidden="true">
                                                 <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#edit"></use>

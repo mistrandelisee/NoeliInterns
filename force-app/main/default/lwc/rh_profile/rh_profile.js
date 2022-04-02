@@ -333,7 +333,10 @@ export default class Rh_profile extends LightningElement {
             {
                 label:this.l.Website,
                 name:'Website',
-                value:this.profileinformation?.account?.Website
+                value:this.profileinformation?.account?.Website,
+                type:'Link',
+                class:'Link',
+                url:this.profileinformation?.account?.Website
             },
             {
                 label:this.l.Phone,
