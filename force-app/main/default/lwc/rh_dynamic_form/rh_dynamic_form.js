@@ -3,6 +3,9 @@ import { api, LightningElement } from 'lwc';
 export default class Rh_dynamic_form extends LightningElement {
     @api inputsItems=[];
     @api title;
+    @api backcolor;
+    section = 'form-section';
+     
 
     preCompileDefaultValues(){
         this.inputsItems=this.inputsItems?.map(function(item, index) {
@@ -21,16 +24,34 @@ export default class Rh_dynamic_form extends LightningElement {
         
         
     }
+     backgroundcolor(){
+        console.log('get');
+        let addbackgroung = this.template.querySelector('[data-id="section"]');
+        if(this.backcolor && addbackgroung){
+           return addbackgroung.classList.add('backgroundcolor');
+        } 
+    }
+    renderedCallback(){
+        this.backgroundcolor();
+    }
     connectedCallback(){
+        console.log('ddd');
+        // let addbackgroung = this.template.querySelector('[class="form-section"]');
+        // let addbackgroung = this.template.querySelector('[data-id="section"]');
+        // if(this.backcolor){
+        //     addbackgroung.classList.add('backgroundcolor');
+        // }
         // this.title=this.title || 'Form 0';
         this.inputsItems=(this.inputsItems?.length>0)?this.inputsItems:[]
         this.preCompileDefaultValues();
+        
     }
 
     @api save(){
         const isvalid =this.validateFields(); 
          let output={};
         let outputs=[];
+        let outputsItems=[];
         if (isvalid) {
             let self=this;
             this.inputsItems.forEach(function(item){
@@ -56,12 +77,15 @@ export default class Rh_dynamic_form extends LightningElement {
                     }else{
                         outputs.push({label:item.label,name:key,value:cmp.value});
                     }
+                    
+                    outputsItems.push({...item,value:cmp.value});
                 }
             });
         }
         // console.log('OUTPUT VALUE : ',output);
         console.log('OUTPUTS VALUES : ',outputs);
-        return {isvalid,outputs,obj:output};
+        console.log('OUTPUTS VALUES outputsItems : ',outputsItems);
+        return {isvalid,outputs,obj:output,outputsItems};
     }
     timer;
     handleChanged(event) {

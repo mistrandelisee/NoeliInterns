@@ -1,0 +1,24 @@
+.path-text-1{
+    color:#fa3179;
+}
+lightning-button{
+    --lwc-brandAccessible: #fa3179;
+    --lwc-brandAccessibleActive: #fa3179;
+    --lwc-buttonBorderRadius: 15px;
+    font-weight: 700;
+}
+lightning-button.btn-action.prev{
+    --lwc-brandAccessible: #050505;
+    --lwc-brandAccessibleActive: #0e0d0d;
+}
+.lwc-box{
+    background: #fff;
+    border-radius: 15px;
+    padding: 0px 10px 0px 10px;
+}
+.back-btn{
+    --lwc-brandAccessible: #272b3d;
+}
+.progress-back{
+    background-color: #2a2e43;
+}

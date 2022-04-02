@@ -1,0 +1,29 @@
+<template>
+    <template if:true={isLoading}>
+        <lightning-spinner alternative-text="Loading" size="large" variant="brand"></lightning-spinner>
+    </template>
+
+    <div class="slds-modal slds-fade-in-open slds-backdrop slds-modal_medium">
+        <div class="slds-modal__container">
+                <div class="slds-modal__content">
+                  <!-- <section class="slds-var-p-around_medium">
+                    <span>Create New User</span>
+                  </section> -->
+                  <section class="pink slds-var-p-around_medium">
+                    <c-rh_dynamic_form title={title} backcolor={backcolor} inputs-items={formModalInputs}></c-rh_dynamic_form>
+                  </section>
+                </div>
+
+            <footer class="slds-modal__footer">
+                    <div class="slds-float_left">
+                      <lightning-button variant="brand-outline" class="btn-action prev" data-action-name="KO"
+                        label="Cancel" onclick={cancelRequest}></lightning-button>
+                    </div>
+                    <div class="slds-float_right">
+                      <lightning-button class="btn-action" variant="brand-outline" data-action-name="OK" label=Create
+                        title="next" onclick={handleSave}></lightning-button>
+                    </div>
+              </footer>
+        </div>
+    </div>
+</template>

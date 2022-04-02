@@ -1,0 +1,32 @@
+.title{
+  font-size: 20px;
+  font-weight: bolder;
+}
+
+.float_right{
+  float: right;
+}
+
+.float_None{
+  float: none;
+}
+.containerIcon{
+  width:50px;
+  height: 50px;
+  background-color:white;
+  border-radius: 10px;
+}
+.imgStyle{
+  padding-top: 10px;
+  padding-left: 10px;
+}
+
+.errorColor{
+  background-color: red;
+}
+.succesColor{
+  background-color: blue;
+}
+.warningColor{
+  background-color: rgb(252, 252, 130);
+}

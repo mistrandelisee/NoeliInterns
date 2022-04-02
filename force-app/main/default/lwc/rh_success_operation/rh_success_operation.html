@@ -1,0 +1,51 @@
+<template>
+    <lightning-card class="">
+        <table>
+            <tr>
+                <td class="slds-align_absolute-center">
+                    <!-- <lightning-icon icon-name="utility:connected_apps" alternative-text="Connected" size="large" class="icn-style"></lightning-icon> -->
+                    <img src={successImg} class="icn-style"/>
+                </td>
+            </tr>                   
+            <tr>
+                <td class="title slds-text-heading_large slds-align_absolute-center">  
+                    <h2>{title}</h2>                 
+                 </td>
+            </tr>
+            <tr>
+                <td class="slds-align_absolute-center">  
+                    <div class="slds-form" role="list">
+                        <template if:true={fields} for:each={fields} for:item="field" >
+                           <div class="slds-form__row" key={field.name}>
+                            <legend class="label slds-form-element__legend slds-form-element__label">{field.label}:</legend> 
+                             <legend class="value slds-form-element__legend slds-form-element__label">{field.value}</legend> 
+                        </div>
+                        </template>
+                        
+                    </div>              
+                 </td>
+            </tr>
+            <tr>
+                <td class="slds-align_absolute-center">  
+                        <div class="text-info slds-card__body slds-card__body_inner">
+                            <span>{textInfo}</span>
+                            <div class="slds-text-heading_medium title slds-p-top_large slds-m-top_medium">
+                                Continua con la gestione delle richieste
+                            </div>  
+                            <div class="btn-section slds-clearfix slds-p-vertical_small slds-p-horizontal_x-small">
+                                <div class="slds-float_left">
+                                    <lightning-button variant="brand-outline" class="btn-action prev" data-action-name="View" label="Lie mie richieste"  onclick={handleAction}></lightning-button>
+                                </div>
+                                <div class="slds-float_right">
+                                   <lightning-button class="btn-action" variant="brand-outline"  data-action-name="New" label="Nuovo richiesta" title="next" onclick={handleAction}></lightning-button>
+                                </div>
+                            </div>
+                        </div>
+                 </td>
+            </tr>
+
+            
+        </table>
+        
+    </lightning-card>
+</template>

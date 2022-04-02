@@ -1,0 +1,31 @@
+.body{
+    color: black;
+}
+.custom-card{
+    box-shadow: 0px 1px 20px 3px #d4d4d4;
+    border-radius: 5px;
+    /* cursor: pointer; */
+    
+    /* padding */
+    --sds-c-card-spacing-inline-start: 20px;
+    --sds-c-card-spacing-block-start: 20px;
+    --sds-c-card-spacing-inline-end: 20px;
+    --sds-c-card-spacing-block-end: 20px;
+    /* header */
+    
+    --sds-c-card-heading-font-weight:800;
+    --lwc-cardFontWeight:800;
+}
+.card-footer {
+    padding: 10px;
+    font-size: 25px;
+}
+.slds-form-element_readonly{
+    /* var(--lwc-borderWidthThin,1px) solid var(--lwc-colorBorder,#D4D4D4) */
+    --lwc-colorBorder:var(--primaryColor);
+}
+.slds-form-element__static{
+    --lwc-inputStaticColor:var(--secondaryColor);
+    --lwc-inputStaticFontSize:0.8125rem;
+    --lwc-inputStaticFontWeight:700;
+}

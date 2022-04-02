@@ -1,0 +1,16 @@
+<template>
+    <!-- <c-rh_profile_actions></c-rh_profile_actions> -->
+    <div class="slds-p-around_medium profile_user_info">
+        <c-rh_profile_user_info onaction={handleAction} field-inputs={formPersonanalDetails}></c-rh_profile_user_info>
+    </div>
+    <div class="slds-p-around_medium profile_reset_password ">
+        <c-rh_profile_reset_password onaction={handleAction} ></c-rh_profile_reset_password>
+    </div>
+    <div class="slds-p-around_medium account">
+        <c-rh_display_fields title="Account Informations" iconsrc="standard:account" column="2" output-fields={accountFields} ></c-rh_display_fields>
+    </div>
+    
+    
+    
+
+</template>

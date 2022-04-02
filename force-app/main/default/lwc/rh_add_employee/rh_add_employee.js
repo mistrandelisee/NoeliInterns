@@ -1,5 +1,9 @@
 import { LightningElement } from 'lwc';
 import addEmployee from '@salesforce/apex/CusLightningSelfRegisterController.addEmployee';
+import getMyProfile from '@salesforce/apex/RH_Profile.getMyProfile';
+import newUser from '@salesforce/apex/RH_Profile.newUser';
+import changeMyPassword from '@salesforce/apex/RH_Profile.changeMyPassword';
+
 export default class Rh_add_employee extends LightningElement {
     emp;
     newEmployeesForm=[
@@ -98,10 +102,8 @@ export default class Rh_add_employee extends LightningElement {
     createUser(){
         console.log('this.emp ///> ', this.emp);
         //this.isLoading(true);
-        addEmployee({ 
-            lastname: this.emp.LastName,
-            firstname: this.emp.FirstName,
-            email: this.emp.Email })//{ con: this.emp }
+        newUser({ 
+            contactjson: JSON.stringify(this.emp)})//{ con: this.emp }
           .then(result => {
             console.log('Result addEmployee', result);
             if (result.error) {
@@ -109,7 +111,7 @@ export default class Rh_add_employee extends LightningElement {
                 this.showToast('error', 'Error', result.message);
             }else{
                 //this.closeModal();
-                this.showToast('success', 'success', this.label.offertaSend);
+                this.showToast('success', 'success', 'ok');
                 // this.sendRefresh();
             }
                 
@@ -150,5 +152,38 @@ export default class Rh_add_employee extends LightningElement {
         obj=saveResult.obj;
         console.log(`>>>>>>>>>>>>obj `, obj );
         return  {isvalid,obj};
+    }
+    connectedCallback() {
+        getMyProfile()
+          .then(result => {
+            console.log('getMyProfile >> Result', result);
+          })
+          .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+    updatemyPassword(evt){
+        console.log('this.emp ///> ', this.emp);
+        //this.isLoading(true);
+        changeMyPassword({ 
+            contactjson: 'test'})//{ con: this.emp }
+          .then(result => {
+            console.log('Result updatemyPassword', result);
+            if (result.error) {
+                // alert(result.message);
+                this.showToast('error', 'Error', result.message);
+            }else{
+                //this.closeModal();
+                this.showToast('success', 'success', 'ok');
+                // this.sendRefresh();
+            }
+                
+            
+          })
+          .catch(error => {
+            console.error('Error:', error);
+        }).finally(()=>{
+           // this.isLoading(false);
+            });
     }
 }

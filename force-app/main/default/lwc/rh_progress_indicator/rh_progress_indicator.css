@@ -1,0 +1,58 @@
+.indicator{
+    text-align: center;
+    padding-top: 10px;
+    height: 80px;
+    border-radius: 10px 10px 0px 0px;
+ }
+ .circle {
+    height: 37px;
+    width: 36px;
+    border-radius: 50%;
+    border: 2px solid #e2e7e4;
+    display: inline-block;
+}
+ .cicrle-top-padding-step{
+    padding-top: 5px;
+}
+ .line {
+    background-color: gray;
+    height: 1px;
+    width: 5%;
+    display: inline-block;
+    padding-bottom: 2px;
+}
+ .circle-parent{
+    width: 35px;
+    display: inline-grid;
+    white-space: nowrap;
+}
+ .stepLabel{
+    padding-top: 5px;
+    /* color: gray; */
+    color:#e2eee6;
+}
+ .content{
+    font-size: 25px;
+}
+ .activeStep{
+    color: White;
+}
+ .activeLabel{
+    /* color: #1b7a39; */
+    color: #e2eee6;
+    font-weight: bolder;
+}
+ .activeBackground{
+    background-color: #fa3179;
+}
+.activePassed{
+    /* background-color: #441628; */
+    
+    border: 2px solid #fa3179;
+}
+.activeLine{
+    background-color: #580626;
+}
+.progress-back{
+    background-color: #2a2e43;
+}

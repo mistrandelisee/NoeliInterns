@@ -1,0 +1,51 @@
+<template>
+    <!-- <div class="slds-card card-box"> -->
+        <lightning-card class="custom-card">
+            <h3 slot="title">
+                <lightning-icon icon-name={iconsrc} size="small"></lightning-icon>
+                {title}
+            </h3>
+            <div class="slds-form" role="list">
+                <template if:true={hasFieldsRows} for:each={getFieldsRows} for:item="row" for:index="index">
+                    <div class="slds-form__row" key={row.index}>
+                        <template  for:each={row.fields} for:item="field" for:index="index">
+                            <div class="slds-form__item" role="listitem" key={field.name}>
+                                <div
+                                    class="slds-form-element slds-form-element_edit slds-form-element_readonly slds-form-element_stacked slds-hint-parent">
+                                    <span class="slds-form-element__label">{field.label}</span>
+                                    <div class="slds-form-element__control">
+                                        <div class="slds-form-element__static">{field.value}</div>
+                                        <!-- <button class="slds-button slds-button_icon" title="Edit: Location">
+                                            <svg class="slds-button__icon slds-button__icon_hint" aria-hidden="true">
+                                                <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#edit"></use>
+                                            </svg>
+                                            <span class="slds-assistive-text">Edit: Location</span>
+                                        </button> -->
+                                    </div>
+                                </div>
+                            </div>
+                        </template>
+                        
+                    </div>
+                </template>
+            </div>
+        <div class="card-footer" slot="footer">
+            <template if:true={hasFooterText}>
+                <p class={footerText.class}>{footerText.text}</p>
+            </template>
+            <template if:true={hasAction}>
+                <div class="slds-clearfix">
+                    <template  for:each={actionAvailable} for:item="action" for:index="index">
+                       <div class="slds-float_right" key={action.name}>
+                            <lightning-button variant={action.variant} label={action.label} data-action-name={action.name} title={action.title}
+                             icon-name={action.iconName} onclick={handleClick} class={action.class}></lightning-button>
+                      </div>
+                    </template>
+                </div>
+            </template>
+           
+            
+        </div>
+        </lightning-card>
+    <!-- </div> -->
+</template>

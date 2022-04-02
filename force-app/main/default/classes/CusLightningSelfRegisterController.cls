@@ -58,7 +58,7 @@ global class CusLightningSelfRegisterController {
         con.LastName =lastname;
         con.firstname=firstname;
         con.email=email;
-        con.username__c=con.Email+'.noeliOrg';
+        //con.username__c=con.Email+'.noeliOrg';
         //con.recordTypeId=RH_RT;
         try {
             insert con;

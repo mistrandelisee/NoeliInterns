@@ -1,0 +1,48 @@
+.icn-style{
+    padding: 10px;
+}
+legend.label{
+    --lwc-fontWeightBold:600;
+    font-size: 25px;
+    --lwc-colorTextLabel:#ff0f64;
+}
+legend.value{
+    padding-top: 10px;
+    --lwc-fontWeightBold:550;
+    font-size: 20px;
+    --lwc-colorTextLabel:#ff0f64;
+}
+.text-info{
+    text-align: center;
+    width: 85%;
+}
+.title{
+    font-weight:900;
+}
+lightning-button{
+    --lwc-brandAccessible: #fa3179;
+    --lwc-brandAccessibleActive: #fa3179;
+    --lwc-buttonBorderRadius: 15px;
+
+    font-weight: 700;
+}
+.btn-action{
+    --lwc-spacingMedium:3rem;
+}
+lightning-button.btn-action.prev{
+    --lwc-brandAccessible: #050505;
+    --lwc-brandAccessibleActive: #0e0d0d;
+}
+.lwc-box{
+    background: #f7f5f5;
+}
+.back-btn{
+    --lwc-brandAccessible: #272b3d;
+}
+.progress-back{
+    background-color: #2a2e43;
+}
+.btn-section {
+    padding-left: 50px;
+    padding-right: 50px;
+}

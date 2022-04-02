@@ -1,0 +1,47 @@
+<template>
+    
+    <div class="custom-box">
+        <lightning-layout multiple-rows="true">
+            <lightning-layout-item size="12" padding="around-small" small-device-size="9" medium-device-size="6" large-device-size="9" >
+                <div class="slds-text-heading_medium slds-m-bottom_medium">{title}</div>
+                <div class="slds-form" role="list">
+                    <template if:true={fields} for:each={fields} for:item="field" >
+                       <div class="slds-form__row" key={field.name}>
+                        <div class="slds-form__item" role="listitem">
+                            <div class=" slds-form-element slds-form-element_readonly
+                                slds-form-element_horizontal slds-hint-parent " >
+                                <legend class="slds-form-element__legend slds-form-element__label">{field.label}</legend>
+                                <div class="slds-form-element__control">
+                                    <div class="slds-form-element__static">
+                                        <span >{field.value}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    </template>
+                    
+                </div>
+            </lightning-layout-item>
+            <lightning-layout-item size="12" padding="around-small" small-device-size="9" medium-device-size="6" large-device-size="3">
+                <section class="body-section slds-m-top_large">        
+                    <table>
+                        <tr>
+                            <td class="slds-align_absolute-center">
+                                <!-- <lightning-icon icon-name="utility:connected_apps" alternative-text="Connected" size="large" class="icn-style"></lightning-icon> -->
+                                <img src={iconSrc} class="icn-style"/>
+                            </td>
+                        </tr>                   
+                        <tr>
+                            <td class="slds-align_absolute-center modifica-td"> 
+                                <template if:true={editMode}>
+                                    <button type="button" name="Modifica" value="Modifica" data-resume-key={index} class="btn-style slds-button slds-button_brand " onclick={navigateTo} >Modifica</button>
+                                </template>                  
+                            </td>
+                        </tr>
+                    </table>
+                </section>
+            </lightning-layout-item>
+        </lightning-layout>
+    </div>
+</template>

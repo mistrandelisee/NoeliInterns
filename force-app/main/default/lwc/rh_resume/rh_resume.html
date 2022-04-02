@@ -1,0 +1,5 @@
+<template>
+    <template if:true={formsData} for:each={formsData} for:item="resume">
+        <c-rh_resume_block onresumeselect={handleNavigate} key={resume.key} index={resume.key} edit-mode={editMode} icon-src={resume.src} title={resume.title} fields={resume.values}></c-rh_resume_block>
+    </template>
+</template>

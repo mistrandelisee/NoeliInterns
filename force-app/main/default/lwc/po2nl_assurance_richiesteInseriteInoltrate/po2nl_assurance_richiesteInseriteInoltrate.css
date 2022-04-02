@@ -1,0 +1,58 @@
+li{
+    color:#696969;
+    font-family: arial;
+}
+.selectedTab{
+    box-shadow: inset 0px -6px 0px 0px 	#dd0f7d;
+}
+.SearchText{
+    color:white;
+}
+.buttom{
+    border-radius: 1rem;
+    width: 7rem;
+}
+.SearchIcon{
+    background-color: #dd0f7d;
+}
+.importCsvBottom{
+    /* background-color: rgb(22, 50, 92); */
+    cursor: pointer;
+    border: 2px solid #dd0f7d;
+}
+.slds-is-selected{
+    background-color: #dd0f7d;
+    
+}
+.slds-dueling-list__options{
+    border: 2px solid silver;
+}
+
+.slds-is-selected:hover{
+    background-color: #dd0f7d;
+    
+}
+.bkg-color-pink{
+    color: #dd0f7d;
+}
+.bkg-color-Blue{
+    color: #090138;
+}
+.bkg-container{
+    background-color: rgb(253, 253, 253);
+}
+.filterBox{
+    border: 2px solid silver;
+    border-radius: 0 0 1rem 1rem;
+
+}
+.slds-listbox__option:hover{
+    background-color: #dd0f7d;
+}
+.slds-pill{
+    --lwc-heightPill: 2rem;
+    --lwc-borderRadiusMedium: 1rem;
+}
+.slds-pill_container{
+    border-style: none;
+}

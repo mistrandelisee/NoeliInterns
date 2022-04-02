@@ -1,0 +1,64 @@
+<template>
+    <template if:true={isView}>
+        <section class="sect">
+            <div class="slds-grid slds-wrap">
+                <div class="slds-col sldssize_1-of-1 slds-large-size_6-of-12">
+                    <table>
+                        <tr class="campo"><td><b>Name: </b></td><td>Value</td></tr>
+                        <tr class="campo"><td><b>LastName:    </b></td><td>  Value</td></tr>
+                        <tr class="campo"><td><b>Email: </b></td><td>Value</td></tr>
+                        <tr class="campo"><td><b>Account Name: </b></td><td>Value</td></tr>
+                        <tr class="campo"><td><b>RH Role: </b></td><td>Value</td></tr>
+                        <tr class="campo"><td><b>RH User: </b></td><td>Value</td></tr>
+                    </table>
+                    <button class="slds-button" onclick={handlechange}>Edit</button> 
+                </div>
+            </div>
+        </section>
+    </template>
+
+    <template if:false={isView}>
+        <section class="sect">
+            <lightning-layout multiple-rows>
+                    <lightning-layout-item size="6" medium-device-size="5" padding="around-small">
+                        <lightning-input type="text"  class="input"  data-id="Name"> </lightning-input>
+                    </lightning-layout-item>
+                    <lightning-layout-item size="6" medium-device-size="5" padding="around-small">
+                                <lightning-input type="text"  class="input"  data-id="Name"> </lightning-input>
+                    </lightning-layout-item>
+                    <lightning-layout-item size="6" medium-device-size="2" padding="around-small">
+                        <lightning-button-group>
+                            <lightning-button  icon-name="utility:close" variant="destructive" size="small"></lightning-button>
+                            <lightning-button   icon-name="utility:check" variant="success" size="small"></lightning-button>
+                        </lightning-button-group>
+                    </lightning-layout-item>
+
+                    <lightning-layout-item size="6" medium-device-size="5" padding="around-small">
+                        <lightning-input type="text"  class="input"  data-id="Name"> </lightning-input>
+                    </lightning-layout-item>
+                    <lightning-layout-item size="6" medium-device-size="5" padding="around-small">
+                        <lightning-input type="text"  class="input"  data-id="Name"> </lightning-input>
+                    </lightning-layout-item>
+                    <lightning-layout-item size="6" medium-device-size="2" padding="around-small">
+                        <lightning-button-group>
+                            <lightning-button  icon-name="utility:close" variant="destructive" size="small"></lightning-button>
+                            <lightning-button   icon-name="utility:check" variant="success" size="small"></lightning-button>
+                        </lightning-button-group>
+                    </lightning-layout-item>
+                    
+                    <lightning-layout-item size="6" medium-device-size="5" padding="around-small">
+                        <lightning-input type="text"  class="input"  data-id="Name"> </lightning-input>
+                    </lightning-layout-item>
+                    <lightning-layout-item size="6" medium-device-size="5" padding="around-small">
+                        <lightning-input class="input" type="text"  data-id="Name"> </lightning-input>
+                    </lightning-layout-item>
+                    <lightning-layout-item size="6" medium-device-size="2" padding="around-small">
+                        <lightning-button-group>
+                            <lightning-button  icon-name="utility:close" variant="destructive" size="small"></lightning-button>
+                            <lightning-button   icon-name="utility:check" variant="success" size="small"></lightning-button>
+                        </lightning-button-group>
+                    </lightning-layout-item>
+            </lightning-layout>      
+        </section>
+    </template>
+</template>

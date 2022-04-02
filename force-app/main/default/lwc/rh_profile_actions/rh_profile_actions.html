@@ -1,0 +1,51 @@
+<template>
+
+    <section class="slds-p-top_medium buttonblock">
+        <div class=" slds-p-around_none slds-m-top_x-small slds-m-bottom_medium slds-m-horizontal_none">
+            <lightning-layout>
+                <lightning-layout-item flexibility="auto" padding="around-small">
+                    <div class=" slds-p-around_medium slds-text-align_center">
+                        <button type="button" name="resetPassword" value="Resset Passsword"
+                            class="btn-style-pos slds-button slds-button_brand" onclick={handleresset}>
+                            Resset Password
+                        </button>
+                    </div>
+                </lightning-layout-item>
+
+                <lightning-layout-item flexibility="auto" padding="around-small">
+                    <div class=" slds-p-around_medium slds-text-align_center">
+                        <button type="button" name="NewGroupe" value="NewGroupe"
+                                    class="btn-style-pos groupe slds-button slds-button_brand" onclick={handleNewGroupe}>
+                                    New Groupe
+                                </button>
+                    </div>
+                </lightning-layout-item>
+
+                <lightning-layout-item flexibility="auto" padding="around-small">
+                        <div class=" slds-p-around_medium slds-text-align_center">
+                            <button type="button" name="NewProject" value="NewProject"
+                                class="btn-style-pos project slds-button slds-button_brand" onclick={handleNewProject}>
+                                New Project
+                            </button>
+                        </div>
+                </lightning-layout-item>
+
+                <lightning-layout-item flexibility="auto" padding="around-small">
+                        <div class="slds-p-around_medium slds-text-align_center">
+                            <button type="button" name="NewUser" value="NewUser"
+                                class="btn-style-pos user slds-button slds-button_brand" onclick={handleNewUser}>
+                                New User
+                            </button>
+                        </div>
+                </lightning-layout-item>
+            </lightning-layout>
+        </div>
+    </section>
+
+    <template if:true={isNewUser}> 
+        <c-rh_dynamic_form_modal form-modal-inputs={formUser} backcolor="backcol" title="Create New User" onbuttonclicked={requestSend}></c-rh_dynamic_form_modal>
+    </template>
+    <template if:true={isChangePassword}>
+        <c-rh_dynamic_form_modal form-modal-inputs={formPassword} backcolor="backcol" title="Reset PassWord" onbuttonclicked={changepassword}></c-rh_dynamic_form_modal>
+    </template>
+</template>

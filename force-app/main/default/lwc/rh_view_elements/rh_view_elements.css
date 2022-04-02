@@ -1,0 +1,48 @@
+.activePage{
+    --lwc-buttonColorBackgroundPrimary:  #ff0f64;
+    --lwc-brandAccessible:white;
+    /* border color */
+  --lwc-buttonColorBorderPrimary:#000000;
+  /* border-width */
+  --lwc-borderWidthThin:2px;
+}
+.page{
+  --lwc-buttonColorBackgroundPrimary:  transparent;
+  /* color */
+  --lwc-brandAccessible:#000000;
+  /* border color */
+  --lwc-buttonColorBorderPrimary:#000000;
+  /* border-width */
+  --lwc-borderWidthThin:2px;
+}
+td{
+    padding: 30px 10px;
+   
+}
+.othercell{
+    font-size: 15px;
+}
+table.tabstyle thead {
+  border-bottom: 4px solid #000000;
+  font-weight: bold;
+}
+table.tabstyle{
+     background: #ffffff; 
+}
+table.tabstyle tbody tr {
+  border-bottom: 1px solid #878995;
+}
+.firstcell{
+font-size: 18px;
+font-weight: bold;
+color:#ff0f64;
+}
+.text{
+  font-size: 15px;
+}
+.Gbuttons {
+  color: #ff0f64 ;
+}
+.table-test thead th span {
+  background-color: red;
+  color: white}

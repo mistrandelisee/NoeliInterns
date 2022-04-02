@@ -31,3 +31,6 @@ lightning-combobox{
 .textarea{
     --sds-c-textarea-sizing-min-height: 125px;
 }
+.backgroundcolor{
+    background-color: #639aae;
+}

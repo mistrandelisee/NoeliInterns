@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30">
+  <g id="conferma_check" transform="translate(-0.059)">
+    <path id="Tracciato_13312" data-name="Tracciato 13312" d="M15.059,0a15,15,0,1,0,15,15A14.993,14.993,0,0,0,15.059,0Zm0,27.368A12.368,12.368,0,1,1,27.427,15,12.354,12.354,0,0,1,15.059,27.368Z" transform="translate(0)" fill="#0962fc"/>
+    <path id="Tracciato_13313" data-name="Tracciato 13313" d="M34.213,31.441l-5.7,5.705-2.688-2.691a1.065,1.065,0,0,0-1.505,1.507l3.441,3.445a1.038,1.038,0,0,0,1.505,0l6.451-6.459a1.065,1.065,0,1,0-1.505-1.507Z" transform="translate(-15.116 -20.425)" fill="#0962fc"/>
+  </g>
+</svg>

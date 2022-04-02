@@ -1,0 +1,11 @@
+Hi {!Receiving_User.FirstName},
+
+            Welcome to {!Community_Name}! To get started, go to {!Community_Url}
+
+            Username: {!Receiving_User.Username}
+            
+            Your Default Password : {!Receiving_User.RH_Password__c}
+
+
+            Thanks,
+            {!Organization.Name}

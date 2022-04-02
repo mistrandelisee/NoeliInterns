@@ -1,0 +1,34 @@
+.buttonblock{
+    text-align: center;
+    padding-top: 0px;
+    height: 80px;
+    border-radius: 10px 10px 0px 0px;
+    background-color: white ;
+ }
+
+ .btn-style-pos{
+    border: 1px solid #639aae;
+    border-radius: 20px;
+    opacity: 1;
+    background-color: #639aae;
+    color: white;
+    font-weight: bold;
+    min-width: 7rem!important;
+ /* margin-left: 48px; */
+}
+/* .btn-style-neg{
+    border: 1px solid #FB1366;
+    border-radius: 20px;
+    opacity: 1;
+    background-color: white;
+    color: #FB1366;
+    font-weight: bold;
+    min-width: 7rem!important;
+    margin-left: 48px;
+} */
+/* .project{
+    margin-left: 48px;
+}
+.user{
+    margin-left: 48px;
+} */

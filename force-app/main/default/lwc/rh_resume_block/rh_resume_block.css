@@ -1,0 +1,39 @@
+.custom-box{
+    background: #f6f7f9;
+    border-radius: 5px;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+.slds-form-element__control{
+    text-align: left;
+    color:#f00a5f;
+    --lwc-brandTextLink:#f00a5f;
+    --lwc-inputStaticColor:#f00a5f;
+}
+.slds-form-element__static{
+    padding-left: 120px;
+    --lwc-inputStaticFontWeight:650
+}
+
+
+.body-section{
+    padding: var(--lwc-spacingMedium, 1rem);
+}
+.btn-style{
+    border-radius: 22px;
+    background-color: white;
+    border-color: rgb(81,84,101);
+    color: rgb(81,84,101);
+    font-weight: bold;
+}
+.icn-style{
+    padding: 5%;
+}
+
+.info-style{
+    margin-left: 140px;
+    width: 13px;
+}
+.modifica-td{
+    padding-top: 40%;
+}

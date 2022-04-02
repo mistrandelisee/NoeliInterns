@@ -83,7 +83,7 @@ public class RH_ContactTriggerHandler {
     }
     public static void setDefaultPassWord(List<User> users) {
         for (User user : users) {
-            System.setPassword(user.Id, user.password__c);
+            System.setPassword(user.Id, user.RH_Password__c);
         }
     }
     public static User addEmployee(Contact con,Id ProfileId){
@@ -98,13 +98,13 @@ public class RH_ContactTriggerHandler {
                                 CommunityNickname=nickname,
                                 Email =con.Email,
                                 Title =con.Title,
-                                Contact__c = con.Id,
-                                Password__c = con.Id,
+                                RH_ContactId__c = con.Id,
+                                RH_Password__c = con.Id,
                                 FirstName =con.FirstName,
                                 LastName =con.LastName,
                                 Phone =con.Phone,
                                 Department =con.Department,
-                                UserName =String.isNotBlank(con.username__c) ? formatUsername(con.username__c) : formatUsername(con.LastName),
+                                UserName =String.isNotBlank(con.Email) ? formatUsername(con.Email) : formatUsername(con.LastName),
                                 ProfileId = ProfileId,
                                 EmailEncodingKey ='UTF-8',
                                 LanguageLocaleKey = 'it' ,

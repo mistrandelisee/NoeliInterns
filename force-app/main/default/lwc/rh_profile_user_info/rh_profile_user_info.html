@@ -1,0 +1,32 @@
+<template>
+    
+    <template if:false={editMode}>
+        <c-rh_display_fields 
+            title="User Informations"
+            iconsrc="standard:people"
+            column="2"
+            output-fields={fieldInputs}
+            onaction={handleAction}
+            action-available={actionAvailable}
+            has-action></c-rh_display_fields>
+    </template>
+    <template if:true={editMode}>
+        <lightning-card class="custom-card">
+            <h3 slot="title">
+                <lightning-icon icon-name="utility:edit" size="small"></lightning-icon>
+                Edit User Information
+            </h3>
+            <c-rh_dynamic_form inputs-items={fieldInputs}></c-rh_dynamic_form>
+            <div class="card-footer" slot="footer">
+                <div class="slds-clearfix">
+                    <div class="slds-float_right">
+                        <lightning-button variant="base" label="Cancel" data-action-name="Edit" title="Looks like a link" icon-name="utility:close" onclick={handleCancel} class="slds-m-left_x-small"></lightning-button>
+                        <lightning-button variant="base" label="Save" data-action-name="Edit" title="Looks like a link" icon-name="utility:save" onclick={handleSave} class="slds-m-left_x-small"></lightning-button>
+
+                    </div>
+                </div>
+                
+            </div>
+        </lightning-card>
+    </template>
+</template>

@@ -1,0 +1,18 @@
+<template>
+    <!-- Progress Indicator STARTS -->
+    <div class='indicator progress-back' >
+        <span class="line activeBackground" ></span>
+            <template if:true={steps} for:each={steps} for:item="step" for:index="index">
+                <div key={step.key} class="circle-parent">
+                    <span class={step.class}>
+                        <div class="cicrle-top-padding-step">{step.key}</div>
+                    </span>
+                    <span class={step.labelClass}>{step.label}</span>
+                </div>
+                <template if:false={step.last}>
+                    <span key={step.key} style={lineStyle} class={step.lineClass} ></span>
+                </template>
+            </template>
+        <span class="line "></span>
+    </div>
+</template>
