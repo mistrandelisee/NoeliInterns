@@ -5,7 +5,7 @@ export default class Rh_dynamic_form extends LightningElement {
     @api title;
     @api backcolor;
     section = 'form-section';
-     
+    rendered;
 
     preCompileDefaultValues(){
         this.inputsItems=this.inputsItems?.map(function(item, index) {
@@ -13,6 +13,7 @@ export default class Rh_dynamic_form extends LightningElement {
             elt.ly_xs=  elt.ly_xs ?  elt.ly_xs: '6';
             elt.ly_md=  elt.ly_md ?  elt.ly_md: '4';
             elt.ly_lg=  elt.ly_lg ?  elt.ly_lg: '3';
+           // elt.variant=  elt.variant ?  elt.variant: 'label-stacked';
             elt.isTextarea=  elt.type=='textarea' ? true: false;
             elt.isText=  elt.type=='text' ? true: ! (elt.isTextarea || elt.picklist);//is text or not textarea or picklist
             console.log(`elt`, elt);
@@ -31,9 +32,9 @@ export default class Rh_dynamic_form extends LightningElement {
            return addbackgroung.classList.add('backgroundcolor');
         } 
     }
-    renderedCallback(){
+    /*renderedCallback(){
         this.backgroundcolor();
-    }
+    }*/
     connectedCallback(){
         console.log('ddd');
         // let addbackgroung = this.template.querySelector('[class="form-section"]');
@@ -46,6 +47,14 @@ export default class Rh_dynamic_form extends LightningElement {
         this.preCompileDefaultValues();
         
     }
+    /*renderedCallback(){
+        if (!this.rendered) {
+            this.inputsItems=(this.inputsItems?.length>0)?this.inputsItems:[]
+            this.preCompileDefaultValues();
+            this.rendered=true;
+        }
+        
+    }*/
 
     @api save(){
         const isvalid =this.validateFields(); 

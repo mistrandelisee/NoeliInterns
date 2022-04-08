@@ -23,6 +23,7 @@ const FROMINFO='USER-INFO';
 
 const FROMRESETPWD='ResetPWD';
 export default class Rh_profile extends LightningElement {
+    //extra='[{name:\'\', value:\'\'}]'
     l={...labels}
     //user-info
     profileinformation = {};
@@ -34,7 +35,7 @@ export default class Rh_profile extends LightningElement {
     @api
     recordId;
     //account-details
-
+    jsonInfo;
     accountFields=[];
     connectedCallback(){
         this.getProfile();
@@ -53,6 +54,8 @@ export default class Rh_profile extends LightningElement {
                 this.buildExtraField(this.profileinformation?.contact?.RH_Extra_Infos__c || '[]');
                 // this.handlepickListValue();
                 this.refreshDetails();
+                let form = this.template.querySelector('c-rh_extra-fields');
+                if(form) form.setInfo(this.userextrafield);
             }
         }).catch(err =>{
             console.error('error',err)
@@ -104,16 +107,47 @@ export default class Rh_profile extends LightningElement {
 
         
     }
+    get getuserextrafield(){
+        return this.userextrafield?.length>=0;
+    }
     buildExtraField(extrafield){
-        let tab = JSON.parse(extrafield);;
+            this.jsonInfo=extrafield;
+            let extraFieldCmp=this.template.querySelector('c-rh_extra_fields');
+            extraFieldCmp.initializeMap(extrafield);
+    }
+    buildExtraFieldOLD(extrafield){
+        let tab = JSON.parse(extrafield);
         this.userextrafield= tab.map(
             function(elt, i)  {
                 return {...elt, hide : false, index:i};
             } 
-        );
-    }
+        );   
+}
     //add 
     UpdateExtraInfo(event){
+
+         const cusEvt=event.detail;
+        console.log('cusEvt >>',cusEvt,' \naction ',cusEvt?.action);
+        console.log('cusEvt >>',cusEvt,' \ndata ',cusEvt?.data);
+        const userinfo = cusEvt?.data;
+        UpdateExtraInfo({
+            recordId: this.recordId,
+            extraInfo: userinfo
+        }).then(result =>{
+            console.log(`result>> `, result);
+            if(!result.error){
+                
+                this.buildExtraField(result.input);
+                this.showToast(SUCCESS_VARIANT,' Extra informations', 'Saved');
+            }else{
+                this.showToast(WARNING_VARIANT,' Extra informations', result.msg);
+            }
+            
+        }).catch(error =>{
+            this.showToast(ERROR_VARIANT,' Extra informations', 'KO');
+        })
+    }
+    UpdateExtraInfoOLD(event){
 
         console.log('handle eventField TO event', JSON.stringify(event.detail));
         console.log('handle eventField TO event', this.recordId);
@@ -126,6 +160,8 @@ export default class Rh_profile extends LightningElement {
             if(!result.error){
                 
                 this.buildExtraField(result.input);
+                let form = this.template.querySelector('c-rh_extra-fields');
+                if(form) form.setInfo(this.userextrafield);
             }
             
             console.log('user extra fields ' +JSON.stringify( this.userextrafield))

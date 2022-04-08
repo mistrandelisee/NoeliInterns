@@ -1,9 +1,9 @@
 <template>
     <lightning-layout multiple-rows>
         <lightning-layout-item size="12" padding="around-small" small-device-size="10" medium-device-size="10" large-device-size="10" >
-            <c-rh_dynamic_form inputs-items={fieldInputs}></c-rh_dynamic_form>
+            <c-rh_dynamic_form inputs-items={champs}></c-rh_dynamic_form>
         </lightning-layout-item>
-        <lightning-layout-item size="12" padding="around-small" small-device-size="2" medium-device-size="2" large-device-size="2">
+        <lightning-layout-item size="12" class="slds-p-top_large" padding="around-small" small-device-size="2" medium-device-size="2" large-device-size="2">
             <lightning-button-group>
                 <lightning-button  icon-name="utility:close" variant="destructive" data-name="delete"  onclick={handledelte} ></lightning-button>
                 <lightning-button   icon-name="utility:check" variant="success" data-name="save" onclick={handlesave}></lightning-button>

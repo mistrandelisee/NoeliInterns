@@ -34,7 +34,3 @@ lightning-combobox{
 .backgroundcolor{
     background-color: #639aae;
 }
-
-.inputCus1{
-    border-bottom: 1px var(--primaryColor) solid;  
-}

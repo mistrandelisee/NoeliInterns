@@ -1,5 +1,16 @@
 <template>
-    <template if:true={fieldToshow} for:each={fieldToshow} for:item="row" for:index="index">
-       <c-rh_extra_field_item key={row.key} field-inputs={row.key} field-key={row.key} onaction={handleAction}> </c-rh_extra_field_item>
+    <c-rh_toast auto-close-time="6000"></c-rh_toast>
+    <c-rh_spinner></c-rh_spinner>
+    <template  for:each={fieldToshow} for:item="row" for:index="keyx">
+        <div key={row.keyx} >
+            <c-rh_extra_field_item champs={row.fields} cle={row.keyx} onaction={handleAction}> </c-rh_extra_field_item>
+        </div>
     </template>
+    <div class="slds-clearfix">
+        <div class="slds-float_right">
+            <lightning-button variant="base" label="Add" data-action-name="Cancel" title="Add"  icon-name="utility:add" onclick={handleAdd} class="slds-m-left_x-small"></lightning-button>
+            <lightning-button variant="base" label="Save" data-action-name="Edit" title="Save"  icon-name="utility:save" onclick={handleSave} class="slds-m-left_medium"></lightning-button>
+
+        </div>
+    </div>
 </template>

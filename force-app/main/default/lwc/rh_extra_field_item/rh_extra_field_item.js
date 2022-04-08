@@ -2,34 +2,35 @@ import { api, LightningElement } from 'lwc';
 
 export default class Rh_extra_field_item extends LightningElement {
     @api
-    fieldInputs;
+    champs;
     @api
-    fieldKey;
+    cle;
     connectedCallback(){
-        this.initDefault();
+        //this.initDefault();
     }
 
     initDefault(){
-        this.fieldInputs= [
-            {
-                label:'',
-                placeholder:'..label',
-                name:'Label',
-                value: '',
-                required:true,
-                ly_md:'6', 
-                ly_lg:'6'
-            },
-            {
-                label:'',
-                placeholder:'..value',
-                name:'Value',
-                value: '',
-                required:true,
-                ly_md:'6', 
-                ly_lg:'6'
-            },
-        ];
+        console.log(`cle`, this.cle);
+        /*this.fieldInputs= [
+            // {
+            //     label:'',
+            //     placeholder:'..label',
+            //     name:'Label',
+            //     value: '',
+            //     required:true,
+            //     ly_md:'6', 
+            //     ly_lg:'6'
+            // },
+            // {
+            //     label:'',
+            //     placeholder:'..value',
+            //     name:'Value',
+            //     value: '',
+            //     required:true,
+            //     ly_md:'6', 
+            //     ly_lg:'6'
+            // },
+        ];*/
     }
     handledelte(){
         this.callParent('DELETE_ACTION',{})
@@ -63,7 +64,7 @@ export default class Rh_extra_field_item extends LightningElement {
 
     callParent(actionName,data){
         var actionEvt =new CustomEvent('action',
-         {detail: { action : actionName,data,fieldkey:this.fieldkey }}
+         {detail: { action : actionName,fieldkey:this.cle,data }}
       );
       console.log("Watch: actionName ->"+actionName); /*eslint-disable-line*/
       
