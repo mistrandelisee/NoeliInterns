@@ -29,6 +29,3 @@
     --lwc-inputStaticFontSize:0.8125rem;
     --lwc-inputStaticFontWeight:700;
 }
-.link , a{
-    --lwc-brandTextLink: var(--secondaryColor);
-}

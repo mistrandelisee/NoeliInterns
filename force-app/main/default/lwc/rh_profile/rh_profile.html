@@ -12,9 +12,11 @@
         ></c-rh_profile_user_info>
     </div>
     <div class="slds-p-around_medium extra_info">
-        <pre>
+        <!-- <pre>
             -- Extra JSON cmp goes here --
-        </pre>
+        </pre> -->
+        <c-rh_extra-fields  user-info={userextrafield} onextrafield={UpdateExtraInfo}></c-rh_extra-fields>
+
     </div>
     <div class="slds-p-around_medium profile_reset_password ">
         <c-rh_profile_reset_password title={l.ChangePasswordTitle} onaction={handleAction} ></c-rh_profile_reset_password>

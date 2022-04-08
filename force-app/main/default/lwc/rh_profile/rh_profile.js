@@ -3,6 +3,9 @@ import getMyProfile from '@salesforce/apex/RH_Profile_controller.getMyProfile';
 import UpdateInfo from '@salesforce/apex/RH_Profile_controller.UpdateInfo';
 import changeMyPassword from '@salesforce/apex/RH_Profile_controller.changeMyPassword';
 import getpickListValue from '@salesforce/apex/RH_Utility.getpickListValue';
+import UpdateExtraInfo from '@salesforce/apex/RH_Profile_controller.UpdateExtraInfo';
+
+
 import { labels } from 'c/rh_label';
 //Constants
 const EDIT_ACTION='Edit';
@@ -25,6 +28,7 @@ export default class Rh_profile extends LightningElement {
     profileinformation = {};
     formPersonanalDetails=[];
     formPersonanalInputDetails=[];
+    @track userextrafield = [];
     @track
     infoAction=VIEW_ACTION;
     @api
@@ -46,6 +50,7 @@ export default class Rh_profile extends LightningElement {
                 console.log('profile ' +JSON.stringify(result));
                 this.profileinformation = result;
                 this.recordId=this.profileinformation?.contact?.Id;
+                this.buildExtraField(this.profileinformation?.contact?.RH_Extra_Infos__c || '[]');
                 // this.handlepickListValue();
                 this.refreshDetails();
             }
@@ -99,6 +104,36 @@ export default class Rh_profile extends LightningElement {
 
         
     }
+    buildExtraField(extrafield){
+        let tab = JSON.parse(extrafield);;
+        this.userextrafield= tab.map(
+            function(elt, i)  {
+                return {...elt, hide : false, index:i};
+            } 
+        );
+    }
+    //add 
+    UpdateExtraInfo(event){
+
+        console.log('handle eventField TO event', JSON.stringify(event.detail));
+        console.log('handle eventField TO event', this.recordId);
+
+        var userinfo = event.detail;
+        UpdateExtraInfo({
+            recordId: this.recordId,
+            extraInfo: JSON.stringify(userinfo)
+        }).then(result =>{
+            if(!result.error){
+                
+                this.buildExtraField(result.input);
+            }
+            
+            console.log('user extra fields ' +JSON.stringify( this.userextrafield))
+        }).catch(error =>{
+            console.error('error extraFields ' +error);
+        })
+    }
+
     callUpdateInfoApexFinish(){
         this.startSpinner(false);
         this.infoAction=VIEW_ACTION;
@@ -372,6 +407,7 @@ export default class Rh_profile extends LightningElement {
         let toast=this.template.querySelector('c-rh_toast');
         toast?.showToast(variant, title, message);
     }
+
 
 
 /*LastName

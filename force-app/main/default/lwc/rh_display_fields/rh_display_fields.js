@@ -62,7 +62,7 @@ export default class Rh_display_fields extends NavigationMixin(LightningElement)
         this.title=this.title || 'User Informations';
         this.iconsrc= this.iconsrc || 'utility:people';
         this.column= this.column || 2;
-        this.outputFields=this.outputFields || [
+        this.outputFields=this.outputFields || [/*
             {
                 label:'Last Name',
                 placeholder:'Enter your Last Name',
@@ -101,7 +101,7 @@ export default class Rh_display_fields extends NavigationMixin(LightningElement)
                 ly_md:'12', 
                 ly_lg:'12'
             }
-        ];
+        */];
     }
     connectedCallback(){
        this.initDefault();
