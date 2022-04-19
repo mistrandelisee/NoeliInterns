@@ -1,0 +1,33 @@
+<template>
+    <div class="slds-card container " onclick={showModal}>
+        <!-- <div class="slds-card__header ">
+              <h2 class="slds-card__header-title slds-text-heading_small fw-700">
+                  <p><lightning-formatted-date-time value={ofNews.CreatedDate} year="2-digit" month="long" day="2-digit" ></lightning-formatted-date-time></p>
+              </h2>
+              <div class="txt-color  slds-text-heading_medium slds-m-top_xx-small">
+                  <span>
+                      {ofNews.LastName}
+                  </span>
+                  <span class="slds-p-left_x-small">
+                    {subtitle}
+                </span>
+              </div>
+        </div> -->
+        <div class="slds-card__body slds-card__body_inner content">
+            <!-- <b><lightning-formatted-text class="slds-text-body_regular" value="Last Name" ></lightning-formatted-text>:&nbsp;</b><lightning-formatted-text class="value slds-text-body_regular" value={ofNews.LastName}>
+            </lightning-formatted-text><br> -->
+            <lightning-formatted-text class="name slds-text-body_regular" data-id={ofNews.id} value={name} onclick={handleUser}>
+            </lightning-formatted-text><br>
+            <b><lightning-formatted-text class="slds-text-body_regular" value={l.Role} ></lightning-formatted-text>:&nbsp;</b><lightning-formatted-text class="value slds-text-body_regular" value={ofNews.RHRolec}>
+            </lightning-formatted-text><br>
+            <!-- <b><lightning-formatted-text class="slds-text-body_regular" value="RH User" ></lightning-formatted-text>:&nbsp;</b><lightning-formatted-text class="value slds-text-body_regular" value={ofNews.RHUser}>
+            </lightning-formatted-text><br> -->
+            <b><lightning-formatted-text class="slds-text-body_regular" value={l.Company} ></lightning-formatted-text>:&nbsp;</b><lightning-formatted-text class="value slds-text-body_regular" value={ofNews.accountName}>
+            </lightning-formatted-text><br>
+            <!-- {content} -->
+        </div>
+        <!-- <footer class="slds-card__footer footer">
+            <p ><img src={arrow_inactiveImg} class="icn-style"/></p>
+        </footer> -->
+</div>
+</template>

@@ -1,18 +1,102 @@
 public with sharing class RH_EventController {
-    @AuraEnabled
-    public static List<Event__c> getMyEvent() {
-        List<Event__c> evenList = [SELECT id,Name,Contact_Id__r.Name,Description__c, Start_Date__c, Status__c FROM Event__c];
-        System.debug('event-->' + evenList);
-        return evenList;
+
+    @AuraEnabled(cacheable=true)
+    public static List<Event__c>  getEventList(){
+        try{
+            System.debug('UserInfo-->' + UserInfo.getUserId());
+            User u = [Select Id, RH_ContactId__c,UserRole.Name From User where Id =: UserInfo.getUserId()];
+                String conId = u.RH_ContactId__c;
+                String userRole = u.UserRole.Name;
+                if(userRole == 'CEOza'){
+                    List<Event__c> evenList = [SELECT Id,Name,Contact_Id__r.Name,Description__c, Start_Date__c, Status__c, CreatedBy.UserRole.Name FROM Event__c];
+                    //System.debug('event-->' + evenList);
+                    return evenList;
+                }else{
+                    List<Event__c> evenList = [SELECT Id,Name,Contact_Id__r.Name,Description__c, Start_Date__c, Status__c, CreatedBy.UserRole.Name FROM Event__c 
+                    Where Contact_Id__c =: conId And CreatedBy.UserRole.Name =: userRole];
+                    //System.debug('event-->' + evenList);
+                    return evenList;
+                }
+            }
+            catch(Exception ex) {
+                throw new AuraHandledException(ex.getMessage());
+            }
+        // return [SELECT Id, Name,Phone,Industry FROM Account order by createddate desc LIMIT 5];
     }
-    
+
+    // @AuraEnabled
+    // public static List<Event__c> getMyEvent() {
+    //     try{
+    //     User u = [Select Id, RH_ContactId__c,UserRole.Name From User where Id =: UserInfo.getUserId()];
+    //         String conId = u.RH_ContactId__c;
+    //         String userRole = u.UserRole.Name;
+    //         if(userRole == 'CEOza'){
+    //             List<Event__c> evenList = [SELECT Id,Name,Contact_Id__r.Name,Description__c, Start_Date__c, Status__c, CreatedBy.UserRole.Name FROM Event__c];
+    //             //System.debug('event-->' + evenList);
+    //             return evenList;
+    //         }else{
+    //             List<Event__c> evenList = [SELECT Id,Name,Contact_Id__r.Name,Description__c, Start_Date__c, Status__c, CreatedBy.UserRole.Name FROM Event__c 
+    //             Where Contact_Id__c =: conId And CreatedBy.UserRole.Name =: userRole];
+    //             //System.debug('event-->' + evenList);
+    //             return evenList;
+    //         }
+    //     }
+    //     catch(Exception ex) {
+    //         throw new AuraHandledException(ex.getMessage());
+    //     }
+    // }
+    @AuraEnabled
+    public static List<Event__c> getEventEdite(String evenId) {
+        try{
+            System.debug('UserInfo-->' + UserInfo.getUserId());
+            User u = [Select Id, RH_ContactId__c,UserRole.Name From User where Id =: UserInfo.getUserId()];
+                String conId = u.RH_ContactId__c;
+                String userRole = u.UserRole.Name;
+                if(userRole == 'CEOza'){
+                    List<Event__c> evenList = [SELECT Id,Name,Contact_Id__r.Name,Description__c, Start_Date__c, Status__c, CreatedBy.UserRole.Name FROM Event__c Where Id =: evenId];
+                    //System.debug('event-->' + evenList);
+                    return evenList;
+                }else{
+                    List<Event__c> evenList = [SELECT Id,Name,Contact_Id__r.Name,Description__c, Start_Date__c, Status__c, CreatedBy.UserRole.Name FROM Event__c 
+                    Where Contact_Id__c =: conId And CreatedBy.UserRole.Name =: userRole And Id =: evenId];
+                    //System.debug('event-->' + evenList);
+                    return evenList;
+                }
+        }
+        catch(Exception ex) {
+            throw new AuraHandledException(ex.getMessage());
+        }
+    }
+    @AuraEnabled
+    public static List<Event__c> getMyEventManager() {
+        try{
+            User u = [Select Id, RH_ContactId__c,UserRole.Name From User where Id =: UserInfo.getUserId()];
+                String conId = u.RH_ContactId__c;
+                String userRole = u.UserRole.Name;
+                if(userRole == 'CEO'){
+                    List<Event__c> evenList = [SELECT Id,Name,Contact_Id__r.Name,Description__c, Start_Date__c, Status__c, CreatedBy.UserRole.Name FROM Event__c
+                    Where CreatedBy.UserRole.Name =: 'Base User'];
+                    //System.debug('event-->' + evenList);
+                    return evenList;
+                }else{
+                    List<Event__c> evenList = [SELECT Id,Name,Contact_Id__r.Name,Description__c, Start_Date__c, Status__c, CreatedBy.UserRole.Name FROM Event__c 
+                    Where Contact_Id__c =: conId And CreatedBy.UserRole.Name =: userRole];
+                    //System.debug('event-->' + evenList);
+                    return evenList;
+                }
+            }
+            catch(Exception ex) {
+                throw new AuraHandledException(ex.getMessage());
+            }
+    }
+
     @AuraEnabled
     public static void saveEvent(String objEven) {
-        system.debug('@@@@EventDatas' + objEven);
-        // try{
+        //system.debug('@@@@EventDatas' + objEven);
+        try{
             wrapperData datas = (wrapperData)JSON.deserialize(objEven, wrapperData.class);
-            User u = [Select Id, RH_ContactId__c From User where Username = 'elisee_test_ceo.dev@aro.it'];
-            String conId = u.RH_ContactId__c;
+            User u = [Select Id, RH_ContactId__c From User where Id =: UserInfo.getUserId()];
+            String conId = u.RH_ContactId__c;	
                 Event__c even = new Event__c(
                     Name = datas.Name,
                     Contact_Id__c = conId,
@@ -21,12 +105,12 @@ public with sharing class RH_EventController {
                     // Status__c =datas.Status
 
                 );
-                upsert even;
-                system.debug('@@@@EventDatas' + even);
-        // }
-        // catch(Exception ex) {
-        //     throw new AuraHandledException(ex.getMessage());
-        // }
+                insert even;
+                //system.debug('@@@@EventDatas' + even);
+        }
+        catch(Exception ex) {
+            throw new AuraHandledException(ex.getMessage());
+        }
     }
 
     public class wrapperData{
@@ -34,6 +118,91 @@ public with sharing class RH_EventController {
         public String Description { get; set; }
         public String StartDate { get; set; }
         // public String Status { get; set; }
+    }
+
+    @AuraEnabled
+    public static void updateEven(String updEven, String eId) {
+        system.debug('@@@@updEven--->' + updEven);
+        system.debug('@@@@ eId---> '+ eId);
+        try{
+            wrapperDataToUpdate datas = (wrapperDataToUpdate)JSON.deserialize(updEven, wrapperDataToUpdate.class);
+            String evId = eId;
+            User u = [Select Id, RH_ContactId__c From User where Id =: UserInfo.getUserId()];
+            String conId = u.RH_ContactId__c; 
+            Event__c even = new Event__c(
+                    Id = string.isNotBlank(evId)?evId:null,
+                    Name = datas.Name,
+                    Contact_Id__c = conId,
+                    Description__c  = datas.Description,
+                    Start_Date__c =dateToParse(datas.StartDate)
+                    // Status__c =datas.Status
+            );
+
+            update even;
+            system.debug('@@@@EventDatas--->' + even);
+        }
+        catch(Exception ex) {
+            throw new AuraHandledException(ex.getMessage());
+        }
+    }
+    public class wrapperDataToUpdate{
+        public String Name { get; set; }
+        public String Description { get; set; }
+        public String StartDate { get; set; }
+        // public String Status { get; set; }
+    }
+
+    @AuraEnabled
+    public static String getInfoUsers() {
+        String userinf = UserInfo.getUserId();
+        return userinf;
+    }
+    @AuraEnabled
+    public static List<User> getInfBaseUsers() {
+        List<User> u = [Select Id,UserRole.Name From User Where UserRole.Name =: 'Base User'];
+        return u;
+    }
+    @AuraEnabled
+    public static List<Event__c> getEventInfos(String infoId) {
+        List<Event__c> ev = [Select Id, Name, Description__c From Event__c Where Id =: infoId];
+        return ev;
+    }
+    
+    @AuraEnabled(cacheable=true)
+    public static void sendNotifications(String strBody, String strSenderId, String strTargetId, String strTitle,List<String> setUserIds) {
+        set<String> setUserId = new set<String>();
+        for(String s : setUserIds){
+            setUserId.add(s);
+        }
+        
+        
+        // String pgRef = '{ type : "standard__recordPage",attributs :{recordId : 0017Q00000Dck8lQAB ,objectApiName : "Account",actionName : "view"} }' ;
+        String pgRef = '{type : \'comm__namedPage\',attributes : {pageName : \'Event\'},state: {\'recordId\': \'xxxxx\'}}' ;
+        
+        // Get the Id for our custom notification type
+        CustomNotificationType notificationType = [SELECT Id, DeveloperName FROM CustomNotificationType WHERE DeveloperName='Test_Notification'];
+
+        Messaging.CustomNotification obj = new Messaging.CustomNotification();
+        
+        // Custom notification type Id
+        obj.setNotificationTypeId(notificationType.Id);
+
+        
+        // when we click on the notification it will redirect to the specified targetId
+        // obj.setTargetId(strTargetId);
+        
+
+
+        // Notification Title
+        obj.setTitle(strTitle);
+        
+        obj.setTargetPageRef( pgRef );
+
+        // Notification Body
+        obj.setBody(strBody);
+        
+        // send used to send the notification, pass the set of user ids , Group or Queue member
+        obj.send(setUserId);
     }
 
     @AuraEnabled
@@ -51,7 +220,7 @@ public with sharing class RH_EventController {
         } catch (Exception ex) {
             throw new AuraHandledException(ex.getMessage());
         }
-        system.debug('--->'+picklistOptions);
+        //system.debug('--->'+picklistOptions);
         return picklistOptions;
     }
     public class SelectOptionObj {
@@ -95,7 +264,7 @@ public with sharing class RH_EventController {
                 res = null;
         }
         catch(Exception e){
-            System.debug('AccountUtils dateToParse Exception, message: '+e.getCause()+'\n'+e.getStackTraceString());
+            //System.debug('AccountUtils dateToParse Exception, message: '+e.getCause()+'\n'+e.getStackTraceString());
         }
         return res;
     }

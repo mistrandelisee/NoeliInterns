@@ -44,18 +44,18 @@
             <template if:true={hasFooterText}>
                 <p class={footerText.class}>{footerText.text}</p>
             </template>
-            <template if:true={hasAction}>
-                <div class="slds-clearfix">
-                    <template  for:each={actionAvailable} for:item="action" for:index="index">
-                       <div class="slds-float_right" key={action.name}>
-                            <lightning-button variant={action.variant} label={action.label} data-action-name={action.name} title={action.title}
-                             icon-name={action.iconName} onclick={handleClick} class={action.class}></lightning-button>
-                      </div>
-                    </template>
-                </div>
-            </template>
-           
-            
+            <template if:false={displayEdit}>
+                <template if:true={hasAction}>
+                    <div class="slds-clearfix">
+                        <template  for:each={actionAvailable} for:item="action" for:index="index">
+                        <div class="slds-float_right" key={action.name}>
+                                <lightning-button variant={action.variant} label={action.label} data-action-name={action.name} title={action.title}
+                                icon-name={action.iconName} onclick={handleClick} class={action.class}></lightning-button>
+                        </div>
+                        </template>
+                    </div>
+                </template>
+            </template>  
         </div>
         </lightning-card>
     <!-- </div> -->

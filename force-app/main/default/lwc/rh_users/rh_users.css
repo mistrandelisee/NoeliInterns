@@ -1,0 +1,25 @@
+.home-title{
+    color:#fa3179;
+}
+.icn-style{
+    padding-left: 10px;
+}
+.fs-19{
+    font-size: 19px;
+}
+.pointer{
+    cursor: pointer;
+}
+.fw-700{
+    font-weight: 700;
+}
+:host{
+    color:#626575;
+    --primaryColor: #001639;
+    --secondaryColor: #9735e1;
+}
+.text{
+    color: red;
+    text-align: center;
+    font-size: 25px;
+}

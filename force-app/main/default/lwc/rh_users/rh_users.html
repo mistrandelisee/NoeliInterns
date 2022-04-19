@@ -1,0 +1,62 @@
+<template>
+    <!-- <p>NOTHING :(</p> -->
+    <c-rh_spinner></c-rh_spinner>
+
+        <template if:false={hasrecordid}>
+            <template if:true={showNew}>
+                <c-rh_user_creation onaction={handleActionNew}></c-rh_user_creation>
+            </template>
+            <template if:true={hideView}>
+                <lightning-layout multiple-rows="true">
+                    <template if:true={hascontact} for:each={listcontact} for:item="contact">
+                        <lightning-layout-item size="12" key={contact.id} class="slds-p-left_small" small-device-size="12" medium-device-size="6" large-device-size="4">
+                            <div class="custom-box"> <c-rh_user_view of-news={contact} onuserid={handleuser}></c-rh_user_view></div>
+                        </lightning-layout-item>
+                    </template>
+                </lightning-layout>
+            </template>
+        
+        </template>
+        
+
+        <template if:true={hasrecordid}>
+
+            <template if:false={hascontacts}>
+                
+                <c-rh_success_operation title={title} information={information} recordid={recordId}></c-rh_success_operation>
+            </template>
+
+            <template if:true={hascontacts}>
+
+                <!-- user information section -->
+                <!-- <template if:true={hasrec}> -->
+                    <div class="slds-p-around_medium profile_user_info">
+                        <c-rh_display_fields 
+                        title="User Informations"
+                        iconsrc="utility:people"
+                        column="2"
+                        output-fields={formPersonanalInputDetails}
+                        ></c-rh_display_fields>
+                    </div>
+                    
+                <!-- user extraField section -->
+                <div class="slds-p-around_medium extra_info">
+                    <c-rh_extra_fields json-field={jsonInfo} ></c-rh_extra_fields>
+                </div>
+                <!-- </template> -->
+
+                <!-- reset passzord -->
+                <div class="slds-p-around_medium profile_reset_password ">
+                    <c-rh_profile_reset_password title={l.ChangePasswordTitle} onaction={handleAction} ></c-rh_profile_reset_password>
+                </div>
+
+                <!-- display account -->
+                <div class="slds-p-around_medium account">
+                    <c-rh_display_fields title={l.AccountInfoTitle} iconsrc="standard:account" column="3" output-fields={accountFields} ></c-rh_display_fields>
+                </div>
+
+            </template>
+
+        </template>
+       
+</template>

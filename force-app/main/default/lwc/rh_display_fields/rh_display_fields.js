@@ -13,12 +13,14 @@ export default class Rh_display_fields extends NavigationMixin(LightningElement)
     @api
     hasAction;
 
+    @api displayEdit;
+
     @api
     actionAvailable;
     @api
     footerText
     get hasFieldsRows(){
-       return this.outputFields?.length >1;
+       return this.outputFields?.length >=1;
     }
     get hasFooterText(){
         return this.footerText?.text;
@@ -62,7 +64,17 @@ export default class Rh_display_fields extends NavigationMixin(LightningElement)
         this.title=this.title || 'User Informations';
         this.iconsrc= this.iconsrc || 'utility:people';
         this.column= this.column || 2;
-        this.outputFields=this.outputFields || [/*
+        this.outputFields=this.outputFields || [
+            {
+                label:'gg',
+                placeholder:'',
+                name:'',
+                value: '',
+                ///required:true,
+                ly_md:'12', 
+                ly_lg:'12'
+            }
+            /*
             {
                 label:'Last Name',
                 placeholder:'Enter your Last Name',

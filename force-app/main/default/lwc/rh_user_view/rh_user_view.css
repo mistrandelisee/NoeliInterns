@@ -1,0 +1,43 @@
+.container{
+    cursor: pointer;
+    --lwc-cardShadow: 1px 0px 8px 5px #e5e6ea61;
+    box-shadow: 1px 0px 8px 5px #e5e6ea61;
+}
+.txt-color{
+    color: #fa3179;
+}
+.footer{
+    margin-top: -40px;
+    background: transparent;
+}
+.fw-700{
+    font-weight: 700;
+}
+.fw-600{
+    font-weight: 600;
+}
+.title{
+    font-weight: 700;
+}
+.content{
+    font-size: 16px;
+}
+
+/* MOdal css */
+
+.headerStyle{
+    background-color:#292e42;
+    color: white;
+  }
+
+  .titleStyle{
+    color:#fa3179;
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+.slds-modal__container{
+  width: 50%;
+}
+.name:hover{
+    color: rgb(1 68 134);
+}

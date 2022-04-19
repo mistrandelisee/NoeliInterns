@@ -7,7 +7,6 @@ const SAVE_ACTION='Save';
 
 
 const RESET_ACTION='Reset';
-
 const SUCCESS_VARIANT='success';
 const WARNING_VARIANT='warning';
 const ERROR_VARIANT='error';
@@ -15,6 +14,13 @@ export default class Rh_extra_fields extends LightningElement {
     l={...labels}
     @api
     jsonField;
+    @api
+    action;
+    actionAvailable=[];
+
+
+    @api displayEdit
+
     mapInputs=new Map();
     get fieldTab(){
         return 'test'
@@ -22,7 +28,23 @@ export default class Rh_extra_fields extends LightningElement {
     @track fieldToshow=[];
     connectedCallback(){
         this.initializeMap(this.jsonField);
+        this.actionAvailable =[
+            {
+                variant:"base",
+                label:this.l.Edit,
+                name:"Edit",
+                title:this.l.Edit,
+                iconName:"utility:edit",
+                class:"slds-m-left_x-small"
+            },
+        ];
 
+    }
+    handleActions(event){
+        this.action=event.detail.action;
+    }
+    get editMode(){
+        return this.action==EDIT_ACTION;
     }
     handleUpdate(key,data){
         console.log(`key`, key);
@@ -58,6 +80,22 @@ export default class Rh_extra_fields extends LightningElement {
             self.handleUpdate(key,elt);
         });
        this.fieldToshow= this.buldFields();
+       
+       this.action='';
+    }
+    get extraFields(){
+        let tab=[];
+         tab=this.fieldToshow.map(function(elt, index)  {
+            let name=elt.keyx;
+            const FLABEL=elt.fields.find((item) => item.name=='Label');
+            const FVALUE=elt.fields.find((item) => item.name=='Label');
+            return {
+                label:FLABEL?.value,
+                name,
+                value:FVALUE?.value
+            }
+        });
+        return tab;
     }
     buldFields(){
         let tab=[];

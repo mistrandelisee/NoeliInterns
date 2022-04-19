@@ -1,3 +1,3 @@
 import { LightningElement } from 'lwc';
 
-export default class Rh_Projects extends LightningElement {}
+export default class Rh_projects extends LightningElement {}
