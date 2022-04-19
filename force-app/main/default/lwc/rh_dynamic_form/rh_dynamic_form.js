@@ -3,11 +3,13 @@ import { api, LightningElement } from 'lwc';
 export default class Rh_dynamic_form extends LightningElement {
     @api inputsItems=[];
     @api title;
+    @api timeOut;
     @api backcolor;
     section = 'form-section';
     rendered;
 
     preCompileDefaultValues(){
+        this.timeOut=this.timeOut || 0;
         this.inputsItems=this.inputsItems?.map(function(item, index) {
             let elt={...item};
             elt.ly_xs=  elt.ly_xs ?  elt.ly_xs: '6';
@@ -94,16 +96,20 @@ export default class Rh_dynamic_form extends LightningElement {
         // console.log('OUTPUT VALUE : ',output);
         console.log('OUTPUTS VALUES : ',outputs);
         console.log('OUTPUTS VALUES outputsItems : ',outputsItems);
+        console.log('OUTPUTS VALUES outputsItems111 : ',{isvalid,outputs,obj:output,outputsItems});
         return {isvalid,outputs,obj:output,outputsItems};
     }
     timer;
     handleChanged(event) {
+        const delay= +this.timeOut;
         const value = event.detail.value;
+        const name = event.currentTarget.dataset.id;
         console.log('OUTPUT : ',value);
+        console.log('OUTPUT :name  ',name);
         clearTimeout(this.timer);
         this.timer=setTimeout(() => {
-            this.publishChangedEvt(event);
-        }, 2000);
+            this.publishChangedEvt({info: {name, value} , event:event});
+        }, delay);//2000
     }
     publishChangedEvt(evt){
         console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$4 Publish evt ' ,evt);

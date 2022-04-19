@@ -7,6 +7,8 @@ import getContact from '@salesforce/apex/RH_Users_controller.getContact';
 import displayContactInfo from '@salesforce/apex/RH_Users_controller.displayContactInfo'
 import getExtraFields from '@salesforce/apex/RH_Users_controller.getExtraFields'
 import changeMyPassword from '@salesforce/apex/RH_Profile_controller.changeMyPassword';
+import getActiveWorkgroups from '@salesforce/apex/RH_WorkGroup_Query.getActiveWorkgroups';
+
 const NEW_ACTION='New';
 const SUCCESS_VARIANT='success';
 const WARNING_VARIANT='warning';
@@ -15,6 +17,7 @@ const ERROR_VARIANT='error';
 export default class Rh_users extends NavigationMixin(LightningElement) {
 
 l={...labels}
+@track groups=[];
 @track listcontact = [];
 recordId;
 title;
@@ -42,6 +45,19 @@ action='';
             this.getContactList();
         }
         //this.displayContactInfo();
+        this.getActiveWorkgroupse();
+    }
+
+    getActiveWorkgroupse(){
+        getActiveWorkgroups({}).then(result =>{
+            console.log('result group ' +JSON.stringify(result));
+            result.forEach(elt => {
+                this.groups.push(elt.Name);
+            });
+            console.log('groupes ' +this.groups);
+        }).catch(e =>{
+            console.error(e);
+        });
     }
 
     getContactList(){

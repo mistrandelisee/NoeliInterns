@@ -44,7 +44,7 @@
             <template if:true={hasFooterText}>
                 <p class={footerText.class}>{footerText.text}</p>
             </template>
-            <template if:false={displayEdit}>
+           
                 <template if:true={hasAction}>
                     <div class="slds-clearfix">
                         <template  for:each={actionAvailable} for:item="action" for:index="index">
@@ -55,7 +55,7 @@
                         </template>
                     </div>
                 </template>
-            </template>  
+           
         </div>
         </lightning-card>
     <!-- </div> -->

@@ -17,6 +17,7 @@ export default class Rh_extra_fields extends LightningElement {
     @api
     action;
     actionAvailable=[];
+    @api hasaction;
 
 
     @api displayEdit
@@ -46,6 +47,8 @@ export default class Rh_extra_fields extends LightningElement {
     get editMode(){
         return this.action==EDIT_ACTION;
     }
+
+    
     handleUpdate(key,data){
         console.log(`key`, key);
         console.log(`data`, JSON.stringify(data));
@@ -88,7 +91,7 @@ export default class Rh_extra_fields extends LightningElement {
          tab=this.fieldToshow.map(function(elt, index)  {
             let name=elt.keyx;
             const FLABEL=elt.fields.find((item) => item.name=='Label');
-            const FVALUE=elt.fields.find((item) => item.name=='Label');
+            const FVALUE=elt.fields.find((item) => item.name=='Value');
             return {
                 label:FLABEL?.value,
                 name,
@@ -103,11 +106,11 @@ export default class Rh_extra_fields extends LightningElement {
             // alert(`${key}: ${elt}`); // cucumber: 500 etc
             tab.push( {
                 keyx:key,
-                fields:[{ label:'',placeholder:'..label',name:'Label',value: elt.Label,required:true,
+                fields:[{ label:'Field Label',placeholder:'..label',name:'Label',value: elt.Label,required:true,
                             ly_md:'6', ly_lg:'6', variant:'label-hidden',isText:true
                         },
                         {
-                            label:'', placeholder:'..value',name:'Value',value: elt.Value,
+                            label:'Field Value', placeholder:'..value',name:'Value',value: elt.Value,
                             required:true,ly_md:'6',  ly_lg:'6', variant:'label-hidden',isText:true
                         }
                 
@@ -136,10 +139,12 @@ export default class Rh_extra_fields extends LightningElement {
             case 'DELETE_ACTION':
                 console.log('key >>',cusEvt?.fieldkey,' \data ',cusEvt?.data);
                 this.handleDelete(cusEvt?.fieldkey);
+                this.showToast(SUCCESS_VARIANT,  'field Removed', 'ok');
                 break;
             case 'SAVE_ACTION':
                 console.log('key >>',cusEvt?.fieldkey,' \data ',cusEvt?.data);
                 this.handleUpdate(cusEvt?.fieldkey,cusEvt?.data);
+                this.showToast(SUCCESS_VARIANT,  'field updated', 'ok');
                 break;
             default:
                 break;
@@ -150,9 +155,35 @@ export default class Rh_extra_fields extends LightningElement {
         this.handleNew(new Date().getTime());
     }
     handleSave (){
-        console.log(`Save`, this.getSavedFields);
-        this.callParent('Save',JSON.stringify(this.getSavedFields))
+        console.log(`handleSave Xtra field`);
+        let error=false;
+        let fields=[];
+        this.getSavedFields.forEach(function(field){
+            if(field?.Label){
+                console.log('Field to Save: ',field);
+                fields.push(field);
+            }else error= true
+        });
+        if (fields.length>0) {
+            // this.callParent('Save',JSON.stringify(this.getSavedFields))
+            this.callParent('Save',JSON.stringify(fields))
+        }else{
+            this.showToast(WARNING_VARIANT,  'Missing Input label', '');
+        }
     } 
+    handleSaveCancel(){
+        this.initializeMap(this.jsonField);
+        //this.action='';
+
+    }
+    get hasExtraFields(){
+        try {
+            return this.getSavedFields?.length > 0
+        } catch (error) {
+            return false
+        }
+
+    }
     buildName(str){
         if (!str) {
             str= new Date().getTime()+'';
