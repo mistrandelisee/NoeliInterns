@@ -1,0 +1,62 @@
+<template>
+    <lightning-card class="custom-card" >
+        <h3 slot="title">
+            <lightning-icon class="slds-m-right_medium ico-title" icon-name={iconeName} size="small"></lightning-icon>
+            <span data-name="title" onclick={goToLink} class="c-title">{title}</span>
+        </h3>
+        <!-- <lightning-button-icon  icon-name="utility:down" variant="border-filled" alternative-text="Show More" slot="actions">
+            
+        </lightning-button-icon> -->
+        <template if:true={hasActions}>
+            <!-- TO IMPLEMENT -->
+            <lightning-button-menu slot="actions" alternative-text="Show menu" variant="border-filled" onselect={handleOnselect}>
+                <lightning-menu-item value="MenuItemOne" label="Menu Item One"></lightning-menu-item>
+                <lightning-menu-item value="MenuItemTwo" label="Menu Item Two"></lightning-menu-item>
+                <lightning-menu-item value="MenuItemThree" label="Menu Item Three"></lightning-menu-item>
+                <lightning-menu-item value="MenuItemFour" label="Menu Item Four"></lightning-menu-item>
+            </lightning-button-menu>
+
+        </template>
+       <!-- BOdy -->
+       <div class="slds-form" role="list">
+            <template if:true={hasFieldsRows} for:each={getFieldsRows} for:item="row" for:index="index">
+                <div class="slds-form__row" key={row.index}>
+                    <template  for:each={row.fields} for:item="field" for:index="index">
+                        <div class="slds-form__item" role="listitem" key={field.name}>
+                            <div
+                                class="slds-form-element slds-form-element_horizontal slds-form-element_readonly  slds-hint-parent">
+                                <span class="slds-form-element__label">{field.label}</span>
+                                <div class="slds-form-element__control">
+                                    <div class="slds-form-element__static">
+                                        
+                                        <template if:true={field.isLink}>
+                                            <a href={field.href} data-name={field.name} onclick={goToLink} class={field.class}>
+                                                {field.value}
+                                                </a>
+                                        </template>
+                                        <template if:false={field.isLink}>
+                                            {field.value}
+                                        </template>
+                                        
+                                    </div>
+                                    <!-- <button class="slds-button slds-button_icon" title="Edit: Location">
+                                        <svg class="slds-button__icon slds-button__icon_hint" aria-hidden="true">
+                                            <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#edit"></use>
+                                        </svg>
+                                        <span class="slds-assistive-text">Edit: Location</span>
+                                    </button> -->
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                    
+                </div>
+            </template>
+        </div>
+
+
+        <p slot="footer">
+            <lightning-icon class="slds-m-right_medium ico" icon-name="utility:chevronright" size="small" data-name="title" onclick={goToLink} ></lightning-icon>
+        </p>
+    </lightning-card>
+</template>

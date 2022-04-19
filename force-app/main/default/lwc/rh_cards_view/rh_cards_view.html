@@ -1,0 +1,56 @@
+<template>
+    <lightning-layout multiple-rows>
+
+        <lightning-layout-item size="12" padding="around-small" small-device-size="12" medium-device-size="12"
+            large-device-size="12">
+            <div class="custom-box">
+                <template if:true={ready}>
+                    <lightning-layout horizontal-align="center" multiple-rows>
+                        <template for:each={itemsToShow} for:item="item">
+                            <lightning-layout-item size="12" key={item.id} class="slds-p-left_small" small-device-size="12" medium-device-size="6" large-device-size="4">
+                                <!-- <div class="custom-box"> <c-rh_user_view of-news={contact} onuserid={handleuser}></c-rh_user_view></div> -->
+                                <c-rh_card record={item}
+                                icone-name={item.icon}
+                                title={item.title}
+                                keys-fields={item.keysFields}
+                                keys-labels={item.keysLabels}
+                                fields-to-show   ={item.fieldsToShow} 
+                                onaction={handleCardAction}
+                                ></c-rh_card>
+                            </lightning-layout-item>
+                        </template>
+                    </lightning-layout>
+                   
+                    <!-- <lightning-datatable key-field="name" data={itemsToShow} columns={columns}
+                        hide-checkbox-column="true" onrowaction={goToDetail}
+                        default-sort-direction={defaultSortDirection} sorted-direction={sortDirection}
+                        sorted-by={sortedBy} onsort={onHandleSort}></lightning-datatable> -->
+                </template>
+
+            </div>
+        </lightning-layout-item>
+        <lightning-layout-item size="12" padding="around-small" small-device-size="12" medium-device-size="12"
+            large-device-size="12">
+            <template if:true={ready}>
+                <div class="custom-box slds-align_absolute-center c-button">
+                    <lightning-button label="Prev" onclick={handlePrev} title="Download action" variant=" brand-outline"
+                        icon-name="utility:chevronleft" disabled={isFirstIndex} class="slds-m-left_x-small">
+                    </lightning-button>
+                    <lightning-button label="Next" onclick={handleNext} title="Download action" variant=" brand-outline"
+                        icon-name="utility:chevronright" disabled={isLastIndex} icon-position="right"
+                        class="slds-m-left_x-small"></lightning-button>
+                </div>
+            </template>
+        </lightning-layout-item>
+        <template if:false={hideExport}>
+            <lightning-layout-item size="12"  padding="around-small" small-device-size="12" medium-device-size="12"
+                large-device-size="12" if:true={existElements}>
+                <!-- <div class="custom-box" >
+                    <c-reports-export-to-xlsx items={items} export-not-ready={isLoading} header={columns}>
+                    </c-reports-export-to-xlsx>
+                </div> -->
+            </lightning-layout-item>
+        </template>
+       
+    </lightning-layout>
+</template>

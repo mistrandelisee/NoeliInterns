@@ -1,5 +1,6 @@
 <template>
     <!-- <p>NOTHING :(</p> -->
+    <c-rh_toast auto-close-time="6000"></c-rh_toast>
     <c-rh_spinner></c-rh_spinner>
 
         <template if:false={hasrecordid}>
@@ -7,13 +8,23 @@
                 <c-rh_user_creation groups={groups} onaction={handleActionNew}></c-rh_user_creation>
             </template>
             <template if:true={hideView}>
-                <lightning-layout multiple-rows="true">
+                <!-- <lightning-layout multiple-rows="true">
                     <template if:true={hascontact} for:each={listcontact} for:item="contact">
                         <lightning-layout-item size="12" key={contact.id} class="slds-p-left_small" small-device-size="12" medium-device-size="6" large-device-size="4">
-                            <div class="custom-box"> <c-rh_user_view of-news={contact} onuserid={handleuser}></c-rh_user_view></div>
+                            
+                            <c-rh_card record={contact}
+                            icone-name="standard:people"
+                            title={contact.LastName}
+                            keys-fields={keysFields}
+                            keys-labels={keysLabels}
+                            fields-to-show   ={fieldsToShow} 
+                            onaction={handleCardAction}
+                            ></c-rh_card>
                         </lightning-layout-item>
                     </template>
-                </lightning-layout>
+                   
+                </lightning-layout> -->
+                <c-rh_cards_view page-size="20" onrowselected={handleCardAction}></c-rh_cards_view>
             </template>
         
         </template>
@@ -21,7 +32,7 @@
 
         <template if:true={hasrecordid}>
 
-            <template if:false={hascontacts}>
+            <template if:true={contactNotFounded}>
                 
                 <c-rh_success_operation title={title} information={information} recordid={recordId}></c-rh_success_operation>
             </template>
@@ -47,7 +58,7 @@
 
                 <!-- reset passzord -->
                 <div class="slds-p-around_medium profile_reset_password ">
-                    <c-rh_profile_reset_password title={l.ChangePasswordTitle} onaction={handleAction} ></c-rh_profile_reset_password>
+                    <c-rh_reset_password title={l.ChangePasswordTitle} onaction={handleAction} ></c-rh_reset_password>
                 </div>
 
                 <!-- display account -->

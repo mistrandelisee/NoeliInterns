@@ -3,16 +3,21 @@ import { NavigationMixin } from 'lightning/navigation';
 
 import { labels } from 'c/rh_label';
 
-import getContact from '@salesforce/apex/RH_Users_controller.getContact';
-import displayContactInfo from '@salesforce/apex/RH_Users_controller.displayContactInfo'
+import getContacts from '@salesforce/apex/RH_Users_controller.getContacts';
+import getEmployeeDetails from '@salesforce/apex/RH_Users_controller.getEmployeeDetails'
 import getExtraFields from '@salesforce/apex/RH_Users_controller.getExtraFields'
 import changeMyPassword from '@salesforce/apex/RH_Profile_controller.changeMyPassword';
+import changeUserPassword from '@salesforce/apex/RH_Users_controller.changeUserPassword';
 import getActiveWorkgroups from '@salesforce/apex/RH_WorkGroup_Query.getActiveWorkgroups';
 
 const NEW_ACTION='New';
 const SUCCESS_VARIANT='success';
 const WARNING_VARIANT='warning';
+
+
 const ERROR_VARIANT='error';
+const FROMRESETPWD='ResetPWD';
+const RESET_ACTION='Reset';
 
 export default class Rh_users extends NavigationMixin(LightningElement) {
 
@@ -24,8 +29,22 @@ title;
 information;
 jsonInfo;
 contactrecord;
+contactNotFounded=false;
 @track accountFields=[];
 @track formPersonanalInputDetails=[];
+
+
+keysFields={accountName:'ok'};
+keysLabels={
+    accountName:'Company', FirstName:'First Name',
+    RHRolec:'Role',
+};
+fieldsToShow={
+    accountName:'ok', FirstName:'',
+    RHRolec:'ok',
+};
+
+
 action='';
     get showNew(){
         return this.action=='' || this.action==NEW_ACTION;
@@ -61,12 +80,30 @@ action='';
     }
 
     getContactList(){
-        getContact({}).then(result =>{
-            console.log('result @@@ + ' +JSON.stringify(result));
-            this.listcontact = result;
+        this.startSpinner(true);
+        getContacts({}).then(result =>{
+            console.log('result @@@ + ' +(result));
+            const self=this;
+            if (!result.error && result.Ok) {
+                this.listcontact = result.Employes.map(function (e ){
+                    let item={...e};
+                    item.title=e.LastName;
+                    item.icon="standard:people";
+                    item.keysFields=self.keysFields;
+                    item.keysLabels=self.keysLabels;
+                    item.fieldsToShow=self.fieldsToShow;
+                    return item;
+                });
+                this.setviewsList(this.listcontact)
+            }else{
+                this.showToast(WARNING_VARIANT,'ERROR', result.msg);
+            }
         }).catch(e => {
             this.showToast(ERROR_VARIANT,'ERROR', e.message);
             console.error(e);
+        })
+        .finally(() => {
+            this.startSpinner(false);
         })
     }
 
@@ -98,7 +135,18 @@ action='';
         this.goToRequestDetail(event.detail);
         
     }
+    handleCardAction(event){
+        console.log('event parent ' +JSON.stringify(event.detail));
+        const info=event.detail;
+        if (info?.extra?.isTitle) {
+            this.goToRequestDetail(info?.data?.id);
+        }
+    }
 
+    setviewsList(items){
+        let cardsView=this.template.querySelector('c-rh_cards_view');
+        cardsView?.setDatas(items);
+    }
     //navigation Page
 
     goToRequestDetail(recordid) {
@@ -123,22 +171,29 @@ action='';
       }
 
       displayContactInfo(recordid){
-        displayContactInfo({
+        this.startSpinner(true);
+        getEmployeeDetails({
             recordId: recordid
         }).then(result =>{
             console.log('display contact ' +JSON.stringify(result))
-            this.contactrecord = result;
-            this.buildform(this.contactrecord);
-            this.buildAccountFields(this.contactrecord);
+            if (!result.error && result.Ok) {
+                this.contactrecord = result.Employe;
+                this.buildform(this.contactrecord);
+                this.buildAccountFields(this.contactrecord);
+            }else{
+                this.showToast(WARNING_VARIANT,'ERROR', result.msg);
+                this.title = 'Failled';
+                this.information = result.msg;
+                this.contactNotFounded=true;
+            }
+
+
         }).catch(e =>{
             this.showToast(ERROR_VARIANT,'ERROR', e.message);
             console.error(e)
+        }).finally(() => {
+            this.startSpinner(false);
         })
-
-        if(!this.contactrecord){
-            this.title = 'Failled';
-            this.information = 'Not Information for this Id: ';
-        }
       }
       
       get hascontacts(){
@@ -288,8 +343,9 @@ action='';
     }
 
     ChangePasswordApex(info){
+        info.recordId= this.recordId;
         console.log(`@@@@@ callUpdateInfoApex >>> Input : `,info);
-        changeMyPassword({ changepasswordjson: Json.stringify(info) })
+        changeUserPassword({ changepasswordjson: JSON.stringify(info) })
           .then(result => {
             console.log('Result', result);
             if (!result.error && result.Ok) {
@@ -309,7 +365,7 @@ action='';
 
     ChangePasswordFinish(){
         this.startSpinner(false);
-        this.quiteEditMode(this.template.querySelector('c-rh_profile_reset_password'))
+        this.quiteEditMode(this.template.querySelector('c-rh_reset_password'))
     }
 
     ChangePasswordFinishOK(){

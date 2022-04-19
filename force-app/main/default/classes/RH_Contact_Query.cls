@@ -36,7 +36,10 @@ public  class RH_Contact_Query {
     }
 
     public  List<Contact> getAllContact(){
-        return [SELECT Id,Name FROM Contact  WHERE RH_Role__c=:RH_Constans.RH_Map_RoleName.get('CEO') or RH_Role__c=:RH_Constans.RH_Map_RoleName.get('Team Leader')];
+        List<string> TL_roles = new List<string>{
+            'Team Leader','CEO'
+        };
+        return [ SELECT Id, Name FROM Contact WHERE RH_Role__c IN :TL_roles AND recordTypeId=:RH_Constans.RH_CONTACT_RT];
     }
     public  List<Contact> getEligibleTeamLeaders(){
         List<string> TL_roles = new List<string>{
@@ -45,7 +48,7 @@ public  class RH_Contact_Query {
         return [ SELECT Id, Name FROM Contact WHERE RH_Role__c IN :TL_roles AND recordTypeId=:RH_Constans.RH_CONTACT_RT];
     }
     public  List<Contact> getAllContactInitial(){
-        return [SELECT Id,Name FROM Contact];
+        return [SELECT Id,Name FROM Contact WHERE recordTypeId=:RH_Constans.RH_CONTACT_RT];
     }
 
     public List<Account> getAccountId(){

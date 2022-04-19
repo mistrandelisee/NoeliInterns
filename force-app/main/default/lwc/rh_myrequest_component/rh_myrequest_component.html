@@ -57,12 +57,14 @@
                 <!-- <lightning-button label="New" slot="actions" onclick={handleChangeValue}></lightning-button> -->
 
                 <!-- <p class="slds-p-horizontal_small">Card Body (custom component)</p> -->
-                <c-rh_datatable_component columns={columnsVisited} items={tabReq} onrowselected={handlerselected}>
-                </c-rh_datatable_component>
+                <!-- <c-rh_datatable_component columns={columnsVisited} items={tabReq} onrowselected={handlerselected}>
+                </c-rh_datatable_component> -->
                 <!-- <p slot="footer">Card Footer</p> -->
 
-                <c-rh_cards_view page-size="20" items={tabReq} onrowselected={handleCardAction}></c-rh_cards_view>
+                
+                <!-- items={tabReq} -->
             </lightning-card>
+            <c-rh_cards_view page-size="5"  onrowselected={handleCardAction}></c-rh_cards_view>
         </template>  
         <template if:true={hasRecordId}> 
             <div class="slds-p-around_medium profile_user_info">

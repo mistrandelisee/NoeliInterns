@@ -3,27 +3,38 @@ public without sharing class RH_Users_controller {
     private static RH_Contact_Query contactQry = RH_Contact_Query.getInstance();
 
     @AuraEnabled 
-    public static List<ContactWrapper> getContact(){
+    public static Map<String,Object>  getContacts(){
+        Map<String, Object> mapReturn = new Map<String, Object>();
         List<ContactWrapper> listcon = new List<ContactWrapper>();
         List<String> listcontactId = new List<String>();
-        List<User> users=userQry.getUser();
-        if (users.size()>0){
-            for(User u : users ){
-                String conId;
-                conId = u.RH_ContactId__c;
-                listcontactId.add(conId);
-            }
-        }else{
-            throw new RH_ControllerException('004','No User for This Profile Founded');
-        }
-              
-        List<Contact> userContacts=contactQry.getContact(listcontactId);
-            if (userContacts.size()>0){
-                listcon = populateContact(userContacts);
+        mapReturn.put('error',false);
+        try {
+            List<User> users=userQry.getUser();
+            if (users.size()>0){
+                for(User u : users ){
+                    String conId;
+                    conId = u.RH_ContactId__c;
+                    listcontactId.add(conId);
+                }
             }else{
-                throw new RH_ControllerException('002','No RH Contact Founded');
-            }      
-            return listcon;
+                throw new RH_ControllerException('004','No User for This Profile Founded');
+            }
+                
+            List<Contact> userContacts=contactQry.getContact(listcontactId);
+                if (userContacts.size()>0){
+                    listcon = populateContact(userContacts);
+                }else{
+                    throw new RH_ControllerException('002','No RH Contact Founded');
+                } 
+            mapReturn.put('Employes',listcon); 
+            mapReturn.put('Ok',true); 
+        } catch(Exception e) {
+            System.debug(e.getMessage());
+            mapReturn.put('error',true);
+            mapReturn.put('msg',e.getMessage());
+            mapReturn.put('e',e);
+        }  
+        return mapReturn;
     }
 
     private static List<ContactWrapper> populateContact(List<Contact> conlist){
@@ -41,14 +52,56 @@ public without sharing class RH_Users_controller {
         }
         return listcon;
     }
+    @AuraEnabled
+    public static Map<String,Object> changeUserPassword(String changepasswordjson){
+        Map<String, Object> mapReturn = new Map<String, Object>();
+        mapReturn.put('error',false);
+        try {
+            mapReturn.put('input',changepasswordjson);
+            changepasswordwrapper pwdResetter = (changepasswordwrapper) JSON.deserialize(changepasswordjson, changepasswordwrapper.class);
+            //Uncomment Later
+            List<User> users=userQry.getUserByContactId(pwdResetter.recordId);
+            if (users.isEmpty()){
+                throw new RH_ControllerException('004','Invalid User');
+            }
+            pwdResetter.recordId=users[0].id;
+            pwdResetter.changePassword();
+                
+                // String newPassword='0037Q000007I2h0QACwqaa';
+                // String verifyNewPassword='0037Q000007I2h0QACwqaa';
+                // String oldpassword='0037Q000007I2h0QACwqa'; 
+                mapReturn.put('Ok',true);
+                //mapReturn.put('prUrl',pr.getUrl());
+                //coninsert conctactUser;
+        } catch(Exception e) {
+            System.debug(e.getMessage());
+            mapReturn.put('error',true);
+            mapReturn.put('msg',e.getMessage());
+            mapReturn.put('e',e);
+        }
+        return mapReturn;
+    }
 
     @AuraEnabled 
-    public static Contact displayContactInfo(String recordId){
-        List<Contact> conlist = contactQry.getContactById(recordId);
-        if(conlist.size()>0){
-            return conlist[0];
+    public static Map<String, Object> getEmployeeDetails(String recordId){
+        
+        Map<String, Object> mapReturn = new Map<String, Object>();
+        mapReturn.put('error',false);
+        try {
+            mapReturn.put('input',recordId);
+            List<Contact> conlist = contactQry.getContactById(recordId);
+            if (conlist.isEmpty()){
+                throw new RH_ControllerException('004','User Not Found');
+            }
+            mapReturn.put('Employe',conlist[0]); 
+            mapReturn.put('Ok',true); 
+        } catch(Exception e) {
+            System.debug(e.getMessage());
+            mapReturn.put('error',true);
+            mapReturn.put('msg',e.getMessage());
+            mapReturn.put('e',e);
         }
-        return null;
+        return mapReturn;
     }
 
     @AuraEnabled 
@@ -67,6 +120,13 @@ public without sharing class RH_Users_controller {
         @AuraEnabled public String RHUser{get;set;}
         @AuraEnabled public String accountName{get;set;}
         @AuraEnabled public String id {get;set;}
+    }
+    public class changepasswordwrapper  {
+        @AuraEnabled public String newPassword;
+        @AuraEnabled public String recordId;
+        public void changePassword() {
+           System.setPassword(recordId, newPassword);
+        }
     }
 
 }

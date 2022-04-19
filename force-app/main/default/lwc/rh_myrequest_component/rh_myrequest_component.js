@@ -31,6 +31,20 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
     @track addressedRecord =[];
     @track formPersonanalInputDetails = [];  
 
+    keysFields={AddressedTo:'ok'};//non used now
+    keysLabels={
+    CreatedDate:'Create date',
+    Statut:'Statut',
+
+    Request:'Request',
+
+    AddressedTo:'Addressed To'
+    };
+    fieldsToShow={
+        CreatedDate:'Create date',
+        Statut:'Statut',
+        AddressedTo:'Addressed To'
+    };
 
     get hasRecordId(){
         return this.recordId ? true : false;
@@ -40,6 +54,7 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
         getReq({data,errr}){
             console.log('@@@@@objectReturn');
             if(data){
+                const self=this;
                 data.forEach(elt => { 
                 let objetRep = {};
                 objetRep = {
@@ -47,15 +62,34 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
                     "Statut": elt?.Rh_Status__c,
                     "CreatedDate":  (new Date(elt.CreatedDate)).toLocaleString(),
                     "AddressedTo": elt.RH_Addressed_To__r?.Name,
-                    "ID" : elt.Id
+                    "ID" : elt.Id,
+                    icon:"standard:people",
+                    title: elt?.RH_Description__c,
+                    keysFields:self.keysFields,
+                    keysLabels:self.keysLabels,
+                    fieldsToShow:self.fieldsToShow,
                 }
              
                 console.log('@@@@@objectReturn' + objetRep);
                     this.tabReq.push(objetRep);
                 });
-                this.refreshTable(this.tabReq); 
+                // this.refreshTable(this.tabReq); 
+                this.setviewsList( this.tabReq)
+
             }
             if(errr) console.error(errr);
+    }
+    handleCardAction(event){
+        console.log('event parent ' +JSON.stringify(event.detail));
+        const info=event.detail;
+        if (info?.extra?.isTitle) {
+            // this.goToRequestDetail(this.recordId);
+            this.goToRequestDetail(info?.data?.id);
+        }
+    }
+    setviewsList(items){
+        let cardsView=this.template.querySelector('c-rh_cards_view');
+        cardsView?.setDatas(items);
     }
 
     

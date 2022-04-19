@@ -5,6 +5,7 @@ public  class RH_Profile_controller {
     // System.debug(RH_Contact_Query.getInstance().getContactById('0037Q000007I2h0QAC'));
     private static RH_User_Query userQry = RH_User_Query.getInstance();
     private static RH_Contact_Query contactQry = RH_Contact_Query.getInstance();
+
     @AuraEnabled
     public static Map<string,object> getMyProfile() {
         Map<string,object> mapReturn = new Map<String, Object>();
@@ -190,6 +191,46 @@ public  class RH_Profile_controller {
         }
     }
 
+    @AuraEnabled 
+    public static List<ContactWrapper> getContact(){
+        List<ContactWrapper> listcon = new List<ContactWrapper>();
+        List<String> listcontactId = new List<String>();
+        List<User> users=userQry.getUser();
+        if (users.size()>0){
+            for(User u : users ){
+                String conId;
+                conId = u.RH_ContactId__c;
+                listcontactId.add(conId);
+            }
+        }else{
+            throw new RH_ControllerException('004','No User for This Profile Founded');
+        }
+              
+        List<Contact> userContacts=contactQry.getContact(listcontactId);
+            if (userContacts.size()>0){
+                listcon = populateContact(userContacts);
+            }else{
+                throw new RH_ControllerException('002','No RH Contact Founded');
+            }      
+            return listcon;
+    }
+
+    private static List<ContactWrapper> populateContact(List<Contact> conlist){
+        List<ContactWrapper> listcon = new List<ContactWrapper>();
+        
+        for(Contact con : conlist){
+            ContactWrapper c = new ContactWrapper();
+            c.LastName = con.LastName;
+            c.FirstName = con.FirstName;
+            c.accountName = con.Account.Name;
+            c.RHRolec = con.RH_Role__c;
+            c.RHUser = con.RH_User__c;
+            c.id = con.Id;
+            listcon.add(c);
+        }
+        return listcon;
+    }
+
     /*public class contactdetailswrapper  {
         @AuraEnabled public String LastName;
         @AuraEnabled public String FirstName;
@@ -205,6 +246,15 @@ public  class RH_Profile_controller {
                 AccountId=this.AccountId);
         }
     }*/
+    public class ContactWrapper {
+        @AuraEnabled public String LastName{get;set;}
+        @AuraEnabled public String RHRolec{get;set;}
+        @AuraEnabled public String FirstName{get;set;}
+        @AuraEnabled public String RHUser{get;set;}
+        @AuraEnabled public String accountName{get;set;}
+        @AuraEnabled public String id {get;set;}
+    }
+
     public class changepasswordwrapper  {
         @AuraEnabled public String newPassword;
         @AuraEnabled public String verifyNewPassword;

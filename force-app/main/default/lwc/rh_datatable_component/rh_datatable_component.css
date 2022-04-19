@@ -1,0 +1,55 @@
+.average-number{
+    --lwc-fontSize9: 7rem;
+}
+
+.custom-box.average-number {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+.capoarea__number-container,
+.informatori__number-container {
+    border: solid 3px black;
+    border-radius: 50%;
+    margin: 10px 0;
+}
+
+.capoarea__number-container {
+    padding: 30px;
+    background: #007397;
+    color: #fff;
+}
+.informatori__number-container {
+    padding: 10px;
+    background: #4d9bb3;
+    color: #fff;
+}
+
+.capoarea-items {
+    display: flex;
+    align-items: stretch;
+    justify-content: flex-start;
+    margin: 20px 0;
+}
+
+.capoarea-item {
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    flex-direction: column;
+}
+.informatori-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    margin: 0 20px;
+}
+
+.informatori-items {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}

@@ -1,142 +1,67 @@
-import { LightningElement } from 'lwc';
-import updatePassword from '@salesforce/apex/CusLightningSelfRegisterController.updatePassword';
-export default class Rh_reset_password extends LightningElement {
-    newEmployeesForm=[
-        {
-            label:'Username',
-            placeholder:'this.label.selectOption',
-            name:'Username',
-            value: '',
-            type:'email',
-            required:true,
-        },
-        {
-            label:'New Password',
-            placeholder:'New Password',
-            name:'NewPassword',
-            value: '',
-            type:'password',
-            required:false,
-        },
-        {
-            label:'Confirm Password',
-            name:'ConfirmPassword',
-            required:true,
-            value: '',
-            placeholder:'Confirm Password',
-            type:'password',
-            maxlength:100,
-            ly_md:'6', 
-            ly_lg:'6'
-        },
-        /*
-        {
-            label:this.label.sottotitoloempta,
-            name:SOTTOTITOLO_FIELD_NAME,
-            required:true,
-            value: '',
-            placeholder:this.label.sottotitoloPlaceholder,
-            maxlength:40,
-            type:'text',
-        },
-        {
-            label:this.label.prezzo,
-            name:PREZZO_FIELD_NAME,
-            required:true,
-            value: '',
-            placeholder:this.label.prezzoPlaceholder,
-            type:'text',
-            maxlength:70,
-            pattern:'[0-9]+([\.,][0-9]+)?'
-        },
-        {
-            label:this.label.linkempta,
-            name:LINK_FIELD_NAME,
-            required:true,
-            value: '',
-            // maxlength:255,
-            placeholder:this.label.linkPlaceholder,
-            maxlength:130000,
-            type:'url',
-            ly_md:'9', 
-            ly_lg:'9'
-        },
-        {
-            label:this.label.noteempta,
-            name:NOTE_FIELD_NAME,
-            value: '',
-            required: true,
-            // className:'textarea',
-            placeholder:this.label.notePlaceholder,
-            maxlength:40,
-            // type:'textarea',
-            ly_md:'9', 
-            ly_lg:'9'
-        },
-        {
-            label:this.label.DataInizioValidita,
-            name:DATAINIZIO_FIELD_NAME,
-            value: '',
-            required: true,
-            min: new Date().toISOString().split('T')[0],//from check validation
-            type:'date',
-            placeholder:this.label.datePlaceholder
-        },
-        {
-            label:this.label.desciptionempta,
-            name:DESCRIPTION_FIELD_NAME,
-            value:'',
-            placeholder:this.label.descriptionPlaceholder,
-            required: true,
-            className:'textarea',
-            maxlength:40,
-            type:'textarea',
-            ly_md:'12', 
-            ly_lg:'12'
-        }*/
+import { api, LightningElement } from 'lwc';
+import { labels } from 'c/rh_label';
+const RESET_ACTION='Reset';
+const FROMRESETPWD='ResetPWD';
 
-    ]
-    emp;
-    createUser(){
-        console.log('this.emp ///> ', this.emp);
-        //this.isLoading(true);
-        updatePassword({ 
-            username: this.emp.Username,
-            password: this.emp.NewPassword,
-            confirm: this.emp.ConfirmPassword })//{ con: this.emp }
-          .then(result => {
-            console.log('Result addEmployee', result);
-            if (result.error) {
-                // alert(result.message);
-                this.showToast('error', 'Error', result.message);
-            }else{
-                //this.closeModal();
-                this.showToast('success', 'success', 'this.label.offertaSend');
-                // this.sendRefresh();
-            }
-                
-            
-          })
-          .catch(error => {
-            console.error('Error:', error);
-        }).finally(()=>{
-           // this.isLoading(false);
-            });
+export default class Rh_reset_password extends LightningElement {
+    l={...labels}
+    @api
+    title;
+    @api
+    iconsrc;
+    
+    record;
+    @api
+    fieldInputs;
+    @api
+    action;
+    actionAvailable=[];
+
+    handleAction(event){
+        this.action=event.detail.action;
     }
-    showToast(variant, title, message){
-        //this.template.querySelector('c-aro_toast').showToast(variant, title, message);
-        console.log('variant  ', variant,' title ', title,' message ', message);
+    get editMode(){
+        return this.action==RESET_ACTION;
+    }
+    initDefault(){
+        this.fieldInputs= [
+            {
+                label:this.l.NewPassword,
+                placeholder:this.l.NewPasswordPlc,
+                name:'newPassword',
+                value: '',
+                required:true,
+                ly_md:'6', 
+                ly_lg:'6'
+            }
+        ];
+    }
+    connectedCallback(){
+        this.initDefault();
+     }
+     @api
+     cancel(){
+        this.action='';
+     }
+     handleClick(){
+        this.action=RESET_ACTION;
+    }
+
+    handleCancel(){
+        this.action='';
     }
     handleSave(evt){
+        let record={};
         let result= this.save();
         if (result.isvalid) {
-            this.emp={...this.emp,...result.obj};
+            record={...record,...result.obj};
             // this.emp[TYPE_FIELD_NAME]=this.empType;
-            this.createUser();
+
+            this.callParent(RESET_ACTION,record)
         }else{
             console.log(`Is not valid `);
         }
-        console.log(`emp`, this.emp);
+        console.log(`record `, record);
     }
     save(){
         let form=this.template.querySelector('c-rh_dynamic_form');
@@ -152,5 +77,14 @@ export default class Rh_reset_password extends LightningElement {
         obj=saveResult.obj;
         console.log(`>>>>>>>>>>>>obj `, obj );
         return  {isvalid,obj};
+    }
+
+    callParent(actionName,data){
+        var actionEvt =new CustomEvent('action',
+         {detail: { action : actionName,from:FROMRESETPWD, data }}
+      );
+      console.log("Watch: actionName ->"+actionName); /*eslint-disable-line*/
+      
+      this.dispatchEvent(actionEvt);
     }
 }
