@@ -1,0 +1,78 @@
+<template>
+    <template if:true={isNew}>
+        <template if:false={isAllFields}>
+            <c-rh_dynamic_form inputs-items={firstFieldInputs} oninputchanged={handlechge}></c-rh_dynamic_form>
+            <!-- <div class="card-footer" slot="footer">
+                <div class="slds-clearfix">
+                    <div class="slds-float_right">
+                        <lightning-button variant="base" label="Cancel" data-action-name="Cancel" title="Cancel" icon-name="utility:close" onclick={handleCancel} class="slds-m-left_x-small"></lightning-button>
+                        <lightning-button variant="base" label="Next"   onclick={handleNext} class="slds-m-left_medium"></lightning-button>
+
+                    </div>
+                </div>
+                
+            </div> -->
+        </template>
+        <template if:true={isAllFields}>
+            <c-rh_toast auto-close-time="6000"></c-rh_toast>
+            <lightning-card>
+                <h3 slot="title">
+                    <lightning-icon icon-name="action:new_note" alternative-text="New note" title="New note" size="small"></lightning-icon>
+                    Request Detail
+                </h3>
+                    <template if:true={isComplain}>
+                        <c-rh_dynamic_form inputs-items={lastFieldInputsComplain}></c-rh_dynamic_form>
+                    </template>
+                    <template if:true={isPermHoli}>
+                        <c-rh_dynamic_form inputs-items={lastFieldInputsPermHoli}></c-rh_dynamic_form>
+                    </template>
+                    <template if:true={isExplanation}>
+                        <c-rh_dynamic_form inputs-items={lastFieldInputsExplanation}></c-rh_dynamic_form>
+                    </template>
+                <div slot="footer">
+                    <div class="card-footer" slot="footer">
+                        <div class="slds-clearfix">
+                            <div class="slds-float_right">
+                                <lightning-button variant="base" label="Cancel" data-action-name="Cancel" title="Cancel" icon-name="utility:close" onclick={handleCancelLast} class="slds-m-left_x-small"></lightning-button>
+                                <lightning-button variant="base" label="Save" data-action-name="Edit" title="Save" icon-name="utility:save" onclick={handleSave} class="slds-m-left_medium"></lightning-button>
+        
+                            </div>
+                        </div>
+                        
+                    </div>
+                </div>
+                <!-- <p class="slds-p-horizontal_small">Card Body (custom component)</p> -->
+            </lightning-card>
+        </template>
+            
+    </template> 
+    <template if:false={isNew}> 
+        <template if:false={hasRecordId}>
+            <div class="slds-clearfix">
+                <div class="slds-float_right">
+                    <lightning-button variant="brand-outline" label="Create request" icon-name="utility:add" title="Primary action with lighter look" onclick={handleChangeValue} class="slds-m-left_x-small"></lightning-button>
+                </div>
+            </div>
+            <lightning-card  class="custom-card">
+                <!-- <lightning-button label="New" slot="actions" onclick={handleChangeValue}></lightning-button> -->
+
+                <!-- <p class="slds-p-horizontal_small">Card Body (custom component)</p> -->
+                <c-rh_datatable_component columns={columnsVisited} items={tabReq} onrowselected={handlerselected}>
+                </c-rh_datatable_component>
+                <!-- <p slot="footer">Card Footer</p> -->
+
+                <c-rh_cards_view page-size="20" items={tabReq} onrowselected={handleCardAction}></c-rh_cards_view>
+            </lightning-card>
+        </template>  
+        <template if:true={hasRecordId}> 
+            <div class="slds-p-around_medium profile_user_info">
+                <c-rh_display_fields 
+                title="Request Informations"
+                iconsrc="utility:people"
+                column="2"
+                output-fields={formPersonanalInputDetails}
+                ></c-rh_display_fields>
+            </div>
+        </template>    
+    </template>
+</template>
