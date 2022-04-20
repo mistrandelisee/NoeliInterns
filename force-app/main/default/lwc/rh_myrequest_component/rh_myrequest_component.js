@@ -64,6 +64,7 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
                     "AddressedTo": elt.RH_Addressed_To__r?.Name,
                     "ID" : elt.Id,
                     icon:"standard:people",
+                    
                     title: elt?.RH_Description__c,
                     keysFields:self.keysFields,
                     keysLabels:self.keysLabels,

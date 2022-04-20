@@ -89,6 +89,7 @@ action='';
                     let item={...e};
                     item.title=e.LastName;
                     item.icon="standard:people";
+                    
                     item.keysFields=self.keysFields;
                     item.keysLabels=self.keysLabels;
                     item.fieldsToShow=self.fieldsToShow;
