@@ -8,7 +8,7 @@ import getEmployeeDetails from '@salesforce/apex/RH_Users_controller.getEmployee
 import getExtraFields from '@salesforce/apex/RH_Users_controller.getExtraFields'
 import changeMyPassword from '@salesforce/apex/RH_Profile_controller.changeMyPassword';
 import changeUserPassword from '@salesforce/apex/RH_Users_controller.changeUserPassword';
-import getActiveWorkgroups from '@salesforce/apex/RH_WorkGroup_Query.getActiveWorkgroups';
+// import getActiveWorkgroups from '@salesforce/apex/RH_WorkGroup_Query.getActiveWorkgroups';
 
 const NEW_ACTION='New';
 const SUCCESS_VARIANT='success';
@@ -18,7 +18,7 @@ const WARNING_VARIANT='warning';
 const ERROR_VARIANT='error';
 const FROMRESETPWD='ResetPWD';
 const RESET_ACTION='Reset';
-
+const SAVE_ACTION='Save';
 export default class Rh_users extends NavigationMixin(LightningElement) {
 
 l={...labels}
@@ -47,7 +47,7 @@ fieldsToShow={
 
 action='';
     get showNew(){
-        return this.action=='' || this.action==NEW_ACTION;
+        return this.action=='' || this.action==NEW_ACTION || this.action==SAVE_ACTION;
     }
     get hideView(){
         return this.action=='' || this.action!=NEW_ACTION;
@@ -64,22 +64,23 @@ action='';
             this.getContactList();
         }
         //this.displayContactInfo();
-        this.getActiveWorkgroupse();
+        // this.getActiveWorkgroupse();
     }
 
-    getActiveWorkgroupse(){
-        getActiveWorkgroups({}).then(result =>{
-            console.log('result group ' +JSON.stringify(result));
-            result.forEach(elt => {
-                this.groups.push(elt.Name);
-            });
-            console.log('groupes ' +this.groups);
-        }).catch(e =>{
-            console.error(e);
-        });
-    }
+    // getActiveWorkgroupse(){
+    //     getActiveWorkgroups({}).then(result =>{
+    //         console.log('result group ' +JSON.stringify(result));
+    //         result.forEach(elt => {
+    //             this.groups.push(elt.Name);
+    //         });
+    //         console.log('groupes ' +this.groups);
+    //     }).catch(e =>{
+    //         console.error(e);
+    //     });
+    // }
 
     getContactList(){
+        this.listcontact=[];
         this.startSpinner(true);
         getContacts({}).then(result =>{
             console.log('result @@@ + ' +(result));
@@ -88,6 +89,7 @@ action='';
                 this.listcontact = result.Employes.map(function (e ){
                     let item={...e};
                     item.title=e.LastName;
+                    item.icon="standard:people";
                     item.icon="standard:people";
                     
                     item.keysFields=self.keysFields;
@@ -115,16 +117,17 @@ action='';
         const data=event.detail;
         console.log('data >>',data,' \n action ',data?.action);
         this.action=data?.action;
-        /*switch (data?.action) {
-            case NEW_ACTION:
-                
+        switch (data?.action) {
+            case SAVE_ACTION:
+                //refresh List
+                this.getContactList();
                 break;
             case FROMRESETPWD:
                 
                 break;
             default:
                 break;
-        }*/
+        }
             
         
     }

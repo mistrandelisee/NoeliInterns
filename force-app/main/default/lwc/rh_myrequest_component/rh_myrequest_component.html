@@ -64,7 +64,7 @@
                 
                 <!-- items={tabReq} -->
             </lightning-card>
-            <c-rh_cards_view page-size="5"  onrowselected={handleCardAction}></c-rh_cards_view>
+            <c-rh_cards_view page-size="5"  items={tabReq} onrowselected={handleCardAction}></c-rh_cards_view>
         </template>  
         <template if:true={hasRecordId}> 
             <div class="slds-p-around_medium profile_user_info">

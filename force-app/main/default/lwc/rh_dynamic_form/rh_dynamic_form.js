@@ -17,7 +17,7 @@ export default class Rh_dynamic_form extends LightningElement {
             elt.ly_lg=  elt.ly_lg ?  elt.ly_lg: '3';
            // elt.variant=  elt.variant ?  elt.variant: 'label-stacked';
             elt.isTextarea=  elt.type=='textarea' ? true: false;
-            elt.isText=  elt.type=='text' ? true: ! (elt.isTextarea || elt.picklist);//is text or not textarea or picklist
+            elt.isText=  elt.type=='text' ? true: ! (elt.isTextarea || elt.picklist || elt.datalist);//is text or not textarea or picklist
             console.log(`elt`, elt);
             return elt;
         });
@@ -34,9 +34,7 @@ export default class Rh_dynamic_form extends LightningElement {
            return addbackgroung.classList.add('backgroundcolor');
         } 
     }
-    /*renderedCallback(){
-        this.backgroundcolor();
-    }*/
+    
     connectedCallback(){
         console.log('ddd');
         // let addbackgroung = this.template.querySelector('[class="form-section"]');
@@ -49,15 +47,11 @@ export default class Rh_dynamic_form extends LightningElement {
         this.preCompileDefaultValues();
         
     }
-    /*renderedCallback(){
-        if (!this.rendered) {
-            this.inputsItems=(this.inputsItems?.length>0)?this.inputsItems:[]
-            this.preCompileDefaultValues();
-            this.rendered=true;
-        }
-        
-    }*/
-
+    renderedCallback(){
+        console.log('renderedCallback >>>> Rh_dynamic_form');
+        this.attachDataListsToTextBox();
+    }
+    
     @api save(){
         const isvalid =this.validateFields(); 
          let output={};
@@ -70,24 +64,31 @@ export default class Rh_dynamic_form extends LightningElement {
                 const cmp=self.template.querySelector(`[data-id="${key}"]`);
                 if (cmp) {
                      output[key]=cmp.value;
-                    if (item.type=='datetime') {
-                        try {
-                            let dateTimevalue=cmp.value;
-                            let datevalue=dateTimevalue? new Date(dateTimevalue).toLocaleDateString() :'';
-                            let datelabel=item.label?  item.label.replace('/','').replace('ora','').replace('hour','') :' Date';
-                            let timevalue=dateTimevalue? new Date(dateTimevalue).toLocaleTimeString() :'';
-                            let timelabel=item.label?  item.label.replace('/','').replace('Data','').replace('Date','') :' Time';
-
-                            outputs.push({label:datelabel,name:key+'d',value:datevalue});
-                            outputs.push({label:timelabel,name:key+'t',value:timevalue});
-                        } catch (error) {
-                            console.log('OUTPUT  : Error while spliting date time output ',error);
+                    switch (item.type) {
+                        case 'datetime':
+                            try {
+                                let dateTimevalue=cmp.value;
+                                let datevalue=dateTimevalue? new Date(dateTimevalue).toLocaleDateString() :'';
+                                let datelabel=item.label?  item.label.replace('/','').replace('ora','').replace('hour','') :' Date';
+                                let timevalue=dateTimevalue? new Date(dateTimevalue).toLocaleTimeString() :'';
+                                let timelabel=item.label?  item.label.replace('/','').replace('Data','').replace('Date','') :' Time';
+    
+                                outputs.push({label:datelabel,name:key+'d',value:datevalue});
+                                outputs.push({label:timelabel,name:key+'t',value:timevalue});
+                            } catch (error) {
+                                console.log('OUTPUT  : Error while spliting date time output ',error);
+                                outputs.push({label:item.label,name:key,value:cmp.value});
+                            }
+                            break;
+                        case 'toggle':
+                            output[key]=cmp.checked;
+                            outputs.push({label:item.label,name:key,value:cmp.checked});
+                            break;
+                        default:
                             outputs.push({label:item.label,name:key,value:cmp.value});
-                        }
-                        
-                    }else{
-                        outputs.push({label:item.label,name:key,value:cmp.value});
+                            break;
                     }
+                    
                     
                     outputsItems.push({...item,value:cmp.value});
                 }
@@ -136,6 +137,30 @@ export default class Rh_dynamic_form extends LightningElement {
        console.log('@@@@@@@@@@ isvalid '+isvalid);
        return isvalid;
    }
+   attachDataListsToTextBox(){
+    const dataLists=this.template.querySelectorAll('[data-type="dataList"]');
+    dataLists.forEach(dataList => {
+        console.log(`dataList>>> element`);
+        console.log(dataList);
+        const dataListId = dataList.id;
+        const key = dataList.dataset.listid;
+        console.log(`dataList>>> key `,key);
+        const input = this.template.querySelector('[data-id="' + key + '"]')
+        if (input) {
+            input.setAttribute("list", dataListId);
+        }
+    });
+   }
+   attachDataListToTextBox(inputName, dataListName) {
+        const dataList = this.template.querySelector('[data-id="' + dataListName + '"]');
+        if (dataList) {
+            const dataListId = dataList.id;
+            const input = this.template.querySelector('[data-id="' + inputName + '"]')
+            if (input) {
+                input.setAttribute("list", dataListId);
+            }
+        }
+    }
 
 
 

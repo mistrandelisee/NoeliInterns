@@ -35,7 +35,7 @@ public  class RH_Contact_Query {
         return [SELECT Id,RH_Extra_Infos__c FROM Contact WHERE id=:recordId];
     }
 
-    public  List<Contact> getAllContact(){
+    public  List<Contact> getEligibleTeamMembers(){
         List<string> TL_roles = new List<string>{
             'Team Leader','CEO'
         };

@@ -62,7 +62,7 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
                     "Statut": elt?.Rh_Status__c,
                     "CreatedDate":  (new Date(elt.CreatedDate)).toLocaleString(),
                     "AddressedTo": elt.RH_Addressed_To__r?.Name,
-                    "ID" : elt.Id,
+                    "id" : elt.Id,
                     icon:"standard:people",
                     
                     title: elt?.RH_Description__c,
@@ -111,7 +111,7 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
                 label:this.l.AddressedTo,
                 placeholder:this.l.AddressedTo,
                 name:'AddressedTo',
-                value:profileinformation?.RH_Addressed_To__c,
+                value:profileinformation?.RH_Addressed_To__r?.Name,
                 required:false,
                 ly_md:'6', 
                 ly_lg:'6'

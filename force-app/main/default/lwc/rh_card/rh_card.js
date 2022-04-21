@@ -4,6 +4,8 @@ export default class Rh_card extends LightningElement {
     @api
     iconeName ;
     @api
+    className ;
+    @api
     availableActions
     @api
     record

@@ -15,6 +15,27 @@ public class RH_ContactTriggerHandler {
         }
         setDefaultPassWord(RHUsers);
     }
+    public static void BeforeUpdateContacts(List<Contact> RHContacts) {
+        for (Contact con : RHContacts){
+            Contact oldCon=(Contact) Trigger.oldMap.get(con.Id);
+            if ( oldCon?.RH_Create_User__c && !con.RH_Create_User__c) {//Trying disable this field
+                con.addError('You can disable this field...Contact your Administrator');
+            }
+        }
+    }
+    public static void AfterUpdateContacts(List<Contact> RHContacts) {
+        List<Contact> RHContactsValid = new List<Contact>();
+        for (Contact con : RHContacts){
+            Contact oldCon=(Contact) Trigger.oldMap.get(con.Id);
+            if ( ! oldCon?.RH_Create_User__c && con.RH_Create_User__c) {//switch create user
+                RHContactsValid.add(con);
+            }
+        }
+        if (!RHContactsValid.isEmpty()) {
+            Id ProfileId = [SELECT ID FROM Profile WHERE Name =:RH_Constans.RH_PROFILE_NAME].Id;
+            ID manageJobID = System.enqueueJob(new UserManager(RHContactsValid,ProfileId));
+        }
+    }
     public static void createIdentyUser(List<Contact> RHContacts) {
         // List<User> RHUsers = new List<User>();
         // for (Contact con : RHContacts){
@@ -27,22 +48,106 @@ public class RH_ContactTriggerHandler {
         //     throw e;
         // }
         Id ProfileId = [SELECT ID FROM Profile WHERE Name =:RH_Constans.RH_PROFILE_NAME].Id;
-        ExecuteLogic(RHContacts,ProfileId);
-        //ID manageJobID = System.enqueueJob(new UserManager(RHContacts,ProfileId));
+       // ExecuteLogic(RHContacts,ProfileId);
+        ID manageJobID = System.enqueueJob(new UserManager(RHContacts,ProfileId));
     }
     public static void ExecuteLogic(List<Contact> RHContacts,Id ProfileId) {
         List<User> RHUsers = new List<User>();
+        List<List<Database.Error>> listError = new List<List<Database.Error>>();
+        List<User> listSucces = new List<User>();
+        List<String> listeError = new List<String>();
+        //Map<String ,String> MapError = new Map<String, String>();
+        Map<String ,List<String>> MapError = new Map<String, List<String>>();
+        List<String> listIdErrorRecord = new List<String>();
+        Map<String, UserRole> RH_Map_Role= new Map<String, UserRole>(); 
+        List<UserRole> ListRole = [select Id, Name from UserRole];
+        String stringMap;
+        for(UserRole role : ListRole){
+             RH_Map_Role.put(role.Name, role);
+        }
         if (!RHContacts.isEmpty()) {
-            for (Contact con : RHContacts){
+            for (Contact con : RHContacts){ 
                 if (con.RH_Create_User__c) {
-                    RHUsers.add(addEmployee(con,ProfileId));
+                //    RHUsers.add(addEmployee(con,ProfileId));
+                    User u = addEmployee(con,ProfileId);
+                    u.UserRoleId = (RH_Map_Role.get(RH_Constans.RH_Map_RoleName.get(con.RH_Role__c))).Id;
+                    RHUsers.add(u);
                 }
                 
             }
-            insert RHUsers;
+           // insert RHUsers;
+
+            Database.SaveResult[] srList = Database.insert(RHUsers, false);
+            system.debug('dans le ExecuteLogic apres insertion du User');
+            integer i = 0;
+            for(Database.SaveResult sr : srList){
+                String chaineError ='';
+                if(!sr.isSuccess()){
+  //                  listError.add(sr.getErrors());
+                    
+                    listIdErrorRecord.add(RHUsers[i].RH_ContactId__c);
+                    for(Database.Error err : sr.getErrors()){
+                        chaineError = chaineError + err.getStatusCode() + ': ' + err.getMessage();
+                        listeError.add(err.getStatusCode() + ',' +err.getMessage());
+                    }
+  //                  MapError.put(RHUsers[i].RH_ContactId__c, chaineError);
+                      MapError.put(RHUsers[i].RH_ContactId__c, listeError);
+                }else{
+                    listSucces.add(RHUsers[i]);
+                }
+                i++;
+            }
+            stringMap = JSON.serialize(MapError);
         }
-        setDefaultPassWord(RHUsers);
+        setDefaultPassWord(listSucces);
+        handleError(listIdErrorRecord, stringMap);
     }
+    
+    @future
+    public static void handleError(List<String> ContactId, String stringMap){
+        Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage(); 
+        String[] toAddresses = new String[] {'landryfotsing94@gmail.com'};
+        String chaine ='';
+        String chaineError ='';
+  
+        String csvFile;
+        String columnHeader = 'Contact Name, Email, Statut Error, Message Error \n';
+        List<String> stringListe = new List<string>();
+
+        List<RH_Config__mdt> mcs = RH_Config__mdt.getAll().values();
+        for(RH_Config__mdt val_mcs : mcs){
+            if(val_mcs.Logic_To_Implement__c == 'Logique 1'){
+                toAddresses.add(val_mcs.Mail_Adresse__c);
+            }
+        }
+
+        Map<String , Object> MapError = (Map<String , Object>)JSON.deserializeUntyped(stringMap);
+
+        Contact[] contact_to_delete = [SELECT Id, Name, Email, RH_Role__c FROM Contact WHERE Id IN :ContactId];
+        for(Contact con : contact_to_delete){
+            stringListe.add(con.Name + ',' + con.Email+ ',' +string.valueOf(MapError.get(con.Id)));
+        /*  chaine = chaine + 'Contact Name: '+con.Name+ ' Email: '+con.Email+' And with Id:'+con.Id+'\n with these error '+
+            string.valueOf(MapError.get(con.Id))+'\n'; */
+        }
+
+        csvFile = columnHeader + String.join(stringListe, '\n');
+        Messaging.EmailFileAttachment attach = new Messaging.EmailFileAttachment();
+        attach.setContentType('text/csv');
+        attach.setFileName('error report');
+        attach.setInline(true);
+        attach.Body = Blob.valueOf(csvFile);
+
+        mail.setToAddresses(toAddresses);
+        mail.setPlainTextBody('Failed to insert user for these contact : ' + chaine +' The associate error are link.');
+        mail.setHtmlBody('find here the releated csv file ');
+        if(attach != NULL){
+              mail.setFileAttachments(new Messaging.EmailFileAttachment[] {attach});
+            }
+        Messaging.sendEmail(new Messaging.SingleEmailMessage[] {mail}); 
+
+        delete contact_to_delete;
+    }
+
     public  class UserManager implements Queueable {
         public List<Contact> contactList;
         public List<Contact> AllcontactList;
@@ -52,7 +157,7 @@ public class RH_ContactTriggerHandler {
         public UserManager(List<Contact> contacts,Id ProfId){
             AllcontactList=contacts;
             ProfileId =ProfId;
-        }
+        } 
         public void execute(QueueableContext context) { 
             System.debug('### UserManager  =>execute  AllcontactList size  : '+AllcontactList.size());
             System.Savepoint savepoint =null;

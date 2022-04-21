@@ -57,3 +57,6 @@
     --slds-c-icon-color-background: var(--secondaryColor);
     --sds-c-icon-color-background: var(--secondaryColor);
 }
+.active{
+    --lwc-cardColorBorder: var(--secondaryColor);
+}

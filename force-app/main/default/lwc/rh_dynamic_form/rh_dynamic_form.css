@@ -18,6 +18,10 @@ lightning-input, lightning-combobox,lightning-textarea{
     font-weight: 700;
     --lwc-formLabelFontSize:0.8rem;
     --lwc-colorTextLabel:#272b2f;
+
+
+    /* oogle */
+    --lwc-brandAccessible: var(--secondaryColor);
 }
 .slds-input{
     font-style: italic;

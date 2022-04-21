@@ -22,6 +22,7 @@
                         max-length={item.maxlength}
                         pattern={item.pattern}
                         read-only={item.readOnly}
+                        checked={item.checked}
                         onchange={handleChanged} 
                        
                         ></lightning-input>
@@ -57,6 +58,34 @@
                                 required={item.required}
                                 
                         ></lightning-combobox>
+                    <!-- message-when-value-missing={item.valueMissing}  -->
+                    </template>
+                    <template if:true={item.datalist}>
+                        
+                        
+                        {item.label} 
+                        <input 
+                        
+                        placeholder={item.placeholder}
+                        data-id={item.name}   
+                        type="text"
+                        required={item.required} 
+                        class="name datalist" 
+                        value={item.value}
+                        max={item.max}
+                        min={item.min}
+                        pattern={item.pattern}
+                        checked={item.checked}
+                        onchange={handleChanged} 
+                       
+                        />
+                        <template if:true={item.options}>
+                            <datalist id={item.name} data-listid={item.name} data-type="dataList">
+                                <template for:each={item.options} for:item="item">
+                                    <option key={item.value} value={item.value}>{item.label}</option>
+                                </template>
+                            </datalist>
+                        </template> 
                     <!-- message-when-value-missing={item.valueMissing}  -->
                     </template>
                 </lightning-layout-item>

@@ -1,6 +1,9 @@
 public without sharing class RH_Users_controller {
     private static RH_User_Query userQry = RH_User_Query.getInstance();
     private static RH_Contact_Query contactQry = RH_Contact_Query.getInstance();
+    private static RH_WorkGroup_Query workGroupQry = RH_WorkGroup_Query.getInstance();
+    
+
 
     @AuraEnabled 
     public static Map<String,Object>  getContacts(){
@@ -36,7 +39,78 @@ public without sharing class RH_Users_controller {
         }  
         return mapReturn;
     }
+    @AuraEnabled 
+    public static Map<String,Object>  InitUserCreation(){
+        Map<String, Object> mapReturn = new Map<String, Object>();
+        List<ContactWrapper> listcon = new List<ContactWrapper>();
+        List<String> listcontactId = new List<String>();
+        mapReturn.put('error',false);
+        try {
+            List<RH_WorkGroup__c> grps=workGroupQry.getActiveWorkgroups();
+            mapReturn.put('Groups',grps); 
+            mapReturn.put('Picklists',RH_Utility.getPickListOptions(new List<String> {'RH_Role__c'},'Contact')); 
 
+            mapReturn.put('Ok',true); 
+        } catch(Exception e) {
+            System.debug(e.getMessage());
+            mapReturn.put('error',true);
+            mapReturn.put('msg',e.getMessage());
+            mapReturn.put('e',e);
+        }  
+        return mapReturn;
+    }
+    @AuraEnabled 
+    public static Map<String,Object>  userCreation(String contactJson){
+        Map<String, Object> mapReturn = new Map<String, Object>();
+        Map<String, Object> mapInputs = new Map<String, Object>();
+        List<ContactWrapper> listcon = new List<ContactWrapper>();
+        List<String> listcontactId = new List<String>();
+        mapReturn.put('error',false);
+        try {
+            mapInputs = (Map<String, Object>) JSON.deserializeUntyped(contactJson);
+
+
+            Contact conctactUser=new Contact();
+            conctactUser.LastName= String.valueOf(mapInputs.get('LastName'));
+            conctactUser.FirstName= String.valueOf(mapInputs.get('FirstName'));
+            conctactUser.Email= String.valueOf(mapInputs.get('Email'));
+            conctactUser.RH_Role__c= String.valueOf(mapInputs.get('Role'));
+            String grp=String.valueOf(mapInputs.get('Group'));
+            if (String.isNotBlank(grp)) {
+                conctactUser.RH_WorkGroup__c=  grp;
+            }
+            if((Boolean)mapInputs.get('Activated')){
+                conctactUser.RH_Create_User__c=true;
+                conctactUser.RH_Status__c=RH_Constans.ACTIVATED_CONTACT_STATUS;
+            }
+            List<User> users=userQry.getUserById(Userinfo.getUserId());
+            if (!users.isEmpty()) {
+                List<Contact> userContacts=contactQry.getContactById(users[0].RH_ContactId__c);
+                if (!userContacts.isEmpty()) {
+                    conctactUser.AccountId=userContacts[0].AccountId;
+                }else{
+                    mapReturn.put('ERRORcontact', 'Missing Contact');
+                }
+            }else{
+                mapReturn.put('ERRORuser', 'Missing User');
+            }
+           
+            conctactUser.recordTypeId=RH_Constans.RH_CONTACT_RT;
+
+            
+            //conctactUser.Account= String.valueOf(mapInputs.get('Account'));
+            mapReturn.put('Input',contactJson); 
+            mapReturn.put('conctactUser',conctactUser); 
+
+            mapReturn.put('Ok',true); 
+        } catch(Exception e) {
+            System.debug(e.getMessage());
+            mapReturn.put('error',true);
+            mapReturn.put('msg',e.getMessage());
+            mapReturn.put('e',e);
+        }  
+        return mapReturn;
+    }
     private static List<ContactWrapper> populateContact(List<Contact> conlist){
         List<ContactWrapper> listcon = new List<ContactWrapper>();
         

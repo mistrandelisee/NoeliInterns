@@ -1,4 +1,4 @@
-public with sharing class RH_WorkGroup_Query {
+public  class RH_WorkGroup_Query {
     
     /** The class instance */
     private static RH_WorkGroup_Query instance = null;

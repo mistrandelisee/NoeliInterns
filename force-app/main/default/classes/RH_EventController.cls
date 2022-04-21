@@ -1,4 +1,4 @@
-public with sharing class RH_EventController {
+public without sharing class RH_EventController {
 
     @AuraEnabled(cacheable=true)
     public static List<Event__c>  getEventList(){
@@ -8,11 +8,11 @@ public with sharing class RH_EventController {
                 String conId = u.RH_ContactId__c;
                 String userRole = u.UserRole.Name;
                 if(userRole == 'CEOza'){
-                    List<Event__c> evenList = [SELECT Id,Name,Contact_Id__r.Name,Description__c, Start_Date__c, Status__c, CreatedBy.UserRole.Name FROM Event__c];
+                    List<Event__c> evenList = [SELECT Id,Name,Contact_Id__r.Name,Description__c, Start_Date__c, End_Date__c, Status__c, CreatedBy.UserRole.Name FROM Event__c];
                     //System.debug('event-->' + evenList);
                     return evenList;
                 }else{
-                    List<Event__c> evenList = [SELECT Id,Name,Contact_Id__r.Name,Description__c, Start_Date__c, Status__c, CreatedBy.UserRole.Name FROM Event__c 
+                    List<Event__c> evenList = [SELECT Id,Name,Contact_Id__r.Name,Description__c, Start_Date__c, End_Date__c, Status__c, CreatedBy.UserRole.Name FROM Event__c 
                     Where Contact_Id__c =: conId And CreatedBy.UserRole.Name =: userRole];
                     //System.debug('event-->' + evenList);
                     return evenList;
@@ -31,11 +31,11 @@ public with sharing class RH_EventController {
     //         String conId = u.RH_ContactId__c;
     //         String userRole = u.UserRole.Name;
     //         if(userRole == 'CEOza'){
-    //             List<Event__c> evenList = [SELECT Id,Name,Contact_Id__r.Name,Description__c, Start_Date__c, Status__c, CreatedBy.UserRole.Name FROM Event__c];
+    //             List<Event__c> evenList = [SELECT Id,Name,Contact_Id__r.Name,Description__c, Start_Date__c, End_Date__c, Status__c, CreatedBy.UserRole.Name FROM Event__c];
     //             //System.debug('event-->' + evenList);
     //             return evenList;
     //         }else{
-    //             List<Event__c> evenList = [SELECT Id,Name,Contact_Id__r.Name,Description__c, Start_Date__c, Status__c, CreatedBy.UserRole.Name FROM Event__c 
+    //             List<Event__c> evenList = [SELECT Id,Name,Contact_Id__r.Name,Description__c, Start_Date__c, End_Date__c, Status__c, CreatedBy.UserRole.Name FROM Event__c 
     //             Where Contact_Id__c =: conId And CreatedBy.UserRole.Name =: userRole];
     //             //System.debug('event-->' + evenList);
     //             return evenList;
@@ -53,12 +53,12 @@ public with sharing class RH_EventController {
                 String conId = u.RH_ContactId__c;
                 String userRole = u.UserRole.Name;
                 if(userRole == 'CEOza'){
-                    List<Event__c> evenList = [SELECT Id,Name,Contact_Id__r.Name,Description__c, Start_Date__c, Status__c, CreatedBy.UserRole.Name FROM Event__c Where Id =: evenId];
+                    List<Event__c> evenList = [SELECT Id,Name,Contact_Id__r.Name,Description__c, Start_Date__c, End_Date__c, Status__c, CreatedBy.UserRole.Name FROM Event__c Where Id =: evenId];
                     //System.debug('event-->' + evenList);
                     return evenList;
                 }else{
-                    List<Event__c> evenList = [SELECT Id,Name,Contact_Id__r.Name,Description__c, Start_Date__c, Status__c, CreatedBy.UserRole.Name FROM Event__c 
-                    Where Contact_Id__c =: conId And CreatedBy.UserRole.Name =: userRole And Id =: evenId];
+                    List<Event__c> evenList = [SELECT Id,Name,Contact_Id__r.Name,Description__c, Start_Date__c, End_Date__c, Status__c, CreatedBy.UserRole.Name FROM Event__c 
+                    Where  Id =: evenId];//Contact_Id__c =: conId And CreatedBy.UserRole.Name =: userRole And
                     //System.debug('event-->' + evenList);
                     return evenList;
                 }
@@ -74,12 +74,13 @@ public with sharing class RH_EventController {
                 String conId = u.RH_ContactId__c;
                 String userRole = u.UserRole.Name;
                 if(userRole == 'CEO'){
-                    List<Event__c> evenList = [SELECT Id,Name,Contact_Id__r.Name,Description__c, Start_Date__c, Status__c, CreatedBy.UserRole.Name FROM Event__c
-                    Where CreatedBy.UserRole.Name =: 'Base User'];
+                    List<Event__c> evenList = [SELECT Id,Name,Contact_Id__r.Name,Description__c, Start_Date__c, End_Date__c, Status__c, CreatedBy.UserRole.Name FROM Event__c
+                    // Where CreatedBy.UserRole.Name =: 'Base User'
+                    ];
                     //System.debug('event-->' + evenList);
                     return evenList;
                 }else{
-                    List<Event__c> evenList = [SELECT Id,Name,Contact_Id__r.Name,Description__c, Start_Date__c, Status__c, CreatedBy.UserRole.Name FROM Event__c 
+                    List<Event__c> evenList = [SELECT Id,Name,Contact_Id__r.Name,Description__c, Start_Date__c, End_Date__c, Status__c, CreatedBy.UserRole.Name FROM Event__c 
                     Where Contact_Id__c =: conId And CreatedBy.UserRole.Name =: userRole];
                     //System.debug('event-->' + evenList);
                     return evenList;
@@ -92,7 +93,7 @@ public with sharing class RH_EventController {
 
     @AuraEnabled
     public static void saveEvent(String objEven) {
-        //system.debug('@@@@EventDatas' + objEven);
+        system.debug('@@@@EventDatas' + objEven);
         try{
             wrapperData datas = (wrapperData)JSON.deserialize(objEven, wrapperData.class);
             User u = [Select Id, RH_ContactId__c From User where Id =: UserInfo.getUserId()];
@@ -101,12 +102,13 @@ public with sharing class RH_EventController {
                     Name = datas.Name,
                     Contact_Id__c = conId,
                     Description__c  = datas.Description,
-                    Start_Date__c =dateToParse(datas.StartDate)
+                    Start_Date__c =dateToParse(datas.StartDate),
+                    End_Date__c =dateToParse(datas.EndDate)
                     // Status__c =datas.Status
 
                 );
                 insert even;
-                //system.debug('@@@@EventDatas' + even);
+                system.debug('@@@@EventDatasReturn' + even);
         }
         catch(Exception ex) {
             throw new AuraHandledException(ex.getMessage());
@@ -117,6 +119,7 @@ public with sharing class RH_EventController {
         public String Name { get; set; }
         public String Description { get; set; }
         public String StartDate { get; set; }
+        public String EndDate { get; set; }
         // public String Status { get; set; }
     }
 
@@ -134,7 +137,8 @@ public with sharing class RH_EventController {
                     Name = datas.Name,
                     Contact_Id__c = conId,
                     Description__c  = datas.Description,
-                    Start_Date__c =dateToParse(datas.StartDate)
+                    Start_Date__c =dateToParse(datas.StartDate),
+                    End_Date__c =dateToParse(datas.EndDate)
                     // Status__c =datas.Status
             );
 
@@ -149,6 +153,7 @@ public with sharing class RH_EventController {
         public String Name { get; set; }
         public String Description { get; set; }
         public String StartDate { get; set; }
+        public String EndDate { get; set; }
         // public String Status { get; set; }
     }
 
@@ -169,16 +174,17 @@ public with sharing class RH_EventController {
     }
     
     @AuraEnabled(cacheable=true)
-    public static void sendNotifications(String strBody, String strSenderId, String strTargetId, String strTitle,List<String> setUserIds) {
+    public static void sendNotifications(String strBody, String strSenderId, String pgRefId, String strTargetId, String strTitle,List<String> setUserIds) {
         set<String> setUserId = new set<String>();
         for(String s : setUserIds){
             setUserId.add(s);
         }
-        
+        system.debug('@@@@pgRefIdId--->  ' + pgRefId);
         
         // String pgRef = '{ type : "standard__recordPage",attributs :{recordId : 0017Q00000Dck8lQAB ,objectApiName : "Account",actionName : "view"} }' ;
-        String pgRef = '{type : \'comm__namedPage\',attributes : {pageName : \'Event\'},state: {\'recordId\': \'xxxxx\'}}' ;
-        
+        String pgRef = '{type : \'comm__namedPage\',attributes : {pageName : \'Event\'},state: {\'recordId\': '+pgRefId+'}}' ;
+        system.debug('@@@@pgRef--->  ' + pgRef);
+
         // Get the Id for our custom notification type
         CustomNotificationType notificationType = [SELECT Id, DeveloperName FROM CustomNotificationType WHERE DeveloperName='Test_Notification'];
 
@@ -191,12 +197,11 @@ public with sharing class RH_EventController {
         // when we click on the notification it will redirect to the specified targetId
         // obj.setTargetId(strTargetId);
         
-
+        // when we click on the notification it will redirect to the setTargetPageRef targetId
+        obj.setTargetPageRef( pgRef );
 
         // Notification Title
         obj.setTitle(strTitle);
-        
-        obj.setTargetPageRef( pgRef );
 
         // Notification Body
         obj.setBody(strBody);
