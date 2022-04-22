@@ -60,3 +60,20 @@
 .active{
     --lwc-cardColorBorder: var(--secondaryColor);
 }
+
+.banned{
+    --lwc-cardColorBorder: var(--bannedColor);
+}
+.frozen{
+    --lwc-cardColorBorder: var(--frozenColor);
+}
+
+.disable-item{
+    --lwc-colorTextLinkActive: var(--bannedColor);
+}
+.freeze-item{
+    --lwc-colorTextLinkActive: var(--frozenColor);
+}
+.active-item{
+    --lwc-colorTextLinkActive: var(--secondaryColor);
+}

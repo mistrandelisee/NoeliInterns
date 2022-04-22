@@ -44,7 +44,35 @@ fieldsToShow={
     RHRolec:'ok',
 };
 
+StatusActions=[
 
+
+    {
+        variant:"base",
+        label:this.l.Activate,
+        name:"active",
+        title:this.l.Activate,
+        iconName:"utility:user",
+        class:"active-item"
+    },
+    {
+        variant:"base",
+        label:this.l.Freeze,
+        name:"frozen",
+        title:this.l.Freeze,
+        iconName:"utility:resource_absence",
+        class:"freeze-item"
+    },
+    {
+        variant:"base",
+        label:this.l.Disable,
+        name:"Disable",
+        title:this.l.Disable,
+        iconName:"utility:block_visitor",
+        class:"disable-item"
+    }
+
+]
 action='';
     get showNew(){
         return this.action=='' || this.action==NEW_ACTION || this.action==SAVE_ACTION;
@@ -78,23 +106,39 @@ action='';
     //         console.error(e);
     //     });
     // }
-
+    buildUserStatusActions(status){
+        return this.StatusActions.filter(function(action) {
+            if (action.name.toLowerCase() != status?.toLowerCase()) {
+                return action;
+            }
+        });
+    }
     getContactList(){
         this.listcontact=[];
         this.startSpinner(true);
         getContacts({}).then(result =>{
             console.log('result @@@ + ' +(result));
+            console.log(result);
             const self=this;
             if (!result.error && result.Ok) {
                 this.listcontact = result.Employes.map(function (e ){
                     let item={...e};
                     item.title=e.LastName;
                     item.icon="standard:people";
-                    item.icon="standard:people";
+                    item.class=e.Status;
                     
                     item.keysFields=self.keysFields;
                     item.keysLabels=self.keysLabels;
                     item.fieldsToShow=self.fieldsToShow;
+
+                    let Actions=[];
+                    //add status actions
+                    Actions=Actions.concat(self.buildUserStatusActions(e.Status));
+
+
+                    item.actions=Actions;
+                    console.log(`item`);
+                    console.log(item);
                     return item;
                 });
                 this.setviewsList(this.listcontact)

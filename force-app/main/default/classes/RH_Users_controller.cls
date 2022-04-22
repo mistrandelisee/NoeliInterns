@@ -8,7 +8,7 @@ public without sharing class RH_Users_controller {
     @AuraEnabled 
     public static Map<String,Object>  getContacts(){
         Map<String, Object> mapReturn = new Map<String, Object>();
-        List<ContactWrapper> listcon = new List<ContactWrapper>();
+        List<Map<String, Object>> listcon = new List<Map<String, Object>>();
         List<String> listcontactId = new List<String>();
         mapReturn.put('error',false);
         try {
@@ -30,6 +30,7 @@ public without sharing class RH_Users_controller {
                     throw new RH_ControllerException('002','No RH Contact Founded');
                 } 
             mapReturn.put('Employes',listcon); 
+            mapReturn.put('Constants',RH_Constans.getAllConstants()); 
             mapReturn.put('Ok',true); 
         } catch(Exception e) {
             System.debug(e.getMessage());
@@ -111,18 +112,19 @@ public without sharing class RH_Users_controller {
         }  
         return mapReturn;
     }
-    private static List<ContactWrapper> populateContact(List<Contact> conlist){
-        List<ContactWrapper> listcon = new List<ContactWrapper>();
-        
+    private static List<Map<String, Object>> populateContact(List<Contact> conlist){
+        List<Map<String, Object>> listcon = new List<Map<String, Object>>();
+        string is;
         for(Contact con : conlist){
-            ContactWrapper c = new ContactWrapper();
-            c.LastName = con.LastName;
-            c.FirstName = con.FirstName;
-            c.accountName = con.Account.Name;
-            c.RHRolec = con.RH_Role__c;
-            c.RHUser = con.RH_User__c;
-            c.id = con.Id;
-            listcon.add(c);
+            Map<String, Object> mapObj = new Map<String, Object>();
+            mapObj.put('id', con.Id);
+            mapObj.put('RHUser', con.RH_User__c);
+            mapObj.put('RHRolec', con.RH_Role__c);
+            mapObj.put('accountName', con.Account.Name);
+            mapObj.put('FirstName', con.FirstName);
+            mapObj.put('Status', String.isBlank(con.RH_Status__c)?'':con.RH_Status__c.toLowerCase() );
+            mapObj.put('LastName', con.LastName);
+            listcon.add(mapObj);
         }
         return listcon;
     }

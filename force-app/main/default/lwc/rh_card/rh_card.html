@@ -10,11 +10,15 @@
             </lightning-button-icon> -->
             <template if:true={hasActions}>
                 <!-- TO IMPLEMENT -->
-                <lightning-button-menu slot="actions" alternative-text="Show menu" variant="border-filled" onselect={handleOnselect}>
-                    <lightning-menu-item value="MenuItemOne" label="Menu Item One"></lightning-menu-item>
-                    <lightning-menu-item value="MenuItemTwo" label="Menu Item Two"></lightning-menu-item>
-                    <lightning-menu-item value="MenuItemThree" label="Menu Item Three"></lightning-menu-item>
-                    <lightning-menu-item value="MenuItemFour" label="Menu Item Four"></lightning-menu-item>
+                <lightning-button-menu slot="actions" class="ico" alternative-text="Show menu"  variant="bare" icon-size="large"  menu-alignment="right" onselect={handleOnselect}>
+                    <template  for:each={availableActions} for:item="act" for:index="index">
+                       <lightning-menu-item key={act.name} 
+                       value={act.name} 
+                       label={act.label}
+                       icon-name={act.iconName}
+                       class={act.class}
+                       ></lightning-menu-item>
+                    </template>
                 </lightning-button-menu>
     
             </template>

@@ -8,12 +8,18 @@ public  class RH_Constans {
     public RH_Constans() {
 
     }
-
+    @AuraEnabled(cacheable=true)
+	public static RH_Constans getAllConstants(){
+		return new RH_Constans();
+	}
+    
     public static final Map<String, String> RH_Map_RoleName = new Map<String, String>{
         'CEO' =>'CEO',
         'Team Leader' =>'Team Leader',
         'Base User' =>'Base User',
         'Ressource Manager' =>'RH Manager'
         };
+    @AuraEnabled
+    public   String LWC_ACTIVATED_CONTACT_STATUS ='Activate';
 
 }

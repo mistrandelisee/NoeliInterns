@@ -97,7 +97,8 @@ export default class Rh_card extends LightningElement {
     selectedItemValue;
 
     handleOnselect(event) {
-        this.selectedItemValue = event.detail.value;
+       const name = event.detail.value;
+        this.callParent('stateAction',this.record,{item:name})
     }
 
     goToLink(event){

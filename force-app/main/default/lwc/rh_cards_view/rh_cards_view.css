@@ -1,3 +1,9 @@
+
+
+.lg-wd{
+    min-height: 70vh;
+}
+
 .average-number{
     --lwc-fontSize9: 7rem;
 }

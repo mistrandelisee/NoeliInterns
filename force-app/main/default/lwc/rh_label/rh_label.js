@@ -48,5 +48,20 @@ const labels = {
     Description:'About',
     YearStarted:'Year Started',
     Industry:'Industry',
+    Role:'Role',
+    Company: 'Company',
+    Description: 'Description',
+    AddressedTo: 'Addressed To',
+    Status : 'Status',
+    StartDate: 'Start date',
+    EndDate: 'End date',
+    AddressedCc: 'Addressed Cc',
+    RequestTypeName: 'Request Type',
+    ComplainOn: 'Complain On',
+
+    Activate: 'Activate',
+    Freeze: 'Freeze',
+    Disable: 'Disable',
+
 };
 export { labels }
