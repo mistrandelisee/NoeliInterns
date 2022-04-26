@@ -1,6 +1,4 @@
 <template>
-    <c-rh_toast auto-close-time="6000"></c-rh_toast>
-    <c-rh_spinner></c-rh_spinner>
     <!-- <c-rh_profile_actions></c-rh_profile_actions> -->
     <div class="slds-p-around_medium profile_user_info">
         <c-rh_profile_user_info 
@@ -15,7 +13,7 @@
         <!-- <pre>
             -- Extra JSON cmp goes here --
         </pre> -->
-        <c-rh_extra_fields json-field={jsonInfo} onaction={UpdateExtraInfo}></c-rh_extra_fields>
+        <c-rh_extra_fields json-field={jsonInfo} onaction={UpdateExtraInfo} hasaction="true"></c-rh_extra_fields>
             <!-- <c-rh_extra-fields onextrafield={UpdateExtraInfo}></c-rh_extra-fields> -->
        
        

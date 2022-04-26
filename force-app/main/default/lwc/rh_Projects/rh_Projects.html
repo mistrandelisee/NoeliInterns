@@ -6,21 +6,20 @@
         </div>
         <div>
             
-                <!-- <div class="slds-align_absolute-center"> -->
-                        <template class="slds-align_absolute-center" for:each={visibleProjects} for:item="acc">
+                        <!-- <template class="slds-align_absolute-center" for:each={visibleProjects} for:item="acc">
                             <div class="slds-grid slds-gutters slds-align_absolute-center slds-var-m-vertical_medium" key={acc.Name}>
                                 <div class="slds-col" >
                                     <ul class="slds-listbox slds-listbox_vertical box-border">
                                     
-                                        <li class="slds-listbox__item" onclick={handleChange}  data-id={acc.project.Id} data-name={acc.Name}>
+                                        <li class="slds-listbox__item" onclick={handleChange}  data-id={acc.Id} data-name={acc.Name}>
                                         <h1 class="h1-style">  
                                             <p class="slds-listbox__option slds-listbox__option_plain slds-media slds-media_small">
-                                                {acc.project.Name}
+                                                {acc.Name}
                                             </p>
                                         </h1>
                                         <h3 class="h2-style">  
                                             <p class="slds-listbox__option slds-listbox__option_plain slds-media slds-media_small">
-                                                {acc.project.Description__c}
+                                                {acc.Description__c}
                                             </p>
                                         </h3>
                                         </li>
@@ -28,24 +27,27 @@
                                     </ul> 
                                 </div>
                             </div>
-                        </template>
-                <!-- </div> -->
+                        </template> -->
+
+                        <c-rh_cards_view page-size="5"  items={tabReq} onrowselected={handleCardAction}></c-rh_cards_view>
         </div>
-        <div slot="footer" class="slds-var-m-vertical_medium">
+        <!-- <div slot="footer" class="slds-var-m-vertical_medium">
             <c-pagination records={initial} record-size="3" onupdate={updateProjectHandler}></c-pagination>
-        </div>
+        </div> -->
     </template>
     <template if:true={showDetails}>
         <div class="slds-clearfix">
             <!-- <button class="slds-button slds-button_brand slds-float_right">New Project</button> -->
             <lightning-button label="Back" class="slds-float_left" onclick={handleBack}></lightning-button>
             <lightning-button label="Edit" class="slds-float_right" onclick={handleEdit}></lightning-button>
+            <lightning-button label="ADD Attachment" class="slds-float_right" onclick={handleAttach}></lightning-button>
         </div>
         <div class="slds-var-m-vertical_medium">
             <c-rh_display_fields output-fields={curentDetails} title="Project Details"></c-rh_display_fields>
         </div>
-            <div class="slds-page-header slds-page-header_record-home slds-var-m-vertical_medium">
+            <div class="slds-page-header slds-page-header_record-home slds-var-m-vertical_medium slds-clearfix">
                 <p class="slds-align_absolute-center lds-page-header__title slds-truncate"> Members</p>
+                <lightning-button-icon icon-name="utility:edit"  alternative-text="Edit" title="Edit" onclick={handleManage} class="slds-float_right"></lightning-button-icon>
             </div>
             <div class="slds-page-header__row slds-page-header__row_gutters">
                 <div class="slds-scrollable slds-grid slds-gutters slds-page-header__col-details slds-align_absolute-center" style="height:10rem;width:14rem">
@@ -57,13 +59,36 @@
                         </ol>
                 </div>
             </div>
+            <div class="slds-var-m-vertical_medium">
+                <lightning-card title="Preview and Download Attachment file" icon-name="doctype:attachment">
+                    <template for:each={filesList} for:item="file">
+                        <div key={file.value} class="slds-box">
+                            <div class="slds-grid slds-wrap">
+                                <div class="slds-col slds-large-size_4-of-12 slds-medium-size_4-of-12 slds-size_12-of-12">
+                                  <p><strong>FileName - </strong>{file.label}</p>
+                                </div>
+                                <div class="slds-col slds-large-size_4-of-12 slds-medium-size_4-of-12 slds-size_12-of-12">
+                                  <a href={file.url} download={file.fname}>Download</a>
+                                </div>
+                                <div class="slds-col slds-large-size_4-of-12 slds-medium-size_4-of-12 slds-size_12-of-12">
+                                  <lightning-button label="Preview" 
+                                  variant="brand"
+                                 data-id={file.value}
+                                 onclick={previewHandler}
+                                  ></lightning-button>
+                                </div>
+                              </div>
+                        </div>
+                    </template>
+               </lightning-card>
+            </div>
     </template>
     
     <template if:true={showEdit}>
         <div class="slds-clearfix">
             <!-- <button class="slds-button slds-button_brand slds-float_right">New Project</button> -->
-            <lightning-button label="Back" class="slds-float_left" onclick={handleBack1}></lightning-button>
-            <lightning-button label="Manage Members" class="slds-float_right" onclick={handleManage}></lightning-button>
+            <lightning-button label="Back" class="slds-float_left" onclick={handleBackToDetails}></lightning-button>
+            <!-- <lightning-button label="Manage Members" class="slds-float_right" onclick={handleManage}></lightning-button> -->
         </div>
         <div class="slds-var-m-vertical_medium">
             <c-rh_edit_project  record-id={curentProject}></c-rh_edit_project>
@@ -73,13 +98,13 @@
     <template if:true={showManage}>
         <div class="slds-clearfix">
             <!-- <button class="slds-button slds-button_brand slds-float_right">New Project</button> -->
-            <lightning-button label="Back" class="slds-float_left" onclick={handleBack1}></lightning-button>
+            <lightning-button label="Back" class="slds-float_left" onclick={handleBackToDetails}></lightning-button>
         </div>
         <div class="slds-var-m-vertical_medium">
             <c-rh_add_and_remove  selected={memberSelected} initial={memberNotSelected}></c-rh_add_and_remove>
         </div>
         <div class="slds-var-m-top_medium slds-clearfix">
-            <lightning-button variant="brand"  label="Save" class="slds-float_right">
+            <lightning-button variant="brand"  label="Save" class="slds-float_right" onclick={handleSaveEditMember}>
             </lightning-button>
         </div>
     </template>
@@ -107,6 +132,25 @@
         </div>
         <div class="slds-clearfix">
             <lightning-button label="Save" class="slds-float_right" onclick={handleSave}></lightning-button>
+        </div>
+    </template>
+
+    <template if:true={addAttach}>
+        <div class="slds-clearfix">
+            <lightning-button label="Back" class="slds-float_left" onclick={handleBackToDetails}></lightning-button>
+        </div>
+        <div class="slds-var-m-vertical_medium">
+            <lightning-card title="File Upload" icon-name="doctype:attachment">
+                <div class="slds-m-around_medium">
+                    <lightning-input type="file" 
+                    accept=".xlsx, .xls, .csv, .png, .doc, .docx, .pdf"
+                    label="Attachment" onchange={openfileUpload}></lightning-input>
+                </div>
+                <template if:true={fileData}>
+                    <p>{fileData.filename}</p>
+                </template>
+                <lightning-button variant="brand" label="submit" title="Submit" onclick={handleClick} class="slds-m-left_x-small"></lightning-button>
+            </lightning-card>
         </div>
     </template>
 </template>

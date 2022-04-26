@@ -1,8 +1,5 @@
 <template>
-    <!-- <p>NOTHING :(</p> -->
-    <c-rh_toast auto-close-time="6000"></c-rh_toast>
-    <c-rh_spinner></c-rh_spinner>
-
+    
         <template if:false={hasrecordid}>
             <template if:true={showNew}>
                 <c-rh_user_creation groups={groups} onaction={handleActionNew}></c-rh_user_creation>

@@ -54,4 +54,8 @@ public  class RH_Contact_Query {
     public List<Account> getAccountId(){
         return [Select Id,Name from Account where OwnerId = : UserInfo.getUserId()];
     }
+    
+    public static List<Contact> getContactForGroup(){
+        return [SELECT Id,Name FROM Contact  WHERE RH_Role__c=:RH_Constans.RH_Map_RoleName.get('Base User')];
+    }
 }

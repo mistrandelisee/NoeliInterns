@@ -15,7 +15,9 @@
         var startUrl = component.get("v.startUrl");
         
         startUrl = decodeURIComponent(startUrl);
-        
+        //set starturl in cookies
+        this.createCookie('startUrl',startUrl,1);
+        // document.cookie = "startUrl="+startUrl+"; domain=force.com;"
         action.setParams({username:username, password:password, startUrl:startUrl});
         action.setCallback(this, function(a){
             var rtnValue = a.getReturnValue();
@@ -25,6 +27,18 @@
             }
         });
         $A.enqueueAction(action);
+    },
+    createCookie :function (name, value, days) {
+        var expires;
+        if (days) {
+            const date = new Date();
+            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+            expires = "; expires=" + date.toGMTString();
+        }
+        else {
+            expires = "";
+        }
+        document.cookie = name + "=" + value + expires + "; path=/";
     },
     
     getIsUsernamePasswordEnabled : function (component, event, helpler) {

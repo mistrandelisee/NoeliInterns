@@ -1,4 +1,4 @@
-import { LightningElement,track } from 'lwc';
+import { LightningElement,track,wire } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
 
 import { labels } from 'c/rh_label';
@@ -9,7 +9,8 @@ import getExtraFields from '@salesforce/apex/RH_Users_controller.getExtraFields'
 import changeMyPassword from '@salesforce/apex/RH_Profile_controller.changeMyPassword';
 import changeUserPassword from '@salesforce/apex/RH_Users_controller.changeUserPassword';
 // import getActiveWorkgroups from '@salesforce/apex/RH_WorkGroup_Query.getActiveWorkgroups';
-
+import { CurrentPageReference } from 'lightning/navigation';
+import { registerListener, unregisterAllListeners,fireEvent } from 'c/pubsub';
 const NEW_ACTION='New';
 const SUCCESS_VARIANT='success';
 const WARNING_VARIANT='warning';
@@ -73,6 +74,7 @@ StatusActions=[
     }
 
 ]
+@wire(CurrentPageReference) pageRef;
 action='';
     get showNew(){
         return this.action=='' || this.action==NEW_ACTION || this.action==SAVE_ACTION;
@@ -427,17 +429,17 @@ action='';
         cmp?.cancel();
     }
 
-    //handle spinner
     startSpinner(b){
-        let spinner=this.template.querySelector('c-rh_spinner');
+        /*let spinner=this.template.querySelector('c-rh_spinner');
         if (b) {    spinner?.start(); }
-            else{   spinner?.stop();}
+            else{   spinner?.stop();}*/
+       fireEvent(this.pageRef, 'Spinner', {start:b});
     }
-
-    //handle toast
     showToast(variant, title, message){
+        /*
         let toast=this.template.querySelector('c-rh_toast');
-        toast?.showToast(variant, title, message);
+        toast?.showToast(variant, title, message);*/
+        fireEvent(this.pageRef, 'Toast', {variant, title, message});
     }
 
     // build Account

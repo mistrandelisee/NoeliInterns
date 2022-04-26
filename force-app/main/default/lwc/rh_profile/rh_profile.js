@@ -1,10 +1,11 @@
-import { api, LightningElement, track } from 'lwc';
+import { api, LightningElement,wire, track } from 'lwc';
 import getMyProfile from '@salesforce/apex/RH_Profile_controller.getMyProfile';
 import UpdateInfo from '@salesforce/apex/RH_Profile_controller.UpdateInfo';
 import changeMyPassword from '@salesforce/apex/RH_Profile_controller.changeMyPassword';
 import getpickListValue from '@salesforce/apex/RH_Utility.getpickListValue';
 import UpdateExtraInfo from '@salesforce/apex/RH_Profile_controller.UpdateExtraInfo';
-
+import { CurrentPageReference } from 'lightning/navigation';
+import { registerListener, unregisterAllListeners,fireEvent } from 'c/pubsub';
 
 import { labels } from 'c/rh_label';
 //Constants
@@ -37,10 +38,12 @@ export default class Rh_profile extends LightningElement {
     //account-details
     jsonInfo;
     accountFields=[];
+    @wire(CurrentPageReference) pageRef;
     connectedCallback(){
         this.getProfile();
     }
     getProfile() {
+        this.startSpinner(true);
         getMyProfile({}).then(result =>{
             if (result.error) {
                 console.log('profile ' +JSON.stringify(result));
@@ -59,6 +62,8 @@ export default class Rh_profile extends LightningElement {
             }
         }).catch(err =>{
             console.error('error',err)
+        }).finally(() =>{
+            this.startSpinner(false);
         })
     }
     handleAction(event){
@@ -435,13 +440,16 @@ export default class Rh_profile extends LightningElement {
         ];
     }
     startSpinner(b){
-        let spinner=this.template.querySelector('c-rh_spinner');
+        /*let spinner=this.template.querySelector('c-rh_spinner');
         if (b) {    spinner?.start(); }
-            else{   spinner?.stop();}
+            else{   spinner?.stop();}*/
+       fireEvent(this.pageRef, 'Spinner', {start:b});
     }
     showToast(variant, title, message){
+        /*
         let toast=this.template.querySelector('c-rh_toast');
-        toast?.showToast(variant, title, message);
+        toast?.showToast(variant, title, message);*/
+        fireEvent(this.pageRef, 'Toast', {variant, title, message});
     }
 
 

@@ -9,6 +9,8 @@ global with sharing class CommunitiesLoginController {
     global PageReference forwardToAuthPage() {
     	String startUrl = System.currentPageReference().getParameters().get('startURL');
     	String displayType = System.currentPageReference().getParameters().get('display');
+        System.debug('startUrl' + startUrl);
+        System.debug('displayType' + displayType);
         return Network.forwardToAuthPage(startUrl, displayType);
     }
 }

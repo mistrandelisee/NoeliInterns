@@ -2,6 +2,8 @@ import { LightningElement,wire,api } from 'lwc';
 import { labels } from 'c/rh_label';
 import initConfig from '@salesforce/apex/RH_Users_controller.InitUserCreation';
 import userCreation from '@salesforce/apex/RH_Users_controller.userCreation';
+import { CurrentPageReference } from 'lightning/navigation';
+import { registerListener, unregisterAllListeners,fireEvent } from 'c/pubsub';
 //Constants
 const EDIT_ACTION='Edit';
 const NEW_ACTION='New';
@@ -22,6 +24,7 @@ export default class Rh_user_creation extends LightningElement {
     record;
     listgroup=[];
     userfield ={};
+    @wire(CurrentPageReference) pageRef;
     buildForm(){
         this.formInputs=[
             {
@@ -93,6 +96,7 @@ export default class Rh_user_creation extends LightningElement {
         //this.getActiveWorkgroupse();
     }
     callApexSave(input){
+        this.startSpinner(true)
         userCreation({ contactJson: JSON.stringify(input) })
           .then(result => {
             console.log('Result callApexSave:: ');
@@ -102,48 +106,9 @@ export default class Rh_user_creation extends LightningElement {
           })
           .catch(error => {
             console.error('Error:', error);
+        }).finally(() => {
+            this.startSpinner(false)
         });
-    }
-
-    // getActiveWorkgroupse(){
-    //     getActiveWorkgroups({
-
-    //     }).then(result =>{
-    //         console.log('result group ' +JSON.stringify(result));
-    //         result.forEach(elt => {
-    //             this.groups.push(elt.Name);
-    //         });
-    //         console.log('groupes ' +this.groups);
-    //     }).catch(e =>{
-    //         console.error(e);
-    //     });
-    // }
-
-    handlechange(event){
-        console.log('event ' +JSON.stringify(event));
-        let fieldname = event.detail.name;
-        // const sendEvent = new CustomEvent('inputchanged', {detail: event});
-        // this.dispatchEvent(sendEvent);
-        switch(fieldname) {
-            case 'LastName':
-                
-                break;
-            case 'FirstName':
-
-                break;
-            case 'Email':
-
-                break;
-            case 'Role':
-
-                break;
-            case 'Group':
-
-                break;
-        
-            default:
-                break;
-        }
     }
 
 
@@ -151,7 +116,7 @@ export default class Rh_user_creation extends LightningElement {
         return this.action==NEW_ACTION;
     }
     handleNew(){
-       
+       this.startSpinner(true)
         initConfig()
           .then(result => {
             console.log('Result INIT CONF');
@@ -168,6 +133,8 @@ export default class Rh_user_creation extends LightningElement {
           })
           .catch(error => {
             console.error('Error:', error);
+        }).finally(() => {
+            this.startSpinner(false)
         });
     }
     handleCancel(){
@@ -209,16 +176,16 @@ export default class Rh_user_creation extends LightningElement {
       
       this.dispatchEvent(actionEvt);
     }
-    //handle spinner
     startSpinner(b){
-        let spinner=this.template.querySelector('c-rh_spinner');
+        /*let spinner=this.template.querySelector('c-rh_spinner');
         if (b) {    spinner?.start(); }
-            else{   spinner?.stop();}
+            else{   spinner?.stop();}*/
+       fireEvent(this.pageRef, 'Spinner', {start:b});
     }
-
-    //handle toast
     showToast(variant, title, message){
+        /*
         let toast=this.template.querySelector('c-rh_toast');
-        toast?.showToast(variant, title, message);
+        toast?.showToast(variant, title, message);*/
+        fireEvent(this.pageRef, 'Toast', {variant, title, message});
     }
 }
