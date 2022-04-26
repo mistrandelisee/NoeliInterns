@@ -5,8 +5,11 @@ export default class Rh_dynamic_form extends LightningElement {
     @api title;
     @api timeOut;
     @api backcolor;
+    
+    @api fileData;
     section = 'form-section';
     rendered;
+
 
     preCompileDefaultValues(){
         this.timeOut=this.timeOut || 0;
@@ -17,7 +20,8 @@ export default class Rh_dynamic_form extends LightningElement {
             elt.ly_lg=  elt.ly_lg ?  elt.ly_lg: '3';
            // elt.variant=  elt.variant ?  elt.variant: 'label-stacked';
             elt.isTextarea=  elt.type=='textarea' ? true: false;
-            elt.isText=  elt.type=='text' ? true: ! (elt.isTextarea || elt.picklist || elt.datalist);//is text or not textarea or picklist
+            elt.isFile=  elt.type=='file' ? true: false;// Kb if you want to upload file  
+            elt.isText=  elt.type=='text' ? true: ! (elt.isTextarea || elt.isFile || elt.picklist || elt.datalist);//is text or not textarea or picklist
             console.log(`elt`, elt);
             return elt;
         });
@@ -105,12 +109,16 @@ export default class Rh_dynamic_form extends LightningElement {
         const delay= +this.timeOut;
         const value = event.detail.value;
         const name = event.currentTarget.dataset.id;
+        const file=event.target.files?event.target.files[0]:null; 
         console.log('OUTPUT : ',value);
         console.log('OUTPUT :name  ',name);
+        console.log('OUTPUT :name  ',name);
+
         clearTimeout(this.timer);
         this.timer=setTimeout(() => {
-            this.publishChangedEvt({info: {name, value} , event:event});
+            this.publishChangedEvt({info: {name, value,file} , event:event});
         }, delay);//2000
+       
     }
     publishChangedEvt(evt){
         console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$4 Publish evt ' ,evt);

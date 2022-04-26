@@ -141,7 +141,7 @@ public  class RH_Profile_controller {
             mapReturn.put('input',changepasswordjson);
             changepasswordwrapper pwdResetter = (changepasswordwrapper) JSON.deserialize(changepasswordjson, changepasswordwrapper.class);
             //Uncomment Later
-            //PageReference pr=pwdResetter.changePassword();
+            PageReference pr=pwdResetter.changePassword();
             
             // String newPassword='0037Q000007I2h0QACwqaa';
             // String verifyNewPassword='0037Q000007I2h0QACwqaa';

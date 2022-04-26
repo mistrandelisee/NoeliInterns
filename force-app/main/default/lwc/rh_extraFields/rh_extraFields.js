@@ -3,6 +3,7 @@ import { LightningElement,api,track } from 'lwc';
 export default class Rh_extraFields extends LightningElement {
     @track isView=true;
     userInfos;
+    @api displayEdit
 
     // @api userInfo =[]; 
     @track userInfo; 

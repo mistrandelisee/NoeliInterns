@@ -1,3 +1,26 @@
-<template>
-    <p>NOTHING :(</p>
+<template >
+    <!-- <p>NOTHING :(</p>  class="slds-show slds-is-relative" -->
+    <template if:true={isVisiblecreate}> 
+        <c-rh_group_create 
+        ongroupmember={handleGroupmember}> </c-rh_group_create> 
+    </template>
+
+    <template if:true={isVisible}>
+        <c-rh_group_createbutton 
+            oncreategroup={handleCreategroup}> 
+        </c-rh_group_createbutton>
+        <c-rh_group_list
+         ondetailgroupe={handleDetailGroup} > </c-rh_group_list> 
+    </template>
+
+    <template if:true={isVisibleDetailgroup}> 
+        <c-rh_group_detail groupe-id={groupeId}
+           > </c-rh_group_detail> 
+    </template>
+
+    <template if:true={isVisibleGroupmember}> 
+        <c-rh_group_member
+           > </c-rh_group_member> 
+    </template>
+    
 </template>

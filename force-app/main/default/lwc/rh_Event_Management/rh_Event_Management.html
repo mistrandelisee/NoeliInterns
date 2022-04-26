@@ -6,10 +6,9 @@
                 {title}
             </h3>
             <div class="slds-m-right_x-small slds-m-left_x-small">
-                
+                <!-- <lightning-button-icon icon-name="utility:share" class="slds-m-right_xx-small" alternative-text="share" title="share" data-id={data.Id} onclick={handleTest}></lightning-button-icon> -->
                     <template for:each={visibleDatas} for:item="data">
                     <div class="slds-box slds-p-around_none slds-m-top_x-small slds-m-bottom_medium slds-m-horizontal_none" key={data.Id} style="background-color: white ;">
-                        <!-- <c-rh_display_fields title={l.AccountInfoTitle} iconsrc="standard:account" column="3" output-fields={data} ></c-rh_display_fields> -->
                         <lightning-layout class="slds-m-bottom_medium" >
                             <lightning-layout-item flexibility="grow">
                                 <div class="header-column slds-m-left_x-small slds-m-top_xx-small">
@@ -24,6 +23,12 @@
                                         <span class="slds-form-element__label" style="margin-left:4%; color:rgb(0,15,89); font-weight: bold; font-size: 15px;">Contact Name</span>
                                         <div class="slds-form-element__control">
                                             <div class="slds-form-element__static" style="margin-left:4%; font-weight: bold; color:rgb(47, 72, 147); font-size: 16px;">{data.ContactName}</div>
+                                        </div>
+                                    </div>
+                                    <div class="slds-form-element slds-form-element_edit slds-form-element_readonly slds-hint-parent">
+                                        <span class="slds-form-element__label" style="margin-left:4%; color:rgb(0,15,89); font-weight: bold; font-size: 15px;">Status</span>
+                                        <div class="slds-form-element__control">
+                                        <div class="slds-form-element__static" style="margin-left:4%; font-weight: bold; color:rgb(47, 72, 147); font-size: 16px;">{data.Status}</div>
                                         </div>
                                     </div>
                                 </div>
@@ -42,14 +47,20 @@
                                         <div class="slds-form-element__static" style="margin-left:4%; font-weight: bold; color:rgb(47, 72, 147); font-size: 16px;">{data.StartDate}</div>
                                         </div>
                                     </div>
+                                    <div class="slds-form-element slds-form-element_edit slds-form-element_readonly slds-hint-parent">
+                                        <span class="slds-form-element__label" style="margin-left:4%; color:rgb(0,15,89); font-weight: bold; font-size: 15px;">End Date</span>
+                                        <div class="slds-form-element__control">
+                                        <div class="slds-form-element__static" style="margin-left:4%; font-weight: bold; color:rgb(47, 72, 147); font-size: 16px;">{data.EndDate}</div>
+                                        </div>
+                                    </div>
                                 </div>
                             </lightning-layout-item>
                         </lightning-layout>
                         <div class="slds-p-around_medium">
                             <div class="slds-clearfix">
                                 <div class="slds-float_right">
-                                    <lightning-button-icon icon-name="utility:share" class="slds-m-right_xx-small" alternative-text="share" title="share" data-id={data.Id} onclick={sendNotification}></lightning-button-icon>
-                                    <lightning-button-icon icon-name="utility:internal_share"   alternative-text="internal_share"  title="internal_share" data-id={data.Id} onclick={sendNotification}></lightning-button-icon>
+                                    <lightning-button-icon icon-name="utility:delete" style="margin-right: 16px;" alternative-text="delete"  title="internal_share" onclick={deleteNotification}></lightning-button-icon>
+                                    <lightning-button-icon icon-name="utility:share" class="slds-m-right_xx-small" alternative-text="share" title="share" onclick={sendNotification}></lightning-button-icon>
                                 </div>
                               </div>
                         </div>
@@ -59,6 +70,6 @@
             <div class="card-footer" slot="footer">
                 <c-pagination records={datas} record-size="5" onupdate={updateEventHandler}></c-pagination> 
             </div>
-        </lightning-card>
+        </lightning-card>>
     </div>
 </template>

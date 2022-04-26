@@ -22,7 +22,14 @@
                                                     </a>
                                             </template>
                                             <template if:false={field.isLink}>
-                                                 {field.value}
+                                                
+                                                 <template if:true={field.isDatetime}>
+                                                    <lightning-formatted-date-time value={field.value} year="numeric" month="short" day="2-digit" hour="numeric"
+                                                        weekday="long" ></lightning-formatted-date-time>
+                                                </template>
+                                                <template if:false={field.isDatetime}>
+                                                    {field.value}
+                                                </template>
                                             </template>
                                             
                                         </div>

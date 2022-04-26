@@ -56,6 +56,6 @@ public  class RH_Contact_Query {
     }
     
     public static List<Contact> getContactForGroup(){
-        return [SELECT Id,Name FROM Contact  WHERE RH_Role__c=:RH_Constans.RH_Map_RoleName.get('Base User')];
+        return [SELECT Id,Name FROM Contact  WHERE RH_Role__c=:RH_Constans.RH_Map_RoleName.get('Base User') AND recordTypeId=:RH_Constans.RH_CONTACT_RT];
     }
 }

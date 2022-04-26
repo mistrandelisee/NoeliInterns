@@ -18,11 +18,14 @@
     background-color: #f4f6f9;
     padding: 10px;
     border: 1px solid #d8dde6;
-    width: 300px;
+    width: auto;
 }
 .slds-card__footer-action{
     text-align: center;
 }
 .slds-card__footer{
     border-top: 1px solid #54698d;
+}
+.slds-m-left_x-small{
+    color:blue; 
 }

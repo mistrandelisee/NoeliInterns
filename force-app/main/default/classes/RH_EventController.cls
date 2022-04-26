@@ -14,7 +14,7 @@ public without sharing class RH_EventController {
                 }else{
                     List<Event__c> evenList = [SELECT Id,Name,Contact_Id__r.Name,Description__c, Start_Date__c, End_Date__c, Status__c, CreatedBy.UserRole.Name FROM Event__c 
                     Where Contact_Id__c =: conId And CreatedBy.UserRole.Name =: userRole];
-                    //System.debug('event-->' + evenList);
+                    System.debug('event-->' + evenList);
                     return evenList;
                 }
             }
@@ -81,7 +81,9 @@ public without sharing class RH_EventController {
                     return evenList;
                 }else{
                     List<Event__c> evenList = [SELECT Id,Name,Contact_Id__r.Name,Description__c, Start_Date__c, End_Date__c, Status__c, CreatedBy.UserRole.Name FROM Event__c 
-                    Where Contact_Id__c =: conId And CreatedBy.UserRole.Name =: userRole];
+                    Where Contact_Id__c =: conId 
+                    // And CreatedBy.UserRole.Name =: userRole
+                    And Status__c='Pending'];
                     //System.debug('event-->' + evenList);
                     return evenList;
                 }
@@ -103,8 +105,8 @@ public without sharing class RH_EventController {
                     Contact_Id__c = conId,
                     Description__c  = datas.Description,
                     Start_Date__c =dateToParse(datas.StartDate),
-                    End_Date__c =dateToParse(datas.EndDate)
-                    // Status__c =datas.Status
+                    End_Date__c =dateToParse(datas.EndDate),
+                    Status__c =datas.Status
 
                 );
                 insert even;
@@ -120,7 +122,7 @@ public without sharing class RH_EventController {
         public String Description { get; set; }
         public String StartDate { get; set; }
         public String EndDate { get; set; }
-        // public String Status { get; set; }
+        public String Status { get; set; }
     }
 
     @AuraEnabled
@@ -138,8 +140,8 @@ public without sharing class RH_EventController {
                     Contact_Id__c = conId,
                     Description__c  = datas.Description,
                     Start_Date__c =dateToParse(datas.StartDate),
-                    End_Date__c =dateToParse(datas.EndDate)
-                    // Status__c =datas.Status
+                    End_Date__c =dateToParse(datas.EndDate),
+                    Status__c =datas.Status
             );
 
             update even;
@@ -154,7 +156,7 @@ public without sharing class RH_EventController {
         public String Description { get; set; }
         public String StartDate { get; set; }
         public String EndDate { get; set; }
-        // public String Status { get; set; }
+        public String Status { get; set; }
     }
 
     @AuraEnabled

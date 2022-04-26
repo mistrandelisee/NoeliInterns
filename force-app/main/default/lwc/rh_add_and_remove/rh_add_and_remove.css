@@ -1,4 +1,13 @@
 .my-card {
     display: block;
 }
-.box-border { border : 2px solid rgb(12, 10, 10); }
+.box-border { border : 2px solid rgb(12, 10, 10); height:15rem; width:24rem}
+
+.input-style {margin-bottom: 2px;}
+.midle-style {width:5rem;}
+
+.active {
+    background-color:rgb(46, 35, 35);
+    text-transform:uppercase;
+   
+}

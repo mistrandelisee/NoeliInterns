@@ -6,6 +6,7 @@ import retreiveRequest from '@salesforce/apex/RH_Request_controller.retreiveRequ
 import getRecordType from '@salesforce/apex/RH_Request_controller.getRecordType';
 import newRequest from '@salesforce/apex/RH_Request_controller.newRequest';
 import getAdressedTo from '@salesforce/apex/RH_Request_controller.getAdressedTo';
+import deleteRequest from '@salesforce/apex/RH_Request_controller.deleteRequest';
 
 export default class Rh_myrequest_component extends NavigationMixin(LightningElement) {
     emp;
@@ -22,20 +23,26 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
     @track optionsRecordList = [];
     @track firstFieldInputs = [];
     @track lastFieldInputsComplain = [];
+    @track lastFieldInputsAll = [];
     @track lastFieldInputsPermHoli = [];
     @track lastFieldInputsExplanation = [];
     @track isComplain = false;
     @track isPermHoli = false;
     @track isExplanation = false;
+    @track editMode = false;
     @track typeId ;
     @track addressedRecord =[];
-    @track formPersonanalInputDetails = [];  
+    @track formPersonanalInputDetails = [];
+    @track formPersonanalInputDetailsComplain = [];
+    @track formPersonanalInputDetailsPermHoli = [];
+    @track formPersonanalInputDetailsExplanation = [];  
+    @track resultRecord;
 
     keysFields={AddressedTo:'ok'};//non used now
     keysLabels={
     CreatedDate:'Create date',
     Statut:'Statut',
-
+    Type: 'Type',
     Request:'Request',
 
     AddressedTo:'Addressed To'
@@ -43,6 +50,7 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
     fieldsToShow={
         CreatedDate:'Create date',
         Statut:'Statut',
+        Type: 'Type',
         AddressedTo:'Addressed To'
     };
 
@@ -50,36 +58,38 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
         return this.recordId ? true : false;
     }
 
-    @wire(getrequest) 
-        getReq({data,errr}){
-            console.log('@@@@@objectReturn');
-            if(data){
-                const self=this;
-                data.forEach(elt => { 
-                let objetRep = {};
-                objetRep = {
-                    "Request": elt?.RH_Description__c,
-                    "Statut": elt?.Rh_Status__c,
-                    "CreatedDate":  (new Date(elt.CreatedDate)).toLocaleString(),
-                    "AddressedTo": elt.RH_Addressed_To__r?.Name,
-                    "id" : elt.Id,
-                    icon:"standard:people",
-                    
-                    title: elt?.RH_Description__c,
-                    keysFields:self.keysFields,
-                    keysLabels:self.keysLabels,
-                    fieldsToShow:self.fieldsToShow,
-                }
-             
-                console.log('@@@@@objectReturn' + objetRep);
-                    this.tabReq.push(objetRep);
-                });
-                // this.refreshTable(this.tabReq); 
-                this.setviewsList( this.tabReq)
-
+    // @wire(getrequest) 
+    //     getReq({data,errr}){
+    //         console.log('@@@@@objectReturn');
+    getRequest(){
+        getrequest()
+        .then(result =>{
+            const self=this;
+            result.forEach(elt => { 
+            let objetRep = {};
+            objetRep = {
+                "Request": elt?.RH_Description__c,
+                "Statut": elt?.Rh_Status__c,
+                "CreatedDate":  (new Date(elt.CreatedDate)).toLocaleString(),
+                "AddressedTo": elt.RH_Addressed_To__r?.Name,
+                "Type": elt.RecordType.Name,
+                "id" : elt.Id,
+                icon:"standard:people",
+                
+                title: elt?.Name,
+                keysFields:self.keysFields,
+                keysLabels:self.keysLabels,
+                fieldsToShow:self.fieldsToShow,
             }
-            if(errr) console.error(errr);
+         
+            console.log('@@@@@objectReturn' + objetRep);
+                this.tabReq.push(objetRep);
+            });
+            // this.refreshTable(this.tabReq); 
+            this.setviewsList( this.tabReq)
+        })
     }
+
     handleCardAction(event){
         console.log('event parent ' +JSON.stringify(event.detail));
         const info=event.detail;
@@ -95,24 +105,83 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
 
     
     buildformDetail(profileinformation){
-        
 
-        this.formPersonanalInputDetails=[
-            {
-                label:this.l.Description,
-                placeholder:this.l.Description,
-                name:'Description',
-                value:profileinformation?.RH_Description__c,
-                required:true,
-                ly_md:'6', 
-                ly_lg:'6'
-            },
+        console.log('@@@@@RecordType.Name' + profileinformation?.RecordType.Name);
+        if(profileinformation?.RecordType.Name == 'Complain'){
+            this.formPersonanalInputDetails=[ 
+                            
+                        {
+                            label:this.l.AddressedTo,
+                            placeholder:this.l.AddressedTo,
+                            name:'AddressedTo',
+                            picklist: true,
+                            options: this.addressedRecord,
+                            value:profileinformation?.RH_Addressed_To__r?.Id,
+                            required:false,
+                            ly_md:'6', 
+                            ly_lg:'6'
+                        },
+                        {
+                            label:this.l.AddressedCc,
+                            placeholder:this.l.AddressedCc,
+                            name:'AddressedCc',
+                            required:true,
+                            value:profileinformation?.RH_Addressed_Cc__c,
+                            ly_md:'6', 
+                            ly_lg:'6'
+                        },
+                        {
+                            label:this.l.Status,
+                            name:'Status',
+                            required:true,
+                            value:profileinformation?.Rh_Status__c,
+                            placeholder:this.l.Status,
+                            readOnly:true,
+                            maxlength:255,
+                            type:'email',
+                            ly_md:'6', 
+                            ly_lg:'6'
+                        },
+                        {
+                            label:this.l.RequestTypeName,
+                            name:'RequestTypeName',
+                            required:true,
+                            value:profileinformation?.RecordType?.Name,
+                            readOnly:true,
+                            ly_md:'6', 
+                            ly_lg:'6'
+                        },
+                        {
+                            label:this.l.Description,
+                            placeholder:this.l.Description,
+                            name:'Description',
+                            value:profileinformation?.RH_Description__c,
+                            required:true,
+                            ly_md:'6', 
+                            ly_lg:'6'
+                        }
+                    ];
+        }
+        if(profileinformation?.RecordType.Name == 'Explanation'){
+            this.formPersonanalInputDetails=[
+            
             {
                 label:this.l.AddressedTo,
                 placeholder:this.l.AddressedTo,
                 name:'AddressedTo',
+                picklist: true,
+                options: this.addressedRecord,
                 value:profileinformation?.RH_Addressed_To__r?.Name,
                 required:false,
+                ly_md:'6', 
+                ly_lg:'6'
+            },
+            {
+                label:this.l.AddressedCc,
+                placeholder:this.l.AddressedCc,
+                name:'AddressedCc',
+                required:true,
+                value:profileinformation?.RH_Addressed_Cc__c,
                 ly_md:'6', 
                 ly_lg:'6'
             },
@@ -122,75 +191,104 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
                 required:true,
                 value:profileinformation?.Rh_Status__c,
                 placeholder:this.l.Status,
+                readOnly:true,
                 maxlength:255,
                 type:'email',
-                ly_md:'12', 
-                ly_lg:'12'
+                ly_md:'6', 
+                ly_lg:'6'
             },
             {
                 label:this.l.RequestTypeName,
                 name:'RequestTypeName',
                 required:true,
-                value:profileinformation?.RH_RequestTypeName__c,
+                value:profileinformation?.RecordType?.Name,
                 readOnly:true,
                 ly_md:'12', 
-                ly_lg:'12'
-            }
-            
-            // {
-            //     label:this.l.Phone,
-            //     placeholder:this.l.PhonePlc,
-            //     name:'Phone',
-            //     type:'phone',
-            //     required:true,
-            //     value:profileinformation?.Phone,
-            //     ly_md:'6', 
-            //     ly_lg:'6'
-            // },
-
-            /*{
-                label:this.l.Username,
-                placeholder:this.l.UsernamePlc,
-                name:'Login',
-                type:'email',
+                ly_lg:'6'
+            },
+            {
+                label:this.l.Description,
+                placeholder:this.l.Description,
+                name:'Description',
+                value:profileinformation?.RH_Description__c,
                 required:true,
-                value:profileinformation?.Username,
                 ly_md:'6', 
                 ly_lg:'6'
-            },*/
-            // {
-            //     label:this.l.City,
-            //     placeholder:this.l.CityPlc,
-            //     name:'City',
-            //     type:'address',
-            //     value:profileinformation?.OtherAddress,
-            //     ly_md:'6', 
-            //     ly_lg:'6'
-            // },
-            // {
-            //     label:this.l.Birthday,
-            //     placeholder:this.l.BirthdayPlc,
-            //     name:'Birthday',
-            //     type:'date',
-            //     required:true,
-            //     value:profileinformation?.Birthdate,
-            //     ly_md:'6', 
-            //     ly_lg:'6'
-            // },
-            // {
-            //     label:this.l.AboutMe,
-            //     name:'Description',
-            //     value:profileinformation?.Description,
-            //     placeholder:this.l.AboutMePlc,
-            //     className:'textarea',
-            //     maxlength:25000,
-            //     type:'textarea',
-            //     ly_md:'12', 
-            //     ly_lg:'12'
-            // }
+            }
+                    ];
+        }
+        if(profileinformation?.RecordType.Name == 'Holiday' || profileinformation?.RecordType.Name == 'Permisson'){
+            this.formPersonanalInputDetails=[
+                
+                {
+                    label:this.l.AddressedTo,
+                    placeholder:this.l.AddressedTo,
+                    name:'AddressedTo',
+                    picklist: true,
+                    options: this.addressedRecord,
+                    value:profileinformation?.RH_Addressed_To__r?.Id,
+                    required:false,
+                    ly_md:'6', 
+                    ly_lg:'6'
+                },
+                {
+                    label:this.l.Status,
+                    name:'Status',
+                    required:true,
+                    value:profileinformation?.Rh_Status__c,
+                    placeholder:this.l.Status,
+                    readOnly:true,
+                    maxlength:255,
+                    type:'email',
+                    ly_md:'6', 
+                    ly_lg:'6'
+                },
+                {
+                    label:this.l.RequestTypeName,
+                    name:'RequestTypeName',
+                    required:true,
+                    value:profileinformation?.RecordType?.Name,
+                    readOnly:true,
+                    ly_md:'6', 
+                    ly_lg:'6'
+                },
+                
+                {
+                    label:this.l.Description,
+                    placeholder:this.l.Description,
+                    name:'Description',
+                    value:profileinformation?.RH_Description__c,
+                    required:true,
+                    ly_md:'6', 
+                    ly_lg:'6'
+                },
+                {
+                    label:this.l.StartDate,
+                    placeholder:this.l.StartDate,
+                    name:'StartDate',
+                    required:true,
+                    value: profileinformation?.RH_Start_date__c,
+                    type:'Datetime',
+                    ly_md:'6', 
+                    ly_lg:'6',
+                    isDatetime:true
+                },
+                {
+                    label:this.l.EndDate,
+                    placeholder:this.l.EndDate,
+                    name:'EndDate',
+                    value: profileinformation?.RH_End_date__c,
+                    type:'Datetime',
+                    ly_md:'6', 
+                    ly_lg:'6',
+                    isDatetime:true
+                }
+                    ];
+        }
         
-        ];
     }
+
+
 
     handlerselected(event){
         console.log('@@@@@@ray ' + JSON.stringify(event.detail) );
@@ -216,9 +314,9 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
                             };
                         });
             this.handleNext();
-    }).catch(error => {
-        console.error('Error:', error);
-    });
+        }).catch(error => {
+            console.error('Error:', error);
+        });
 
     }
  
@@ -244,6 +342,69 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
     handleNext(){
         this.isAllFields = true;
         this.openNext();
+    }
+    handleCancelDetail(){
+        var pagenname ='my-request'; //request page nam
+        // let states={'recordId': recordid}; //event.currentTarget.dataset.id , is the recordId of the request
+        
+        this[NavigationMixin.Navigate]({
+            type : 'comm__namedPage',
+            attributes : {
+                pageName : pagenname
+            },
+            // state: states
+        });
+    }
+    handleDeleteValue(){
+        deleteRequest({requestId : this.recordId})
+        .then(result =>{
+            if(result == 'OK'){
+                this.showToast('success', 'success', 'OK');
+                // this.getRequest();
+                this.handleCancelDetail();
+            }else{
+                this.showToast('error', 'Error', result);
+            }
+        }).catch(error => {
+            console.error('Error:', error);
+        });
+    }
+
+    handleEditValue(){
+        getAdressedTo()
+        .then(result =>{
+            this.addressedRecord = result.map(plValue => {
+                            return {
+                                label: plValue.Name,
+                                value: plValue.Id
+                            };
+                        });
+                        this.buildformDetail(this.resultRecord);
+                        this.editMode = true;
+        }).catch(error => {
+            console.error('Error:', error);
+        });
+       
+
+    }
+
+    // getAAdressedTo(){
+    //     getAdressedTo()
+    //     .then(result =>{
+    //         this.addressedRecord = result.map(plValue => {
+    //                         return {
+    //                             label: plValue.Name,
+    //                             value: plValue.Id
+    //                         };
+    //                     });
+    //         this.buildformDetail(result);
+    //     }).catch(error => {
+    //         console.error('Error:', error);
+    //     });
+    // }
+
+    handleCancelEdit(){
+        this.editMode = false;
     }
 
     openNext(){
@@ -281,11 +442,12 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
     }
 
 
-    detailPage(recordId){
+    detailPage(){
         // this.recordId = this.getUrlParamValue(window.location.href, 'recordId');
         retreiveRequest({requestId : this.recordId})
         .then(result =>{
             console.log('@@@@result '+result);
+            this.resultRecord = result;
             this.buildformDetail(result);
         }).catch(error =>{
             console.error(error);
@@ -296,6 +458,8 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
         this.recordId = this.getUrlParamValue(window.location.href, 'recordId');
         if(this.recordId){
              this.detailPage(this.recordId);
+        }else{
+            this.getRequest();
         }
     }
 
@@ -330,7 +494,12 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
         if (result.isvalid) {
             this.emp={...this.emp,...result.obj};
             // this.emp[TYPE_FIELD_NAME]=this.empType;
-            this.createRequest();
+            if(this.emp.RH_StartDate > this.emp.RH_EndDate){
+                this.showToast('error', 'Error', 'Take another date');
+            }else{
+                this.createRequest();
+            }
+            
         }else{
             console.log(`Is not valid `);
         }
@@ -363,7 +532,10 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
                 this.showToast('error', 'Error', result.message);
             }else{
                 this.showToast('success', 'success', 'ok');
-                this.isNew = false;
+                this.handleCancelDetail();
+                // this.tabReq = [];
+                // this.getRequest();
+                // this.isNew = false;
             }
           })
           .catch(error => {
@@ -393,7 +565,8 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
     }
 
     buildformComplain(){
-            this.lastFieldInputsComplain = [
+            // this.lastFieldInputsComplain = [
+            this.lastFieldInputsAll = [
             {
                 label:'Addressed To',
                 placeholder:'Select',
@@ -440,7 +613,8 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
         ]
     }
     buildformPermHoli(){
-        this.lastFieldInputsPermHoli = [
+        // this.lastFieldInputsPermHoli = [
+            this.lastFieldInputsAll = [
                 {
                     label:'Addressed To',
                     placeholder:'Select',
@@ -470,7 +644,7 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
                     name:'RH_StartDate',
                     value: '',
                     required:true,
-                    type:'Date',
+                    type:'Datetime',
                     ly_md:'6', 
                     ly_lg:'6'
                 },
@@ -480,14 +654,16 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
                     name:'RH_EndDate',
                     value: '',
                     required:true,
-                    type:'Date',
+                    type:'Datetime',
                     ly_md:'6', 
                     ly_lg:'6'
                 }
             ]
     }
     buildformExplanation(){
-        this.lastFieldInputsExplanation = [
+        // this.lastFieldInputsExplanation = [
+            this.lastFieldInputsAll = [
+
                 {
                     label:'Addressed To',
                     placeholder:'Select',

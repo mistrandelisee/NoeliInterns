@@ -78,6 +78,7 @@ export default class Rh_profile extends LightningElement {
                 this.ChangePassword(data);
                 break;
             default:
+                this.startSpinner(false);
                 break;
         }
         
@@ -198,7 +199,7 @@ export default class Rh_profile extends LightningElement {
     }
     ChangePasswordApex(info){
         console.log(`@@@@@ callUpdateInfoApex >>> Input : `,info);
-        changeMyPassword({ changepasswordjson: Json.stringify(info) })
+        changeMyPassword({ changepasswordjson: JSON.stringify(info) })
           .then(result => {
             console.log('Result', result);
             if (!result.error && result.Ok) {

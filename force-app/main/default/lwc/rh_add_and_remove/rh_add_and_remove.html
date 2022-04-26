@@ -1,70 +1,74 @@
 <template>
     <lightning-card class="">
-        <div class="slds-grid slds-gutters">
-            <div class="slds-col slds-align_absolute-center">
-              <span>
-                <!--<lightning-layout multiple-rows class="slds-var-p-bottom_small">-->
-                    <lightning-layout-item size="4">
-                        <lightning-input
-                                type="search"
-                                label="Search input"
-                                onchange={handleSearch}
-                                class="slds-var-p-right_small">
-                        </lightning-input>
-                    </lightning-layout-item>
-                    <lightning-card>
-                        <div class="box-border slds-scrollable" style="height:5rem;width:24rem">
-                            <p>papapapap</p>
-                            <p>papapapap</p>
-                            <p>papapapap</p>
-                            <p>papapapap</p>
-                            <p>papapapap</p>
-                            <p>papapapap</p>
-                            <p>papapapap</p>
+
+
+        <div class="slds-grid slds-gutters slds-align_absolute-center">
+           
+                    <div class="slds-col">
+                        <lightning-card class="">
+                            <div class="slds-align_absolute-center input-style">
+                                        <lightning-layout-item size="9">
+                                            <lightning-input
+                                                    type="search"
+                                                    label="Search input"
+                                                    onchange={handleSearch}
+                                                    class="slds-var-p-right_small">
+                                            </lightning-input>
+                                        </lightning-layout-item>
+                            </div>
+                            <div class="box-border slds-align_absolute-center slds-scrollable">
+                                <ul class="slds-listbox slds-listbox_vertical">
+                                    <template for:each={initialList} for:item="acc">
+                                        <li class="slds-listbox__item" onclick={handleChange} key={acc.Id} data-id={acc.Id} data-name={acc}>
+                                            <p class="slds-listbox__option slds-listbox__option_plain slds-media slds-media_small">
+                                                {acc.Name}
+                                            </p>
+                                        </li>
+                                    </template >
+                                </ul>
+                            </div>
+                       </lightning-card>
+                   </div>
+
+                <div class="slds-col">
+                    <lightning-card class="slds-align_absolute-center midle-style">
+                        <div class="slds-align_absolute-center">
+                            <lightning-button-icon icon-name="utility:right" onclick={handleClick} alternative-text="ADD" title="ADD"></lightning-button-icon>
+                        </div>
+                        <div class="slds-align_absolute-center">
+                            <lightning-button-icon icon-name="utility:left" onclick={handleClick1} alternative-text="Remove" title="Remove"></lightning-button-icon>
                         </div>
                     </lightning-card>
-              </span>
-            </div>
-            <div class="slds-col slds-align_absolute-center">
-              <span> 
-                <lightning-layout-item size="4"> </lightning-layout-item>
-                <lightning-card>
-                    <div class="slds-align_absolute-center">
-                    <p> <lightning-button-icon icon-name="utility:right"  onclick={perm} alternative-text="Add" title="Add" ></lightning-button-icon> </p>
-                    <p> <lightning-button-icon icon-name="utility:left" onclick={perm} alternative-text="Remove" title="Remove" ></lightning-button-icon> </p>
-                    </div>
-                </lightning-card>  
-              </span>
-            </div>
-            <div class="slds-col slds-align_absolute-center">
-              <span>
-                <!--<lightning-layout multiple-rows class="slds-var-p-bottom_small">-->
-                    <lightning-layout-item size="4">
-                        <lightning-input
-                                type="search"
-                                label="Search input"
-                                onchange={handleSearch}
-                                class="slds-var-p-right_small">
-                        </lightning-input>
-                    </lightning-layout-item>
+                </div>
+
+                <div class="slds-col">
+                    <lightning-card class="">
+                        <div class="slds-align_absolute-center input-style">
+                            
+                                    <lightning-layout-item size="9">
+                                        <lightning-input
+                                            type="search"
+                                            label="Search input"
+                                            onchange={handleSearch1}
+                                            class="slds-var-p-right_small">
+                                        </lightning-input>
+                                    </lightning-layout-item>
+                        </div>
+                        <div class="box-border slds-align_absolute-center slds-scrollable">
+                            <ul class="slds-listbox slds-listbox_vertical">
+                                <template for:each={selectedList} for:item="acc">
+                                    <li class="slds-listbox__item" onclick={handleChange} key={acc.Id} data-id={acc.Id} data-name={acc}>
+                                        <p class="slds-listbox__option slds-listbox__option_plain slds-media slds-media_small">
+                                            {acc.Name}
+                                        </p>
+                                    </li>
+                                </template >
+                            </ul>
+                        </div>
+                    </lightning-card>
+                </div>
                 
-                    <lightning-card>
-                        <div class="box-border slds-scrollable" style="height:5rem;width:24rem">
-                            <p>papapapap</p>
-                            <p>papapapap</p>
-                            <p>papapapap</p>
-                            <p>papapapap</p>
-                            <p>papapapap</p>
-                            <p>papapapap</p>
-                            <p>papapapap</p>
-                            <p>papapapap</p>
-                            <p>papapapap</p>
-                            <p>papapapap</p>
-                        </div>
-                       
-                    </lightning-card>
-                </span>
-            </div>
+
         </div>
     </lightning-card>
 </template>

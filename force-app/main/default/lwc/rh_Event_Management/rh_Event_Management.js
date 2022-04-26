@@ -47,7 +47,8 @@ export default class Rh_Event_Management extends LightningElement {
                         newobj.ContactName=obj.Contact_Id__r.Name;
                         newobj.Description=obj.Description__c;
                         newobj.StartDate=obj.Start_Date__c;
-                        // newobj.Status=obj.Status__c;
+                        newobj.EndDate=obj.End_Date__c;
+                        newobj.Status=obj.Status__c;
                     return newobj;
                 });
                 console.log('eventManagerinformation--->', this.eventinformation);
@@ -94,17 +95,15 @@ export default class Rh_Event_Management extends LightningElement {
                 console.error(result.msg);
             }else{
                 console.log('@@@EventInfo--> ' , result[0]);
-                console.log('@@@evenName--> ' , result[0].Name + ' @@@evenName--> '+ result[0].Description__c);
+                console.log('@@@evenName--> ' , result[0].Name + ' @@@evenDescription--> '+ result[0].Description__c);
                 const setUserIds = [];
-                // for(let i=0; i<this.IdBaseUser.length; i++){
-                //     setUserIds.push(this.IdBaseUser[i].Id);
-                // }
-                setUserIds.push(this.IdBaseUser[0].Id);
-                setUserIds.push(this.IdBaseUser[1].Id);
+                for(let i=0; i<this.IdBaseUser.length; i++){
+                    setUserIds.push(this.IdBaseUser[i].Id);
+                }
                 setUserIds.push(this.idUser);
                 console.log('setUserIds --> ' ,setUserIds);
                 console.log('userinfo--> ' , this.idUser);
-                sendNotif({strBody:result[0].Description__c, strTargetId:this.idUser, strTitle:result[0].Name, setUserIds:setUserIds}).then(result =>{
+                sendNotif({strBody:result[0].Description__c, pgRefId:evId, strTargetId:this.idUser, strTitle:result[0].Name, setUserIds:setUserIds}).then(result =>{
                     if (result?.error) {
                         console.error(result?.msg);
                     }else{

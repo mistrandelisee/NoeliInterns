@@ -1,34 +1,35 @@
 <template>
+    <c-rh_toast auto-close-time="6000"></c-rh_toast>
     <template if:true={isNew}>
         <template if:false={isAllFields}>
             <c-rh_dynamic_form inputs-items={firstFieldInputs} oninputchanged={handlechge}></c-rh_dynamic_form>
-            <!-- <div class="card-footer" slot="footer">
+            <div class="card-footer" slot="footer">
                 <div class="slds-clearfix">
                     <div class="slds-float_right">
                         <lightning-button variant="base" label="Cancel" data-action-name="Cancel" title="Cancel" icon-name="utility:close" onclick={handleCancel} class="slds-m-left_x-small"></lightning-button>
-                        <lightning-button variant="base" label="Next"   onclick={handleNext} class="slds-m-left_medium"></lightning-button>
+                        <!-- <lightning-button variant="base" label="Next"   onclick={handleNext} class="slds-m-left_medium"></lightning-button> -->
 
                     </div>
                 </div>
                 
-            </div> -->
+            </div>
         </template>
         <template if:true={isAllFields}>
-            <c-rh_toast auto-close-time="6000"></c-rh_toast>
+            
             <lightning-card>
                 <h3 slot="title">
                     <lightning-icon icon-name="action:new_note" alternative-text="New note" title="New note" size="small"></lightning-icon>
                     Request Detail
                 </h3>
-                    <template if:true={isComplain}>
-                        <c-rh_dynamic_form inputs-items={lastFieldInputsComplain}></c-rh_dynamic_form>
-                    </template>
-                    <template if:true={isPermHoli}>
+                    <!-- <template if:true={isComplain}> -->
+                        <c-rh_dynamic_form inputs-items={lastFieldInputsAll}></c-rh_dynamic_form>
+                    <!-- </template> -->
+                    <!-- <template if:true={isPermHoli}>
                         <c-rh_dynamic_form inputs-items={lastFieldInputsPermHoli}></c-rh_dynamic_form>
                     </template>
                     <template if:true={isExplanation}>
                         <c-rh_dynamic_form inputs-items={lastFieldInputsExplanation}></c-rh_dynamic_form>
-                    </template>
+                    </template> -->
                 <div slot="footer">
                     <div class="card-footer" slot="footer">
                         <div class="slds-clearfix">
@@ -53,28 +54,50 @@
                     <lightning-button variant="brand-outline" label="Create request" icon-name="utility:add" title="Primary action with lighter look" onclick={handleChangeValue} class="slds-m-left_x-small"></lightning-button>
                 </div>
             </div>
-            <lightning-card  class="custom-card">
-                <!-- <lightning-button label="New" slot="actions" onclick={handleChangeValue}></lightning-button> -->
 
-                <!-- <p class="slds-p-horizontal_small">Card Body (custom component)</p> -->
-                <!-- <c-rh_datatable_component columns={columnsVisited} items={tabReq} onrowselected={handlerselected}>
-                </c-rh_datatable_component> -->
-                <!-- <p slot="footer">Card Footer</p> -->
-
-                
-                <!-- items={tabReq} -->
-            </lightning-card>
-            <c-rh_cards_view page-size="5"  items={tabReq} onrowselected={handleCardAction}></c-rh_cards_view>
+            <c-rh_cards_view page-size="6"  items={tabReq} onrowselected={handleCardAction}></c-rh_cards_view>
         </template>  
         <template if:true={hasRecordId}> 
-            <div class="slds-p-around_medium profile_user_info">
-                <c-rh_display_fields 
-                title="Request Informations"
-                iconsrc="utility:people"
-                column="2"
-                output-fields={formPersonanalInputDetails}
-                ></c-rh_display_fields>
-            </div>
+            <template if:false={editMode}>
+                <div class="slds-clearfix">
+                    <div class="slds-float_right">
+                        <lightning-button variant="brand-outline" label="Edit request" icon-name="action:new_note" title="Primary action with lighter look" onclick={handleEditValue} class="slds-m-left_x-small"></lightning-button>
+                        <lightning-button variant="brand-outline" label="Clone request" icon-name="utility:add" title="Primary action with lighter look" onclick={handleChangeValue} class="slds-m-left_x-small"></lightning-button>
+                        <lightning-button variant="brand-outline" label="Delete request" icon-name="action:delete" title="Primary action with lighter look" onclick={handleDeleteValue} class="slds-m-left_x-small"></lightning-button>
+                        <lightning-button variant="brand-outline" label="Cancel" icon-name="action:preview" title="Primary action with lighter look" onclick={handleCancelDetail} class="slds-m-left_x-small"></lightning-button>
+
+                    </div>
+                </div>
+                <div class="slds-p-around_medium profile_user_info">
+                    <c-rh_display_fields 
+                    title="Request Informations"
+                    iconsrc="utility:people"
+                    column="2"
+                    output-fields={formPersonanalInputDetails}
+                    ></c-rh_display_fields>
+                </div>
+            </template>
+
+            <template if:true={editMode}>
+                <lightning-card class="custom-card">
+                    <h3 slot="title">
+                        <lightning-icon icon-name="utility:edit" size="small" class="slds-p-right_small"></lightning-icon>
+                        Request Edit
+                    </h3>
+                    <!-- <c-rh_dynamic_form inputs-items={lastFieldInputsAll}></c-rh_dynamic_form> -->
+                    <c-rh_dynamic_form inputs-items={formPersonanalInputDetails}></c-rh_dynamic_form>
+                    <div class="card-footer" slot="footer">
+                        <div class="slds-clearfix">
+                            <div class="slds-float_right">
+                                <lightning-button variant="base" label={l.Cancel} data-action-name="Cancel" title={l.Cancel} icon-name="utility:close" onclick={handleCancelEdit} class="slds-m-left_x-small"></lightning-button>
+                                <lightning-button variant="base" label={l.Save} data-action-name="Edit" title={l.Save} icon-name="utility:save" onclick={handleSave} class="slds-m-left_medium"></lightning-button>
+        
+                            </div>
+                        </div>
+                        
+                    </div>
+                </lightning-card>
+            </template>
         </template>    
     </template>
 </template>

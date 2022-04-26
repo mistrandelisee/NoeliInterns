@@ -1,20 +1,16 @@
 <template >
-    <div>   
+
+    <template if:true={hideCp}>
+        <c-rh_cards_view page-size="6" items={listeGroup} onrowselected={handleCardAction} ></c-rh_cards_view>
+    </template>
+   <!-- <div>   hideView handleCardAction
         <lightning-layout horizontal-align="spread">
-           <template for:each={visibleGroups} for:item="item">
+           <template for:each={listeGroup} for:item="item">
             <lightning-layout-item padding="around-small" key={item.Name}>
                  
                         <div class="custom-box c-container" >
                             <p class="field-title" title="Field 1"> 
                                 
-                            <!--    <span class="slds-avatar-group">
-                                    <span class="slds-avatar slds-avatar-grouped slds-avatar-grouped__primary">
-                                    <img alt="Person 2 name" src="/assets/images/avatar2.jpg" title="Person 2 name" />
-                                    </span>
-                                    <span class="slds-avatar slds-avatar-grouped slds-avatar-grouped__secondary">
-                                    <img alt="Person 2 name" src="/assets/images/avatar2.jpg" title="Person 2 name" />
-                                    </span> 
-                                </span> -->
                                 <span class="slds-avatar-group">
                                     <span class="slds-avatar slds-avatar-grouped slds-avatar-grouped__primary">
                                     <abbr class="slds-avatar__initials slds-avatar-grouped__initials" title="Person name">{item.Description}</abbr>
@@ -26,22 +22,25 @@
                                      {item.Name}
                                 </p>
                             <p>Name ...</p>
-                            <p class="field-title" title="Field2 (3)">Team Leader:
+                            <p class="field-title" title="Field2 (3)">Team Leader: {item.RH_Team_Leader__c}
                             </p>
                             <p> Number of Member: </p>
 
                             <footer class="slds-card__footer">
-                                <a class="slds-card__footer-action" href="#">View Details 
-                                  <span class="slds-assistive-text"> Groupe detail </span>
-                                </a>
+                                <center>
+                                    <lightning-button variant="base" label="View Details" title="Looks like a link" 
+                                    onclick={handleDetailGroupe} class="slds-m-left_x-small" data-id={item.Id}></lightning-button>
+                                </center>
                             </footer>
                         </div>            
             </lightning-layout-item>
           </template>
         </lightning-layout>
-    </div>  
+    </div>  -->
     
        <div slot="footer" class="slds-var-m-vertical_medium">
-           <c-pagination records={initial} record-size="4" onupdate={updateGroupeHandler}></c-pagination>
+         <!--   <c-rh_cards_view page-size="20" items={listeGroup} onrowselected={handleCardAction}></c-rh_cards_view>
+         <c-rh_cards_view page-size="20" items={listcontact} onrowselected={handleCardAction}></c-rh_cards_view>
+             <c-pagination records={listeGroup} record-size="4" onupdate={updateGroupeHandler}></c-pagination> -->
        </div>
 </template>

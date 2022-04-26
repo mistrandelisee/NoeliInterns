@@ -11,6 +11,8 @@ import getRelatedFilesByRecordId from '@salesforce/apex/RH_Project_controller.ge
 import {NavigationMixin} from 'lightning/navigation';
 
 import {ShowToastEvent} from 'lightning/platformShowToastEvent';
+import { CurrentPageReference } from 'lightning/navigation';
+import { registerListener, unregisterAllListeners,fireEvent } from 'c/pubsub';
 
 export default class Rh_Projects extends NavigationMixin(LightningElement) {
     @track initial =[];
@@ -62,7 +64,25 @@ export default class Rh_Projects extends NavigationMixin(LightningElement) {
         Description:'Description'
     };
 
+
+    @wire(CurrentPageReference) pageRef;
     connectedCallback(){
+        this.curentProject = this.getUrlParamValue(window.location.href, 'recordId');
+        if (this.curentProject) {
+            this.getdetailsProject(this.curentProject);
+        }else{
+            this.getAllprojects();
+        }
+    }
+
+    startSpinner(b){
+        fireEvent(this.pageRef, 'Spinner', {start:b});
+     }
+     showToast(variant, title, message){
+         fireEvent(this.pageRef, 'Toast', {variant, title, message});
+     }
+     
+ getAllprojects(){
     getProjectList()
     .then(result => {
         console.log('result',result);
@@ -84,7 +104,7 @@ export default class Rh_Projects extends NavigationMixin(LightningElement) {
             keysLabels:self.keysLabels,
             fieldsToShow:self.fieldsToShow,
             }
-     
+    
             console.log('@@@@@objectReturn' + objetRep);
             tabReq111.push(objetRep);
         }
@@ -96,8 +116,7 @@ export default class Rh_Projects extends NavigationMixin(LightningElement) {
         this.error = error;
         this.returnList = undefined;
     });
-}
-
+ }
 
 setviewsList(items){
     let cardsView=this.template.querySelector('c-rh_cards_view');
@@ -108,13 +127,40 @@ setviewsList(items){
     
 
     handleCardAction(e) {
-        // this.curentProject=e.currentTarget.getAttribute("data-id");
-        // console.log('onItemSelected:::',this.curentProject);
-        // this.curentProject=e.currentTarget.getAttribute("data-id");
-        // this.initermediate = this.initial.filter(element => element['project']['Id'] == this.curentProject);
+       
 
-        this.curentProject= e.detail.data.id;
-        getProject({ProjectId :this.curentProject})
+        // this.curentProject= e.detail.data.id;
+        const info=e.detail;
+        if (info?.extra?.isTitle) {
+            this.goToRequestDetail(info?.data?.id);
+        }
+       
+        
+    }
+
+    goToRequestDetail(recordid) {
+        var pagenname ='rhproject'; //request page nam
+        let states={'recordId': recordid}; //event.currentTarget.dataset.id , is the recordId of the request
+        
+        this[NavigationMixin.Navigate]({
+            type : 'comm__namedPage',
+            attributes : {
+                pageName : pagenname
+            },
+            state: states
+        });
+    }
+
+    getUrlParamValue(url, key) {
+        return new URL(url).searchParams.get(key);
+      }
+
+      get hasrecordid(){
+          return this.curentProject?true:false;
+      }
+
+    getdetailsProject(projectIds){
+        getProject({ProjectId :projectIds})
         .then(result => {
             console.log('result',result);
             this.memberProjects = result['projectMembers'];
@@ -185,7 +231,7 @@ setviewsList(items){
                     ly_lg:'12'
                 },
             ];
-            getRelatedFilesByRecordId({recordId: this.curentProject})
+            getRelatedFilesByRecordId({recordId: projectIds})
             .then(result11=>{
                 console.log(result11)
                 this.filesList = Object.keys(result11).map(id=>({
@@ -212,10 +258,7 @@ setviewsList(items){
             this.error = error;
             this.returnList = undefined;
         });
-       
-        
     }
-
 
     handleNext(e){
 
@@ -284,23 +327,14 @@ setviewsList(items){
         insertUpdateMembers({AddMembers:initParticipate,MoveMembers:moveParticipate})
         .then(result=>{
             window.console.log('after save');
-            getProjectList()
-            .then(result => {
-                console.log('result',result);
-                this.initial = result;
-            });
-            // .catch(error => {
-            //     console.log('error',error);
-            //     this.error = error;
-            //     this.returnList = undefined;
-            // });
+           this.getdetailsProject(this.curentProject);
             const toastEvent = new ShowToastEvent({
               title:'Success!',
               message:'Members Updated successfully',
               variant:'success'
             });
             this.dispatchEvent(toastEvent);
-            this.showList = true;
+            this.showDetails = true;
             this.showManage= false;
         })
         .catch(error=>{
@@ -328,16 +362,7 @@ setviewsList(items){
         insertProjectMethod({ProjectObj:this.projects,participation:initParticipate})
         .then(result=>{
             window.console.log('after save' + this.accountid);
-            getProjectList()
-            .then(result => {
-                console.log('result',result);
-                this.initial = result;
-            });
-            // .catch(error => {
-            //     console.log('error',error);
-            //     this.error = error;
-            //     this.returnList = undefined;
-            // });
+            this.getAllprojects();
             const toastEvent = new ShowToastEvent({
               title:'Success!',
               message:'Project created successfully',
@@ -353,7 +378,10 @@ setviewsList(items){
         });
 
     }
+
     handleBack(e){
+        this.curentProject = undefined;
+        this.goToRequestDetail(this.curentProject);
         this.showList = true;
         this.showDetails = false;
         this.showEdit = false;
@@ -363,17 +391,7 @@ setviewsList(items){
         this.addAttach = false;
     }
     handleBackToDetails(e){
-        getRelatedFilesByRecordId({recordId: this.curentProject})
-            .then(result11=>{
-                console.log(result11)
-                this.filesList = Object.keys(result11).map(item=>({"label":result11[item],
-                 "value": item.Title,
-                 "fname": 'testfile.'+item.FileExtension,
-
-                 "url":`data:application/octet-stream;base64,${item.VersionData}`
-                }))
-                console.log(this.filesList);
-            })
+        
         this.showList = false;
         this.showDetails = true;
         this.showEdit = false;

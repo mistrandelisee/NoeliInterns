@@ -1,8 +1,8 @@
 public with sharing class RH_Request_controller {
     
-    @AuraEnabled(cacheable=true)
+    @AuraEnabled
     public static List<RH_Request__c> getrequest() {
-        return [SELECT id,RH_Description__c,Rh_Status__c,RH_Addressed_To__r.Name,CreatedDate,RH_RequestTypeName__c FROM RH_Request__c WHERE RH_Description__c != NULL];
+        return [SELECT id,Name,RH_Description__c,Rh_Status__c,RH_Addressed_To__r.Name,RecordType.Name ,CreatedDate,RH_RequestTypeName__c FROM RH_Request__c WHERE RH_Description__c != NULL];
     }
     @AuraEnabled(cacheable=true)
     public static List<Contact> getAdressedTo() {
@@ -11,7 +11,7 @@ public with sharing class RH_Request_controller {
 
     @AuraEnabled
     public static RH_Request__c retreiveRequest(String requestId){
-        return [SELECT id, RH_Description__c , RH_Addressed_To__r.Name, Rh_Status__c, RH_Start_date__c, 
+        return [SELECT id, Name, RH_Description__c , RH_Addressed_To__r.Name, Rh_Status__c, RH_Start_date__c, 
         RH_End_date__c, RH_Parent_request_id__c, RH_Addressed_Cc__c, RH_Complain_On__c,RecordType.Name  FROM RH_Request__c WHERE id =: requestId ];
     }
 
@@ -34,6 +34,9 @@ public with sharing class RH_Request_controller {
             Requestdetailswrapper Requestinfo = (Requestdetailswrapper) JSON.deserialize(Requestjson, Requestdetailswrapper.class);
             RH_Request__c RequestUser =Requestinfo.getRequest();
             RequestUser.RH_Status__c = RH_Constans.RH_OPEN;
+            
+            RequestUser.Name = Schema.SObjectType.RH_Request__c.getRecordTypeInfosById().get(RequestUser.RecordTypeId).getName().substring(0,3).toUpperCase() + Datetime.now().year() + Datetime.now().day() + Datetime.now().minute();
+            System.debug('@@@@Name' + RequestUser.Name);
             // RequestUser.RH_RequestTypeName__c = Schema.getGlobalDescribe().get('RH_Request__c').getDescribe().getRecordTypeInfosById().get(RequestUser.RecordT).getName();
             // RequestUser.recordTypeId=RH_Constans.RH_CONTACT_RT;
             // mapReturn.put('conctactUser',conctactUser);
@@ -48,7 +51,23 @@ public with sharing class RH_Request_controller {
         return mapReturn;
     }
 
+    @AuraEnabled
+    public static string deleteRequest(String requestId){
+        RH_Request__c req = [SELECT Id from RH_Request__c WHERE Id =: requestId];
+        Database.DeleteResult drList = Database.delete(req, false);
 
+        if (drList.isSuccess()) {
+            return 'OK';
+        }else {
+            String pop = '';
+            for(Database.Error err : drList.getErrors()) {
+                pop = pop + err.getMessage() + err.getFields();
+            }
+            return pop;
+        }
+    }
+
+    
     public class Requestdetailswrapper  {
         @AuraEnabled public String ComplainOn;
         @AuraEnabled public String RecordT;

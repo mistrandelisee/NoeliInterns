@@ -5,7 +5,20 @@
         <lightning-layout multiple-rows>
             <template if:true={inputsItems} for:each={inputsItems} for:item="item">
                 <lightning-layout-item key={item.name} size="12" small-device-size={item.ly_xs} medium-device-size={item.ly_md} large-device-size={item.ly_lg} padding="horizontal-medium" class="slds-m-vertical_small slds-m-horizontal_none">
-                
+                    <!--Kb add-->
+                    <template if:true={item.isFile}>
+                        <lightning-input 
+                            label={item.label} 
+                            type={item.type} 
+                            data-id={item.name}
+                            accept={item.accept}  
+                            onchange={handleChanged}>
+                        </lightning-input>
+                        <template if:true={fileData}>
+                            {fileData.name}
+                        </template>
+                    </template> 
+
                     <template if:true={item.isText}>
                         <lightning-input 
                         
