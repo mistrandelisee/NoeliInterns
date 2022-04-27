@@ -59,10 +59,10 @@
                         <div class="slds-p-around_medium">
                             <div class="slds-clearfix">
                                 <div class="slds-float_right">
-                                    <lightning-button-icon icon-name="utility:delete" style="margin-right: 16px;" alternative-text="delete"  title="internal_share" onclick={deleteNotification}></lightning-button-icon>
-                                    <lightning-button-icon icon-name="utility:share" class="slds-m-right_xx-small" alternative-text="share" title="share" onclick={sendNotification}></lightning-button-icon>
+                                    <lightning-button-icon icon-name="utility:delete" style="margin-right: 16px;" alternative-text="delete" data-id={data.Id} title="internal_share" onclick={deleteNotification}></lightning-button-icon>
+                                    <lightning-button-icon icon-name="utility:share" class="slds-m-right_xx-small" alternative-text="share" data-id={data.Id} title="share" onclick={sendNotification}></lightning-button-icon>
                                 </div>
-                              </div>
+                            </div>
                         </div>
                     </div>
                     </template>

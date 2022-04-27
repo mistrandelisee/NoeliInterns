@@ -1,0 +1,71 @@
+<template>
+    <template if:true={showComponentBase}>
+        <div class="slds-p-around_medium event">
+            <lightning-card  title="Hello">
+                <lightning-button label="New Event" slot="actions" onclick={handleOpenComponentSave}></lightning-button>
+                <c-rh_datatable_component columns={columns} items={datas} onrowselected={callRowAction}></c-rh_datatable_component>
+                <!-- <c-rh_cards_view page-size="5"  items={datas} onrowselected={callRowAction}></c-rh_cards_view> -->
+                <p slot="footer">Card Footer</p>
+            </lightning-card>
+        </div>
+    </template>
+    <!-- <div class="slds-p-around_medium account">
+        <c-rh_display_fields title={l.AccountInfoTitle} iconsrc="standard:event" column="3" output-fields={accountFields} ></c-rh_display_fields>
+    </div> -->
+    <template if:true={showComponentEdit}>
+        <section >
+            <div class="slds-box slds-p-around_none slds-m-top_x-small slds-m-bottom_medium slds-m-horizontal_none">
+                <header >
+                    <h2 id="heading-02" class="slds-text-heading_medium slds-hyphenate" style="margin-top:15px; margin-bottom:-10px">
+                        <template if:false={isUpdate}>
+                            <div class="slds-text-align_center">
+                                Add New Event
+                            </div>
+                        </template>
+                        <template if:true={isUpdate}>
+                            <div class="slds-text-align_center">
+                                Update Event
+                            </div>
+                        </template>
+                    </h2>
+                </header>
+                <div class="slds-p-around_medium" id="content-id-2">
+                    <c-rh_dynamic_form  inputs-items={inputsItems}></c-rh_dynamic_form>
+                    <div class="slds-m-around--xx-large">
+                        <br/>
+                        <div style="float:right">
+                            <template if:false={isUpdate}>
+                                <lightning-button class="slds-m-right_medium" label="Cancel" onclick={closeComponentEdit} variant="neutral"></lightning-button>
+                                <lightning-button label="Save" onclick={handleSaveEvent} variant="neutral"></lightning-button>
+                            </template>
+                            <template if:true={isUpdate}>
+                                <lightning-button class="slds-m-right_medium" label="Cancel" onclick={closeComponentUpdate} variant="neutral"></lightning-button>
+                                <lightning-button label="Update" onclick={handleUpdateEvent} variant="neutral"></lightning-button>
+                            </template>
+                        </div>
+                        
+                    </div>
+                </div>
+            </div>
+        </section>
+    </template>
+    
+    <template if:true={showComponentDetails}>
+        <div class="slds-box slds-p-around_none slds-m-top_x-small slds-m-bottom_medium slds-m-horizontal_none" >
+            <div class="slds-var-m-vertical_medium" style="margin-top: -1px;">
+                <c-rh_display_fields output-fields={eventDetails} title="Project Details"></c-rh_display_fields>
+                <div class="slds-p-around_medium">
+                    <div class="slds-clearfix">
+                        <div class="slds-float_right" style="margin-bottom: -25px; margin-top: -8px;">
+                            <lightning-button-icon icon-name="utility:delete" style="margin-right: 10px;" alternative-text="delete"  title="internal_share" onclick={deleteNotification}></lightning-button-icon>
+                            <lightning-button-icon icon-name="utility:close" style="margin-right: 5px;" class="slds-m-right_xx-small" alternative-text="close" title="close"  onclick={closeComponentDetails}></lightning-button-icon>
+                            <template if:true={HideEdit}>
+                                <lightning-button-icon icon-name="utility:edit" alternative-text="internal_edit"  title="internal_edit"  onclick={handleEdit}></lightning-button-icon>
+                            </template>
+                        </div>
+                      </div>
+                </div>
+            </div>
+        </div>
+    </template>
+</template>

@@ -1,0 +1,29 @@
+<template>
+    <div>
+            
+        <!-- <div class="slds-align_absolute-center"> -->
+                <template class="slds-align_absolute-center" for:each={records} for:item="acc">
+                    <div class="slds-grid slds-gutters slds-align_absolute-center slds-var-m-vertical_medium" key={acc.Name}>
+                        <div class="slds-col" >
+                            <ul class="slds-listbox slds-listbox_vertical box-border">
+                            
+                                <li class="slds-listbox__item" onclick={handleChange}  data-id={acc.Id} data-name={acc}>
+                                <h1 class="h1-style">  
+                                    <p class="slds-listbox__option slds-listbox__option_plain slds-media slds-media_small">
+                                        {acc.Name}
+                                    </p>
+                                </h1>
+                                <h3 class="h2-style">  
+                                    <p class="slds-listbox__option slds-listbox__option_plain slds-media slds-media_small">
+                                        {acc.Description__c}
+                                    </p>
+                                </h3>
+                                </li>
+                            
+                            </ul> 
+                        </div>
+                    </div>
+                </template>
+        <!-- </div> -->
+</div>
+</template>

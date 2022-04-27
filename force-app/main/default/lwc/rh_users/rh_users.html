@@ -34,34 +34,61 @@
                 <c-rh_success_operation title={title} information={information} recordid={recordId}></c-rh_success_operation>
             </template>
 
-            <template if:true={hascontacts}>
-
-                <!-- user information section -->
-                <!-- <template if:true={hasrec}> -->
-                    <div class="slds-p-around_medium profile_user_info">
-                        <c-rh_display_fields 
-                        title="User Informations"
-                        iconsrc="utility:people"
-                        column="2"
-                        output-fields={formPersonanalInputDetails}
-                        ></c-rh_display_fields>
-                    </div>
+            <template if:true={hasEmployeeInfo}>
+                <lightning-layout multiple-rows>
+                    <template if:true={hasDetailsActions} >
+                        
+                        <lightning-layout-item size="12" padding="around-smallx" small-device-size="12" medium-device-size="12" large-device-size="12">
+                            <div class="custom-box">
+                               <!-- Actions -->
+                               <c-rh_actions  onaction={handleDetailsActions} action-available={detailsActions} >  </c-rh_actions>
+                           </div>
+                        </lightning-layout-item>
+                    </template>
+                    <lightning-layout-item size="12" padding="around-smallx" small-device-size="12" medium-device-size="5" large-device-size="3">
+                        <div class="custom-box">
+                           <!-- display account -->
+                           <div class="slds-p-around_medium account">
+                               <c-rh_display_fields title={l.AccountInfoTitle} iconsrc="standard:account" column="3" output-fields={accountFields} ></c-rh_display_fields>
+                           </div>
+                       </div>
+                    </lightning-layout-item>
+                    <lightning-layout-item size="12" padding="around-smallx" small-device-size="12" medium-device-size="7" large-device-size="6" >
+                        <div class="custom-box"><!-- user information section -->
+                            <!-- <template if:true={hasrec}> -->
+                                <div class="slds-p-around_medium profile_user_info">
+                                    <c-rh_display_fields 
+                                    title="User Informations"
+                                    iconsrc="utility:people"
+                                    column="2"
+                                    output-fields={formPersonanalInputDetails}
+                                    ></c-rh_display_fields>
+                                </div>
+                                <template if:true={isAdmin}>
+                                    <!-- reset passzord -->
+                                    <div class="slds-p-around_medium profile_reset_password ">
+                                        <c-rh_reset_password title={l.ChangePasswordTitle} onaction={handleAction} ></c-rh_reset_password>
+                                    </div>
+                                                
+                                </template>
+                        </div>
+                    </lightning-layout-item>
+                    <lightning-layout-item size="12" padding="around-smallx" small-device-size="12" medium-device-size="12" large-device-size="3">
+                        <div class="custom-box">
+                            <!-- user extraField section -->
+                           <div class="slds-p-around_medium extra_info">
+                               <c-rh_extra_fields json-field={jsonInfo} ></c-rh_extra_fields>
+                           </div>
+                        </div>
+                    </lightning-layout-item>
                     
-                <!-- user extraField section -->
-                <div class="slds-p-around_medium extra_info">
-                    <c-rh_extra_fields json-field={jsonInfo} ></c-rh_extra_fields>
-                </div>
-                <!-- </template> -->
+                </lightning-layout>
+                
+                    
+               
+                
 
-                <!-- reset passzord -->
-                <div class="slds-p-around_medium profile_reset_password ">
-                    <c-rh_reset_password title={l.ChangePasswordTitle} onaction={handleAction} ></c-rh_reset_password>
-                </div>
-
-                <!-- display account -->
-                <div class="slds-p-around_medium account">
-                    <c-rh_display_fields title={l.AccountInfoTitle} iconsrc="standard:account" column="3" output-fields={accountFields} ></c-rh_display_fields>
-                </div>
+                
 
             </template>
 

@@ -1,5 +1,6 @@
 import { api, LightningElement } from 'lwc';
 
+const CARD_ACTION='stateAction';
 export default class Rh_card extends LightningElement {
     @api
     iconeName ;
@@ -98,7 +99,7 @@ export default class Rh_card extends LightningElement {
 
     handleOnselect(event) {
        const name = event.detail.value;
-        this.callParent('stateAction',this.record,{item:name})
+        this.callParent(CARD_ACTION,this.record,{item:name})
     }
 
     goToLink(event){

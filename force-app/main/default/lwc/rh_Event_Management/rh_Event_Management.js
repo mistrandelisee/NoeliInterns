@@ -90,7 +90,8 @@ export default class Rh_Event_Management extends LightningElement {
     }
     getEventInformation(evId){
         console.log('evId -- >' + evId);
-        getEventInfo({infoId:evId}).then(result =>{
+        getEventInfo({infoId:evId})
+        .then(result =>{
             if (result.error) {
                 console.error(result.msg);
             }else{
@@ -103,15 +104,15 @@ export default class Rh_Event_Management extends LightningElement {
                 setUserIds.push(this.idUser);
                 console.log('setUserIds --> ' ,setUserIds);
                 console.log('userinfo--> ' , this.idUser);
-                sendNotif({strBody:result[0].Description__c, pgRefId:evId, strTargetId:this.idUser, strTitle:result[0].Name, setUserIds:setUserIds}).then(result =>{
-                    if (result?.error) {
-                        console.error(result?.msg);
-                    }else{
-                        console.log('event--> ' , result);
-                    }
-                }).catch(err =>{
-                    console.error('error',err)
-                })
+                // sendNotif({strBody:result[0].Description__c, pgRefId:evId, strTargetId:this.idUser, strTitle:result[0].Name, setUserIds:setUserIds}).then(result =>{
+                //     if (result?.error) {
+                //         console.error(result?.msg);
+                //     }else{
+                //         console.log('event--> ' , result);
+                //     }
+                // }).catch(err =>{
+                //     console.error('error',err)
+                // })
 
             }
         }).catch(err =>{

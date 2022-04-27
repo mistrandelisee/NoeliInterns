@@ -31,8 +31,9 @@ export default class Rh_reset_password extends LightningElement {
                 name:'newPassword',
                 value: '',
                 required:true,
-                ly_md:'6', 
-                ly_lg:'6'
+                ly_md:'12', 
+                ly_xs:'12',
+                ly_lg:'12'
             }
         ];
     }

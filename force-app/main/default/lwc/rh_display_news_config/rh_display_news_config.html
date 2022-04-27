@@ -1,0 +1,27 @@
+<template>
+    <template if:false={hasrecordid}>
+        <template if:true={showNew}>
+            <c-rh_news_creation  onaction={handleActionNew}></c-rh_news_creation>
+        </template>
+        <template if:true={hideView}>
+            <div class="slds-border_top slds-border_bottom"  >
+                <lightning-input type="text" label="Set Interval" data-id="interval" value={config.interval} ></lightning-input>
+                <lightning-input type="text" label="Number of News To view" data-id="numberOfNews" value={config.numberOfNews}> </lightning-input>
+                <lightning-button variant="brand" label="Save" title="Save Configuration" onclick={saveConfig} class="slds-m-left_x-small"></lightning-button>
+            </div>
+            <c-rh_cards_view  page-size="6" items={allNews} onrowselected={handleCardAction}></c-rh_cards_view>  
+        </template>
+    </template>
+    <template if:true={hasrecordid} >
+        <template if:true={hasNews}>
+            <div class="slds-p-around_medium profile_user_info">
+                <c-rh_display_fields 
+                title="News  Details"
+                iconsrc="standard:news"
+                column="2"
+                output-fields={newsInputDetails}
+                ></c-rh_display_fields>
+            </div>
+        </template>
+    </template>
+</template>

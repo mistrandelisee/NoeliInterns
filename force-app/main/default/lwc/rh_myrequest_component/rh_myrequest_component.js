@@ -30,6 +30,8 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
     @track isPermHoli = false;
     @track isExplanation = false;
     @track editMode = false;
+    @track isDraft = false;
+    @track isOpen = false;
     @track typeId ;
     @track addressedRecord =[];
     @track formPersonanalInputDetails = [];
@@ -449,6 +451,11 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
             console.log('@@@@result '+result);
             this.resultRecord = result;
             this.buildformDetail(result);
+            if(result.Rh_Status__c == 'Draft'){
+                this.isDraft = true;
+            }else{
+                this.isOpen = true;
+            }
         }).catch(error =>{
             console.error(error);
         });
@@ -493,6 +500,7 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
         let result= this.save();
         if (result.isvalid) {
             this.emp={...this.emp,...result.obj};
+            this.emp.StatusRequest = 'Draft';
             // this.emp[TYPE_FIELD_NAME]=this.empType;
             if(this.emp.RH_StartDate > this.emp.RH_EndDate){
                 this.showToast('error', 'Error', 'Take another date');
@@ -505,6 +513,25 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
         }
         console.log(`emp`, this.emp);
     }
+
+    handleSaveAndSend(){
+        let result= this.save();
+        if (result.isvalid) {
+            this.emp={...this.emp,...result.obj};
+            this.emp.StatusRequest = 'Open';
+            // this.emp[TYPE_FIELD_NAME]=this.empType;
+            if(this.emp.RH_StartDate > this.emp.RH_EndDate){
+                this.showToast('error', 'Error', 'Take another date');
+            }else{
+                this.createRequest();
+            }
+            
+        }else{
+            console.log(`Is not valid `);
+        }
+        console.log(`emp`, this.emp);
+    }
+    
     save(){
         let form=this.template.querySelector('c-rh_dynamic_form');
         console.log(form);

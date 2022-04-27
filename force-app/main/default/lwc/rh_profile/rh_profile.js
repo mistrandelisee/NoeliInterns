@@ -433,7 +433,7 @@ export default class Rh_profile extends LightningElement {
             {
                 label:this.l.Description,
                 name:'Description',
-                value:this.profileinformation?.account?.Description
+                value:this.profileinformation?.account?.About
             }
 
          

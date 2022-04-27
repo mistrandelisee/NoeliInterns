@@ -36,6 +36,7 @@
                             <div class="slds-float_right">
                                 <lightning-button variant="base" label="Cancel" data-action-name="Cancel" title="Cancel" icon-name="utility:close" onclick={handleCancelLast} class="slds-m-left_x-small"></lightning-button>
                                 <lightning-button variant="base" label="Save" data-action-name="Edit" title="Save" icon-name="utility:save" onclick={handleSave} class="slds-m-left_medium"></lightning-button>
+                                <lightning-button variant="base" label="Save and Send" data-action-name="Edit" title="Save and Send" icon-name="utility:save" onclick={handleSaveAndSend} class="slds-m-left_medium"></lightning-button>
         
                             </div>
                         </div>
@@ -61,7 +62,13 @@
             <template if:false={editMode}>
                 <div class="slds-clearfix">
                     <div class="slds-float_right">
-                        <lightning-button variant="brand-outline" label="Edit request" icon-name="action:new_note" title="Primary action with lighter look" onclick={handleEditValue} class="slds-m-left_x-small"></lightning-button>
+                        <template if:true={isDraft}>
+                            <lightning-button variant="brand-outline" label="Send request" icon-name="action:new_note" title="Primary action with lighter look" onclick={handleSendValue} class="slds-m-left_x-small"></lightning-button>
+                            <lightning-button variant="brand-outline" label="Edit request" icon-name="action:new_note" title="Primary action with lighter look" onclick={handleEditValue} class="slds-m-left_x-small"></lightning-button>
+                        </template>
+                        <!-- <template if:false={isDraft}>
+                            <lightning-button variant="brand-outline" label="Edit request" icon-name="action:new_note" title="Primary action with lighter look" onclick={handleEditValue} class="slds-m-left_x-small"></lightning-button>
+                        </template> -->
                         <lightning-button variant="brand-outline" label="Clone request" icon-name="utility:add" title="Primary action with lighter look" onclick={handleChangeValue} class="slds-m-left_x-small"></lightning-button>
                         <lightning-button variant="brand-outline" label="Delete request" icon-name="action:delete" title="Primary action with lighter look" onclick={handleDeleteValue} class="slds-m-left_x-small"></lightning-button>
                         <lightning-button variant="brand-outline" label="Cancel" icon-name="action:preview" title="Primary action with lighter look" onclick={handleCancelDetail} class="slds-m-left_x-small"></lightning-button>

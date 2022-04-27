@@ -1,0 +1,30 @@
+.Img{
+    width: 100%;
+    height: 200px;
+    /*position: absolute;*/
+}
+
+.NewsData{
+    /*position: relative;*/
+    color: white;
+    margin-top: -200px;
+    height: 200px;
+    font-size:  medium;
+    background: rgba(39,62,84,0.82);
+
+}
+
+
+
+.navigation {
+    text-align: center;
+    font-size:  medium;
+    padding-top: 80px;   
+}
+
+.title {
+    text-align: center;
+    font-size:  x-large;
+    padding-top: 50px; 
+    margin-bottom: 10px;  
+}

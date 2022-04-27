@@ -1,0 +1,17 @@
+<template>
+    <lightning-record-edit-form
+        object-api-name={objectApiName}
+        record-id={recordId}
+    >
+        <lightning-input-field field-name={nameField}> </lightning-input-field>
+        <lightning-input-field field-name={descriptionField}> </lightning-input-field>
+        <lightning-input-field field-name={statusField}> </lightning-input-field>
+        <lightning-input-field field-name={startDateField}> </lightning-input-field>
+        <lightning-input-field field-name={endDateField}> </lightning-input-field>
+        <lightning-input-field field-name={linkField}> </lightning-input-field>
+        <div class="slds-var-m-top_medium slds-clearfix">
+            <lightning-button variant="brand" type="submit" label="Save" class="slds-float_right">
+            </lightning-button>
+        </div>
+    </lightning-record-edit-form>
+</template>

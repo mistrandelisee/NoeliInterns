@@ -30,6 +30,7 @@ public  class RH_Contact_Query {
                 FROM Contact WHERE Id IN :listcontactId];
 
     }
+    
 
     public  List<Contact> getExtrafied(String recordId){
         return [SELECT Id,RH_Extra_Infos__c FROM Contact WHERE id=:recordId];

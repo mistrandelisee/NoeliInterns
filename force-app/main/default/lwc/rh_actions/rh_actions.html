@@ -1,0 +1,15 @@
+<template>
+    <!-- <div class="slds-clearfix">
+        <div class="slds-float_right">
+            <lightning-button variant="brand-outline" label="Add News" icon-name="utility:add"  onclick={handleNew} class="slds-m-left_x-small"></lightning-button>
+        </div>
+    </div> -->
+    <div class="slds-clearfix">
+        <template  for:each={actionAvailable} for:item="action" for:index="index">
+        <div class="slds-float_right" key={action.name}>
+                <lightning-button variant={action.variant} label={action.label} data-action-name={action.name} title={action.title}
+                icon-name={action.iconName} onclick={handleClick} class={action.class}></lightning-button>
+        </div>
+        </template>
+    </div>
+</template>

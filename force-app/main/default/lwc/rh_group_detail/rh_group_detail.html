@@ -1,0 +1,11 @@
+<template>
+    
+    <div class="slds-p-around_medium account">
+        <c-rh_display_fields title="Group detail" iconsrc="standard:team_member" column="2" output-fields={accountFields} ></c-rh_display_fields>
+    </div>  
+
+    <div class="slds-page-header slds-page-header_record-home slds-var-m-vertical_medium slds-clearfix">
+        <p class="slds-align_absolute-center lds-page-header__title slds-truncate"> Members</p>
+        <lightning-button-icon icon-name="utility:edit"  alternative-text="Edit" title="Edit" onclick={handleManage} class="slds-float_right"></lightning-button-icon>
+    </div>
+</template>

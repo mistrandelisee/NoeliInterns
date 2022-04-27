@@ -1,0 +1,22 @@
+lightning-button{
+    --lwc-brandAccessible: var(--primaryColor);
+    --lwc-brandAccessibleActive: var(--primaryColor);;
+    --lwc-buttonBorderRadius: 15px;
+    --lwc-borderWidthThin: 1px;
+    font-weight: 700;
+}
+.md-header{
+    background-color: #2A2E43;
+
+    /* color: #C6C6C6;  dark*/
+    /* color: #F8F8F8;  light*/
+}
+.md-footer{
+    border-top: 2px solid var(--primaryColor);;
+     background-color:rgb(247, 245, 246);
+}
+.btn{
+    border: 2px solid #2A2E43;
+    color:#2A2E43;
+    border-radius: 15px;
+}

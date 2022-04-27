@@ -45,10 +45,30 @@ const labels = {
     NumberOfEmployees:'Number Of Employees',
     Website:'Website',
     Phone:'Phone',
-    Description:'About',
+    About:'About',
     YearStarted:'Year Started',
     Industry:'Industry',
-    Save: 'Saved successfully',
-    Error: 'Save failed'
+    Role:'Role',
+    Company: 'Company',
+    Description: 'Description',
+    AddressedTo: 'Addressed To',
+    Status : 'Status',
+    StartDate: 'Start date',
+    EndDate: 'End date',
+    AddressedCc: 'Addressed Cc',
+    RequestTypeName: 'Request Type',
+    ComplainOn: 'Complain On',
+
+    Activate: 'Activate',
+    Freeze: 'Freeze',
+    Disable: 'Disable',
+
+    Name: 'Name',
+    GroupeMember: 'The Groupe Member are',
+    Leader: 'Leader Name',
+
+
+    PromoteBaseUser: 'Mark As Team Leader',
+
 };
 export { labels }
