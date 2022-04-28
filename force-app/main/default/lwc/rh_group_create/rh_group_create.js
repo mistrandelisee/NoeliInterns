@@ -23,7 +23,9 @@ export default class Rh_group_create extends LightningElement {
                 console.error('Error:', error);
             });             */
     }
-    
+    handleClick1(){
+        this.dispatchEvent(new CustomEvent('backtogrouplist'));
+    }
     formLoaded;
     initDefault(){
         this.fieldInputs= [

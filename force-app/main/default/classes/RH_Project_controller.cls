@@ -120,6 +120,28 @@ public with sharing class RH_Project_controller {
     }
 
     @AuraEnabled
+    public static Project__c insertProjectupdated(Project__c ProjectObj,String IDProject){
+        try {
+            List<Project__c> proj=projectQry.getProjectById(IDProject);
+            for(Project__c pro :proj){
+                pro.Status__c = ProjectObj.Status__c;
+                pro.Start_Date__c = ProjectObj.Start_Date__c;
+                pro.Name = ProjectObj.Name;
+                pro.Project_Manager__c = ProjectObj.Project_Manager__c;
+                pro.Link__c = ProjectObj.Link__c;
+                pro.End_Date__c = ProjectObj.End_Date__c;
+                pro.Description__c = ProjectObj.Description__c;
+            }
+            update proj;
+            system.debug('proj  '+proj); 
+            return proj[0];
+        } catch (Exception exp) {
+            system.debug('exception'+exp.getMessage());
+            throw new AuraHandledException(exp.getMessage());
+        }
+    }
+
+    @AuraEnabled
     public static Boolean insertUpdateMembers(List<RH_Participation__c> AddMembers,List<RH_Participation__c> MoveMembers){
         try {
             if(AddMembers.size()>0){

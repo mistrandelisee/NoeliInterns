@@ -32,6 +32,7 @@ public without sharing class RH_Users_controller {
             mapReturn.put('Employes',listcon); 
             // mapReturn.put('users',users); 
             mapReturn.put('Constants',RH_Constans.getAllConstants()); 
+            mapReturn.put('Timesheets',[select Id,TotalDurationInHours, EndDate, StartDate, (SELECT Id,Status, Description from TimeSheetEntries) from TimeSheet]); 
 
             mapReturn.putAll(RH_Utility.checkRole()); 
             mapReturn.put('Ok',true); 

@@ -57,10 +57,10 @@
                 <div class="slds-p-around_medium">
                     <div class="slds-clearfix">
                         <div class="slds-float_right" style="margin-bottom: -25px; margin-top: -8px;">
-                            <lightning-button-icon icon-name="utility:delete" style="margin-right: 10px;" alternative-text="delete"  title="internal_share" onclick={deleteNotification}></lightning-button-icon>
-                            <lightning-button-icon icon-name="utility:close" style="margin-right: 5px;" class="slds-m-right_xx-small" alternative-text="close" title="close"  onclick={closeComponentDetails}></lightning-button-icon>
+                            <lightning-button-icon icon-name="utility:delete" style="margin-right: 10px;" alternative-text="delete" title="internal_share" onclick={handlepredeleteEvent}></lightning-button-icon>
+                            <lightning-button-icon icon-name="utility:close" style="margin-right: 5px;" class="slds-m-right_xx-small"  alternative-text="close" title="close"  onclick={closeComponentDetails}></lightning-button-icon>
                             <template if:true={HideEdit}>
-                                <lightning-button-icon icon-name="utility:edit" alternative-text="internal_edit"  title="internal_edit"  onclick={handleEdit}></lightning-button-icon>
+                                <lightning-button-icon icon-name="utility:edit" alternative-text="internal_edit"  title="internal_edit" onclick={handleEdit}></lightning-button-icon>
                             </template>
                         </div>
                       </div>
@@ -68,4 +68,23 @@
             </div>
         </div>
     </template>
+    <template if:true={showModalDelete}>
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <!-- Modal/Popup Box LWC header here -->
+                    <header class="slds-modal__header">
+                        <h2 id="modal-heading-02" class="slds-text-heading_medium slds-hyphenate">Warning</h2>
+                    </header>
+                    <!-- Modal/Popup Box LWC body starts here -->
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-2">
+                        <h1>Are you sure to want to delete it ?</h1>
+                        <div class="slds-float_right">
+                            <lightning-button-icon icon-name="utility:check" style="margin-right: 10px;" alternative-text="check" title="check" onclick={handledeleteEvent}></lightning-button-icon>
+                            <lightning-button-icon icon-name="utility:close" style="margin-right: 5px;" class="slds-m-right_xx-small"  alternative-text="close" title="close"  onclick={closeModalDelete}></lightning-button-icon>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </template>
 </template>

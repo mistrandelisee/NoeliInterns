@@ -4,21 +4,24 @@ import sendNotif from '@salesforce/apex/RH_EventController.sendNotifications';
 import getInfUser from '@salesforce/apex/RH_EventController.getInfoUsers';
 import getInfBaseUser from '@salesforce/apex/RH_EventController.getInfBaseUsers';
 import getEventInfo from '@salesforce/apex/RH_EventController.getEventInfos';
-
+import { ShowToastEvent } from 'lightning/platformShowToastEvent';
+import { refreshApex } from '@salesforce/apex';
 
 export default class Rh_Event_Management extends LightningElement {
+    isApproved = false;
     eventinformation = {};
     @track datas = [];
     @api
     title;
     @api
     iconsrc;
-    visibleDatas;
+    @track visibleDatas = [];
     idUser;
     eventId;
     IdBaseUser = [];
     EventInfo = {};
     EventInfos = {};
+    @track wiredEventList = [];
 
     updateEventHandler(event){
         this.visibleDatas=[...event.detail.records]
@@ -34,6 +37,28 @@ export default class Rh_Event_Management extends LightningElement {
         this.getInfoUser();
         this.getInfoBaseUser();
     }
+    // @wire(getMyEventManager) evenList(result) {
+    //     this.wiredEventList = result;
+    //     if (result.data) {
+    //         console.log('event--> ' , result);
+    //             this.eventinformation = result.map(obj => {
+    //                 var newobj={};
+    //                     newobj.Id=obj.Id
+    //                     newobj.EventName=obj.Name;
+    //                     newobj.ContactName=obj.Contact_Id__r.Name;
+    //                     newobj.Description=obj.Description__c;
+    //                     newobj.StartDate=obj.Start_Date__c;
+    //                     newobj.EndDate=obj.End_Date__c;
+    //                     newobj.Status=obj.Status__c;
+    //                 return newobj;
+    //             });
+    //             console.log('eventManagerinformation--->', this.eventinformation);
+    //             this.datas = this.eventinformation;
+    //     }else if (result.error) {
+    //         this.error = result.error;
+    //         this.datas = [];
+    //     }
+    // }
     getEventManager() {
         getMyEventManager({}).then(result =>{
             if (result.error) {
@@ -104,15 +129,31 @@ export default class Rh_Event_Management extends LightningElement {
                 setUserIds.push(this.idUser);
                 console.log('setUserIds --> ' ,setUserIds);
                 console.log('userinfo--> ' , this.idUser);
-                // sendNotif({strBody:result[0].Description__c, pgRefId:evId, strTargetId:this.idUser, strTitle:result[0].Name, setUserIds:setUserIds}).then(result =>{
-                //     if (result?.error) {
-                //         console.error(result?.msg);
-                //     }else{
-                //         console.log('event--> ' , result);
-                //     }
-                // }).catch(err =>{
-                //     console.error('error',err)
-                // })
+                if(result[0].Message__c && result[0].Message__c=='Already approved'){
+                    this.dispatchEvent(new ShowToastEvent({
+                        title: 'Toast Info',
+                        message: 'You have already share this event',
+                        variant: 'info',
+                        mode: 'dismissable'
+                    }), );
+                }else{
+                    sendNotif({strBody:result[0].Description__c, pgRefId:evId, strTargetId:this.idUser, strTitle:result[0].Name, setUserIds:setUserIds})
+                    .then(result =>{
+                        if (result?.error) {
+                            console.error(result?.msg);
+                        }else{
+                            console.log('event--> ' , result);
+                            this.dispatchEvent(new ShowToastEvent({
+                                title: 'Success',
+                                message: 'Event Submitted Successfully ',
+                                variant: 'success',
+                                mode: 'dismissable'
+                            }), );
+                        }
+                    }).catch(err =>{
+                        console.error('error',err)
+                    })
+                }
 
             }
         }).catch(err =>{

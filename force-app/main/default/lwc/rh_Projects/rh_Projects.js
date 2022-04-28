@@ -7,8 +7,14 @@ import getEditMemberList from '@salesforce/apex/RH_Project_controller.getEditMem
 import insertUpdateMembers from '@salesforce/apex/RH_Project_controller.insertUpdateMembers';
 import insertProjectMethod from '@salesforce/apex/RH_Project_controller.insertProjectMethod';
 import uploadFile from '@salesforce/apex/RH_Project_controller.uploadFile';
+import insertProjectupdated from '@salesforce/apex/RH_Project_controller.insertProjectupdated';
 import getRelatedFilesByRecordId from '@salesforce/apex/RH_Project_controller.getRelatedFilesByRecordId';
 import {NavigationMixin} from 'lightning/navigation';
+
+import { getObjectInfo } from 'lightning/uiObjectInfoApi';
+import { getPicklistValues } from 'lightning/uiObjectInfoApi';
+import PROJECT_OBJECT from '@salesforce/schema/Project__c';
+import STATUS_FIELD from '@salesforce/schema/Project__c.Status__c';
 
 import {ShowToastEvent} from 'lightning/platformShowToastEvent';
 import { CurrentPageReference } from 'lightning/navigation';
@@ -19,7 +25,8 @@ export default class Rh_Projects extends NavigationMixin(LightningElement) {
     @track memberProjects = []; 
     @track notmemberProjects = [];   
     @track addParticipate = [];
-    filesList =[];  
+    filesList =[]; 
+    optionpick = []; 
     visibleProjects; 
     curentProject;
     curentDetails;
@@ -46,6 +53,8 @@ export default class Rh_Projects extends NavigationMixin(LightningElement) {
         Start_Date__c:'', 
         End_Date__c:'',
         Project_Manager__c:'',
+        Status__c:'',
+        Link__c:'',
     };
 
 
@@ -64,6 +73,21 @@ export default class Rh_Projects extends NavigationMixin(LightningElement) {
         Description:'Description'
     };
 
+     // to get the default record type id, if you dont' have any recordtypes then it will get master
+
+     @wire(getObjectInfo, { objectApiName: PROJECT_OBJECT })
+        projectMetadata;
+ 
+     // now get the industry picklist values
+ 
+     @wire(getPicklistValues,
+         {
+             recordTypeId: '$projectMetadata.data.defaultRecordTypeId', 
+             fieldApiName: STATUS_FIELD
+         }
+     )
+ 
+     statusPicklist;
 
     @wire(CurrentPageReference) pageRef;
     connectedCallback(){
@@ -129,7 +153,7 @@ setviewsList(items){
     handleCardAction(e) {
        
 
-        // this.curentProject= e.detail.data.id;
+        //  this.curentProject= e.detail.data.id;
         const info=e.detail;
         if (info?.extra?.isTitle) {
             this.goToRequestDetail(info?.data?.id);
@@ -163,70 +187,92 @@ setviewsList(items){
         getProject({ProjectId :projectIds})
         .then(result => {
             console.log('result',result);
-            this.memberProjects = result['projectMembers'];
+            // this.memberProjects = result['projectMembers'];
+            this.memberProjects = [...result.projectMembers];
             console.log(this.memberProjects);
+            let index;
+
+            getTeamMemberList()
+            .then(result => {
+               
+                let option = [];
+                for(let key in result) {
+                    this.optionpick.push({label: result[key]['Name'] , value: result[key]['Id'] });
+                    
+                           }
+                // this.optionpick = option;
+
+                });
+                console.log('this.optionpick',this.optionpick)
             this.curentDetails =[
                 {
-                    label:'Project Name',
+                    label:'Name',
                     placeholder:'',
-                    name:result['project']['Name'],
-                    value: result['project']['Name'],
+                    name:'Name',
+                    value: result.project.Name,
                     required:true,
                     ly_md:'12', 
                     ly_lg:'12'
+
                 },
                 {
-                    label:'Project Description',
+                    label:'Description',
                     placeholder:'',
-                    name:result['project']['Description__c'],
-                    value: result['project']['Description__c'],
-                    required:true,
+                    name:'Description',
+                    value: result.project.Description__c,
+                    required:false,
                     ly_md:'12', 
                     ly_lg:'12'
                 },
                 {
                     label:'Status',
                     placeholder:'',
-                    name:result['project']['Status__c'],
-                    value: result['project']['Status__c'],
-                    required:true,
+                    name:'Status',
+                    value: result.project.Status__c,
+                    required:false,
+                    picklist: true,
+                    options: this.statusPicklist.data.values,
                     ly_md:'12', 
                     ly_lg:'12'
                 },
                 {
                     label:'Project Link',
                     placeholder:'',
-                    name:result['project']['Link__c'],
-                    value: result['project']['Link__c'],
-                    required:true,
+                    name:'Link',
+                    value: result.project.Link__c,
+                    required:false,
                     ly_md:'12', 
                     ly_lg:'12'
                 },
                 {
-                    label:'Project Start Date',
+                    label:'Start Date',
                     placeholder:'',
-                    name:result['project']['Start_Date__c'],
-                    value: result['project']['Start_Date__c'],
+                    name:'Start_Date',
+                    value: result.project.Start_Date__c,
                     required:true,
+                    type:'date',
                     ly_md:'12', 
                     ly_lg:'12'
                 },
                 
                 {
-                    label:'Project End Date',
+                    label:'End Date',
                     placeholder:'',
-                    name:result['project']['End_Date__c'],
-                    value: result['project']['End_Date__c'],
-                    required:true,
+                    name:'End_Date',
+                    value: result.project.End_Date__c,
+                    required:false,
+                    type:'date',
                     ly_md:'12', 
                     ly_lg:'12'
                 },
                 {
                     label:'Project Manager',
-                    placeholder:'',
-                    name:result['project']['Project_Manager__r']['Name'],
-                    value: result['project']['Project_Manager__r']['Name'],
+                    placeholder:result.project.Project_Manager__r.Name,
+                    name:'Project_Manager',
+                    value: result.project.Project_Manager__r.Id,
                     required:true,
+                    picklist: true,
+                    options: this.optionpick,
                     ly_md:'12', 
                     ly_lg:'12'
                 },
@@ -379,6 +425,53 @@ setviewsList(items){
 
     }
 
+    handleSaveEdit(e){
+        let projects11 = {
+            Name:'',       
+            Description__c:'',  
+            Start_Date__c:'', 
+            End_Date__c:'',
+            Project_Manager__c:'',
+            Status__c:'',
+            Link__c:''
+        };
+        window.console.log('this.curentProject ',this.curentProject);
+            let inputs= {};
+            let ret1;
+                let ret = this.template.querySelector('c-rh_dynamic_form').save();
+                ret1 = ret['outputsItems'];
+                window.console.log('outputsItems' , ret['outputsItems']);
+                for(let key in ret1) {
+                     inputs[ret1[key]['label']] = ret1[key]['value'];
+                }
+                projects11.Name = inputs['Name'];
+                projects11.Description__c = inputs['Description'];
+                projects11.Start_Date__c = inputs['Start Date'];
+                projects11.Project_Manager__c = inputs['Project Manager'];
+                projects11.End_Date__c = inputs['End Date'];
+                projects11.Status__c = inputs['Status'];
+                projects11.Link__c = inputs['Project Link'];
+                projects11.Id= this.curentProject;
+                insertProjectupdated({ProjectObj:projects11,IDProject:this.curentProject})
+                .then(result=>{
+                    window.console.log('after update');
+                    window.console.log('result' , result);
+                    this.getdetailsProject(this.curentProject);
+                    const toastEvent = new ShowToastEvent({
+                      title:'Success!',
+                      message:'Project updated successfully',
+                      variant:'success'
+                    });
+                    this.dispatchEvent(toastEvent);
+                    this.showDetails = true;
+                    this.showEdit= false;
+                })
+                .catch(error=>{
+                    this.error=error.message;
+                    window.console.log('error',this.error);
+                });
+    }
+
     handleBack(e){
         this.curentProject = undefined;
         this.goToRequestDetail(this.curentProject);
@@ -448,6 +541,7 @@ setviewsList(items){
         for(let key in result) {
                         option.push({label: result[key]['Name'] , value: result[key]['Id'] });
                    }
+        // this.optionpick = option;
         console.log('option',option);
         this.inputsItems = [
                         {

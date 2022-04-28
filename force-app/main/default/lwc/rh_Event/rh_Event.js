@@ -4,11 +4,12 @@ import getEventEdite from '@salesforce/apex/RH_EventController.getEventEdite';
 import getLatestEvents from '@salesforce/apex/RH_EventController.getEventList';
 import { refreshApex } from '@salesforce/apex';
 import { NavigationMixin } from 'lightning/navigation';
-//#################################### Add Event ##################################################
+//#################################### Add Event ##################################################  
 
 import getPicklistStatus from '@salesforce/apex/RH_EventController.getPicklistStatus';
 import saveEven from '@salesforce/apex/RH_EventController.saveEvent';
 import updateEven from '@salesforce/apex/RH_EventController.updateEven';
+import deleteEvent from '@salesforce/apex/RH_EventController.deleteEvent';
 // importing to show toast notifictions
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
@@ -270,15 +271,25 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
         updateEven({ updEven: updatEven, eId: this.recordId})
             .then(result => {
                 this.data = result;
-                window.console.log('result ===> ' + result);
-                refreshApex(this.wiredEventList);
-                this.closeComponentUpdate();
-                // Show success messsage
-                this.dispatchEvent(new ShowToastEvent({
-                    title: 'Success!!',
-                    message: 'Event Update Successfully!!',
-                    variant: 'success'
-                }), );
+                window.console.log('result ===> ', result);
+                if(result[0].Message__c && result[0].Message__c=='Event already sent'){
+                    this.dispatchEvent(new ShowToastEvent({
+                        title: 'Toast Info',
+                        message: 'This event has been already approved !',
+                        variant: 'info',
+                        mode: 'dismissable'
+                    }), );
+                    this.closeComponentUpdate();
+                }else{
+                    refreshApex(this.wiredEventList);
+                    this.closeComponentUpdate();
+                    // Show success messsage
+                    this.dispatchEvent(new ShowToastEvent({
+                        title: 'Success!!',
+                        message: 'Event Update Successfully!!',
+                        variant: 'success'
+                    }), );
+                }
             })
             .catch(error => {
                 this.error = error.message;
@@ -307,6 +318,7 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
     showComponentBase = true;
     showComponentDetails = false;
     showComponentEdit = false;
+    showModalDelete = false;
     @track StatusList =[];
     @api
     title;
@@ -336,16 +348,30 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
         console.log('----->', jsonEventData);
         saveEven({ objEven: jsonEventData})
             .then(result => {
-                refreshApex(this.wiredEventList);
-                this.data = result;
-                this.closeComponentEdit();
-                window.console.log('result ===> ' + result);
-                // Show success messsage
-                this.dispatchEvent(new ShowToastEvent({
-                    title: 'Success!!',
-                    message: 'Event Add Successfully!!',
-                    variant: 'success'
-                }), );
+                window.console.log('result ===> ', result.Status__c);
+                if(result.Status__c=='Draft'){
+                    refreshApex(this.wiredEventList);
+                    this.data = result;
+                    this.closeComponentEdit();
+                    window.console.log('result ===> ', result);
+                    // Show success messsage
+                    this.dispatchEvent(new ShowToastEvent({
+                        title: 'Success!!',
+                        message: 'Event Add Successfully but Not send to CEO!!',
+                        variant: 'success'
+                    }), );
+                }else{
+                    refreshApex(this.wiredEventList);
+                    this.data = result;
+                    this.closeComponentEdit();
+                    window.console.log('result ===> ', result);
+                    // Show success messsage
+                    this.dispatchEvent(new ShowToastEvent({
+                        title: 'Success!!',
+                        message: 'Event Add Successfully And send to CEO !!',
+                        variant: 'success'
+                    }), );
+                }
             })
             .catch(error => {
                 this.error = error.message;
@@ -366,15 +392,56 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
                 for(let i=0; i<result.length; i++) {
                     option.push(result[i].value);
                }
+               let tab = option.pop();
+               let tab1 = option.pop();
+               console.log('tab-->', tab);
+               console.log('tab-->', tab1);
                console.log('option-->', option);
                this.StatusList = option.map(elt =>({ label:elt ,value:elt}));
-                console.log('StatusList-->', this.StatusList);
+               this.StatusList;
+               console.log('StatusList-->', tab);
                 // this.buildformEdit();
             })
             .catch(error => {
                 // TODO Error handling
             });
         return this.StatusList;
+    }
+    handlepredeleteEvent(){
+        this.showModalDelete=true;
+    }
+    handledeleteEvent(){debugger
+        this.recordId = this.getUrlParamValue(window.location.href, 'recordId');
+        console.log('eid----->', this.recordId);
+        deleteEvent({evid : this.recordId})
+            .then(result => {
+                this.data = result;
+                console.log('res----->', result.Status__c);
+                if(result.Status__c=='Pending'){
+                    this.closeModalDelete();
+                    this.dispatchEvent(new ShowToastEvent({
+                        title: 'Toast Warning',
+                        message: 'You should put status to draft before delete',
+                        variant: 'warning',
+                        mode: 'dismissable'
+                    }), );
+                }else{
+                    refreshApex(this.wiredEventList);
+                    this.closeModalDelete();
+                    this.closeComponentEdit();
+                    this.dispatchEvent(new ShowToastEvent({
+                        title: 'Success!!',
+                        message: 'Event Delete Successfully!!',
+                        variant: 'success'
+                    }), );
+                }
+            })
+            .catch(error => {
+                // TODO Error handling
+            });
+    }
+    closeModalDelete(){
+        this.showModalDelete=false;
     }
     handleOpenComponent() {
         this.showComponentBase = false;

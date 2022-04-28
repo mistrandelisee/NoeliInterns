@@ -74,16 +74,16 @@ public without sharing class RH_EventController {
                 String conId = u.RH_ContactId__c;
                 String userRole = u.UserRole.Name;
                 if(userRole == 'CEO'){
-                    List<Event__c> evenList = [SELECT Id,Name,Contact_Id__r.Name,Description__c, Start_Date__c, End_Date__c, Status__c, CreatedBy.UserRole.Name FROM Event__c
-                    // Where CreatedBy.UserRole.Name =: 'Base User'
+                    List<Event__c> evenList = [SELECT Id,Name,Contact_Id__r.Name,Description__c, Start_Date__c, End_Date__c, Status__c, CreatedBy.UserRole.Name FROM Event__c Where
+                    //CreatedBy.UserRole.Name =: 'Base User'
+                    (Status__c='Pending' OR Status__c='Approved')
                     ];
                     //System.debug('event-->' + evenList);
                     return evenList;
                 }else{
                     List<Event__c> evenList = [SELECT Id,Name,Contact_Id__r.Name,Description__c, Start_Date__c, End_Date__c, Status__c, CreatedBy.UserRole.Name FROM Event__c 
                     Where Contact_Id__c =: conId 
-                    // And CreatedBy.UserRole.Name =: userRole
-                    And Status__c='Pending'];
+                    And CreatedBy.UserRole.Name =: userRole];
                     //System.debug('event-->' + evenList);
                     return evenList;
                 }
@@ -94,7 +94,7 @@ public without sharing class RH_EventController {
     }
 
     @AuraEnabled
-    public static void saveEvent(String objEven) {
+    public static Event__c saveEvent(String objEven) {
         system.debug('@@@@EventDatas' + objEven);
         try{
             wrapperData datas = (wrapperData)JSON.deserialize(objEven, wrapperData.class);
@@ -111,6 +111,7 @@ public without sharing class RH_EventController {
                 );
                 insert even;
                 system.debug('@@@@EventDatasReturn' + even);
+                return even;
         }
         catch(Exception ex) {
             throw new AuraHandledException(ex.getMessage());
@@ -126,26 +127,39 @@ public without sharing class RH_EventController {
     }
 
     @AuraEnabled
-    public static void updateEven(String updEven, String eId) {
+    public static List<Event__c> updateEven(String updEven, String eId) {
         system.debug('@@@@updEven--->' + updEven);
         system.debug('@@@@ eId---> '+ eId);
         try{
             wrapperDataToUpdate datas = (wrapperDataToUpdate)JSON.deserialize(updEven, wrapperDataToUpdate.class);
             String evId = eId;
             User u = [Select Id, RH_ContactId__c From User where Id =: UserInfo.getUserId()];
-            String conId = u.RH_ContactId__c; 
-            Event__c even = new Event__c(
-                    Id = string.isNotBlank(evId)?evId:null,
-                    Name = datas.Name,
-                    Contact_Id__c = conId,
-                    Description__c  = datas.Description,
-                    Start_Date__c =dateToParse(datas.StartDate),
-                    End_Date__c =dateToParse(datas.EndDate),
-                    Status__c =datas.Status
-            );
+            String conId = u.RH_ContactId__c;
+            List<Event__c> event = [Select Id,Name,Contact_Id__c,Description__c,Start_Date__c,End_Date__c,Status__c,Message__c From Event__c Where Id =: evId];
+            for(Event__c even : event){
+                if(even.Status__c=='Approved'){
+                    even.Message__c='Event already sent';
+                }else{
+                    even.Name = datas.Name;
+                    even.Description__c  = datas.Description;
+                    even.Start_Date__c =dateToParse(datas.StartDate);
+                    even.End_Date__c =dateToParse(datas.EndDate);
+                    even.Status__c =datas.Status;
+                }
+            }
+            // Event__c even = new Event__c(
+            //         Id = string.isNotBlank(evId)?evId:null,
+            //         Name = datas.Name,
+            //         Contact_Id__c = conId,
+            //         Description__c  = datas.Description,
+            //         Start_Date__c =dateToParse(datas.StartDate),
+            //         End_Date__c =dateToParse(datas.EndDate),
+            //         Status__c =datas.Status
+            // );
 
-            update even;
-            system.debug('@@@@EventDatas--->' + even);
+            update event;
+            system.debug('@@@@EventDatas--->' + event);
+            return event;
         }
         catch(Exception ex) {
             throw new AuraHandledException(ex.getMessage());
@@ -157,6 +171,27 @@ public without sharing class RH_EventController {
         public String StartDate { get; set; }
         public String EndDate { get; set; }
         public String Status { get; set; }
+    }
+    
+    @AuraEnabled
+    public static Event__c deleteEvent(String evid) {
+        system.debug('@@@@ eId---> '+ evid );
+        try{
+            User u = [Select Id, RH_ContactId__c,UserRole.Name From User where Id =: UserInfo.getUserId()];
+            String conId = u.RH_ContactId__c;
+            String userRole = u.UserRole.Name;
+            system.debug('@@@@ userRole---> '+ userRole );
+            Event__c ev = [Select Id,Contact_Id__c,Status__c,CreatedBy.UserRole.Name From Event__c Where Contact_Id__c=:conId And Id=:evid];
+            system.debug('@@@@ ev---> '+ ev );
+            system.debug('@@@@ evCreatedBy---> '+ ev.CreatedBy.UserRole.Name  );
+            // if((ev.Status__c=='Draft' || ev.Status__c=='Approved') && (ev.CreatedBy.UserRole.Name==userRole || ev.CreatedBy.UserRole.Name=='CEO')){
+            //     delete ev;
+            // }
+            return ev;
+        }
+        catch(Exception ex) {
+            throw new AuraHandledException(ex.getMessage());
+        }
     }
 
     @AuraEnabled
@@ -171,8 +206,17 @@ public without sharing class RH_EventController {
     }
     @AuraEnabled
     public static List<Event__c> getEventInfos(String infoId) {
-        List<Event__c> ev = [Select Id, Name, Description__c From Event__c Where Id =: infoId];
-        return ev;
+        List<Event__c> even = [Select Id, Name, Description__c, Status__c,Message__c From Event__c Where Id =: infoId];
+        for(Event__c ev : even){
+            if(ev.Status__c=='Approved'){
+                    ev.Message__c='Already approved';
+            }else{
+                    ev.Status__c='Approved';
+            }
+        }
+        system.debug('@@---> ' + even);
+        update even;
+        return even;
     }
     
     @AuraEnabled(cacheable=true)

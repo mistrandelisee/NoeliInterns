@@ -1,0 +1,42 @@
+<template>
+    
+    <template if:true={hasSheetInfo}>
+        <lightning-layout multiple-rows>
+            <lightning-layout-item size="12" padding="around-small" small-device-size="12" medium-device-size="12" large-device-size="12" >
+                <div class="custom-box">
+                    <template if:true={hasDetailsActions} >
+                            
+                        <lightning-layout-item size="12" padding="around-smallx" small-device-size="12" medium-device-size="12" large-device-size="12">
+                            <div class="custom-box">
+                               <!-- Actions -->
+                               <c-rh_actions  onaction={handleDetailsActions} action-available={detailsActions} >  </c-rh_actions>
+                           </div>
+                        </lightning-layout-item>
+                    </template>
+                </div>
+            </lightning-layout-item>
+            <lightning-layout-item size="12" padding="around-small" small-device-size="12" medium-device-size="12" large-device-size="12" >
+                <div class="custom-box">
+                    <div class="slds-p-around_medium profile_user_info">
+                        <c-rh_display_fields 
+                        title="Sheet Informations"
+                        iconsrc="utility:people"
+                        column="4"
+                        output-fields={timeSheetFields}
+                        ></c-rh_display_fields>
+                    </div>
+                </div>
+            </lightning-layout-item>
+            <lightning-layout-item size="12" padding="around-small" small-device-size="12" medium-device-size="4" large-device-size="3">
+                <div class="custom-box">sheet entries edit/new</div>
+            </lightning-layout-item>
+            <lightning-layout-item size="12" padding="around-small" small-device-size="12" medium-device-size="8" large-device-size="9">
+                <div class="custom-box">sheet entries list </div>
+            </lightning-layout-item>
+        </lightning-layout>
+    </template>
+    <template if:true={sheetNotFounded}>
+        <c-rh_success_operation title="Error" information="Mising rec" recordid={recordId}></c-rh_success_operation>
+    </template>
+
+</template>

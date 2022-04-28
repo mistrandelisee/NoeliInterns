@@ -1,8 +1,13 @@
 :host{
     color:#626575;
     --primaryColor: #001639;
-    --secondaryColor: #9735e1;
+    --secondaryColor: rgb(3 45 96);
     --warningColor: #c1a60e;
     --bannedColor:#e41d0b;
     --frozenColor:#dbe133fe;
+}
+
+.card{
+    height: 250px;
+    width: 450px;
 }

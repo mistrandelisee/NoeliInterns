@@ -1,8 +1,8 @@
 <template>
      <template for:each={bannerNews} for:item="news">
             <div class={news.Visibility}  key={news.Title}>
-                <img class="Img" src={news.Image}>
-                <div class="NewsData slds-grid slds-gutters">
+                <!--<img class="Img" src={news.Image}>-->
+                <div style={bannerStyle}  class="NewsData slds-grid slds-gutters">
                     <div class="navigation slds-col slds-size_1-of-7">
                         <lightning-button-icon icon-name="utility:left" size="large" tooltip="Previous"  onclick={previous} variant="bare"    class="slds-m-left_xx-small">
                             <label>previous </label>

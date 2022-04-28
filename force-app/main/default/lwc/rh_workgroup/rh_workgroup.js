@@ -15,6 +15,10 @@ export default class Rh_workgroup extends LightningElement {
         this.isVisiblecreate = false;
         this.isVisibleGroupmember = true;
     }
+    handleBacktogrouplist(){
+        this.isVisible = true;
+        this.isVisiblecreate = false;
+    }
     handleDetailGroup(event){
         this.groupeId = event.detail;
         console.log('groupeiD parent ' +this.groupeId);
@@ -25,5 +29,12 @@ export default class Rh_workgroup extends LightningElement {
     }
     connectedCallback(){
         console.log('in the parent component');
+    }
+    handlepreviousPage(){
+        this.isVisible = false;
+        this.isVisiblecreate = true;
+        this.isVisibleGroupmember = false;
+        this.isVisibleDetailgroup = false;
+
     }
 }

@@ -1,0 +1,29 @@
+<template>
+    
+    <template if:false={hasrecordid}>
+        <template if:true={showNew}>
+            <template if:true={hasDetailsActions} >
+                        
+                <lightning-layout-item size="12" padding="around-smallx" small-device-size="12" medium-device-size="12" large-device-size="12">
+                    <div class="custom-box">
+                       <!-- Actions -->
+                       <c-rh_actions  onaction={handleDetailsActions} action-available={detailsActions} >  </c-rh_actions>
+                   </div>
+                </lightning-layout-item>
+            </template>
+        </template>
+        <template if:true={hideView}>
+            <c-rh_cards_view page-size="20" items={timeSheets} onrowselected={handleCardAction}></c-rh_cards_view>
+        </template>
+    
+    </template>
+    
+
+    <template if:true={hasrecordid}>
+
+        <p>display {recordId}</p>
+        <!-- <c-rh_details_test></c-rh_details_test> -->
+        <c-rh_timesheet_details  record-id={recordId}></c-rh_timesheet_details>
+    </template>
+   
+</template>

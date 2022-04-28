@@ -1,5 +1,11 @@
 <template>
 
+    <div class="slds-var-m-bottom_medium slds-clearfix">
+        <lightning-button variant="brand-outline"  label="Back" class="slds-float_left" onclick={handleBack}>
+        </lightning-button>
+        <lightning-button variant="brand-outline"  label="Save" class="slds-float_right" onclick={handleSaveEditMember}>
+        </lightning-button>
+    </div>
 
     <lightning-card class="">
 
@@ -21,8 +27,8 @@
                             <div class="box-border slds-align_absolute-center slds-scrollable">
                                 <ul class="slds-listbox slds-listbox_vertical">
                                     <template for:each={listContact} for:item="acc">
-                                        <li class="slds-listbox__item" onclick={handleChange} key={acc.Name} data-id={acc.Id} data-name={acc.Name}>
-                                            <p class="slds-listbox__option slds-listbox__option_plain slds-media slds-media_small">
+                                        <li class={acc.classe} onclick={handleChangeRight} key={acc.Name} data-id={acc.Id} data-name={acc.Name}>
+                                            <p class="  slds-listbox__option slds-listbox__option_plain slds-media slds-media_small">
                                                 {acc.Name}
                                             </p>
                                         </li>
@@ -35,10 +41,10 @@
                 <div class="slds-col">
                     <lightning-card class="slds-align_absolute-center midle-style">
                         <div class="slds-align_absolute-center">
-                            <lightning-button-icon icon-name="utility:right" onclick={handleClick} alternative-text="ADD" title="ADD"></lightning-button-icon>
+                            <lightning-button-icon icon-name="utility:right" onclick={handleClickRight} alternative-text="ADD" title="ADD"></lightning-button-icon>
                         </div>
                         <div class="slds-align_absolute-center">
-                            <lightning-button-icon icon-name="utility:left" onclick={handleClick1} alternative-text="Remove" title="Remove"></lightning-button-icon>
+                            <lightning-button-icon icon-name="utility:left" onclick={handleClickLeft} alternative-text="Remove" title="Remove"></lightning-button-icon>
                         </div>
                     </lightning-card>
                 </div>
@@ -58,20 +64,22 @@
                         </div>
                         <div class="box-border slds-align_absolute-center slds-scrollable">
                             <ul class="slds-listbox slds-listbox_vertical">
-                                <template for:each={selected} for:item="acc">
-                                    <li class="slds-listbox__item" onclick={handleChange} key={acc} data-id={acc} data-name={acc}>
-                                        <p class="slds-listbox__option slds-listbox__option_plain slds-media slds-media_small">
-                                            {acc}
+                                <template for:each={listContactToInsert} for:item="acc">
+                                    <li class={acc.classe} onclick={handleChangeLeft} key={acc.Name} data-id={acc.Id} data-name={acc.Name}>
+                                        <p class="  slds-listbox__option slds-listbox__option_plain slds-media slds-media_small">
+                                            {acc.Name}
                                         </p>
                                     </li>
                                 </template >
                             </ul>
                         </div>
                     </lightning-card>
-                </div>
-                
-
+                     
+                </div>                
         </div>
     </lightning-card>
-
+  <!--  <div class="slds-clearfix">
+        <lightning-button variant="brand-outline" label="Save" icon-name="utility:ad" class="slds-float_right" onclick={handleClick}></lightning-button>
+    </div> -->
+    
 </template>

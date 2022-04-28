@@ -133,7 +133,7 @@ export default class Rh_display_news_config extends NavigationMixin(LightningEle
                     let item={...e};
                     item.title=e.Name?.length>27? e.Name.slice(0, 27) +'...': e.Name ;
                     item.icon="standard:news";
-                    item.class=e.IsActive__c?'active':'banned';
+                    item.class=e.IsActive__c?'banned card':'active card';
                     item.id= e.Id;
                     item.summaryTitle= e.Name?.length>38? e.Name.slice(0, 38) +'...': e.Name ;
                     item.summaryDescription= e.Description__c?.length>80? e.Description__c.slice(0, 75) +'...': e.Description__c ;

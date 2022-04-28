@@ -12,7 +12,7 @@ public with sharing class RH_Request_controller {
     @AuraEnabled
     public static RH_Request__c retreiveRequest(String requestId){
         return [SELECT id, Name, RH_Description__c , RH_Addressed_To__r.Name, Rh_Status__c, RH_Start_date__c, 
-        RH_End_date__c, RH_Parent_request_id__c, RH_Addressed_Cc__c, RH_Complain_On__c,RecordType.Name  FROM RH_Request__c WHERE id =: requestId ];
+        RH_End_date__c, RH_Parent_request_id__c, RH_Addressed_Cc__c, RH_Complain_On__c,RecordTypeId,RecordType.Name  FROM RH_Request__c WHERE id =: requestId ];
     }
 
     @AuraEnabled
@@ -33,14 +33,16 @@ public with sharing class RH_Request_controller {
             mapReturn.put('input',Requestjson);  
             Requestdetailswrapper Requestinfo = (Requestdetailswrapper) JSON.deserialize(Requestjson, Requestdetailswrapper.class);
             RH_Request__c RequestUser =Requestinfo.getRequest();
-            RequestUser.RH_Status__c = RH_Constans.RH_OPEN;
-            
+            // RequestUser.RH_Status__c = RH_Constans.RH_OPEN;
+            mapReturn.put('RequestUser',RequestUser);
             RequestUser.Name = Schema.SObjectType.RH_Request__c.getRecordTypeInfosById().get(RequestUser.RecordTypeId).getName().substring(0,3).toUpperCase() + Datetime.now().year() + Datetime.now().day() + Datetime.now().minute();
-            System.debug('@@@@Name' + RequestUser.Name);
-            // RequestUser.RH_RequestTypeName__c = Schema.getGlobalDescribe().get('RH_Request__c').getDescribe().getRecordTypeInfosById().get(RequestUser.RecordT).getName();
-            // RequestUser.recordTypeId=RH_Constans.RH_CONTACT_RT;
-            // mapReturn.put('conctactUser',conctactUser);
-            insert RequestUser;
+            System.debug('@@@@Name' + RequestUser);
+            if (String.isNotBlank(RequestUser.id)) {
+                update RequestUser;
+            }else {
+                insert RequestUser;
+            }
+            
         } catch(Exception e) {
             System.debug(e.getMessage());
             mapReturn.put('error',true);
@@ -49,6 +51,27 @@ public with sharing class RH_Request_controller {
         }
        
         return mapReturn;
+    }
+
+    @AuraEnabled
+    public static string updateRequest(String requestId){
+        List<RH_Request__c> req = [SELECT Id, Rh_Status__c from RH_Request__c WHERE Id =: requestId limit 1];
+        req[0].Rh_Status__c = 'Open';
+        Database.SaveResult[] results = Database.update(req, false);
+        String pop = '';
+        for (Database.SaveResult drList : results) {
+            if (!drList.isSuccess()) {
+               
+                for(Database.Error err : drList.getErrors()) {
+                    pop = pop + err.getMessage() + err.getFields();
+                }
+                // return pop;
+                
+            }else {
+                pop = 'OK';
+            }
+        }
+        return pop;
     }
 
     @AuraEnabled
@@ -70,7 +93,9 @@ public with sharing class RH_Request_controller {
     
     public class Requestdetailswrapper  {
         @AuraEnabled public String ComplainOn;
+        @AuraEnabled public String StatusRequest;
         @AuraEnabled public String RecordT;
+        @AuraEnabled public String IdRequest;
         @AuraEnabled public Datetime RH_StartDate;
         @AuraEnabled public Datetime RH_EndDate;
         @AuraEnabled public String RH_AddressedTo;
@@ -79,13 +104,15 @@ public with sharing class RH_Request_controller {
         public RH_Request__c getRequest() {
             return new RH_Request__c(
                 RH_Complain_On__c=this.ComplainOn, 
-                RecordTypeId=this.RecordT, 
+                RecordTypeId=this.RecordT,
+                id = IdRequest != '' ? IdRequest : '',
+                RH_Status__c = this.StatusRequest, 
                 RH_Start_date__c=this.RH_StartDate, 
                 RH_End_date__c=this.RH_EndDate,
                 RH_Addressed_To__c=this.RH_AddressedTo,
                 RH_Addressed_Cc__c=this.RH_AddressedCc,
                 RH_Description__c=this.RH_Description);
         }
-    }
+    }   
 
 }

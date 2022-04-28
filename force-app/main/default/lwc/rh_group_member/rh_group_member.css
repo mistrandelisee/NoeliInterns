@@ -5,3 +5,7 @@
 
 .input-style {margin-bottom: 2px;}
 .midle-style {width:5rem;}
+.xhover {
+    --lwc-colorBackgroundRowHover: rgba(9, 80, 161, 0.911);
+    background-color: rgba(9, 80, 161, 0.911);
+    color : white}

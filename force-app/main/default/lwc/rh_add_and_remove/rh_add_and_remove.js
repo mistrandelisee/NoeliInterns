@@ -16,7 +16,6 @@ export default class Rh_add_and_remove extends LightningElement {
      returnList = [];
      initialList = [];
      selectedList = [];
-     styleBtm =" ";
 
     connectedCallback() {
         this.showinit = [...this.initial];
@@ -27,7 +26,6 @@ export default class Rh_add_and_remove extends LightningElement {
 
     handleChange(e) {
         this.tempCopy=e.currentTarget.getAttribute("data-id");
-        styleBtm ="slds-listbox__item active";
         console.log('onItemSelected:::',this.tempCopy);
         
     }

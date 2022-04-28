@@ -116,12 +116,14 @@
         </template>
         <template if:true={showEdit}>
             <div class="slds-clearfix">
-                <!-- <button class="slds-button slds-button_brand slds-float_right">New Project</button> -->
                 <lightning-button label="Back" class="slds-float_left" onclick={handleBackToDetails}></lightning-button>
-                <!-- <lightning-button label="Manage Members" class="slds-float_right" onclick={handleManage}></lightning-button> -->
             </div>
             <div class="slds-var-m-vertical_medium">
-                <c-rh_edit_project  record-id={curentProject}></c-rh_edit_project>
+                <!-- <c-rh_edit_project  record-id={curentProject}></c-rh_edit_project> -->
+                <c-rh_dynamic_form inputs-items={curentDetails}></c-rh_dynamic_form>
+            </div>
+            <div class="slds-clearfix">
+                <lightning-button label="Save" class="slds-float_right" onclick={handleSaveEdit}></lightning-button>
             </div>
         </template>
 

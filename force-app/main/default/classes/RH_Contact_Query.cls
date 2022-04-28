@@ -18,7 +18,8 @@ public  class RH_Contact_Query {
         return [SELECT LastName,AccountId,RH_Role__c, FirstName,RH_User__c,Email,MailingCity,Languages__c,RH_Extra_Infos__c ,RH_Number_Groups_Leaded__c,OtherAddress,Birthdate,Phone,Description,RH_Status__c,
                     Account.Name,Account.NumberOfEmployees,Account.Website,Account.Phone,Account.Description,Account.YearStarted,Account.Industry,
                     RH_WorkGroup__r.Name,RH_WorkGroup__r.CreatedDate,RH_WorkGroup__r.RH_Team_Leader__r.Phone,RH_WorkGroup__r.RH_Team_Leader__r.name,
-                    (SELECT Name,CreatedDate,CreatedBy.Name FROM WorkGroups_Leader__r WHERE RH_Status__c =:RH_Constans.ACTIVATED_WORKGROUP_STATUS )
+                    (SELECT Name,CreatedDate,CreatedBy.Name FROM WorkGroups_Leader__r WHERE RH_Status__c =:RH_Constans.ACTIVATED_WORKGROUP_STATUS ),
+                    (SELECT Project__r.Name,Project__r.Link__c,Project__r.Start_Date__c,Project__r.Description__c,Project__r.End_Date__c  FROM Projects__r WHERE Project__r.Status__c =:RH_Constans.ACTIVATED_PROJECT_STATUS)
                     FROM Contact WHERE Id=:contactId];
     }
 
@@ -26,11 +27,11 @@ public  class RH_Contact_Query {
         return [SELECT Id, LastName,AccountId,RH_Role__c, FirstName,RH_User__c,Email,MailingCity,Languages__c,RH_Extra_Infos__c ,RH_Number_Groups_Leaded__c,OtherAddress,Birthdate,Phone,Description,RH_Status__c,
                 Account.Name,Account.NumberOfEmployees,Account.Website,Account.Phone,Account.Description,Account.YearStarted,Account.Industry,
                 RH_WorkGroup__r.Name,RH_WorkGroup__r.CreatedDate,RH_WorkGroup__r.RH_Team_Leader__r.Phone,RH_WorkGroup__r.RH_Team_Leader__r.name,
-                (SELECT Name,CreatedDate,CreatedBy.Name FROM WorkGroups_Leader__r WHERE RH_Status__c =:RH_Constans.ACTIVATED_WORKGROUP_STATUS )
+                (SELECT Name,CreatedDate,CreatedBy.Name FROM WorkGroups_Leader__r WHERE RH_Status__c =:RH_Constans.ACTIVATED_WORKGROUP_STATUS ),
+                (SELECT Project__r.Name,Project__r.Link__c,Project__r.Start_Date__c,Project__r.Description__c,Project__r.End_Date__c  FROM Projects__r WHERE Project__r.Status__c =:RH_Constans.ACTIVATED_PROJECT_STATUS)
                 FROM Contact WHERE Id IN :listcontactId];
 
     }
-    
 
     public  List<Contact> getExtrafied(String recordId){
         return [SELECT Id,RH_Extra_Infos__c FROM Contact WHERE id=:recordId];
@@ -57,6 +58,7 @@ public  class RH_Contact_Query {
     }
     
     public static List<Contact> getContactForGroup(){
-        return [SELECT Id,Name FROM Contact  WHERE RH_Role__c=:RH_Constans.RH_Map_RoleName.get('Base User') AND recordTypeId=:RH_Constans.RH_CONTACT_RT];
+        return [SELECT Id,Name,RH_WorkGroup__c FROM Contact  WHERE RH_Role__c=:RH_Constans.RH_Map_RoleName.get('Base User')];
     }
+
 }
