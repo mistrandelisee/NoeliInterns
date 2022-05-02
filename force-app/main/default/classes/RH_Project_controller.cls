@@ -1,4 +1,4 @@
-public with sharing class RH_Project_controller {
+public class RH_Project_controller {
 
     private static RH_Project_Query projectQry = RH_Project_Query.getInstance();
     private static RH_Project_Query projectQry1 = RH_Project_Query.getInstance();
@@ -103,21 +103,33 @@ public with sharing class RH_Project_controller {
     // }
 
     @AuraEnabled
-    public static Project__c insertProjectMethod(Project__c ProjectObj,List<RH_Participation__c> participation){
+    public static Project__c insertProjectMethod(String Name,String Description,Date Startdate,String Manager,Date Enddate,List<String> participation){
+        // public static Project__c insertProjectMethod(Project__c ProjectObj,List<RH_Participation__c> participation){
         try {
             List<Account> acc=contactQry.getAccountId();
+            List<RH_Participation__c> listParti = new List<RH_Participation__c>();
+            Project__c ProjectObj = new Project__c();
             ProjectObj.RH_Account_ID__c = acc[0].id;
+            ProjectObj.Name = Name;
+            ProjectObj.Description__c = Description;
+            ProjectObj.Start_Date__c = Startdate;
+            ProjectObj.Project_Manager__c = Manager;
+            ProjectObj.End_Date__c = Enddate;
             insert ProjectObj;
-            for (RH_Participation__c part : participation) {
+            for (String Idpartici : participation) {
+                RH_Participation__c part = new RH_Participation__c();
                 part.RH_Project__c = ProjectObj.id;
+                part.RH_Contact__c = Idpartici;
+                listParti.add(part);
             }
-            insert participation;
+            insert listParti;
             return ProjectObj;
         } catch (Exception exp) {
             system.debug('exception'+exp.getMessage());
             throw new AuraHandledException(exp.getMessage());
         }
     }
+// }
 
     @AuraEnabled
     public static Project__c insertProjectupdated(Project__c ProjectObj,String IDProject){

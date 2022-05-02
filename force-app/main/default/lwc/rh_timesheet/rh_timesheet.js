@@ -25,28 +25,34 @@ const CARD_ACTION='stateAction';
 
 const FROM_CHILD='FROM_CHILD';
 const FROM_PARENT='FROM_PARENT';
+
+
+const APPROVE_ACTION='approvato';
+const DRAFT_STATUS='nuovo';
+const DELETE_ACTION='Delete';
+const SUBMIT_ACTION='inviato';
 export default class Rh_timesheet extends NavigationMixin(LightningElement) {
-    l={...labels}
+    l={...labels,
+        Submit:'Submit',
+        Delete:'Delete',
+        Approve:'Approve',
+    
+    }
     @track groups=[];
     @track timeSheets = [];
     recordId;
     userId;
     title;
     information;
-    jsonInfo;
-    contactrecord;
-    contactNotFounded=false;
-    @track accountFields=[];
-    @track formPersonanalInputDetails=[];
     currUser={};
 
     keysFields={TimeSheetNumber:'ok'};
     keysLabels={
         TimeSheetNumber:'Name', TotalDurationInHours:'Total Duration In Hours',
-        StartDate:'StartDate',TotalDurationInMinutes:'Total Duration In Minutes',Status:'Status'
+        StartDate:'StartDate',TotalDurationInMinutes:'Total Duration In Minutes',Status:'Status',TimeSheetEntryCount:'Entries'
     };
     fieldsToShow={
-        TimeSheetNumber:'ok', TotalDurationInHours:'',
+         TotalDurationInHours:'',TimeSheetEntryCount:'',
         StartDate:'ok',TotalDurationInMinutes:'',Status:''
     };
 
@@ -107,6 +113,7 @@ export default class Rh_timesheet extends NavigationMixin(LightningElement) {
     get hideView(){  return this.action=='' || this.action!=NEW_ACTION; }
     get hasDetailsActions(){ return this.detailsActions?.length >0}
     get isAdmin() { return this.currUser?.isCEO || this.currUser?.isTLeader}
+    get isApprover() { return this.isAdmin || this.currUser?.isApprover}
     get hasTimeSheets(){ return this.timeSheets.length >0; }
     get hasrecordid(){ return this.recordId?true:false; }
     connectedCallback(){
@@ -135,6 +142,7 @@ export default class Rh_timesheet extends NavigationMixin(LightningElement) {
                                 isRHUser:result.isRHUser,
                                 isTLeader:result.isTLeader,
                                 isBaseUser:result.isBaseUser,
+                                isApprover:result.isApprover,
                 }
                 const isAD=this.isAdmin;
                 this.timeSheets = result.TimeSheets.map(function (e ){
@@ -155,7 +163,22 @@ export default class Rh_timesheet extends NavigationMixin(LightningElement) {
                         Actions=Actions.concat(self.buildUserStatusActions(e.Status));
                         Actions=Actions.concat(self.buildUserRoleActions(e.RHRolec));
                     }*/
-
+                    if (ACTIVE_ACTION.toLowerCase() == e.Status?.toLowerCase()) {//if already submitted
+                        if (self.isApprover) {
+                            //add approve action 
+                            Actions.push(self.createAction("base",self.l.Approve,APPROVE_ACTION,self.l.Approve,"utility:edit",'active-item'));
+                        }
+                    }
+                    if (DRAFT_STATUS.toLowerCase() == e.Status?.toLowerCase()) {//if draft
+                        if (self.isMine) {//is mine
+                            //add SUBMIT_ACTION ,DELETE_ACTION  
+                            if (e.TimeSheetEntryCount > 1) { //submit action avalaible only if has sheets
+                                Actions.push(self.createAction("base",self.l.Submit,SUBMIT_ACTION,self.l.Submit,"utility:edit",'active-item'));
+                            }
+                            Actions.push(self.createAction("base",self.l.Delete,DELETE_ACTION,self.l.Delete,"utility:close",'active-item'));
+                        }
+                    }
+                    
 
                     item.actions=Actions;
                     console.log(`item`);
@@ -174,6 +197,7 @@ export default class Rh_timesheet extends NavigationMixin(LightningElement) {
             this.startSpinner(false);
         })
     }
+
     handleDetailsActions(event){
         console.log('handleDetailsActions :', event.detail.action);
         if (event.detail.action==NEW_ACTION) {
@@ -260,7 +284,11 @@ export default class Rh_timesheet extends NavigationMixin(LightningElement) {
             state: states
         });
     }
-
+    createAction(variant,label,name,title,iconName,className){ 
+        return {
+            variant, label, name, title, iconName,  class:className
+        };
+    }
     startSpinner(b){
         fireEvent(this.pageRef, 'Spinner', {start:b});
      }

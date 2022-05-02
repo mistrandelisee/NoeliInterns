@@ -4,7 +4,7 @@ import { registerListener, unregisterAllListeners,fireEvent } from 'c/pubsub';
 import { labels } from 'c/rh_label';
 import initConfig from '@salesforce/apex/RH_Users_controller.InitUserCreation';
 import newsCreation from '@salesforce/apex/RH_News_controller.newsCreation';
-import uploadFile from '@salesforce/apex/RH_FileUploader.uploadFile';
+import uploadFile from '@salesforce/apex/RH_News_controller.uploadFile';
 
 
 

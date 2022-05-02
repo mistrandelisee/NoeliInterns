@@ -16,16 +16,16 @@ public class RH_News_Query {
  
 
     public List<News__c> getActiveNews() {
-        String query = 'SELECT Id, Name, Description__c,IsActive__c FROM News__c WHERE IsActive__c = TRUE';
+        String query = 'SELECT Id, Name, Description__c,IsActive__c,Image__c FROM News__c WHERE IsActive__c = TRUE';
         return Database.query(query);
     }
     
     public List<News__c> getAllNews() {
-        return [SELECT Id, Name, Description__c,IsActive__c FROM News__c];
+        return [SELECT Id, Name, Description__c,IsActive__c,Image__c FROM News__c];
     }
 
     public News__c getNewsById(String recordId){
-        List<News__c> newsList= [SELECT Id, Name, Description__c,IsActive__c FROM News__c WHERE Id =: recordId ];
+        List<News__c> newsList= [SELECT Id, Name, Description__c,IsActive__c,Image__c FROM News__c WHERE Id =: recordId ];
         return newsList[0] ;
     }
  

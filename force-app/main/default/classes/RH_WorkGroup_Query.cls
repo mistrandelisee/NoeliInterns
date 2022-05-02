@@ -18,4 +18,8 @@ public  class RH_WorkGroup_Query {
     public  List<RH_WorkGroup__c> getActiveWorkgroups() {
         return [SELECT Id,RH_Status__c, Name, RH_Description__c,  RH_Team_Leader__r.Name FROM RH_WorkGroup__c WHERE RH_Status__c =:RH_Constans.ACTIVATED_WORKGROUP_STATUS];
     }
+
+    public static RH_WorkGroup__c getGroupId(String idTeamLeader){
+        return [SELECT Id, Name FROM RH_WorkGroup__c WHERE RH_Team_Leader__c =: idTeamLeader];
+    }
 }

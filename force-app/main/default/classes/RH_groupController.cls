@@ -9,8 +9,10 @@ public without sharing class RH_groupController {
     }
 
     @AuraEnabled
-    public static void createGroupe(String name, String description, String Leader){
-        insert( new RH_WorkGroup__c(RH_Description__c=description, RH_Team_Leader__c=Leader, Name=name));   
+    public static RH_WorkGroup__c createGroupe(String name, String description, String Leader){
+        RH_WorkGroup__c groupe =  new RH_WorkGroup__c(RH_Description__c=description, RH_Team_Leader__c=Leader, Name=name); 
+        insert groupe;
+        return groupe;  
     }
 
     @AuraEnabled
@@ -36,5 +38,25 @@ public without sharing class RH_groupController {
         List<Contact> liste = RH_Contact_Query.getContactForGroup();
         mapContactGroupe.put('listeContact',liste);
         return mapContactGroupe;
+    }
+    @AuraEnabled
+    public static List<Contact> addGroupMember(List<String> liste, String id){
+        List<Contact> lst = new List<Contact>() ;
+        for(String item : liste){
+            Contact con = new Contact(Id=item, RH_WorkGroup__c=id);
+            lst.add(con);
+        }
+        update lst;
+        return lst;
+    }
+    @AuraEnabled
+    public static RH_WorkGroup__c getGroupeId(String idTeamLeader){
+        RH_WorkGroup__c groupe = new RH_WorkGroup__c();
+        try {
+            groupe = RH_WorkGroup_Query.getGroupId(idTeamLeader);
+        } catch (Exception e) {
+            throw new AuraHandledException(e.getMessage());
+        }
+        return groupe;
     }
 }

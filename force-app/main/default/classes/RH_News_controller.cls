@@ -1,6 +1,6 @@
 public class RH_News_controller {
     private static RH_News_Query newsQry = RH_News_Query.getInstance();
-
+/*
     @AuraEnabled
     public static Map<String, Object> getActiveNews() {
         List<News__c> listNews = newsQry.getActiveNews();
@@ -23,7 +23,14 @@ public class RH_News_controller {
         };
         
         return result;
+    }*/
+    
+    @AuraEnabled
+    public static List<News__c> getActiveNews() {
+        return newsQry.getActiveNews();
     }
+    
+    
     @AuraEnabled 
     public static Map<String,Object>  uploadFile(String base64, String filename, String recordId){
         Map<String, Object> mapReturn = new Map<String, Object>();

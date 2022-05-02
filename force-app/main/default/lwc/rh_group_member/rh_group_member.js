@@ -1,11 +1,13 @@
 import { LightningElement, api, track } from 'lwc';
 import getContactForGroupe from '@salesforce/apex/RH_groupController.getContactForGroupe';
+import addGroupMember from '@salesforce/apex/RH_groupController.addGroupMember';
 
 export default class Rh_group_member extends LightningElement {
     @track listContact=[];
     @track listContactToInsert=[];
      contactId;
      contact2Id;
+     @api idGroupe;
      handleBack(){
         this.dispatchEvent(new CustomEvent('previouspage'));
      }
@@ -64,5 +66,23 @@ export default class Rh_group_member extends LightningElement {
             return item;
         });
         
+    }
+
+    handleSaveMember(){
+        addGroupMember({ liste: this.listeId(this.listContactToInsert) , id:this.idGroupe }) 
+          .then(result => {
+            console.log('Result', result);
+            console.log('listeId', this.listeId(this.listContactToInsert));
+            this.dispatchEvent(new CustomEvent('homegroupe'));
+          })
+          .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+
+    listeId(liste){
+        return liste.map(function(e){
+            return e.Id
+        });
     }
 }

@@ -2,7 +2,7 @@
     
     <template if:true={hasSheetInfo}>
         <lightning-layout multiple-rows>
-            <lightning-layout-item size="12" padding="around-small" small-device-size="12" medium-device-size="12" large-device-size="12" >
+            <lightning-layout-item size="12" padding="around-smallx" small-device-size="12" medium-device-size="12" large-device-size="12" >
                 <div class="custom-box">
                     <template if:true={hasDetailsActions} >
                             
@@ -15,24 +15,89 @@
                     </template>
                 </div>
             </lightning-layout-item>
-            <lightning-layout-item size="12" padding="around-small" small-device-size="12" medium-device-size="12" large-device-size="12" >
+            <lightning-layout-item size="12" padding="around-smallx" small-device-size="12" medium-device-size="12" large-device-size="12" >
                 <div class="custom-box">
-                    <div class="slds-p-around_medium profile_user_info">
-                        <c-rh_display_fields 
-                        title="Sheet Informations"
-                        iconsrc="utility:people"
-                        column="4"
-                        output-fields={timeSheetFields}
-                        ></c-rh_display_fields>
+                    <lightning-layout vertical-align="center" class="box slds-m-top_mediumx" multiple-rows
+                        >
+                        <lightning-layout-item class="pointer slds-p-vertical_medium" size="12" small-device-size="10" medium-device-size="10" large-device-size="11"  onclick={toggleView}>
+                            <span  class="slds-p-left_small  textColor" style="font-size: 20px;">{title}</span>
+                        </lightning-layout-item>
+                        <lightning-layout-item size="12" class="pointer" small-device-size="2" medium-device-size="2" large-device-size="1" onclick={toggleView}>
+                            
+                            <div class="slds-clearfix">
+                                <div class="slds-float_right slds-p-right_small">
+                                    <lightning-icon icon-name={iconName} alternative-text="success"  class="sm-icon default-color ico"></lightning-icon>
+                                </div>
+                            </div>
+                            
+                        </lightning-layout-item>
+
+                        <template if:true={sectionExpanded}>
+                            <lightning-layout-item alignment-bump="right" size="12" padding="around-small" small-device-size="12" medium-device-size="12" large-device-size="12">
+                                <div class="slds-p-around_mediumx profile_user_info">
+                                    
+                                    <!-- title="Sheet Informations"
+                                    iconsrc="utility:people" -->
+                                    <c-rh_display_fields 
+                                    column="4"
+                                    output-fields={timeSheetFields}
+                                    onaction={handleGoToLink}
+                                    ></c-rh_display_fields>
+                                </div>
+                                
+                            </lightning-layout-item>
+                        </template>
+                    </lightning-layout>
+                
+                    
+            </div>
+            </lightning-layout-item>
+
+            <template if:false={newLineMode}>
+                <lightning-layout-item size="12" padding="around-smallx" small-device-size="12" medium-device-size="12" large-device-size="12">
+                    <div class="custom-box">sheet entries list
+
+                        <c-rh_cards_view page-size="20" items={timesheetEntries} onrowselected={handleCardAction}
+                        ly_xs = "12"
+                        ly_md = "6"
+                        ly_lg = "4"
+                        ></c-rh_cards_view>
                     </div>
-                </div>
-            </lightning-layout-item>
-            <lightning-layout-item size="12" padding="around-small" small-device-size="12" medium-device-size="4" large-device-size="3">
-                <div class="custom-box">sheet entries edit/new</div>
-            </lightning-layout-item>
-            <lightning-layout-item size="12" padding="around-small" small-device-size="12" medium-device-size="8" large-device-size="9">
-                <div class="custom-box">sheet entries list </div>
-            </lightning-layout-item>
+                </lightning-layout-item>
+            </template>
+            <template if:true={newLineMode}>
+
+                <lightning-layout-item size="12" padding="around-smallx" small-device-size="12" medium-device-size="4" large-device-size="3">
+                    <div class="custom-box">
+                        
+                    <lightning-card class="custom-card">
+                        <h3 slot="title">
+                            <lightning-icon icon-name="utility:edit" size="small" class="slds-p-right_small"></lightning-icon>
+                            Create Line
+                        </h3>
+                        <c-rh_dynamic_form inputs-items={formEntry}></c-rh_dynamic_form>
+                        <div class="card-footer" slot="footer">
+                            <div class="slds-clearfix">
+                                <div class="slds-float_right">
+                                    <lightning-button variant="base" label={l.Cancel} data-action-name="Cancel" title={l.Cancel} icon-name="utility:close" onclick={handleCancel} class="slds-m-left_x-small"></lightning-button>
+                                    <lightning-button variant="base" label={l.Save} data-action-name="Edit" title={l.Save} icon-name="utility:save" onclick={handleSave} class="slds-m-left_medium"></lightning-button>
+
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </lightning-card>
+                    </div>
+                </lightning-layout-item>
+                <lightning-layout-item size="12" padding="around-smallx" small-device-size="12" medium-device-size="8" large-device-size="9">
+                    <div class="custom-box">
+                        <c-rh_cards_view page-size="20" items={timesheetEntries} onrowselected={handleCardAction}
+                        ly_xs = "12"
+                        ly_md = "12"
+                        ly_lg = "12"
+                        ></c-rh_cards_view> </div>
+                </lightning-layout-item>
+            </template>
         </lightning-layout>
     </template>
     <template if:true={sheetNotFounded}>

@@ -22,7 +22,7 @@ import { registerListener, unregisterAllListeners,fireEvent } from 'c/pubsub';
 
 export default class Rh_Projects extends NavigationMixin(LightningElement) {
     @track initial =[];
-    @track memberProjects = []; 
+     memberProjects = []; 
     @track notmemberProjects = [];   
     @track addParticipate = [];
     filesList =[]; 
@@ -188,7 +188,10 @@ setviewsList(items){
         .then(result => {
             console.log('result',result);
             // this.memberProjects = result['projectMembers'];
-            this.memberProjects = [...result.projectMembers];
+            // this.memberProjects = [...result.projectMembers];
+            for(let key in result.projectMembers) {
+                this.memberProjects.push(result.projectMembers[key]);
+            }
             console.log(this.memberProjects);
             let index;
 
@@ -396,7 +399,8 @@ setviewsList(items){
         console.log('returnlist',returnlist);
         for(let key in returnlist) {
             if(returnlist[key]['isAdd'] == true){
-                initParticipate.push({'RH_Contact__c':returnlist[key]['Id']});
+                initParticipate.push(returnlist[key]['Id']);
+                // initParticipate.push({'RH_Contact__c':returnlist[key]['Id']});
             }
             // if(returnlist[key]['isAdd'] == false){
             //     moveParticipate.push({'RH_Contact__c':returnlist[key]['Id']});
@@ -405,7 +409,7 @@ setviewsList(items){
        }
        this.addParticipate = initParticipate;
        window.console.log('addParticipate' + this.addParticipate);
-        insertProjectMethod({ProjectObj:this.projects,participation:initParticipate})
+        insertProjectMethod({Name:this.projects.Name,Description:this.projects.Description__c,Startdate:this.projects.Start_Date__c,Manager:this.projects.Project_Manager__c,Enddate:this.projects.End_Date__c,participation:initParticipate})
         .then(result=>{
             window.console.log('after save' + this.accountid);
             this.getAllprojects();

@@ -3,7 +3,8 @@
     <template if:true={isVisiblecreate}> 
         <c-rh_group_create 
             ongroupmember={handleGroupmember}
-            onbacktogrouplist={handleBacktogrouplist}> </c-rh_group_create> 
+            onbacktogrouplist={handleBacktogrouplist}
+            id-groupe={idGroupe}> </c-rh_group_create> 
     </template>
 
     <template if:true={isVisible}>
@@ -21,7 +22,9 @@
 
     <template if:true={isVisibleGroupmember}> 
         <c-rh_group_member
-        onpreviouspage={handlepreviousPage} > </c-rh_group_member> 
+        onpreviouspage={handlepreviousPage} 
+        id-groupe={idGroupe}
+        onhomegroupe={handleHomeGroupe}> </c-rh_group_member> 
     </template>
     
 </template>

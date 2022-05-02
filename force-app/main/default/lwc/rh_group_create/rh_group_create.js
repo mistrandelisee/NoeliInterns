@@ -6,9 +6,10 @@ export default class Rh_group_create extends LightningElement {
     @api
     fieldInputs;
     leaders=[];
+    @api idGroupe;
     handleClick (){
      
-    /*    let form=this.template.querySelector('c-rh_dynamic_form');
+       let form=this.template.querySelector('c-rh_dynamic_form');
         let saveResult=form.save();
         let outputs = saveResult.outputs;
      
@@ -16,12 +17,12 @@ export default class Rh_group_create extends LightningElement {
                            description: saveResult.obj.Description, 
                            Leader: saveResult.obj.Leader })
               .then(result => {
-                console.log('Result:', result); */
-                this.dispatchEvent(new CustomEvent('groupmember')); 
-   /*           })
+                console.log('Result:', result); 
+                this.dispatchEvent(new CustomEvent('groupmember',{detail: result.Id})); 
+              })
               .catch(error => {
                 console.error('Error:', error);
-            });             */
+            });             
     }
     handleClick1(){
         this.dispatchEvent(new CustomEvent('backtogrouplist'));

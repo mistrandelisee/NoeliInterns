@@ -61,8 +61,8 @@ export default class Rh_display_fields extends NavigationMixin(LightningElement)
         })
     }
     initDefault(){
-        this.title=this.title || 'User Informations';
-        this.iconsrc= this.iconsrc || 'utility:people';
+        this.title=this.title ;//|| 'User Informations';
+        this.iconsrc= this.iconsrc;// || 'utility:people';
         this.column= this.column || 2;
         this.outputFields=this.outputFields || [
             {

@@ -13,7 +13,11 @@
             </template>
         </template>
         <template if:true={hideView}>
-            <c-rh_cards_view page-size="20" items={timeSheets} onrowselected={handleCardAction}></c-rh_cards_view>
+            <c-rh_cards_view page-size="20" items={timeSheets} onrowselected={handleCardAction}
+            ly_xs = "12"
+            ly_md = "6"
+            ly_lg = "4"
+            ></c-rh_cards_view>
         </template>
     
     </template>
@@ -21,7 +25,7 @@
 
     <template if:true={hasrecordid}>
 
-        <p>display {recordId}</p>
+        <!-- <p>display {recordId}</p> -->
         <!-- <c-rh_details_test></c-rh_details_test> -->
         <c-rh_timesheet_details  record-id={recordId}></c-rh_timesheet_details>
     </template>

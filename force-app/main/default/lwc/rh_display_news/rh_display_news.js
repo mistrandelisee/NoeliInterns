@@ -28,6 +28,44 @@ export default class Rh_display_news extends LightningElement {
         getActiveNews()
             .then(result => {
                 this.news = result;
+                this.bannerStyle=`color: white; background-image: url(${this.news[0].Image__c});
+                                height:200px;background-position:center;background-color: rgba(0, 0, 0, 0.7);
+                                background-blend-mode: multiply;
+                `;
+                this.bannerNews= this.news.map((e,Index) => { 
+                    return Index==0?{
+                        Title: e.Name,
+                        Description: e.Description__c,
+                        Image:  e.Image__c,
+                        Index:Index+1,
+                        Visibility: 'slds-show'
+                    }:{
+                        Title: e.Name,
+                        Description: e.Description__c,
+                        Image:  e.Image__c,
+                        Index:Index+1,
+                        Visibility:'slds-hide'
+                    }
+                });
+
+                
+                //this.bannerStyle="color: red; background-image: `url(${this.bannerNews[0].Image})`;"
+                this.interval= window.setInterval(() => {
+                    this.next();
+                  }, this.config.interval);
+
+            })
+            .catch(error => {
+                alert('KB ' + error);
+                console.log(' error@@@@@@@@@@@@@@@@@@' + error );
+            });
+    }
+
+    /*
+    getNews(){
+        getActiveNews()
+            .then(result => {
+                this.news = result;
                 this.bannerNews= this.news['News'].map((e,Index) => { 
                     return Index==0?{
                         Title: e.Name,
@@ -58,10 +96,10 @@ export default class Rh_display_news extends LightningElement {
                 alert('KB ' + error);
                 console.log(' error@@@@@@@@@@@@@@@@@@' + error );
             });
-    }
+    }*/
 
     next(){
-        this.slide= this.slide+1;
+        this.slide= this.slide+1; 
         this.handleSlide();
     }
 
@@ -87,6 +125,11 @@ export default class Rh_display_news extends LightningElement {
                 Visibility:'slds-hide'
             }
         });
+
+        this.bannerStyle=`color: white; background-image: url(${this.bannerNews[this.slide-1].Image});
+        height:200px;background-position:center;background-color: rgba(0, 0, 0, 0.7);
+        background-blend-mode: multiply;
+        `;
     }
 
     getConfig(){

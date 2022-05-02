@@ -27,4 +27,13 @@ public  class RH_User_Query {
     public List<User> getUserByContactId(String contactId) {
         return [SELECT id,Name,Username,RH_ContactId__c FROM User WHERE RH_ContactId__c=: contactId AND isActive= True];
     }
+    public List<User> getUserByContactId(List<Id> contactIds) {
+        return [SELECT id,Name,Username,RH_ContactId__c FROM User WHERE Profile.Name= :PROFILENAME AND RH_ContactId__c IN :contactIds AND isActive= True];
+    }
+    public List<User> getOtherUsersByContactIds(List<Id> contactIds) {
+        return [SELECT id,Name,Username,RH_ContactId__c FROM User WHERE Profile.Name= :PROFILENAME 
+                                                                    AND RH_ContactId__c IN: contactIds 
+                                                                    AND Id != :UserInfo.getUserId()
+                                                                    AND isActive= True];
+    }
 }

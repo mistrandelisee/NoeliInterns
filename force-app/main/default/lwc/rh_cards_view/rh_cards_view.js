@@ -10,7 +10,9 @@ export default class Rh_cards_view extends LightningElement {
     sortedBy;
     @api hideExport;
     @api pageSize = 15;
-
+    @api ly_xs = '12';
+    @api ly_md = '4';
+    @api ly_lg = '4';
     @api columns = [];
 
     get existElements(){

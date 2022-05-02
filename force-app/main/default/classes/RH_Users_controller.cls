@@ -3,7 +3,7 @@ public without sharing class RH_Users_controller {
     private static RH_Contact_Query contactQry = RH_Contact_Query.getInstance();
     private static RH_WorkGroup_Query workGroupQry = RH_WorkGroup_Query.getInstance();
     
-
+    public static Map<String, String> mapContactToUser = new Map<String, String>();
 
     @AuraEnabled 
     public static Map<String,Object>  getContacts(){
@@ -12,20 +12,25 @@ public without sharing class RH_Users_controller {
         List<String> listcontactId = new List<String>();
         mapReturn.put('error',false);
         try {
-            List<User> users=userQry.getOtherUsers();
+            
+                
+            Map<Id, Contact> mapContacts=contactQry.getAllContacts();
+            
+            List<User> users=userQry.getOtherUsersByContactIds(new List<Id>(mapContacts.keySet()));
             if (users.size()>0){
                 for(User u : users ){
                     String conId;
                     conId = u.RH_ContactId__c;
-                    listcontactId.add(conId);
+                    if (String.isNotBlank(conId)) {
+                        mapContactToUser.put(conId,u.Id);
+                        listcontactId.add(conId);
+                    }
                 }
             }else{
                 throw new RH_ControllerException('004','No User for This Profile Founded');
             }
-                
-            List<Contact> userContacts=contactQry.getContact(listcontactId);
-                if (userContacts.size()>0){
-                    listcon = populateContact(userContacts);
+                if (mapContacts.values().size()>0){
+                    listcon = populateContact(mapContacts.values());
                 }else{
                     throw new RH_ControllerException('002','No RH Contact Founded');
                 } 
@@ -102,7 +107,7 @@ public without sharing class RH_Users_controller {
            
             conctactUser.recordTypeId=RH_Constans.RH_CONTACT_RT;
 
-            
+            insert conctactUser;
             //conctactUser.Account= String.valueOf(mapInputs.get('Account'));
             mapReturn.put('Input',contactJson); 
             mapReturn.put('conctactUser',conctactUser); 
@@ -190,6 +195,7 @@ public without sharing class RH_Users_controller {
             mapObj.put('FirstName', con.FirstName);
             mapObj.put('Status', String.isBlank(con.RH_Status__c)?'':con.RH_Status__c.toLowerCase() );
             mapObj.put('LastName', con.LastName);
+            mapObj.put('UserId', mapContactToUser.get(con.Id));
             listcon.add(mapObj);
         }
         return listcon;
@@ -229,9 +235,23 @@ public without sharing class RH_Users_controller {
         
         Map<String, Object> mapReturn = new Map<String, Object>();
         mapReturn.put('error',false);
+        Schema.SObjectType USER_OBJECT = Schema.User.getSObjectType();
         try {
+            Id recID=recordId;
+            String ContactId=recordId;
+            if(USER_OBJECT==recID.getSObjectType() ){
+                List<User> users=userQry.getUserById(recordId);
+                if (users.isEmpty()) throw new RH_ControllerException('001','Missing User');
+                User u=users[0];
+                ContactId=u.RH_ContactId__c;
+                mapReturn.put('isUser',true);
+            }
+            
+            if (String.isBlank(ContactId)) {
+                throw new RH_ControllerException('002','This user is not a link to any RH Contact');
+            }
             mapReturn.put('input',recordId);
-            List<Contact> conlist = contactQry.getContactById(recordId);
+            List<Contact> conlist = contactQry.getContactById(ContactId);
             if (conlist.isEmpty()){
                 throw new RH_ControllerException('004','User Not Found');
             }

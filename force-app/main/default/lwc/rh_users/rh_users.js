@@ -108,13 +108,14 @@ action='';
     get isAdmin() { return this.currUser?.isCEO || this.currUser?.isTLeader}
     get hascontact(){ return this.listcontact.length >0; }
     get hasrecordid(){ return this.recordId?true:false; }
+    isUser;
     connectedCallback(){
         
         this.recordId = this.getUrlParamValue(window.location.href, 'recordId');
         if (this.recordId) {
             this.startSpinner(true);
             this.getEmployeeInfos(this.recordId);
-            this.getExtraFields(this.recordId);
+            // this.getExtraFields(this.recordId);
             this.startSpinner(false);
         }else{
             this.getAllEmployees();
@@ -208,7 +209,8 @@ action='';
         console.log('event parent ' +JSON.stringify(event.detail));
         const info=event.detail;
         if (info?.extra?.isTitle) {
-            this.goToRequestDetail(info?.data?.id);
+            
+            this.goToRequestDetail(info?.data?.UserId || info?.data?.id);
         }
         if (info?.action==CARD_ACTION) {//user clicks on the dropdown actions
             const record={Id:info?.data?.id, action:info?.extra?.item};
@@ -280,6 +282,7 @@ action='';
                 this.constants=result.Constants;
                 this.buildform(this.contactrecord);
                 this.buildAccountFields(this.contactrecord);
+                this.buildExtraField(this.contactrecord?.RH_Extra_Infos__c);
                 if(this.isAdmin)
                     this.buildDetailsActions(this.contactrecord);
             }else{
@@ -322,7 +325,7 @@ action='';
   
       
     buildExtraField(extrafield){
-        this.jsonInfo=extrafield;
+        this.jsonInfo=extrafield || [];
         if(this.jsonInfo){
             let extraFieldCmp=this.template.querySelector('c-rh_extra_fields');
             extraFieldCmp?.initializeMap(extrafield);

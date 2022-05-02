@@ -99,8 +99,14 @@ public class RH_ContactTriggerHandler {
             }
             stringMap = JSON.serialize(MapError);
         }
-        setDefaultPassWord(listSucces);
-        handleError(listIdErrorRecord, stringMap);
+        if (! listSucces.isEmpty()) {
+            setDefaultPassWord(listSucces);
+        }
+        if (! listIdErrorRecord.isEmpty()) {
+            handleError(listIdErrorRecord, stringMap);
+        }else{
+            //TO SEND OK MAIL
+        }
     }
     
     @future

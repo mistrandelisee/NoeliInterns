@@ -417,23 +417,38 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
             .then(result => {
                 this.data = result;
                 console.log('res----->', result.Status__c);
-                if(result.Status__c=='Pending'){
-                    this.closeModalDelete();
-                    this.dispatchEvent(new ShowToastEvent({
-                        title: 'Toast Warning',
+                console.log('CreatedBy----->', result.CreatedBy.UserRole.Name);
+                switch (result.Status__c) {
+                    case 'Pending':
+                        this.closeModalDelete();
+                        this.dispatchEvent(new ShowToastEvent({
+                        title: 'Toast Info',
                         message: 'You should put status to draft before delete',
-                        variant: 'warning',
+                        variant: 'info',
                         mode: 'dismissable'
-                    }), );
-                }else{
-                    refreshApex(this.wiredEventList);
-                    this.closeModalDelete();
-                    this.closeComponentEdit();
-                    this.dispatchEvent(new ShowToastEvent({
+                        }), );
+                            break;
+                    
+                    case 'Approved':
+                        this.closeModalDelete();
+                        this.dispatchEvent(new ShowToastEvent({
+                        title: 'Toast Info',
+                        message: 'You don\'t have right to deletion !!',
+                        variant: 'info',
+                        mode: 'dismissable'
+                        }), );
+                            break;
+
+                    default:
+                        refreshApex(this.wiredEventList);
+                        this.closeModalDelete();
+                        this.closeComponentEdit();
+                        this.dispatchEvent(new ShowToastEvent({
                         title: 'Success!!',
                         message: 'Event Delete Successfully!!',
                         variant: 'success'
-                    }), );
+                        }), );
+                            break;
                 }
             })
             .catch(error => {

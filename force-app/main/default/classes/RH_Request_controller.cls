@@ -113,6 +113,6 @@ public with sharing class RH_Request_controller {
                 RH_Addressed_Cc__c=this.RH_AddressedCc,
                 RH_Description__c=this.RH_Description);
         }
-    }   
+    }
 
 }

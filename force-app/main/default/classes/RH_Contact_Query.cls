@@ -15,11 +15,11 @@ public  class RH_Contact_Query {
     }
 
     public List<Contact> getContactById(String contactId) {
-        return [SELECT LastName,AccountId,RH_Role__c, FirstName,RH_User__c,Email,MailingCity,Languages__c,RH_Extra_Infos__c ,RH_Number_Groups_Leaded__c,OtherAddress,Birthdate,Phone,Description,RH_Status__c,
+        return [SELECT Name,LastName,AccountId,RH_Role__c, FirstName,RH_User__c,Email,MailingCity,Languages__c,RH_Extra_Infos__c ,RH_Number_Groups_Leaded__c,OtherAddress,Birthdate,Phone,Description,RH_Status__c,
                     Account.Name,Account.NumberOfEmployees,Account.Website,Account.Phone,Account.Description,Account.YearStarted,Account.Industry,
                     RH_WorkGroup__r.Name,RH_WorkGroup__r.CreatedDate,RH_WorkGroup__r.RH_Team_Leader__r.Phone,RH_WorkGroup__r.RH_Team_Leader__r.name,
                     (SELECT Name,CreatedDate,CreatedBy.Name FROM WorkGroups_Leader__r WHERE RH_Status__c =:RH_Constans.ACTIVATED_WORKGROUP_STATUS ),
-                    (SELECT Project__r.Name,Project__r.Link__c,Project__r.Start_Date__c,Project__r.Description__c,Project__r.End_Date__c  FROM Projects__r WHERE Project__r.Status__c =:RH_Constans.ACTIVATED_PROJECT_STATUS)
+                    (SELECT RH_Project__r.Name,RH_Project__r.Link__c,RH_Project__r.Start_Date__c,RH_Project__r.Description__c,RH_Project__r.End_Date__c  FROM Projects__r WHERE RH_Project__r.Status__c =:RH_Constans.ACTIVATED_PROJECT_STATUS)
                     FROM Contact WHERE Id=:contactId];
     }
 
@@ -28,11 +28,22 @@ public  class RH_Contact_Query {
                 Account.Name,Account.NumberOfEmployees,Account.Website,Account.Phone,Account.Description,Account.YearStarted,Account.Industry,
                 RH_WorkGroup__r.Name,RH_WorkGroup__r.CreatedDate,RH_WorkGroup__r.RH_Team_Leader__r.Phone,RH_WorkGroup__r.RH_Team_Leader__r.name,
                 (SELECT Name,CreatedDate,CreatedBy.Name FROM WorkGroups_Leader__r WHERE RH_Status__c =:RH_Constans.ACTIVATED_WORKGROUP_STATUS ),
-                (SELECT Project__r.Name,Project__r.Link__c,Project__r.Start_Date__c,Project__r.Description__c,Project__r.End_Date__c  FROM Projects__r WHERE Project__r.Status__c =:RH_Constans.ACTIVATED_PROJECT_STATUS)
+                (SELECT RH_Project__r.Name,RH_Project__r.Link__c,RH_Project__r.Start_Date__c,RH_Project__r.Description__c,RH_Project__r.End_Date__c  FROM Projects__r WHERE RH_Project__r.Status__c =:RH_Constans.ACTIVATED_PROJECT_STATUS)
                 FROM Contact WHERE Id IN :listcontactId];
 
     }
+    public  Map<Id,Contact> getAllContacts(){
+        Map<Id, Contact> mapContacts=new Map<Id, Contact>( [SELECT Id, LastName,AccountId,RH_Role__c, FirstName,RH_User__c,Email,MailingCity,Languages__c,RH_Extra_Infos__c ,RH_Number_Groups_Leaded__c,OtherAddress,Birthdate,Phone,Description,RH_Status__c,
+                Account.Name,Account.NumberOfEmployees,Account.Website,Account.Phone,Account.Description,Account.YearStarted,Account.Industry,
+                RH_WorkGroup__r.Name,RH_WorkGroup__r.CreatedDate,RH_WorkGroup__r.RH_Team_Leader__r.Phone,RH_WorkGroup__r.RH_Team_Leader__r.name,
+                (SELECT Name,CreatedDate,CreatedBy.Name FROM WorkGroups_Leader__r WHERE RH_Status__c =:RH_Constans.ACTIVATED_WORKGROUP_STATUS ),
+                (SELECT RH_Project__r.Name,RH_Project__r.Link__c,RH_Project__r.Start_Date__c,RH_Project__r.Description__c,RH_Project__r.End_Date__c  FROM Projects__r WHERE RH_Project__r.Status__c =:RH_Constans.ACTIVATED_PROJECT_STATUS)
+                FROM Contact 
+                WHERE recordTypeId=:RH_Constans.RH_CONTACT_RT]);
+        
+        return mapContacts;
 
+    }
     public  List<Contact> getExtrafied(String recordId){
         return [SELECT Id,RH_Extra_Infos__c FROM Contact WHERE id=:recordId];
     }
@@ -53,8 +64,8 @@ public  class RH_Contact_Query {
         return [SELECT Id,Name FROM Contact WHERE recordTypeId=:RH_Constans.RH_CONTACT_RT];
     }
 
-    public List<Account> getAccountId(){
-        return [Select Id,Name from Account where OwnerId = : UserInfo.getUserId()];
+    public List<Contact> getAccountId(String rh_contactId){
+        return [Select Id,Name,AccountId from Contact where Id = : rh_contactId];
     }
     
     public static List<Contact> getContactForGroup(){

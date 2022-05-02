@@ -180,13 +180,15 @@ public without sharing class RH_EventController {
             User u = [Select Id, RH_ContactId__c,UserRole.Name From User where Id =: UserInfo.getUserId()];
             String conId = u.RH_ContactId__c;
             String userRole = u.UserRole.Name;
-            system.debug('@@@@ userRole---> '+ userRole );
-            Event__c ev = [Select Id,Contact_Id__c,Status__c,CreatedBy.UserRole.Name From Event__c Where Contact_Id__c=:conId And Id=:evid];
-            system.debug('@@@@ ev---> '+ ev );
+            // system.debug('@@@@ userRole---> '+ userRole );
+            Event__c ev = [Select Id,Contact_Id__c,Status__c,CreatedBy.UserRole.Name,Message__c From Event__c Where Contact_Id__c=:conId And Id=:evid];
+            // system.debug('@@@@ ev---> '+ ev );
             system.debug('@@@@ evCreatedBy---> '+ ev.CreatedBy.UserRole.Name  );
-            // if((ev.Status__c=='Draft' || ev.Status__c=='Approved') && (ev.CreatedBy.UserRole.Name==userRole || ev.CreatedBy.UserRole.Name=='CEO')){
-            //     delete ev;
-            // }
+            if((ev.Status__c=='Approved') && ev.CreatedBy.UserRole.Name=='CEO'){
+                delete ev;
+            }else if(ev.Status__c=='Draft'){
+                delete ev;
+            }
             return ev;
         }
         catch(Exception ex) {

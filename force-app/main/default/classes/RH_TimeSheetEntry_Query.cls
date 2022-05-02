@@ -15,12 +15,12 @@ public  class RH_TimeSheetEntry_Query {
     }
 
     public List<TimeSheetEntry> getTimesheetEntries(String TimeSheetId) {
-        return [SELECT Id,Subject, Description,DurationInMinutes, RH_Project__c, StartTime, EndTime,Status,CreatedDate,TimeSheetId FROM TimeSheetEntry WHERE TimeSheetId =:TimeSheetId];
+        return [SELECT Id,Subject, Description,RH_Project__r.Name,TimeSheet.Owner.Name,TimeSheetEntryNumber,DurationInMinutes, RH_Project__c, StartTime, EndTime,Status,CreatedDate,TimeSheetId FROM TimeSheetEntry WHERE TimeSheetId =:TimeSheetId];
     }
 
-    public List<TimeSheetEntry> getOverlapsEntries(String TimeSheetId,Datetime startDate,Datetime endDate) {//get entries wich fall in the same intervals
+    public List<TimeSheetEntry> getOverlapsEntries(String TimeSheetId,Datetime startDate,Datetime endDate,String TimeSheetEntryId) {//get entries wich fall in the same intervals
         return [SELECT Id,Subject, Description, RH_Project__c, StartTime, EndTime,Status,CreatedDate,TimeSheetId FROM TimeSheetEntry 
-                    WHERE  TimeSheetId =:TimeSheetId AND StartTime<:endDate AND EndTime >:startDate];
+                    WHERE  TimeSheetId =:TimeSheetId AND StartTime<:endDate AND EndTime >:startDate AND Id !=:TimeSheetEntryId];
     }
     
 }

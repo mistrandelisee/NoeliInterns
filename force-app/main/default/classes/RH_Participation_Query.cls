@@ -1,4 +1,3 @@
-
 public class RH_Participation_Query {
     /** The class instance */
     private static RH_Participation_Query instance = null;
