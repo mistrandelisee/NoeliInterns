@@ -59,12 +59,35 @@
                         <div class="custom-box"><!-- user information section -->
                             <!-- <template if:true={hasrec}> -->
                                 <div class="slds-p-around_medium profile_user_info">
-                                    <c-rh_display_fields 
-                                    title="User Informations"
-                                    iconsrc="utility:people"
-                                    column="2"
-                                    output-fields={formPersonanalInputDetails}
-                                    ></c-rh_display_fields>
+                                    <template if:false={editContactMode}>
+                                        <c-rh_display_fields 
+                                        title="User Informations"
+                                        iconsrc="utility:people"
+                                        column="2"
+                                        output-fields={userDetails}
+                                        onaction={handlUserDetails}
+                                        action-available={actionAvailable}
+                                        ></c-rh_display_fields>
+                                    </template>
+                                    <template if:true={editContactMode}>
+                                        <lightning-card class="custom-card">
+                                            <h3 slot="title">
+                                                <lightning-icon icon-name="utility:edit" size="small" class="slds-p-right_small"></lightning-icon>
+                                                {title}
+                                            </h3>
+                                            <c-rh_dynamic_form inputs-items={userFormInputs}></c-rh_dynamic_form>
+                                            <div class="card-footer" slot="footer">
+                                                <div class="slds-clearfix">
+                                                    <div class="slds-float_right">
+                                                        <lightning-button variant="base" label={l.Cancel} data-action-name="Cancel" title={l.Cancel} icon-name="utility:close" onclick={handleCancel} class="slds-m-left_x-small"></lightning-button>
+                                                        <lightning-button variant="base" label={l.Save} data-action-name="Edit" title={l.Save} icon-name="utility:save" onclick={handleSave} class="slds-m-left_medium"></lightning-button>
+                                
+                                                    </div>
+                                                </div>
+                                                
+                                            </div>
+                                        </lightning-card>
+                                    </template>
                                 </div>
                                 <template if:true={isUser}>
                                     <template if:true={isAdmin}>

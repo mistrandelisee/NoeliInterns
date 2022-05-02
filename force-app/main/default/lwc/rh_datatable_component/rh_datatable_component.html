@@ -5,8 +5,8 @@
             large-device-size="12">
             <div class="custom-box">
                 <template if:true={ready}>
-                    <lightning-datatable key-field="name" data={itemsToShow} columns={columns}
-                        hide-checkbox-column="true" onrowaction={goToDetail}
+                    <lightning-datatable key-field="name" data={itemsToShow} columns={columns} resize-column-disabled={resizeColumn}
+                        hide-checkbox-column="true" onrowaction={goToDetail} show-row-number-column ={statutRowNumber}
                         default-sort-direction={defaultSortDirection} sorted-direction={sortDirection}
                         sorted-by={sortedBy} onsort={onHandleSort}></lightning-datatable>
                 </template>

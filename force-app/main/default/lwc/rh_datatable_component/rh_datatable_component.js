@@ -13,6 +13,9 @@ export default class Rh_datatable_component extends LightningElement {
 
     @api columns = [];
 
+    @api statutRowNumber=false;
+    @api resizeColumn=false;
+
     get existElements(){
         return this.items && this.items.length > 0 ? true : false;
     }

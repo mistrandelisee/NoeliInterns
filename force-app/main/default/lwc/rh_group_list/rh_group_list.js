@@ -33,7 +33,25 @@ export default class Rh_group_list extends LightningElement {
               item.keysFields=self.keysFields;
               item.keysLabels=self.keysLabels;
               item.fieldsToShow=self.fieldsToShow;
-
+              let Actions=[
+                {   variant:"brand-outline",
+                class:" slds-m-left_x-small",
+                label:"Active",
+                name:'NEW_ACTION',
+                title:"Active",
+                iconName:"utility:add",
+                // class:"active-item"
+              },
+              {   variant:"brand-outline",
+                class:" slds-m-left_x-small",
+                label:"Desactive",
+                name:'NEW_ACTION2',
+                title:"Active",
+                iconName:"utility:deprecate",
+                // class:"active-item"
+              }
+          ];
+              item.actions=Actions;
               return item;
                });
                this.setviewsList(this.listeGroup)

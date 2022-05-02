@@ -3,6 +3,7 @@ import { LightningElement } from 'lwc';
 export default class Rh_workgroup extends LightningElement {
     groupeId;
     idGroupe;
+    objGroupe;
     isVisible = true;
     isVisiblecreate = false;
     isVisibleGroupmember = false;
@@ -12,8 +13,8 @@ export default class Rh_workgroup extends LightningElement {
         this.isVisiblecreate = true;
     }
     handleGroupmember(event){
-        this.idGroupe = event.detail;
-        this.dispatchEvent(new CustomEvent());
+        this.objGroupe = event.detail;
+       /*  this.dispatchEvent(new CustomEvent()); */
         this.isVisible = false;
         this.isVisiblecreate = false;
         this.isVisibleGroupmember = true;
@@ -46,4 +47,10 @@ export default class Rh_workgroup extends LightningElement {
         this.isVisibleGroupmember = false;
         this.isVisibleDetailgroup = false;
     } 
+    handleEditMember(){
+        this.isVisible = false;
+        this.isVisiblecreate = false;
+        this.isVisibleGroupmember = true; 
+        this.isVisibleDetailgroup = false;
+    }
 }

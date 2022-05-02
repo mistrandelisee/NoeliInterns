@@ -22,6 +22,8 @@ export default class Rh_display_news_config extends NavigationMixin(LightningEle
     draftConfig={};
     r=0;
     allNews=[];
+    hasadmin=true;
+    showEdit=false;
 
     newsRecord;
     @track newsInputDetails=[];
@@ -275,6 +277,18 @@ export default class Rh_display_news_config extends NavigationMixin(LightningEle
             });
             this.dispatchEvent(evt); 
         });
+    }
+
+    handleBackConfig(){
+        this.recordId=null;
+        this.action='back';
+    }
+
+    handleEditNews(){
+        this.showEdit=true;
+    }
+    displayDetail(){
+        this.showEdit=false;
     }
 
 

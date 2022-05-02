@@ -34,7 +34,7 @@ public class RH_SeriesCharts_controller {
     
     public List<DataChart> getOpportunities() {
        List<Opportunity> oppList= getOpportunitiesQuery(this.currentYear);
-       List<Integer> numberRejectedByMonth = new List<Integer> {0,0,0,0,0,0,0,0,0,0,0,0};
+       List<Integer> numberRejectedByMonth = new List<Integer> {0,1,1,7,1,1,9,1,10,1,1,50};
        List<Integer> numberApprouvedByMonth  = new List<Integer> {0,0,0,0,0,0,0,0,0,0,0,0}; 
        List<DataChart> datas = new List<DataChart>();
        for(Opportunity opp: oppList){
@@ -50,6 +50,17 @@ public class RH_SeriesCharts_controller {
           datas.add(new DataChart(i+1, numberApprouvedByMonth[i], numberRejectedByMonth[i],numberApprouvedByMonth[i]+ numberRejectedByMonth[i]));
        }     
        return datas;
+    }
+    
+     public class PieWedgeData {
+
+        public String name { get; set; }
+        public Integer data { get; set; }
+
+        public PieWedgeData(String name, Integer data) {
+            this.name = name;
+            this.data = data;
+        }
     }
     
     //Wrapper class

@@ -43,7 +43,8 @@ jsonInfo;
 contactrecord;
 contactNotFounded=false;
 @track accountFields=[];
-@track formPersonanalInputDetails=[];
+@track userDetails=[];
+userFormInputs=[];
 currUser={};
 
 keysFields={accountName:'ok'};
@@ -101,6 +102,8 @@ detailsActions=[
 ]
 @wire(CurrentPageReference) pageRef;
 action='';
+isUser;
+actionAvailable=[];
     get showNew(){ return this.isAdmin && (this.action=='' || this.action==NEW_ACTION || this.action==SAVE_ACTION); }
     get hideView(){  return this.action=='' || this.action!=NEW_ACTION; }
     get hasDetailsActions(){ return this.detailsActions?.length >0}
@@ -108,7 +111,7 @@ action='';
     get isAdmin() { return this.currUser?.isCEO || this.currUser?.isTLeader}
     get hascontact(){ return this.listcontact.length >0; }
     get hasrecordid(){ return this.recordId?true:false; }
-    isUser;
+    editContactMode=false;
     connectedCallback(){
         
         this.recordId = this.getUrlParamValue(window.location.href, 'recordId');
@@ -270,8 +273,10 @@ action='';
         getEmployeeDetails({
             recordId: recordid
         }).then(result =>{
-            console.log('display contact ' +JSON.stringify(result))
+            console.log('display contact ' );
+            console.log(result);
             if (!result.error && result.Ok) {
+                this.isUser=result.isUser;
                 this.contactrecord = result.Employe;
                 this.currUser={...result.currentContact,
                                                     isCEO:result.isCEO,
@@ -280,11 +285,26 @@ action='';
                                                     isBaseUser:result.isBaseUser,
                                     }
                 this.constants=result.Constants;
-                this.buildform(this.contactrecord);
+                this.buildUserDetails(this.contactrecord);
                 this.buildAccountFields(this.contactrecord);
                 this.buildExtraField(this.contactrecord?.RH_Extra_Infos__c);
-                if(this.isAdmin)
+                if(this.isAdmin){
                     this.buildDetailsActions(this.contactrecord);
+                    if(! this.isUser){
+                        this.actionAvailable =[
+                            {
+                                variant:"base",
+                                label:this.l.Edit,
+                                name:"Edit",
+                                title:this.l.Edit,
+                                iconName:"utility:edit",
+                                class:"slds-m-left_x-small"
+                            },
+                        ];
+                        //this.buildForm();
+                    }
+                }
+                    
             }else{
                 this.showToast(WARNING_VARIANT,'ERROR', result.msg);
                 this.title = 'Failled';
@@ -345,100 +365,212 @@ action='';
         })
     }
 
-    buildform(profileinformation){
-    this.formPersonanalInputDetails=[
-        {
-            label:this.l.LastName,
-            placeholder:this.l.LastNamePlc,
-            name:'LastName',
-            value:profileinformation?.LastName,
-            required:true,
-            ly_md:'6', 
-            ly_lg:'6'
-        },
-        {
-            label:this.l.FirstName,
-            placeholder:this.l.FirstNamePlc,
-            name:'FirstName',
-            value:profileinformation?.FirstName,
-            required:false,
-            ly_md:'6', 
-            ly_lg:'6'
-        },
-        {
-            label:this.l.Email,
-            name:'Email',
-            required:true,
-            value:profileinformation?.Email,
-            placeholder:this.l.EmailPlc,
-            maxlength:255,
-            type:'email',
-            ly_md:'12', 
-            ly_lg:'12'
-        },
-        /*{
-            label:this.l.Role,
-            name:'Role',
-            required:true,
-            value:profileinformation?.RH_Role__c,
-            readOnly:true,
-            ly_md:'12', 
-            ly_lg:'12'
-        },*/
+    buildUserDetails(profileinformation){
+        this.userDetails=[
+            {
+                label:this.l.LastName,
+                placeholder:this.l.LastNamePlc,
+                name:'LastName',
+                value:profileinformation?.LastName,
+                required:true,
+                ly_md:'6', 
+                ly_lg:'6'
+            },
+            {
+                label:this.l.FirstName,
+                placeholder:this.l.FirstNamePlc,
+                name:'FirstName',
+                value:profileinformation?.FirstName,
+                required:false,
+                ly_md:'6', 
+                ly_lg:'6'
+            },
+            {
+                label:this.l.Email,
+                name:'Email',
+                required:true,
+                value:profileinformation?.Email,
+                placeholder:this.l.EmailPlc,
+                maxlength:255,
+                type:'email',
+                ly_md:'12', 
+                ly_lg:'12'
+            },
+            /*{
+                label:this.l.Role,
+                name:'Role',
+                required:true,
+                value:profileinformation?.RH_Role__c,
+                readOnly:true,
+                ly_md:'12', 
+                ly_lg:'12'
+            },
+            
+            {
+                label:this.l.Phone,
+                placeholder:this.l.PhonePlc,
+                name:'Phone',
+                type:'phone',
+                required:true,
+                value:profileinformation?.Phone,
+                ly_md:'6', 
+                ly_lg:'6'
+            },
+            */
+            /*{
+                label:this.l.Username,
+                placeholder:this.l.UsernamePlc,
+                name:'Login',
+                type:'email',
+                required:true,
+                value:profileinformation?.Username,
+                ly_md:'6', 
+                ly_lg:'6'
+            },
+            {
+                label:this.l.City,
+                placeholder:this.l.CityPlc,
+                name:'City',
+                type:'address',
+                value:profileinformation?.OtherAddress,
+                ly_md:'6', 
+                ly_lg:'6'
+            },
+            {
+                label:this.l.Birthday,
+                placeholder:this.l.BirthdayPlc,
+                name:'Birthday',
+                type:'date',
+                required:true,
+                value:profileinformation?.Birthdate,
+                ly_md:'6', 
+                ly_lg:'6'
+            },
+            {
+                label:this.l.AboutMe,
+                name:'Description',
+                value:profileinformation?.Description,
+                placeholder:this.l.AboutMePlc,
+                className:'textarea',
+                maxlength:25000,
+                type:'textarea',
+                ly_md:'12', 
+                ly_lg:'12'
+            }*/
+    
+        ];
+        if (this.isUser) {
+            
+            this.userDetails=this.userDetails.concat([
+                
+                {
+                    label:this.l.Phone,
+                    placeholder:this.l.PhonePlc,
+                    name:'Phone',
+                    type:'phone',
+                    required:true,
+                    value:profileinformation?.Phone,
+                    ly_md:'6', 
+                    ly_lg:'6'
+                },
+                {
+                    label:this.l.City,
+                    placeholder:this.l.CityPlc,
+                    name:'City',
+                    type:'address',
+                    value:profileinformation?.OtherAddress,
+                    ly_md:'6', 
+                    ly_lg:'6'
+                },
+                {
+                    label:this.l.Birthday,
+                    placeholder:this.l.BirthdayPlc,
+                    name:'Birthday',
+                    type:'date',
+                    required:true,
+                    value:profileinformation?.Birthdate,
+                    ly_md:'6', 
+                    ly_lg:'6'
+                },
+                {
+                    label:this.l.AboutMe,
+                    name:'Description',
+                    value:profileinformation?.Description,
+                    placeholder:this.l.AboutMePlc,
+                    className:'textarea',
+                    maxlength:25000,
+                    type:'textarea',
+                    ly_md:'12', 
+                    ly_lg:'12'
+                }
         
-        {
-            label:this.l.Phone,
-            placeholder:this.l.PhonePlc,
-            name:'Phone',
-            type:'phone',
-            required:true,
-            value:profileinformation?.Phone,
-            ly_md:'6', 
-            ly_lg:'6'
-        },
-
-        /*{
-            label:this.l.Username,
-            placeholder:this.l.UsernamePlc,
-            name:'Login',
-            type:'email',
-            required:true,
-            value:profileinformation?.Username,
-            ly_md:'6', 
-            ly_lg:'6'
-        },*/
-        {
-            label:this.l.City,
-            placeholder:this.l.CityPlc,
-            name:'City',
-            type:'address',
-            value:profileinformation?.OtherAddress,
-            ly_md:'6', 
-            ly_lg:'6'
-        },
-        {
-            label:this.l.Birthday,
-            placeholder:this.l.BirthdayPlc,
-            name:'Birthday',
-            type:'date',
-            required:true,
-            value:profileinformation?.Birthdate,
-            ly_md:'6', 
-            ly_lg:'6'
-        },
-        {
-            label:this.l.AboutMe,
-            name:'Description',
-            value:profileinformation?.Description,
-            placeholder:this.l.AboutMePlc,
-            className:'textarea',
-            maxlength:25000,
-            type:'textarea',
-            ly_md:'12', 
-            ly_lg:'12'
+            ]);
         }
-
-    ];
+    
+    }
+    buildForm(){
+        this.userFormInputs=[
+            {
+                label:'Last Name',
+                placeholder:'Enter your Last Name',
+                name:'LastName',
+                value: '',
+                required:true,
+                ly_md:'6', 
+                ly_lg:'6'
+            },
+            {
+                label:'First Name',
+                placeholder:'Enter your First Name',
+                name:'FirstName',
+                value: '',
+                required:false,
+                ly_md:'6', 
+                ly_lg:'6'
+            },
+            {
+                label:'Email',
+                name:'Email',
+                required:true,
+                value: '',
+                placeholder:'Email',
+                maxlength:100,
+                type:'email',
+                ly_md:'6', 
+                ly_lg:'6'
+            },
+            {
+                label:'Role',
+                name:'Role',
+                required:true,
+                picklist: true,
+                options: this.roles,
+                value: 'Base User',
+                maxlength:100,
+                ly_md:'6', 
+                ly_lg:'6'
+            },
+            {
+                label:'Group',
+                name:'Group',
+                picklist: true,
+                options: this.groups,
+                value: '',
+                maxlength:100,
+                ly_md:'6', 
+                ly_lg:'6'
+            },
+            {
+                label:'Activate ?',
+                name:'Activated',
+                checked:true,
+                type:'toggle',
+                ly_md:'6', 
+                ly_lg:'6'
+            }
+         
+        
+        ]
     }
     callApexUpdateStatus(record,from=''){
         this.startSpinner(true)

@@ -19,7 +19,7 @@
                             <div class="box-border slds-align_absolute-center slds-scrollable">
                                 <ul class="slds-listbox slds-listbox_vertical">
                                     <template for:each={initialList} for:item="acc">
-                                        <li class="slds-listbox__item" onclick={handleChange} key={acc.Id} data-id={acc.Id} data-name={acc}>
+                                        <li class={tabClass} onclick={handleChange} key={acc.Id} data-id={acc.Id} data-name={acc}>
                                             <p class="slds-listbox__option slds-listbox__option_plain slds-media slds-media_small">
                                                 {acc.Name}
                                             </p>
@@ -57,7 +57,7 @@
                         <div class="box-border slds-align_absolute-center slds-scrollable">
                             <ul class="slds-listbox slds-listbox_vertical">
                                 <template for:each={selectedList} for:item="acc">
-                                    <li class="slds-listbox__item" onclick={handleChange} key={acc.Id} data-id={acc.Id} data-name={acc}>
+                                    <li class={tabClass} onclick={handleChange} key={acc.Id} data-id={acc.Id} data-name={acc}>
                                         <p class="slds-listbox__option slds-listbox__option_plain slds-media slds-media_small">
                                             {acc.Name}
                                         </p>

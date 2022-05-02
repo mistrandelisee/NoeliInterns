@@ -3,6 +3,7 @@ public class RH_Project_controller {
     private static RH_Project_Query projectQry = RH_Project_Query.getInstance();
     private static RH_Project_Query projectQry1 = RH_Project_Query.getInstance();
     private static RH_Contact_Query contactQry = RH_Contact_Query.getInstance();
+    private static RH_User_Query userQry = RH_User_Query.getInstance();
 
     public class ReturnClass {
         @AuraEnabled
@@ -22,6 +23,23 @@ public class RH_Project_controller {
         public Project__c project{get;set;}
          @AuraEnabled
         public List<RH_Participation__c> projectMembers{get;set;}
+    }
+
+    public class ProjectTo {
+        @AuraEnabled
+        public String Name{get;set;}
+        @AuraEnabled
+        public String Description{get;set;}
+        @AuraEnabled
+        public String Manager{get;set;}
+        @AuraEnabled
+        public String Status{get;set;}
+        @AuraEnabled
+        public String Link{get;set;}
+         @AuraEnabled
+        public Date Startdate{get;set;}
+        @AuraEnabled
+        public String Enddate{get;set;}
     }
 
     public class ReturnClass12 {
@@ -79,42 +97,28 @@ public class RH_Project_controller {
         return returnList;
     }
 
-    // @AuraEnabled(cacheable=true)
-    // public static List<ReturnClass> getProjectMembers() {
+   
 
-    //     List<ReturnClass> returnList = new List<ReturnClass>();
-        
-    //     List<Project__c> projects=projectQry.getProject();
-    //     List<Contact> cont=contactQry.getAllContact();
-    //     List<Contact> initcont=contactQry.getAllContactInitial();
-    //     for (Project__c pro : projects) {
-    //         ReturnClass retCls = new ReturnClass();
-    //         List<RH_Participation__c> proMem=projectQry.getMembers(pro.Id);
-    //         List<Contact> proNotMem=projectQry1.getNotMembers(pro.Id,pro.Project_Manager__c);
-    //         retCls.project = pro;
-    //         retCls.projectMembers = proMem;
-    //         retCls.projectNotMembers = proNotMem;
-    //         retCls.allContact = cont;
-    //         retCls.allInitContact = initcont;
-    //         returnList.add(retCls);
-    //     }
-    //     system.debug('returnList'+returnList); 
-    //     return returnList;
-    // }
-
-    @AuraEnabled
-    public static Project__c insertProjectMethod(String Name,String Description,Date Startdate,String Manager,Date Enddate,List<String> participation){
-        // public static Project__c insertProjectMethod(Project__c ProjectObj,List<RH_Participation__c> participation){
+    @AuraEnabled 
+    public static Project__c insertProjectMethod(ProjectTo project,List<String> participation){
+        // public static Project__c insertProjectMethod(String Name,String Description,Date Startdate,String Manager,Date Enddate,List<String> participation){
         try {
-            List<Account> acc=contactQry.getAccountId();
+            system.debug('Startdate' +project.Startdate);
+            List<User> acc11=userQry.getUserById(UserInfo.getUserId());
+            List<Contact> acc=contactQry.getAccountId(acc11[0].RH_ContactId__c);
             List<RH_Participation__c> listParti = new List<RH_Participation__c>();
             Project__c ProjectObj = new Project__c();
-            ProjectObj.RH_Account_ID__c = acc[0].id;
-            ProjectObj.Name = Name;
-            ProjectObj.Description__c = Description;
-            ProjectObj.Start_Date__c = Startdate;
-            ProjectObj.Project_Manager__c = Manager;
-            ProjectObj.End_Date__c = Enddate;
+            ProjectObj.RH_Account_ID__c = acc[0].AccountId;
+            ProjectObj.Name = project.Name;
+            if (String.isNotBlank(project.Description)) {
+                ProjectObj.Description__c = project.Description;
+            }
+            if (String.isNotBlank(project.Description)) {
+                ProjectObj.End_Date__c = date.valueOf(project.Enddate);
+            }
+            ProjectObj.Start_Date__c = project.Startdate;
+            ProjectObj.Project_Manager__c = project.Manager;
+            
             insert ProjectObj;
             for (String Idpartici : participation) {
                 RH_Participation__c part = new RH_Participation__c();
@@ -124,25 +128,37 @@ public class RH_Project_controller {
             }
             insert listParti;
             return ProjectObj;
+            // return null;
         } catch (Exception exp) {
             system.debug('exception'+exp.getMessage());
             throw new AuraHandledException(exp.getMessage());
         }
     }
-// }
 
     @AuraEnabled
-    public static Project__c insertProjectupdated(Project__c ProjectObj,String IDProject){
+    public static Project__c insertProjectupdated(ProjectTo project,String IDProject){
         try {
+            system.debug('Startdate' +project.Startdate);
+            system.debug('Name'+project.Name);
+            system.debug('Manager'+project.Manager);
+            system.debug('Description'+project.Description);
             List<Project__c> proj=projectQry.getProjectById(IDProject);
             for(Project__c pro :proj){
-                pro.Status__c = ProjectObj.Status__c;
-                pro.Start_Date__c = ProjectObj.Start_Date__c;
-                pro.Name = ProjectObj.Name;
-                pro.Project_Manager__c = ProjectObj.Project_Manager__c;
-                pro.Link__c = ProjectObj.Link__c;
-                pro.End_Date__c = ProjectObj.End_Date__c;
-                pro.Description__c = ProjectObj.Description__c;
+                if (String.isNotBlank(project.Status)) {
+                pro.Status__c = project.Status;
+                }
+                pro.Start_Date__c = project.Startdate;
+                pro.Name = project.Name;
+                pro.Project_Manager__c = project.Manager;
+                if (String.isNotBlank(project.Link)) {
+                    pro.Link__c = project.Link;
+                }
+                if (String.isNotBlank(project.Enddate)) {
+                    pro.End_Date__c = date.valueOf(project.Enddate);
+                 }
+                if (String.isNotBlank(project.Description)) {
+                pro.Description__c = project.Description;
+                }
             }
             update proj;
             system.debug('proj  '+proj); 
@@ -154,15 +170,22 @@ public class RH_Project_controller {
     }
 
     @AuraEnabled
-    public static Boolean insertUpdateMembers(List<RH_Participation__c> AddMembers,List<RH_Participation__c> MoveMembers){
+    public static Boolean insertUpdateMembers(List<String> AddMembers,List<String> MoveMembers,String IDProject){
         try {
-            if(AddMembers.size()>0){
-                insert AddMembers;
+            List<RH_Participation__c> parti =new List<RH_Participation__c>();
+            for (String contId : AddMembers) {
+                RH_Participation__c par = new RH_Participation__c();
+                par.RH_Contact__c = contId;
+                par.RH_Project__c = IDProject;
+                parti.add(par);
+            }
+            if(parti.size()>0){
+                insert parti;
             }
             
             List<String> lstr = new List<String>();
-            for (RH_Participation__c part : MoveMembers) {
-                lstr.add(part.RH_Contact__c);
+            for (String part : MoveMembers) {
+                lstr.add(part);
             }
             List<RH_Participation__c> proMem=projectQry.getParticipate(lstr);
             delete proMem;
@@ -237,4 +260,14 @@ public class RH_Project_controller {
         }
         return mapIdTitle;
     }
+    @AuraEnabled
+    public static List<String> getPickListValuesIntoList(){
+        List<String> pickListValuesList= new List<String>();
+         Schema.DescribeFieldResult fieldResult = Project__c.Status__c.getDescribe();
+         List<Schema.PicklistEntry> ple = fieldResult.getPicklistValues();
+         for( Schema.PicklistEntry pickListVal : ple){
+             pickListValuesList.add(pickListVal.getLabel());
+         }     
+         return pickListValuesList;
+     }
 }

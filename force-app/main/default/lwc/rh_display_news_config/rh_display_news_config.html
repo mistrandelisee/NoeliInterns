@@ -12,16 +12,39 @@
             <c-rh_cards_view  page-size="6" items={allNews} onrowselected={handleCardAction}></c-rh_cards_view>  
         </template>
     </template>
-    <template if:true={hasrecordid} >
-        <template if:true={hasNews}>
-            <div class="slds-p-around_medium profile_user_info">
-                <c-rh_display_fields 
-                title="News  Details"
-                iconsrc="standard:news"
-                column="2"
-                output-fields={newsInputDetails}
-                ></c-rh_display_fields>
-            </div>
+    <template if:true={hasrecordid} > 
+        <template if:false={showEdit}>
+                <template if:true={hasadmin}>
+                    <div class="slds-clearfix">
+                        <lightning-button label="Back" class="slds-float_left" onclick={handleBackConfig}></lightning-button>
+                        <lightning-button label="Edit" class="slds-float_right" onclick={handleEditNews}></lightning-button>
+                        <lightning-button label="Enabled" class="slds-float_right" onclick={handleVisibility}></lightning-button>
+                    </div>
+                </template>
+        
+                <template if:true={hasNews}>
+                    <div class="slds-p-around_medium profile_user_info">
+                        <c-rh_display_fields 
+                        title="News  Details"
+                        iconsrc="standard:news"
+                        column="2"
+                        output-fields={newsInputDetails}
+                        ></c-rh_display_fields>
+                    </div>
+                </template>
         </template>
+    </template>
+       
+
+    <template if:true={showEdit}>
+        <div class="slds-clearfix">
+            <lightning-button label="Back" class="slds-float_left" onclick={displayDetail}></lightning-button>
+        </div>
+        <div class="slds-var-m-vertical_medium">
+            <c-rh_dynamic_form inputs-items={newsInputDetails}></c-rh_dynamic_form>
+        </div>
+        <div class="slds-clearfix">
+            <lightning-button label="Save" class="slds-float_right" onclick={handleSaveEdit}></lightning-button>
+        </div>
     </template>
 </template>

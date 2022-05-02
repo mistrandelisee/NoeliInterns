@@ -11,3 +11,12 @@
     text-transform:uppercase;
    
 }
+
+li:focus { 
+    outline: none !important;
+    border-color: #719ECE;
+    box-shadow: 0 0 10px #719ECE;
+}
+.class1 {
+    background-color: #e6e618;
+}

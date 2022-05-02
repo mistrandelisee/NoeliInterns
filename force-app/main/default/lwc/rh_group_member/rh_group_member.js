@@ -7,7 +7,7 @@ export default class Rh_group_member extends LightningElement {
     @track listContactToInsert=[];
      contactId;
      contact2Id;
-     @api idGroupe;
+     @api objGroupe;
      handleBack(){
         this.dispatchEvent(new CustomEvent('previouspage'));
      }
@@ -69,7 +69,7 @@ export default class Rh_group_member extends LightningElement {
     }
 
     handleSaveMember(){
-        addGroupMember({ liste: this.listeId(this.listContactToInsert) , id:this.idGroupe }) 
+        addGroupMember({ liste: this.listeId(this.listContactToInsert) , id:this.objGroupe.Id}) 
           .then(result => {
             console.log('Result', result);
             console.log('listeId', this.listeId(this.listContactToInsert));

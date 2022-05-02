@@ -4,7 +4,7 @@
         <c-rh_group_create 
             ongroupmember={handleGroupmember}
             onbacktogrouplist={handleBacktogrouplist}
-            id-groupe={idGroupe}> </c-rh_group_create> 
+           obj-groupe={objGroupe}> </c-rh_group_create> 
     </template>
 
     <template if:true={isVisible}>
@@ -17,13 +17,14 @@
 
     <template if:true={isVisibleDetailgroup}> 
         <c-rh_group_detail groupe-id={groupeId}
+            oneditmember={handleEditMember}
            > </c-rh_group_detail> 
     </template>
 
     <template if:true={isVisibleGroupmember}> 
         <c-rh_group_member
         onpreviouspage={handlepreviousPage} 
-        id-groupe={idGroupe}
+        obj-groupe={objGroupe}
         onhomegroupe={handleHomeGroupe}> </c-rh_group_member> 
     </template>
     

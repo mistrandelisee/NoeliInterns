@@ -1,6 +1,6 @@
 public without sharing class RH_EventController {
 
-    @AuraEnabled(cacheable=true)
+    @AuraEnabled
     public static List<Event__c>  getEventList(){
         try{
             System.debug('UserInfo-->' + UserInfo.getUserId());
@@ -76,7 +76,7 @@ public without sharing class RH_EventController {
                 if(userRole == 'CEO'){
                     List<Event__c> evenList = [SELECT Id,Name,Contact_Id__r.Name,Description__c, Start_Date__c, End_Date__c, Status__c, CreatedBy.UserRole.Name FROM Event__c Where
                     //CreatedBy.UserRole.Name =: 'Base User'
-                    (Status__c='Pending' OR Status__c='Approved')
+                    (Status__c='Submitted' OR Status__c='Approved')
                     ];
                     //System.debug('event-->' + evenList);
                     return evenList;
@@ -99,6 +99,7 @@ public without sharing class RH_EventController {
         try{
             wrapperData datas = (wrapperData)JSON.deserialize(objEven, wrapperData.class);
             User u = [Select Id, RH_ContactId__c From User where Id =: UserInfo.getUserId()];
+            // String userId = u.Id+ ' | ' + userId;
             String conId = u.RH_ContactId__c;	
                 Event__c even = new Event__c(
                     Name = datas.Name,
@@ -138,7 +139,9 @@ public without sharing class RH_EventController {
             List<Event__c> event = [Select Id,Name,Contact_Id__c,Description__c,Start_Date__c,End_Date__c,Status__c,Message__c From Event__c Where Id =: evId];
             for(Event__c even : event){
                 if(even.Status__c=='Approved'){
-                    even.Message__c='Event already sent';
+                    even.Message__c='Event has been already sent';
+                }else if(even.Status__c=='Rejected'){
+                    even.Message__c='Event has been already rejected';
                 }else{
                     even.Name = datas.Name;
                     even.Description__c  = datas.Description;
@@ -174,29 +177,48 @@ public without sharing class RH_EventController {
     }
     
     @AuraEnabled
-    public static Event__c deleteEvent(String evid) {
+    public static List<Event__c> deleteEvent(String evid) {
         system.debug('@@@@ eId---> '+ evid );
         try{
             User u = [Select Id, RH_ContactId__c,UserRole.Name From User where Id =: UserInfo.getUserId()];
             String conId = u.RH_ContactId__c;
             String userRole = u.UserRole.Name;
-            // system.debug('@@@@ userRole---> '+ userRole );
-            Event__c ev = [Select Id,Contact_Id__c,Status__c,CreatedBy.UserRole.Name,Message__c From Event__c Where Contact_Id__c=:conId And Id=:evid];
-            // system.debug('@@@@ ev---> '+ ev );
-            system.debug('@@@@ evCreatedBy---> '+ ev.CreatedBy.UserRole.Name  );
-            if((ev.Status__c=='Approved') && ev.CreatedBy.UserRole.Name=='CEO'){
-                delete ev;
-            }else if(ev.Status__c=='Draft'){
-                delete ev;
+            system.debug('@@@@ userRole---> '+ userRole );
+            List<Event__c> event = [Select Id,Contact_Id__c,Status__c,CreatedBy.UserRole.Name,Message__c From Event__c Where Contact_Id__c=:conId And Id=:evid];
+            if(userRole=='CEO'){ //
+                for(Event__c ev : event){
+                    if(ev.Status__c=='Submitted'){
+                        // delete ev;
+                        ev.Message__c='Event do not send';
+                    }else{
+                        delete ev;
+                    }
+                }
+            }else{
+                for(Event__c ev : event){
+                    if(ev.Status__c=='Draft' || ev.Status__c=='Rejected'){
+                        delete ev;
+                    }else{
+                        // delete ev;
+                        ev.Message__c='Right no allowed';
+                    }
+                }
+                
             }
-            return ev;
+            system.debug('@@@@ event---> '+ event );
+            return event;
         }
         catch(Exception ex) {
             throw new AuraHandledException(ex.getMessage());
         }
     }
-
-    @AuraEnabled
+    @AuraEnabled 
+    public static List<User> getIdUser(String idU){
+        List<User> u = [Select Id,RH_ContactId__c,UserRole.Name From User Where RH_ContactId__c =: idU];
+        system.debug('@@@@ USER---> '+ u );
+        return u;
+    }
+    @AuraEnabled 
     public static String getInfoUsers() {
         String userinf = UserInfo.getUserId();
         return userinf;
@@ -220,7 +242,22 @@ public without sharing class RH_EventController {
         update even;
         return even;
     }
-    
+    @AuraEnabled 
+    public static List<Event__c> changeEventStatus(String infoId) {
+        List<Event__c> even = [Select Id, Name,Contact_Id__c, Description__c, Status__c,Message__c From Event__c Where Id =: infoId];
+        for(Event__c ev : even){
+            if(ev.Status__c=='Approved'){
+                ev.Message__c='Already approved';
+            }else{
+                ev.Status__c='Rejected';
+                ev.Description__c='We don\'t consider it very important';
+            }
+        }
+        system.debug('@@---> ' + even);
+        update even;
+        return even;
+    }   
+
     @AuraEnabled(cacheable=true)
     public static void sendNotifications(String strBody, String strSenderId, String pgRefId, String strTargetId, String strTitle,List<String> setUserIds) {
         set<String> setUserId = new set<String>();

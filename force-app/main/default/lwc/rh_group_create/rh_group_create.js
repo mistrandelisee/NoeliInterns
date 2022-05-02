@@ -6,7 +6,7 @@ export default class Rh_group_create extends LightningElement {
     @api
     fieldInputs;
     leaders=[];
-    @api idGroupe;
+    @api objGroupe;
     handleClick (){
      
        let form=this.template.querySelector('c-rh_dynamic_form');
@@ -18,7 +18,7 @@ export default class Rh_group_create extends LightningElement {
                            Leader: saveResult.obj.Leader })
               .then(result => {
                 console.log('Result:', result); 
-                this.dispatchEvent(new CustomEvent('groupmember',{detail: result.Id})); 
+                this.dispatchEvent(new CustomEvent('groupmember',{detail: result})); 
               })
               .catch(error => {
                 console.error('Error:', error);
@@ -34,7 +34,7 @@ export default class Rh_group_create extends LightningElement {
                 label:'Name',
                 placeholder:'Enter Name',
                 name:'Namex',
-                value: '',
+                value: this.objGroupe?.Name,
                 required:true,
                 ly_md:'6', 
                 ly_lg:'6'
@@ -43,7 +43,7 @@ export default class Rh_group_create extends LightningElement {
                 label:'Leader',
                 placeholder:'Leader',
                 name:'Leader',
-                value: '',
+                value: this.objGroupe?.RH_Team_Leader__c,
                 picklist:true,
                 options:this.leaders,
                 required:true,
@@ -53,7 +53,7 @@ export default class Rh_group_create extends LightningElement {
             {
                 label:'Description',
                 name:'Description',
-                value:"",
+                value:this.objGroupe?.RH_Description__c,
                 placeholder:'Give a description for the group',
                 className:'textarea',
                 maxlength:25000,

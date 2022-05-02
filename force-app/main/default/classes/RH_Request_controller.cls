@@ -2,11 +2,32 @@ public with sharing class RH_Request_controller {
     
     @AuraEnabled
     public static List<RH_Request__c> getrequest() {
-        return [SELECT id,Name,RH_Description__c,Rh_Status__c,RH_Addressed_To__r.Name,RecordType.Name ,CreatedDate,RH_RequestTypeName__c FROM RH_Request__c WHERE RH_Description__c != NULL];
+        return [SELECT id,Name,RH_Description__c,Rh_Status__c,RH_Addressed_To__r.Name,RecordType.Name ,CreatedDate,RH_RequestTypeName__c FROM RH_Request__c WHERE ownerId =: UserInfo.getUserId() ];
     }
-    @AuraEnabled(cacheable=true)
-    public static List<Contact> getAdressedTo() {
-        return [SELECT id, Name FROM Contact];
+    // @AuraEnabled(cacheable=true)
+    // public static List<Contact> getAdressedTo() {
+    //     return [SELECT id, Name FROM Contact];
+    // }
+
+    @AuraEnabled
+    public static List<Contact> getAdressedTo(){
+        RH_User_Query ruq = new RH_User_Query();
+        RH_Contact_Query rcq = new RH_Contact_Query();
+        List<Contact> seCon = new List<Contact>();
+
+        List<string> TL_roles = new List<string>{
+            'Team Leader','CEO','Ressource Manager'
+        };
+
+        List<Contact> allCon = [ SELECT Id, Name FROM Contact WHERE RH_Role__c IN :TL_roles AND recordTypeId=:RH_Constans.RH_CONTACT_RT];
+        List<User> currentU = ruq.getUserById(UserInfo.getUserId());
+        if (currentU.size() > 0) {
+            seCon = rcq.getContactById(currentU[0].RH_ContactId__c);
+        }else {
+            throw new RH_ControllerException('002','No RH Contact Founded');
+        }
+        allCon.addAll(seCon);
+        return allCon;
     }
 
     @AuraEnabled

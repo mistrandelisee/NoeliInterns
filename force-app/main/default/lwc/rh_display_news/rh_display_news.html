@@ -1,7 +1,6 @@
 <template>
      <template for:each={bannerNews} for:item="news">
             <div class={news.Visibility}  key={news.Title}>
-                <!--<img class="Img" src={news.Image}>-->
                 <div style={bannerStyle}  class="NewsData slds-grid slds-gutters">
                     <div class="navigation slds-col slds-size_1-of-7">
                         <lightning-button-icon icon-name="utility:left" size="large" tooltip="Previous"  onclick={previous} variant="bare"    class="slds-m-left_xx-small">
@@ -10,7 +9,7 @@
                     </div>
                     <div class="text slds-col slds-5-of-7">
                         <div >
-                            <div class="title">Titre: {news.Title} </div>
+                            <div class="title">{news.Title} </div>
                             <div>{news.Description}</div> 
                         </div>
                     </div>
@@ -21,22 +20,5 @@
                     </div>
                 </div>
             </div>
-            
-<!--
-
-    <div class="NewsData">
-                    <h2>Titre: {news.Title}</h2>
-                    <div>{news.Description}</div> 
-                </div>
-    <a ></a>
-     <a></a>-->
-         
-     </template>
-     
-   <!--  
-     <lightning-button-icon icon-name="utility:left"  size="large" tooltip="Previous"   variant="bare"   onclick={previous} class="slds-m-left_xx-small"></lightning-button-icon>
-     <lightning-button-icon icon-name="utility:right"  size="large"  tooltip="Next"    variant="bare"  onclick={next}   class="slds-m-left_xx-small"></lightning-button-icon>
-       -->
-    
-
+    </template>
 </template>

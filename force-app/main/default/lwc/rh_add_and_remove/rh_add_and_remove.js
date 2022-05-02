@@ -4,6 +4,8 @@ export default class Rh_add_and_remove extends LightningElement {
 
    
     searchValue;
+    active =false;
+    sfieldId;
     @api selected = [];
     @api initial = [
     {"Name":"new mistrel11","Email":"kafehisevou-3096@yopmail.com","Id":"0037Q000007HpbqQAC"},
@@ -25,9 +27,13 @@ export default class Rh_add_and_remove extends LightningElement {
     }
 
     handleChange(e) {
+        if(this.sfieldId){
+            this.template.querySelector(`[data-id="${this.sfieldId}"]`).className='slds-listbox__item';
+        }
         this.tempCopy=e.currentTarget.getAttribute("data-id");
+        this.sfieldId=e.currentTarget.getAttribute("data-id");
         console.log('onItemSelected:::',this.tempCopy);
-        
+        this.template.querySelector(`[data-id="${this.sfieldId}"]`).className='class1';
     }
 
     handleClick(e){
@@ -76,12 +82,30 @@ export default class Rh_add_and_remove extends LightningElement {
         return this.returnList;
     }
     handleSearch(event) {
+        let ret;
+        if(this.sfieldId){
+            this.template.querySelector(`[data-id="${this.sfieldId}"]`).className='slds-listbox__item';
+            this.sfieldId = ret;
+        }
         this.searchValue = event.target.value;
-        this.initial = this.showinit.filter(element => ((element.Name).toLowerCase()).includes(this.searchValue.toLowerCase()));
+        this.initialList = this.showinit.filter(element => ((element.Name).toLowerCase()).includes(this.searchValue.toLowerCase()));
+        console.log('initial:::',this.initial);
     }
 
     handleSearch1(event) {
+        let ret;
+        if(this.sfieldId){
+            this.template.querySelector(`[data-id="${this.sfieldId}"]`).className='slds-listbox__item';
+            this.sfieldId = ret;
+        }
         this.searchValue = event.target.value;
-        this.selected = this.showresult.filter(element => ((element.Name).toLowerCase()).includes(this.searchValue.toLowerCase()));
+        this.selectedList = this.showresult.filter(element => ((element.Name).toLowerCase()).includes(this.searchValue.toLowerCase()));
+        console.log('searchValue:::',this.searchValue);
     }
+
+   
+
+    get tabClass() { 
+        return this.active ? 'slds-listbox__item slds-is-selected' : 'slds-listbox__item';
+      }
 }

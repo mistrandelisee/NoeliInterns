@@ -1,56 +1,67 @@
 <template>
-    <div class="slds-card card-box">
-        <lightning-card class="custom-card">
-            <h3 slot="title">
-                <lightning-icon icon-name={iconsrc} size="small"></lightning-icon>
-                {title}
-            </h3>
+    <c-rh_toast auto-close-time="6000"></c-rh_toast>
             <div class="slds-m-right_x-small slds-m-left_x-small">
                 <!-- <lightning-button-icon icon-name="utility:share" class="slds-m-right_xx-small" alternative-text="share" title="share" data-id={data.Id} onclick={handleTest}></lightning-button-icon> -->
                     <template for:each={visibleDatas} for:item="data">
                     <div class="slds-box slds-p-around_none slds-m-top_x-small slds-m-bottom_medium slds-m-horizontal_none" key={data.Id} style="background-color: white ;">
-                        <lightning-layout class="slds-m-bottom_medium" >
+                        <h3 slot="title" style="margin-left: 35px; margin-top: 10px">
+                            <lightning-icon icon-name={iconsrc} size="small"></lightning-icon>
+                            {title}
+                        </h3>
+                        <lightning-layout class="slds-m-bottom_medium">
                             <lightning-layout-item flexibility="grow">
                                 <div class="header-column slds-m-left_x-small slds-m-top_xx-small">
-                                    <div class="slds-form-element slds-form-element_edit slds-form-element_readonly slds-hint-parent">
-                                        <span class="slds-form-element__label" style="margin-left:4%; color:blue; font-weight: bold; font-size: 12px;">Event Name</span>
+                                    <div class="slds-form-element slds-form-element_edit slds-form-element_readonly slds-hint-parent" style="margin-top: 4px;">
+                                        <span class="slds-form-element__label" style="margin-left:4%; color:rgb(103,103,103); font-weight: bold; font-size: 12px;">Event Name</span>
                                         <div class="slds-form-element__control">
-                                        <div class="slds-form-element__static" style="margin-left:4%; color:rgba(47, 72, 147); font-weight: bold; font-size: 15px;">{data.EventName}</div>
+                                        <div class="slds-form-element__static" style="margin-left:4%; color:rgba(151,53,255); font-weight: bold; font-size: 15px;">{data.EventName}</div>
                                         </div>
                                     </div>
                                     
-                                    <div class="slds-form-element slds-form-element_edit slds-form-element_readonly slds-hint-parent">
-                                        <span class="slds-form-element__label" style="margin-left:4%; color:blue; font-weight: bold; font-size: 12px;">Contact Name</span>
+                                    <div class="slds-form-element slds-form-element_edit slds-form-element_readonly slds-hint-parent" style="margin-top: 4px;">
+                                        <span class="slds-form-element__label" style="margin-left:4%; color:rgb(103,103,103); font-weight: bold; font-size: 12px;">Contact Name</span>
                                         <div class="slds-form-element__control">
-                                            <div class="slds-form-element__static" style="margin-left:4%; font-weight: bold; color:rgb(47, 72, 147); font-size: 15px;">{data.ContactName}</div>
-                                        </div>
-                                    </div>
-                                    <div class="slds-form-element slds-form-element_edit slds-form-element_readonly slds-hint-parent">
-                                        <span class="slds-form-element__label" style="margin-left:4%; color:blue; font-weight: bold; font-size: 12px;">Status</span>
-                                        <div class="slds-form-element__control">
-                                            <div class="slds-form-element__static" style="margin-left:4%; font-weight: bold; color:rgb(47, 72, 147); font-size: 15px;">{data.Status}</div>
+                                            <div class="slds-form-element__static" style="margin-left:4%; font-weight: bold; color:rgb(151,53,255); font-size: 15px;">{data.ContactName}</div>
                                         </div>
                                     </div>
                                 </div>
                             </lightning-layout-item>
                             <lightning-layout-item flexibility="grow">
                                 <div class="header-column slds-m-left_x-small slds-m-right_x-small">
-                                    <div class="slds-form-element slds-form-element_edit slds-form-element_readonly slds-hint-parent" style="margin-top:4px;">
-                                        <span class="slds-form-element__label" style="margin-left:4%; color:blue; font-weight: bold; font-size: 12px;">Description</span>
+                                    <div class="slds-form-element slds-form-element_edit slds-form-element_readonly slds-hint-parent" style="margin-top: 4px;">
+                                        <span class="slds-form-element__label" style="margin-left:4%; color:rgb(103,103,103); font-weight: bold; font-size: 12px;">Start Date</span>
                                         <div class="slds-form-element__control">
-                                        <div class="slds-form-element__static" style="margin-left:4%; font-weight: bold; color:rgb(47, 72, 147); font-size: 15px;">{data.Description}</div>
+                                        <div class="slds-form-element__static" style="margin-left:4%; font-weight: bold; color:rgb(151,53,255); font-size: 15px;">{data.StartDate}</div>
                                         </div>
                                     </div>
-                                    <div class="slds-form-element slds-form-element_edit slds-form-element_readonly slds-hint-parent">
-                                        <span class="slds-form-element__label" style="margin-left:4%; color:blue; font-weight: bold; font-size: 12px;">Start Date</span>
+                                    <div class="slds-form-element slds-form-element_edit slds-form-element_readonly slds-hint-parent" style="margin-top: 4px;">
+                                        <span class="slds-form-element__label" style="margin-left:4%; color:rgb(103,103,103); font-weight: bold; font-size: 12px;">End Date</span>
                                         <div class="slds-form-element__control">
-                                        <div class="slds-form-element__static" style="margin-left:4%; font-weight: bold; color:rgb(47, 72, 147); font-size: 15px;">{data.StartDate}</div>
+                                        <div class="slds-form-element__static" style="margin-left:4%; font-weight: bold; color:rgb(151,53,255); font-size: 15px;">{data.EndDate}</div>
                                         </div>
                                     </div>
-                                    <div class="slds-form-element slds-form-element_edit slds-form-element_readonly slds-hint-parent">
-                                        <span class="slds-form-element__label" style="margin-left:4%; color:blue; font-weight: bold; font-size: 12px;">End Date</span>
+                                </div>
+                            </lightning-layout-item>
+                        </lightning-layout>
+                        <lightning-layout class="slds-m-bottom_medium">
+                            <lightning-layout-item flexibility="grow" class="slds-size_12-of-12">
+                                <div class="header-column slds-m-left_x-small slds-m-top_xx-small">
+                                    <div class="slds-form-element slds-form-element_edit slds-form-element_readonly slds-hint-parent" style="margin-top:-20px;">
+                                        <span class="slds-form-element__label" style="margin-left:2%; color:rgb(103,103,103); font-weight: bold; font-size: 12px;">Status</span>
                                         <div class="slds-form-element__control">
-                                        <div class="slds-form-element__static" style="margin-left:4%; font-weight: bold; color:rgb(47, 72, 147); font-size: 15px;">{data.EndDate}</div>
+                                        <div class="slds-form-element__static" style="margin-left:2%; font-weight: bold; color:rgb(151,53,255); font-size: 15px;">{data.Status}</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </lightning-layout-item>
+                        </lightning-layout>
+                        <lightning-layout class="slds-m-bottom_medium">
+                            <lightning-layout-item flexibility="grow" class="slds-size_12-of-12">
+                                <div class="header-column slds-m-left_x-small slds-m-top_xx-small">
+                                    <div class="slds-form-element slds-form-element_edit slds-form-element_readonly slds-hint-parent" style="margin-top:-20px;">
+                                        <span class="slds-form-element__label" style="margin-left:2%; color:rgb(103,103,103); font-weight: bold; font-size: 12px;">Description</span>
+                                        <div class="slds-form-element__control">
+                                        <div class="slds-form-element__static" style="margin-left:2%; font-weight: bold; color:rgb(151,53,255); font-size: 15px;">{data.Description}</div>
                                         </div>
                                     </div>
                                 </div>
@@ -59,7 +70,8 @@
                         <div class="slds-p-around_medium">
                             <div class="slds-clearfix">
                                 <div class="slds-float_right">
-                                    <lightning-button-icon icon-name="utility:delete" style="margin-right: 16px;" alternative-text="delete" data-id={data.Id} title="internal_share" onclick={deleteNotification}></lightning-button-icon>
+                                    <lightning-button-icon icon-name="utility:delete" style="margin-right: 16px;" alternative-text="delete" data-id={data.Id} title="delete" onclick={handlepredeleteEvent}></lightning-button-icon>
+                                    <lightning-button-icon icon-name="utility:close" style="margin-right: 16px;" alternative-text="close" data-id={data.Id} title="close" onclick={handlepRejectEvent}></lightning-button-icon>
                                     <lightning-button-icon icon-name="utility:share" class="slds-m-right_xx-small" alternative-text="share" data-id={data.Id} title="share" onclick={sendNotification}></lightning-button-icon>
                                 </div>
                             </div>
@@ -67,9 +79,29 @@
                     </div>
                     </template>
             </div>
-            <div class="card-footer" slot="footer">
+            <div class="card-footer slds-align_absolute-center" slot="footer">
                 <c-pagination records={datas} record-size="5" onupdate={updateEventHandler}></c-pagination> 
             </div>
-        </lightning-card>>
-    </div>
+            <!-- <template if:true={visible}>
+                <c-rh_-event onsendid={handlepRejectEvent}></c-rh_-event>
+            </template> -->
+        <template if:true={showModalDelete}>
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                    <div class="slds-modal__container">
+                        <!-- Modal/Popup Box LWC header here -->
+                        <header class="slds-modal__header">
+                            <h2 id="modal-heading-02" class="slds-text-heading_medium slds-hyphenate">Warning</h2>
+                        </header>
+                        <!-- Modal/Popup Box LWC body starts here -->
+                        <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-2">
+                            <h1>Are you sure to want to delete it ?</h1>
+                            <div class="slds-float_right">
+                                <lightning-button-icon icon-name="utility:check" style="margin-right: 10px;" alternative-text="check" title="check" onclick={handledeleteEvent}></lightning-button-icon>
+                                <lightning-button-icon icon-name="utility:close" style="margin-right: 5px;" class="slds-m-right_xx-small"  alternative-text="close" title="close"  onclick={closeModalDelete}></lightning-button-icon>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <div class="slds-backdrop slds-backdrop_open"></div>
+            </template>
 </template>

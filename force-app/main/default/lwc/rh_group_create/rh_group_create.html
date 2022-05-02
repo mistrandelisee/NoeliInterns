@@ -1,8 +1,8 @@
 <template>
     
     <div class="slds-var-m-bottom_medium slds-clearfix">
-        <lightning-button label="Next" class="slds-float_right" onclick={handleClick}></lightning-button>
-        <lightning-button label="Back" class="slds-float_left" onclick={handleClick1}></lightning-button>
+     <!--   <lightning-button label="Next" class="slds-float_right" onclick={handleClick}></lightning-button>
+        <lightning-button label="Back" class="slds-float_left" onclick={handleClick1}></lightning-button> -->
     </div>
 
 
@@ -20,9 +20,9 @@
             <div class="slds-clearfix">
                 <div class="slds-float_right">
                     <template if:true={formLoaded}>
-                        <lightning-button variant="base" label="Next" data-action-name="Next" title="Next" icon-name="utility:chevronright" onclick={handleNext} class="slds-m-left_medium"></lightning-button>
-                        <lightning-button variant="base" label="cancel" data-action-name="Cancel" title="cancel" icon-name="utility:close" onclick={handleCancel} class="slds-m-left_x-small"></lightning-button>
-                        <lightning-button variant="base" label="Edit" data-action-name="Edit" title="Edit" icon-name="utility:save" onclick={handleSave} class="slds-m-left_medium"></lightning-button>
+                        <lightning-button variant="base" label="Next" data-action-name="Next" title="Next" icon-name="utility:chevronright" onclick={handleClick} class="slds-m-left_medium"></lightning-button>
+                    <!-- <lightning-button variant="base" label="Update" data-action-name="Edit" title="Edit" icon-name="utility:record_update" onclick={handleUpdate} class="slds-m-left_medium"></lightning-button> -->
+                        <lightning-button variant="base" label="cancel" data-action-name="Cancel" title="cancel" icon-name="utility:close" onclick={handleClick1} class="slds-m-left_x-small"></lightning-button>
                     </template>
                 </div>
             </div>

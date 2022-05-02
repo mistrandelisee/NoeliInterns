@@ -79,7 +79,7 @@ public without sharing class RH_Users_controller {
         try {
             mapInputs = (Map<String, Object>) JSON.deserializeUntyped(contactJson);
 
-
+            Boolean isInsert= String.isBlank(String.valueOf(mapInputs.get('Id')));
             Contact conctactUser=new Contact();
             conctactUser.LastName= String.valueOf(mapInputs.get('LastName'));
             conctactUser.FirstName= String.valueOf(mapInputs.get('FirstName'));
@@ -106,8 +106,12 @@ public without sharing class RH_Users_controller {
             }
            
             conctactUser.recordTypeId=RH_Constans.RH_CONTACT_RT;
-
-            insert conctactUser;
+            if(isInsert){
+                insert conctactUser;
+            }else{
+                conctactUser.Id=String.valueOf(mapInputs.get('Id'));
+                update conctactUser;
+            }
             //conctactUser.Account= String.valueOf(mapInputs.get('Account'));
             mapReturn.put('Input',contactJson); 
             mapReturn.put('conctactUser',conctactUser); 
@@ -236,6 +240,7 @@ public without sharing class RH_Users_controller {
         Map<String, Object> mapReturn = new Map<String, Object>();
         mapReturn.put('error',false);
         Schema.SObjectType USER_OBJECT = Schema.User.getSObjectType();
+        mapReturn.put('isUser',false);
         try {
             Id recID=recordId;
             String ContactId=recordId;

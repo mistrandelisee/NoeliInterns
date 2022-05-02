@@ -9,6 +9,7 @@ import insertProjectMethod from '@salesforce/apex/RH_Project_controller.insertPr
 import uploadFile from '@salesforce/apex/RH_Project_controller.uploadFile';
 import insertProjectupdated from '@salesforce/apex/RH_Project_controller.insertProjectupdated';
 import getRelatedFilesByRecordId from '@salesforce/apex/RH_Project_controller.getRelatedFilesByRecordId';
+import getPickListValuesIntoList from '@salesforce/apex/RH_Project_controller.getPickListValuesIntoList';
 import {NavigationMixin} from 'lightning/navigation';
 
 import { getObjectInfo } from 'lightning/uiObjectInfoApi';
@@ -39,6 +40,7 @@ export default class Rh_Projects extends NavigationMixin(LightningElement) {
     showManage = false;
     showInsertform = false;
     showAddMembers= false;
+    statusPicklist = [];
     @track error;
     @track returnList =[];
     @track val =[];
@@ -56,7 +58,7 @@ export default class Rh_Projects extends NavigationMixin(LightningElement) {
         Status__c:'',
         Link__c:'',
     };
-
+     inputs= {};
 
     keysFields={AddressedTo:'ok'};//non used now
     keysLabels={
@@ -75,22 +77,31 @@ export default class Rh_Projects extends NavigationMixin(LightningElement) {
 
      // to get the default record type id, if you dont' have any recordtypes then it will get master
 
-     @wire(getObjectInfo, { objectApiName: PROJECT_OBJECT })
-        projectMetadata;
+    //  @wire(getObjectInfo, { objectApiName: PROJECT_OBJECT })
+    //     projectMetadata;
  
      // now get the industry picklist values
  
-     @wire(getPicklistValues,
-         {
-             recordTypeId: '$projectMetadata.data.defaultRecordTypeId', 
-             fieldApiName: STATUS_FIELD
-         }
-     )
- 
-     statusPicklist;
+    //  @wire(getPicklistValues,
+    //      {
+    //          recordTypeId: '$projectMetadata.data.defaultRecordTypeId', 
+    //          fieldApiName: STATUS_FIELD
+    //      }
+    //  )
+
+     getPicklistValues(){
+        getPickListValuesIntoList()
+        .then(result => {
+                for(let key in result) {
+                    this.statusPicklist.push({label: result[key] , value: result[key]});
+                }
+        })
+     }
+     
 
     @wire(CurrentPageReference) pageRef;
     connectedCallback(){
+        
         this.curentProject = this.getUrlParamValue(window.location.href, 'recordId');
         if (this.curentProject) {
             this.getdetailsProject(this.curentProject);
@@ -187,13 +198,14 @@ setviewsList(items){
         getProject({ProjectId :projectIds})
         .then(result => {
             console.log('result',result);
-            // this.memberProjects = result['projectMembers'];
+            this.memberProjects = result['projectMembers'];
             // this.memberProjects = [...result.projectMembers];
-            for(let key in result.projectMembers) {
-                this.memberProjects.push(result.projectMembers[key]);
-            }
+            // for(let key in result.projectMembers) {
+            //     this.memberProjects.push(result.projectMembers[key]);
+            // }
             console.log(this.memberProjects);
             let index;
+            this.getPicklistValues();
 
             getTeamMemberList()
             .then(result => {
@@ -206,7 +218,9 @@ setviewsList(items){
                 // this.optionpick = option;
 
                 });
-                console.log('this.optionpick',this.optionpick)
+                console.log('this.optionpick',this.optionpick);
+                console.log('this.statusPicklist',this.statusPicklist);
+                
             this.curentDetails =[
                 {
                     label:'Name',
@@ -234,12 +248,13 @@ setviewsList(items){
                     value: result.project.Status__c,
                     required:false,
                     picklist: true,
-                    options: this.statusPicklist.data.values,
+                    // options: tab,
+                    options: this.statusPicklist,
                     ly_md:'12', 
                     ly_lg:'12'
                 },
                 {
-                    label:'Project Link',
+                    label:'Link',
                     placeholder:'',
                     name:'Link',
                     value: result.project.Link__c,
@@ -248,7 +263,7 @@ setviewsList(items){
                     ly_lg:'12'
                 },
                 {
-                    label:'Start Date',
+                    label:'Startdate',
                     placeholder:'',
                     name:'Start_Date',
                     value: result.project.Start_Date__c,
@@ -259,7 +274,7 @@ setviewsList(items){
                 },
                 
                 {
-                    label:'End Date',
+                    label:'Enddate',
                     placeholder:'',
                     name:'End_Date',
                     value: result.project.End_Date__c,
@@ -269,7 +284,7 @@ setviewsList(items){
                     ly_lg:'12'
                 },
                 {
-                    label:'Project Manager',
+                    label:'Manager',
                     placeholder:result.project.Project_Manager__r.Name,
                     name:'Project_Manager',
                     value: result.project.Project_Manager__r.Id,
@@ -316,19 +331,24 @@ setviewsList(items){
                 console.log('result',result);
                 this.allInitialContacts = result;
                 let ret1;
-                let inputs= {};
+                let undefin;
+                // let inputs= {};
                 let ret = this.template.querySelector('c-rh_dynamic_form').save();
                 ret1 = ret['outputsItems'];
                 for(let key in ret1) {
-                     inputs[ret1[key]['label']] = ret1[key]['value'];
+                    this.inputs[ret1[key]['label']] = ret1[key]['value'];
                 }
-                 this.projects.Name = inputs['Name'];
-                this.projects.Description__c = inputs['Description'];
-                this.projects.Start_Date__c = inputs['Start date'];
-                this.projects.Project_Manager__c = inputs['Project Manager'];
-                this.projects.End_Date__c = inputs['End date'];
+                 this.projects.Name = this.inputs['Name'];
+                this.projects.Description__c = this.inputs['Description'];
+                this.projects.Start_Date__c = this.inputs['Startdate'];
+                this.projects.Project_Manager__c = this.inputs['Manager'];
+                this.projects.End_Date__c = this.inputs['Enddate'];
         
-                if(inputs['Name'] == null || inputs['Start date'] == null || inputs['Project Manager'] == null){
+                // if(this.inputs['Enddate'] == ''){
+                //     this.inputs['Enddate'] = undefin;
+                // }
+
+                if(this.inputs['Name'] == null || this.inputs['Startdate'] == null || this.inputs['Manager'] == null){
                     this.showList = false;
                     this.showDetails = false;
                     this.showEdit = false;
@@ -348,7 +368,7 @@ setviewsList(items){
                 
         
                 console.log('ret',ret['outputsItems']);
-                console.log('projects',this.projects);
+                console.log('this.inputs',this.inputs);
             })
             .catch(error => {
                 console.log('error',error);
@@ -365,15 +385,15 @@ setviewsList(items){
         console.log('returnlist',returnlist);
         for(let key in returnlist) {
             if(returnlist[key]['isAdd'] == true){
-                initParticipate.push({'RH_Contact__c':returnlist[key]['Id'], 'RH_Project__c':this.curentProject});
+                initParticipate.push(returnlist[key]['Id']);
             }
             if(returnlist[key]['isAdd'] == false){
-                moveParticipate.push({'RH_Contact__c':returnlist[key]['Id']});
+                moveParticipate.push(returnlist[key]['Id']);
             }
              
         }
 
-        insertUpdateMembers({AddMembers:initParticipate,MoveMembers:moveParticipate})
+        insertUpdateMembers({AddMembers:initParticipate,MoveMembers:moveParticipate,IDProject:this.curentProject})
         .then(result=>{
             window.console.log('after save');
            this.getdetailsProject(this.curentProject);
@@ -409,7 +429,10 @@ setviewsList(items){
        }
        this.addParticipate = initParticipate;
        window.console.log('addParticipate' + this.addParticipate);
-        insertProjectMethod({Name:this.projects.Name,Description:this.projects.Description__c,Startdate:this.projects.Start_Date__c,Manager:this.projects.Project_Manager__c,Enddate:this.projects.End_Date__c,participation:initParticipate})
+        // insertProjectMethod(    {Name:this.inputs.Name,Description:this.inputs.Description,
+        //                         Startdate:this.inputs['Start date'],Manager:this.inputs['Project Manager'],
+        //                         Enddate:this.inputs['End date'],participation:initParticipate}    )
+        insertProjectMethod({project:this.inputs,participation:initParticipate})
         .then(result=>{
             window.console.log('after save' + this.accountid);
             this.getAllprojects();
@@ -430,33 +453,28 @@ setviewsList(items){
     }
 
     handleSaveEdit(e){
-        let projects11 = {
-            Name:'',       
-            Description__c:'',  
-            Start_Date__c:'', 
-            End_Date__c:'',
-            Project_Manager__c:'',
-            Status__c:'',
-            Link__c:''
-        };
         window.console.log('this.curentProject ',this.curentProject);
             let inputs= {};
+             
+            let undef;
             let ret1;
                 let ret = this.template.querySelector('c-rh_dynamic_form').save();
                 ret1 = ret['outputsItems'];
-                window.console.log('outputsItems' , ret['outputsItems']);
+                // ret11 = ret.obj;
+                window.console.log('ret.obj' , ret.obj);
                 for(let key in ret1) {
                      inputs[ret1[key]['label']] = ret1[key]['value'];
                 }
-                projects11.Name = inputs['Name'];
-                projects11.Description__c = inputs['Description'];
-                projects11.Start_Date__c = inputs['Start Date'];
-                projects11.Project_Manager__c = inputs['Project Manager'];
-                projects11.End_Date__c = inputs['End Date'];
-                projects11.Status__c = inputs['Status'];
-                projects11.Link__c = inputs['Project Link'];
-                projects11.Id= this.curentProject;
-                insertProjectupdated({ProjectObj:projects11,IDProject:this.curentProject})
+                // if(inputs['Enddate'] == '' || inputs['Enddate'] == null){
+                //     inputs['Enddate'] = undef;
+                // }
+                window.console.log('undef' , undef);
+                window.console.log('Enddate' , inputs.Enddate);
+                window.console.log('ret1' , ret['outputsItems']);
+                // insertProjectupdated({Name:inputs.Name,Description:inputs.Description,Startdate:inputs.StartDate,Manager:inputs.Manager,
+                //                         Enddate:inputs.EndDate,Link:inputs.Link,
+                //                         Status:inputs.Status,IDProject:this.curentProject})
+                insertProjectupdated({project:inputs,IDProject:this.curentProject})
                 .then(result=>{
                     window.console.log('after update');
                     window.console.log('result' , result);
@@ -566,7 +584,7 @@ setviewsList(items){
                             ly_lg:'12'
                         }, 
                         {
-                            label:'Project Manager',
+                            label:'Manager',
                             placeholder:'select Project Manager',
                             name:'Project_Manager__c',
                             picklist: true,
@@ -576,7 +594,7 @@ setviewsList(items){
                             ly_lg:'12'
                         },
                         {
-                            label:'Start date',
+                            label:'Startdate',
                             placeholder:'Enter Start date',
                             name:'StartDate',
                             type:'date',
@@ -585,7 +603,7 @@ setviewsList(items){
                             ly_lg:'12'
                         },
                         {
-                            label:'End date',
+                            label:'Enddate',
                             placeholder:'Enter End date',
                             name:'EndDate',
                             type:'date',

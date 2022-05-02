@@ -16,16 +16,19 @@ public  class RH_Timesheet_Query {
     }
 
     public List<TimeSheet> getUserTimeSheets(String userId) {
-        return [SELECT Id,TimeSheetNumber,TotalDurationInHours,TotalDurationInMinutes,TimeSheetEntryCount, EndDate, StartDate,toLabel(Status) StatusLabel,Status,OwnerId,Owner.Name, (SELECT Id,Subject,TimeSheetEntryNumber, Description,DurationInMinutes, RH_Project__c,RH_Project__r.Name, StartTime, EndTime,Status,CreatedDate,TimeSheetId FROM TimeSheetEntries) FROM TimeSheet WHERE OwnerId =:userId];
+        return [SELECT Id,TimeSheetNumber,TotalDurationInHours,TotalDurationInMinutes,TimeSheetEntryCount, EndDate, StartDate,toLabel(Status) StatusLabel,Status,OwnerId,Owner.Name,
+                (SELECT Id,Subject,TimeSheetEntryNumber, Description,DurationInMinutes, RH_Project__c,RH_Project__r.Name, StartTime, EndTime,Status,CreatedDate,TimeSheetId FROM TimeSheetEntries) FROM TimeSheet WHERE OwnerId =:userId];
     }
     public List<TimeSheet> getMyTimeSheets() {
         return getUserTimeSheets(UserInfo.getUserId());
     }
     public List<TimeSheet> getTimeSheet(String timesheetId) {
-        return [SELECT Id,TimeSheetNumber,TotalDurationInHours,TotalDurationInMinutes,TimeSheetEntryCount, EndDate, StartDate,toLabel(Status) StatusLabel,Status,OwnerId,Owner.Name, (SELECT Id,Subject,TimeSheetEntryNumber, Description,DurationInMinutes, RH_Project__c,RH_Project__r.Name, StartTime, EndTime,Status,CreatedDate,TimeSheetId FROM TimeSheetEntries) FROM TimeSheet WHERE Id =:timesheetId];
+        return [SELECT Id,TimeSheetNumber,TotalDurationInHours,TotalDurationInMinutes,TimeSheetEntryCount, EndDate, StartDate,toLabel(Status) StatusLabel,Status,OwnerId,Owner.Name,
+                (SELECT Id,Subject,TimeSheetEntryNumber, Description,DurationInMinutes, RH_Project__c,RH_Project__r.Name, StartTime, EndTime,Status,CreatedDate,TimeSheetId FROM TimeSheetEntries) FROM TimeSheet WHERE Id =:timesheetId];
     }
     public List<TimeSheet> getAllTimeSheet() {
-        return [SELECT Id,TimeSheetNumber,TotalDurationInHours,TotalDurationInMinutes,TimeSheetEntryCount, EndDate, StartDate,toLabel(Status) StatusLabel,Status,OwnerId,Owner.Name, (SELECT Id,Subject,TimeSheetEntryNumber, Description,DurationInMinutes, RH_Project__c,RH_Project__r.Name, StartTime, EndTime,Status,CreatedDate,TimeSheetId FROM TimeSheetEntries) FROM TimeSheet ];
+        return [SELECT Id,TimeSheetNumber,TotalDurationInHours,TotalDurationInMinutes,TimeSheetEntryCount, EndDate, StartDate,toLabel(Status) StatusLabel,Status,OwnerId,Owner.Name, 
+                (SELECT Id,Subject,TimeSheetEntryNumber, Description,DurationInMinutes, RH_Project__c,RH_Project__r.Name, StartTime, EndTime,Status,CreatedDate,TimeSheetId FROM TimeSheetEntries) FROM TimeSheet ];
     }
     public List<TimeSheet> getUserTodayTimeSheets(String userId) {
         return [SELECT Id,TimeSheetNumber,TotalDurationInHours,TotalDurationInMinutes,TimeSheetEntryCount, EndDate, StartDate,toLabel(Status) StatusLabel,Status,OwnerId,Owner.Name FROM TimeSheet WHERE OwnerId =:userId AND StartDate = TODAY];
