@@ -29,7 +29,7 @@ public  class RH_Contact_Query {
                 RH_WorkGroup__r.Name,RH_WorkGroup__r.CreatedDate,RH_WorkGroup__r.RH_Team_Leader__r.Phone,RH_WorkGroup__r.RH_Team_Leader__r.name,
                 (SELECT Name,CreatedDate,CreatedBy.Name FROM WorkGroups_Leader__r WHERE RH_Status__c =:RH_Constans.ACTIVATED_WORKGROUP_STATUS ),
                 (SELECT RH_Project__r.Name,RH_Project__r.Link__c,RH_Project__r.Start_Date__c,RH_Project__r.Description__c,RH_Project__r.End_Date__c  FROM Projects__r WHERE RH_Project__r.Status__c =:RH_Constans.ACTIVATED_PROJECT_STATUS)
-                FROM Contact WHERE Id IN :listcontactId];
+                FROM Contact WHERE Id IN :listcontactId  Order by CreatedDate DESC];
 
     }
     public  Map<Id,Contact> getAllContacts(){
@@ -39,7 +39,7 @@ public  class RH_Contact_Query {
                 (SELECT Name,CreatedDate,CreatedBy.Name FROM WorkGroups_Leader__r WHERE RH_Status__c =:RH_Constans.ACTIVATED_WORKGROUP_STATUS ),
                 (SELECT RH_Project__r.Name,RH_Project__r.Link__c,RH_Project__r.Start_Date__c,RH_Project__r.Description__c,RH_Project__r.End_Date__c  FROM Projects__r WHERE RH_Project__r.Status__c =:RH_Constans.ACTIVATED_PROJECT_STATUS)
                 FROM Contact 
-                WHERE recordTypeId=:RH_Constans.RH_CONTACT_RT]);
+                WHERE recordTypeId=:RH_Constans.RH_CONTACT_RT Order by CreatedDate DESC]);
         
         return mapContacts;
 

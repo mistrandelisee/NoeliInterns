@@ -89,6 +89,7 @@ public without sharing class RH_Users_controller {
             if (String.isNotBlank(grp)) {
                 conctactUser.RH_WorkGroup__c=  grp;
             }
+            conctactUser.RH_Create_User__c=false;
             if((Boolean)mapInputs.get('Activated')){
                 conctactUser.RH_Create_User__c=true;
                 conctactUser.RH_Status__c=RH_Constans.ACTIVATED_CONTACT_STATUS;
