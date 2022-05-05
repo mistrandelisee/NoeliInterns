@@ -47,14 +47,14 @@ export default class Rh_display_fields extends NavigationMixin(LightningElement)
     }
     initDefaultAction(){
         this.actionAvailable= this.actionAvailable || [
-            {
+            /*{
                 variant:"base",
                 label:"Edit",
                 name:"Edit",
                 title:"Looks like a link",
                 iconName:"utility:edit",
                 class:"slds-m-left_x-small"
-            },
+            },*/
         ];
         this.actionAvailable=  this.actionAvailable.map(function(elt){
             return {...elt, class: 'slds-m-left_x-small '+elt.class};
@@ -64,7 +64,7 @@ export default class Rh_display_fields extends NavigationMixin(LightningElement)
         this.title=this.title ;//|| 'User Informations';
         this.iconsrc= this.iconsrc;// || 'utility:people';
         this.column= this.column || 2;
-        this.outputFields=this.outputFields || [
+        this.outputFields=this.outputFields || [/*
             {
                 label:'gg',
                 placeholder:'',
@@ -74,7 +74,6 @@ export default class Rh_display_fields extends NavigationMixin(LightningElement)
                 ly_md:'12', 
                 ly_lg:'12'
             }
-            /*
             {
                 label:'Last Name',
                 placeholder:'Enter your Last Name',

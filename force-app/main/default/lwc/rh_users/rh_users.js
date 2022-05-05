@@ -10,7 +10,6 @@ import userStatusUpdate from '@salesforce/apex/RH_Users_controller.userStatusUpd
 import userRoleUpdate from '@salesforce/apex/RH_Users_controller.userRoleUpdate'
 import changeMyPassword from '@salesforce/apex/RH_Profile_controller.changeMyPassword';
 import changeUserPassword from '@salesforce/apex/RH_Users_controller.changeUserPassword';
-// import getActiveWorkgroups from '@salesforce/apex/RH_WorkGroup_Query.getActiveWorkgroups';
 import { CurrentPageReference } from 'lightning/navigation';
 import { registerListener, unregisterAllListeners,fireEvent } from 'c/pubsub';
 const NEW_ACTION='New';
@@ -34,17 +33,13 @@ const FROM_PARENT='FROM_PARENT';
 export default class Rh_users extends NavigationMixin(LightningElement) {
 
 l={...labels}
-@track groups=[];
 @track listcontact = [];
 recordId;
-title;
-information;
-jsonInfo;
 contactrecord;
 contactNotFounded=false;
 @track accountFields=[];
 @track userDetails=[];
-userFormInputs=[];
+// userFormInputs=[];
 currUser={};
 
 keysFields={accountName:'ok'};
@@ -104,6 +99,7 @@ detailsActions=[
 action='';
 isUser;
 actionAvailable=[];
+hasAction;
     get showNew(){ return this.isAdmin && (this.action=='' || this.action==NEW_ACTION || this.action==SAVE_ACTION); }
     get hideView(){  return this.action=='' || this.action!=NEW_ACTION; }
     get hasDetailsActions(){ return this.detailsActions?.length >0}
@@ -117,7 +113,7 @@ actionAvailable=[];
         this.recordId = this.getUrlParamValue(window.location.href, 'recordId');
         if (this.recordId) {
             this.startSpinner(true);
-            this.getEmployeeInfos(this.recordId);
+            //this.getEmployeeInfos(this.recordId);
             // this.getExtraFields(this.recordId);
             this.startSpinner(false);
         }else{
@@ -140,7 +136,8 @@ actionAvailable=[];
                                 isBaseUser:result.isBaseUser,
                 }
                 const isAD=this.isAdmin;
-                this.listcontact = result.Employes.map(function (e ){
+                this.listcontact = []
+                result.Employes.forEach(function (e ){
                     let item={...e};
                     item.title=e.LastName;
                     item.icon="standard:people";
@@ -154,14 +151,18 @@ actionAvailable=[];
                     //add status actions
                     if (isAD) {
                         Actions=Actions.concat(self.buildUserStatusActions(e.Status));
-                        Actions=Actions.concat(self.buildUserRoleActions(e.RHRolec));
+                        if ((self.constants.LWC_ACTIVE_CONTACT_STATUS?.toLowerCase() == e.Status?.toLowerCase())) {//
+                            Actions=Actions.concat(self.buildUserRoleActions(e.RHRolec));
+                        }
                     }
 
 
                     item.actions=Actions;
                     console.log(`item`);
                     console.log(item);
-                    return item;
+
+                    if(isAD || (!isAD && (self.constants.LWC_ACTIVE_CONTACT_STATUS?.toLowerCase() == e.Status?.toLowerCase())))
+                        self.listcontact.push(item) ;
                 });
                 this.setviewsList(this.listcontact)
 
@@ -200,6 +201,7 @@ actionAvailable=[];
             
         
     }
+   
     handleuser(event){
    
         console.log('event parent ' +event.detail);
@@ -268,58 +270,7 @@ actionAvailable=[];
         return new URL(url).searchParams.get(key);
     }
 
-    getEmployeeInfos(recordid){
-        this.startSpinner(true);
-        getEmployeeDetails({
-            recordId: recordid
-        }).then(result =>{
-            console.log('display contact ' );
-            console.log(result);
-            if (!result.error && result.Ok) {
-                this.isUser=result.isUser;
-                this.contactrecord = result.Employe;
-                this.currUser={...result.currentContact,
-                                                    isCEO:result.isCEO,
-                                                    isRHUser:result.isRHUser,
-                                                    isTLeader:result.isTLeader,
-                                                    isBaseUser:result.isBaseUser,
-                                    }
-                this.constants=result.Constants;
-                this.buildUserDetails(this.contactrecord);
-                this.buildAccountFields(this.contactrecord);
-                this.buildExtraField(this.contactrecord?.RH_Extra_Infos__c);
-                if(this.isAdmin){
-                    this.buildDetailsActions(this.contactrecord);
-                    if(! this.isUser){
-                        this.actionAvailable =[
-                            {
-                                variant:"base",
-                                label:this.l.Edit,
-                                name:"Edit",
-                                title:this.l.Edit,
-                                iconName:"utility:edit",
-                                class:"slds-m-left_x-small"
-                            },
-                        ];
-                        //this.buildForm();
-                    }
-                }
-                    
-            }else{
-                this.showToast(WARNING_VARIANT,'ERROR', result.msg);
-                this.title = 'Failled';
-                this.information = result.msg;
-                this.contactNotFounded=true;
-            }
-
-
-        }).catch(e =>{
-            this.showToast(ERROR_VARIANT,'ERROR', e.message);
-            console.error(e)
-        }).finally(() => {
-            this.startSpinner(false);
-        })
-    }
+    
     buildUserStatusActions(status){
         return this.StatusActions.filter(function(action) {
             if (action.name.toLowerCase() != status?.toLowerCase()) {
@@ -336,242 +287,11 @@ actionAvailable=[];
         Actions=Actions.concat(this.buildUserRoleActions(e?.RH_Role__c));
         this.detailsActions=Actions.map(function(e, index) {return { ...e,variant:"brand-outline",class:e.class+" slds-m-left_x-small" } });
     }
-    handleDetailsActions(event){
+    /*handleDetailsActions(event){
         console.log('handleDetailsActions :', event.detail.action);
         const record={Id:this.contactrecord.Id, action:event.detail.action};
             this.handleUserAction(record, FROM_PARENT);
-    }
-     
-  
-      
-    buildExtraField(extrafield){
-        this.jsonInfo=extrafield || [];
-        if(this.jsonInfo){
-            let extraFieldCmp=this.template.querySelector('c-rh_extra_fields');
-            extraFieldCmp?.initializeMap(extrafield);
-        }
-    }
-
-
-    getExtraFields(recordid){
-        getExtraFields({
-            recordId:recordid
-        }).then(result =>{
-            console.log('result extra field ' +result);
-            this.buildExtraField(result);
-        }).catch(e=>{
-            this.showToast(ERROR_VARIANT,'ERROR', e.message);
-            console.error(e);
-        })
-    }
-
-    buildUserDetails(profileinformation){
-        this.userDetails=[
-            {
-                label:this.l.LastName,
-                placeholder:this.l.LastNamePlc,
-                name:'LastName',
-                value:profileinformation?.LastName,
-                required:true,
-                ly_md:'6', 
-                ly_lg:'6'
-            },
-            {
-                label:this.l.FirstName,
-                placeholder:this.l.FirstNamePlc,
-                name:'FirstName',
-                value:profileinformation?.FirstName,
-                required:false,
-                ly_md:'6', 
-                ly_lg:'6'
-            },
-            {
-                label:this.l.Email,
-                name:'Email',
-                required:true,
-                value:profileinformation?.Email,
-                placeholder:this.l.EmailPlc,
-                maxlength:255,
-                type:'email',
-                ly_md:'12', 
-                ly_lg:'12'
-            },
-            /*{
-                label:this.l.Role,
-                name:'Role',
-                required:true,
-                value:profileinformation?.RH_Role__c,
-                readOnly:true,
-                ly_md:'12', 
-                ly_lg:'12'
-            },
-            
-            {
-                label:this.l.Phone,
-                placeholder:this.l.PhonePlc,
-                name:'Phone',
-                type:'phone',
-                required:true,
-                value:profileinformation?.Phone,
-                ly_md:'6', 
-                ly_lg:'6'
-            },
-            */
-            /*{
-                label:this.l.Username,
-                placeholder:this.l.UsernamePlc,
-                name:'Login',
-                type:'email',
-                required:true,
-                value:profileinformation?.Username,
-                ly_md:'6', 
-                ly_lg:'6'
-            },
-            {
-                label:this.l.City,
-                placeholder:this.l.CityPlc,
-                name:'City',
-                type:'address',
-                value:profileinformation?.OtherAddress,
-                ly_md:'6', 
-                ly_lg:'6'
-            },
-            {
-                label:this.l.Birthday,
-                placeholder:this.l.BirthdayPlc,
-                name:'Birthday',
-                type:'date',
-                required:true,
-                value:profileinformation?.Birthdate,
-                ly_md:'6', 
-                ly_lg:'6'
-            },
-            {
-                label:this.l.AboutMe,
-                name:'Description',
-                value:profileinformation?.Description,
-                placeholder:this.l.AboutMePlc,
-                className:'textarea',
-                maxlength:25000,
-                type:'textarea',
-                ly_md:'12', 
-                ly_lg:'12'
-            }*/
-    
-        ];
-        if (this.isUser) {
-            
-            this.userDetails=this.userDetails.concat([
-                
-                {
-                    label:this.l.Phone,
-                    placeholder:this.l.PhonePlc,
-                    name:'Phone',
-                    type:'phone',
-                    required:true,
-                    value:profileinformation?.Phone,
-                    ly_md:'6', 
-                    ly_lg:'6'
-                },
-                {
-                    label:this.l.City,
-                    placeholder:this.l.CityPlc,
-                    name:'City',
-                    type:'address',
-                    value:profileinformation?.OtherAddress,
-                    ly_md:'6', 
-                    ly_lg:'6'
-                },
-                {
-                    label:this.l.Birthday,
-                    placeholder:this.l.BirthdayPlc,
-                    name:'Birthday',
-                    type:'date',
-                    required:true,
-                    value:profileinformation?.Birthdate,
-                    ly_md:'6', 
-                    ly_lg:'6'
-                },
-                {
-                    label:this.l.AboutMe,
-                    name:'Description',
-                    value:profileinformation?.Description,
-                    placeholder:this.l.AboutMePlc,
-                    className:'textarea',
-                    maxlength:25000,
-                    type:'textarea',
-                    ly_md:'12', 
-                    ly_lg:'12'
-                }
-        
-            ]);
-        }
-    
-    }
-    buildForm(){
-        this.userFormInputs=[
-            {
-                label:'Last Name',
-                placeholder:'Enter your Last Name',
-                name:'LastName',
-                value: '',
-                required:true,
-                ly_md:'6', 
-                ly_lg:'6'
-            },
-            {
-                label:'First Name',
-                placeholder:'Enter your First Name',
-                name:'FirstName',
-                value: '',
-                required:false,
-                ly_md:'6', 
-                ly_lg:'6'
-            },
-            {
-                label:'Email',
-                name:'Email',
-                required:true,
-                value: '',
-                placeholder:'Email',
-                maxlength:100,
-                type:'email',
-                ly_md:'6', 
-                ly_lg:'6'
-            },
-            {
-                label:'Role',
-                name:'Role',
-                required:true,
-                picklist: true,
-                options: this.roles,
-                value: 'Base User',
-                maxlength:100,
-                ly_md:'6', 
-                ly_lg:'6'
-            },
-            {
-                label:'Group',
-                name:'Group',
-                picklist: true,
-                options: this.groups,
-                value: '',
-                maxlength:100,
-                ly_md:'6', 
-                ly_lg:'6'
-            },
-            {
-                label:'Activate ?',
-                name:'Activated',
-                checked:true,
-                type:'toggle',
-                ly_md:'6', 
-                ly_lg:'6'
-            }
-         
-        
-        ]
-    }
+    }*/
     callApexUpdateStatus(record,from=''){
         this.startSpinner(true)
         userStatusUpdate({ contactJson: JSON.stringify(record) })
@@ -646,45 +366,8 @@ actionAvailable=[];
         
     }
 
-    ChangePassword(evt){
-        const data={...evt.data};
+    
 
-        if(evt.action==RESET_ACTION)
-            this.ChangePasswordApex(data);
-    }
-
-    ChangePasswordApex(info){
-        info.recordId= this.recordId;
-        console.log(`@@@@@ callUpdateInfoApex >>> Input : `,info);
-        changeUserPassword({ changepasswordjson: JSON.stringify(info) })
-          .then(result => {
-            console.log('Result', result);
-            if (!result.error && result.Ok) {
-                this.ChangePasswordFinishOK();
-            }else{
-                this.ChangePasswordFinishKO(result.msg);
-            }
-          })
-          .catch(error => {
-            console.error('Error:', error);
-            this.showToast(ERROR_VARIANT, this.l.ChangePasswordTitle, '');
-        })
-        .finally(() => {
-            this.ChangePasswordFinish();
-        });
-    }
-
-    ChangePasswordFinish(){
-        this.startSpinner(false);
-        this.quiteEditMode(this.template.querySelector('c-rh_reset_password'))
-    }
-
-    ChangePasswordFinishOK(){
-        this.showToast(SUCCESS_VARIANT, this.l.ChangePasswordTitle, 'Password Successfully Changed');
-    }
-    ChangePasswordFinishKO(e){
-        this.showToast(WARNING_VARIANT,this.l.ChangePasswordTitle, e);
-    }
 
     quiteEditMode(cmp){
         cmp?.cancel();
@@ -697,51 +380,4 @@ actionAvailable=[];
         fireEvent(this.pageRef, 'Toast', {variant, title, message});
     }
 
-    // build Account
-    buildAccountFields(profileinformation){
-        this.accountFields=[
-            {
-                label:this.l.CompanyName,
-                name:'Name',
-                value:profileinformation?.Account?.Name
-            },
-            {
-                label:this.l.NumberOfEmployees,
-                name:'NumberOfEmployees',
-                value:profileinformation?.Account?.NumberOfEmployees
-            }
-            ,
-            {
-                label:this.l.Website,
-                name:'Website',
-                value:profileinformation?.Account?.Website,
-                type:'Link',
-                class:'Link',
-                url:profileinformation?.Account?.Website
-            },
-            {
-                label:this.l.Phone,
-                name:'Phone',
-                value:profileinformation?.Account?.Phone
-            },
-            {
-                label:this.l.YearStarted,
-                name:'YearStarted',
-                value:profileinformation?.Account?.YearStarted
-            },
-            {
-                label:this.l.Industry,
-                name:'Industry',
-                value:profileinformation?.Account?.Industry
-            },
-            {
-                label:this.l.Description,
-                name:'Description',
-                value:profileinformation?.Account?.Description
-            }
-
-         
-        
-        ];
-    }
 }

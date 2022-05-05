@@ -1,8 +1,16 @@
-public with sharing class RH_Request_controller {
-    
+public without sharing class RH_Request_controller {
+    private static RH_Contact_Query contactQry = RH_Contact_Query.getInstance();
+    private static RH_User_Query userQry = RH_User_Query.getInstance();
     @AuraEnabled
     public static List<RH_Request__c> getrequest() {
         return [SELECT id,Name,RH_Description__c,Rh_Status__c,RH_Addressed_To__r.Name,RecordType.Name ,CreatedDate,RH_RequestTypeName__c FROM RH_Request__c WHERE ownerId =: UserInfo.getUserId() ];
+    }
+    @AuraEnabled
+    public static List<RH_Request__c> getRequestToManage() {
+        String userName = UserInfo.getName();
+        return [SELECT id,Name,RH_Description__c,Rh_Status__c,RH_Addressed_Cc__c, RH_Addressed_To__r.Name,RecordType.Name ,CreatedDate,RH_RequestTypeName__c 
+                        FROM RH_Request__c 
+                        WHERE (RH_Addressed_To__r.Name =: userName or RH_Addressed_Cc__c =: userName) and Rh_Status__c != 'Draft'];
     }
     // @AuraEnabled(cacheable=true)
     // public static List<Contact> getAdressedTo() {
@@ -11,22 +19,26 @@ public with sharing class RH_Request_controller {
 
     @AuraEnabled
     public static List<Contact> getAdressedTo(){
-        RH_User_Query ruq = new RH_User_Query();
-        RH_Contact_Query rcq = new RH_Contact_Query();
         List<Contact> seCon = new List<Contact>();
+        List<Contact> Tleader = new List<Contact>();
 
         List<string> TL_roles = new List<string>{
-            'Team Leader','CEO','Ressource Manager'
+            'CEO','Ressource Manager'
         };
 
-        List<Contact> allCon = [ SELECT Id, Name FROM Contact WHERE RH_Role__c IN :TL_roles AND recordTypeId=:RH_Constans.RH_CONTACT_RT];
-        List<User> currentU = ruq.getUserById(UserInfo.getUserId());
+        List<Contact> allCon =contactQry.getEligibleAddressedTo();
+        List<User> currentU = userQry.getUserById(UserInfo.getUserId());
         if (currentU.size() > 0) {
-            seCon = rcq.getContactById(currentU[0].RH_ContactId__c);
+            seCon = contactQry.getContactById(currentU[0].RH_ContactId__c);
+            if (! seCon.isEmpty()) {
+                if (seCon[0].RH_WorkGroup__r?.RH_Team_Leader__c != null) {
+                    Tleader.add(seCon[0].RH_WorkGroup__r?.RH_Team_Leader__r);
+                }
+            }
         }else {
             throw new RH_ControllerException('002','No RH Contact Founded');
         }
-        allCon.addAll(seCon);
+        allCon.addAll(Tleader);
         return allCon;
     }
 
@@ -42,7 +54,7 @@ public with sharing class RH_Request_controller {
         // for (RecordType var : [select Id,Name from RecordType where sObjectType='RH_Request__c']) {
         //     RecordT.put(var.Name, var.Id);
         // }
-        return [select Id,Name from RecordType where sObjectType='RH_Request__c'];
+        return [select Id,Name from RecordType where sObjectType='RH_Request__c' AND Name != 'Explanation'];
     }
 
 

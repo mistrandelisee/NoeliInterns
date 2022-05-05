@@ -4,6 +4,27 @@ public without sharing class RH_Users_controller {
     private static RH_WorkGroup_Query workGroupQry = RH_WorkGroup_Query.getInstance();
     
     public static Map<String, String> mapContactToUser = new Map<String, String>();
+    static string myconId='';
+    @AuraEnabled 
+    public static Map<String,Object>  checkUserCreation(String conID){
+        Map<String, Object> mapReturn = new Map<String, Object>();
+        
+        List<String> listcontactId = new List<String>();
+        mapReturn.put('error',false);
+        try {
+            List<User> users = userQry.getUserByContactId(conID);
+            mapReturn.put('Ok', !users.isEmpty());
+            mapReturn.put('users', users);
+        } catch(Exception e) {
+            System.debug(e.getMessage());
+            mapReturn.put('error',true);
+            mapReturn.put('msg',e.getMessage());
+            mapReturn.put('e',e);
+        }  
+        return mapReturn;
+    
+    
+    }
 
     @AuraEnabled 
     public static Map<String,Object>  getContacts(){
@@ -20,6 +41,9 @@ public without sharing class RH_Users_controller {
             if (users.size()>0){
                 for(User u : users ){
                     String conId;
+                    if (Userinfo.getUserId() == u.Id) {
+                        myconId=u.RH_ContactId__c;
+                    }
                     conId = u.RH_ContactId__c;
                     if (String.isNotBlank(conId)) {
                         mapContactToUser.put(conId,u.Id);
@@ -123,6 +147,7 @@ public without sharing class RH_Users_controller {
             mapReturn.put('error',true);
             mapReturn.put('msg',e.getMessage());
             mapReturn.put('e',e);
+            mapReturn.put('es',e.getStackTraceString());
         }  
         return mapReturn;
     }
@@ -134,7 +159,9 @@ public without sharing class RH_Users_controller {
         List<ContactWrapper> listcon = new List<ContactWrapper>();
         List<String> listcontactId = new List<String>();
         mapReturn.put('error',false);
+        System.Savepoint savepoint = null;
         try {
+            savepoint = Database.setSavepoint();
             mapInputs = (Map<String, Object>) JSON.deserializeUntyped(contactJson);
 
 
@@ -142,8 +169,11 @@ public without sharing class RH_Users_controller {
             conctactUser.Id= String.valueOf(mapInputs.get('Id'));
             conctactUser.RH_Status__c= String.valueOf(mapInputs.get('Status'));
             if(conctactUser.RH_Status__c== new RH_Constans().LWC_ACTIVE_CONTACT_STATUS){
-                //conctactUser.RH_Create_User__c=true;
-                mapReturn.put('RH_Create_User__c', true); //mock
+                conctactUser.RH_Create_User__c=true;
+                //mapReturn.put('RH_Create_User__c', true); //mock
+            }
+            if (conctactUser.RH_Status__c == new RH_Constans().LWC_DISABLE_CONTACT_STATUS) {
+                disableUser(conctactUser.Id);
             }
             update conctactUser;
             mapReturn.put('Input',contactJson); 
@@ -151,12 +181,22 @@ public without sharing class RH_Users_controller {
 
             mapReturn.put('Ok',true); 
         } catch(Exception e) {
+            if (savepoint!= null) {
+                Database.rollback(savepoint);
+            }
             System.debug(e.getMessage());
             mapReturn.put('error',true);
             mapReturn.put('msg',e.getMessage());
             mapReturn.put('e',e);
         }  
         return mapReturn;
+    }
+    @future
+    public static void disableUser(String conId) {
+        List<User> users = userQry.getUserByContactId(conId);
+        if (!users.isEmpty()){
+            update new user (isActive=false,Id=users[0].Id);
+        }
     }
     @AuraEnabled 
     public static Map<String,Object>  userRoleUpdate(String contactJson){
@@ -192,16 +232,19 @@ public without sharing class RH_Users_controller {
         List<Map<String, Object>> listcon = new List<Map<String, Object>>();
         string is;
         for(Contact con : conlist){
-            Map<String, Object> mapObj = new Map<String, Object>();
-            mapObj.put('id', con.Id);
-            mapObj.put('RHUser', con.RH_User__c);
-            mapObj.put('RHRolec', con.RH_Role__c);
-            mapObj.put('accountName', con.Account.Name);
-            mapObj.put('FirstName', con.FirstName);
-            mapObj.put('Status', String.isBlank(con.RH_Status__c)?'':con.RH_Status__c.toLowerCase() );
-            mapObj.put('LastName', con.LastName);
-            mapObj.put('UserId', mapContactToUser.get(con.Id));
-            listcon.add(mapObj);
+            if (! myconId.equalsIgnoreCase(con.Id)) {
+                Map<String, Object> mapObj = new Map<String, Object>();
+                mapObj.put('id', con.Id);
+                mapObj.put('RHUser', con.RH_User__c);
+                mapObj.put('RHRolec', con.RH_Role__c);
+                mapObj.put('accountName', con.Account.Name);
+                mapObj.put('FirstName', con.FirstName);
+                mapObj.put('Status', String.isBlank(con.RH_Status__c)?'':con.RH_Status__c.toLowerCase() );
+                mapObj.put('LastName', con.LastName);
+                mapObj.put('UserId', mapContactToUser.get(con.Id));
+                listcon.add(mapObj);  
+            }
+            
         }
         return listcon;
     }

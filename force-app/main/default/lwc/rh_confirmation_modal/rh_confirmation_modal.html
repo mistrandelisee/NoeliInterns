@@ -1,0 +1,31 @@
+<template>
+    <div class="slds-modal slds-fade-in-open slds-backdrop slds-modal_small">
+        <div class={styleClass}
+                style={styleCss}>
+            <template if:true={hasTitle}>
+                <div class="slds-modal__header">
+                    <h1 id="modal-heading-01" class="slds-modal__title slds-hyphenate">
+                        {title}
+                    </h1>
+                </div>
+            </template>
+            
+                <div class="slds-modal__content  slds-p-around_medium">
+                    <lightning-formatted-rich-text value={richText} >
+                    </lightning-formatted-rich-text>
+                </div>
+
+            <footer class="slds-modal__footer">
+                <div class="slds-float_left">
+                    <!-- //"brand-outline",this.l.Cancel,'KO',this.l.Cancel,"utility:close",'slds-m-left_x-small' -->
+                    <lightning-button variant="brand-outline" class="slds-m-left_x-small" data-action-name="CANCEL"
+                      label={l.Cancel} title={l.Cancel} icon-name="utility:close" onclick={cancelRequest}></lightning-button>
+                  </div>
+                  <div class="slds-float_right">
+                    <c-rh_actions  onaction={handleFooterActions} action-available={actionAvailable} >  </c-rh_actions>
+                  </div>
+                
+            </footer>
+        </div>
+    </div>
+</template>

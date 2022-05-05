@@ -62,6 +62,8 @@ const labels = {
     Activate: 'Activate',
     Freeze: 'Freeze',
     Disable: 'Disable',
+    Delete: 'Delete',
+    Group: 'Group',
 
     Name: 'Name',
     GroupeMember: 'The Groupe Member are',

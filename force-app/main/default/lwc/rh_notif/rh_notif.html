@@ -1,4 +1,12 @@
 <template>
     <c-rh_toast auto-close-time="6000"></c-rh_toast>
     <c-rh_spinner></c-rh_spinner>
+
+    <template if:true={showmodal}>
+        <c-rh_confirmation_modal rich-text={modalText} action-available={modalActions}
+        style-class={modalClass}
+        style-css={modalStyle}
+        title={modalTitle}
+        ></c-rh_confirmation_modal>
+    </template>
 </template>
