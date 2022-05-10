@@ -1,7 +1,10 @@
 import { LightningElement,wire,api } from 'lwc';
+import { NavigationMixin } from 'lightning/navigation';
 import { labels } from 'c/rh_label';
 import initConfig from '@salesforce/apex/RH_Users_controller.InitUserCreation';
 import userCreation from '@salesforce/apex/RH_Users_controller.userCreation';
+
+import checkUserCreation from '@salesforce/apex/RH_Users_controller.checkUserCreation';
 import { CurrentPageReference } from 'lightning/navigation';
 import { registerListener, unregisterAllListeners,fireEvent } from 'c/pubsub';
 //Constants
@@ -15,7 +18,7 @@ const RESET_ACTION='Reset';
 const SUCCESS_VARIANT='success';
 const WARNING_VARIANT='warning';
 const ERROR_VARIANT='error';
-export default class Rh_user_creation extends LightningElement {
+export default class Rh_user_creation extends NavigationMixin(LightningElement) {
     l={...labels}
     action;
     @api groups;
@@ -69,7 +72,7 @@ export default class Rh_user_creation extends LightningElement {
             },
             {
                 label:'Group',
-                name:'Group',
+                name:'wGroup',
                 picklist: true,
                 options: this.groups,
                 value: '',
@@ -84,10 +87,67 @@ export default class Rh_user_creation extends LightningElement {
                 type:'toggle',
                 ly_md:'6', 
                 ly_lg:'6'
+            },
+            {
+                label:this.l.StartDate,
+                placeholder:this.l.StartDate,
+                name:'StartDate',
+                required:true,
+                value: '',
+                type:'Date',
+                ly_md:'12', 
+                ly_lg:'12',
+                isText:true,//for avoid render blank field
             }
          
         
         ]
+    }
+    //navigation Page
+    goToPage(pagenname,state={}) {
+        let states=state; 
+        
+        this[NavigationMixin.Navigate]({
+            type : 'comm__namedPage',
+            attributes : {
+                pageName : pagenname
+            },
+            state: states
+        });
+    }
+    contactrecord;
+    check(){
+        checkUserCreation({ conID: this.contactrecord.Id })
+          .then(result => {
+            console.log('Result');
+            console.log(result);
+            if ( !result.error) {
+                if (result.Ok) {
+                    //user created
+                    console.log( result);
+                    
+                    this.goToPage('rhusers',{'recordId': result?.users[0].Id});
+                }else{
+                    this.checkUserCreationJS();
+                }
+            }else{
+                //has intern error
+                this.showToast(ERROR_VARIANT,'ERROR', result.msg);
+                this.startSpinner(false)
+            }
+          })
+          .catch(error => {
+            console.error('Error:', error);
+            this.showToast(ERROR_VARIANT,'ERROR', error);
+            this.startSpinner(false)
+        });
+    }
+    checkUserCreationJS(){
+        let self=this;
+        setTimeout(() => {
+            self.check();
+        }, 1000);
+        
     }
     
     connectedCallback(){
@@ -101,8 +161,19 @@ export default class Rh_user_creation extends LightningElement {
           .then(result => {
             console.log('Result callApexSave:: ');
             console.log(result);
-            this.action='';
-            this.callParent(SAVE_ACTION,{result})
+            if ( !result.error && result.Ok) {
+                    //user created
+                    console.log( result);
+                    this.contactrecord=result?.conctactUser;
+                    if(input.Activated) {this.checkUserCreationJS();}  
+                        else this.goToPage('rhusers',{'recordId': this.contactrecord.Id});
+            }else{
+                this.showToast(ERROR_VARIANT,'ERROR', result.msg);
+                this.startSpinner(false)
+            }
+            
+            // this.action='';
+            // this.callParent(SAVE_ACTION,{result})
           })
           .catch(error => {
             console.error('Error:', error);

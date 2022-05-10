@@ -629,6 +629,11 @@ hasAction;
                 name:'Group',
                 value:profileinformation?.RH_WorkGroup__r?.Name,
             },
+            {
+                label:this.l.StartDate,
+                name:'StartDate',
+                value: profileinformation?.RH_Started_Date__c,
+            },
             
             /*{
                 label:this.l.Username,
@@ -752,6 +757,17 @@ hasAction;
                 maxlength:100,
                 ly_md:'6', 
                 ly_lg:'6'
+            },
+            {
+                label:this.l.StartDate,
+                placeholder:this.l.StartDate,
+                name:'StartDate',
+                required:true,
+                value: this.contactrecord?.RH_Started_Date__c,
+                type:'Date',
+                ly_md:'12', 
+                ly_lg:'12',
+                isText:true,//for avoid render blank field
             }
          
         

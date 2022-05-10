@@ -172,7 +172,7 @@ export default class Rh_timesheet extends NavigationMixin(LightningElement) {
                     if (DRAFT_STATUS.toLowerCase() == e.Status?.toLowerCase()) {//if draft
                         if (self.isMine) {//is mine
                             //add SUBMIT_ACTION ,DELETE_ACTION  
-                            if (e.TimeSheetEntryCount > 1) { //submit action avalaible only if has sheets
+                            if (e.TimeSheetEntryCount > 0) { //submit action avalaible only if has sheets
                                 Actions.push(self.createAction("base",self.l.Submit,SUBMIT_ACTION,self.l.Submit,"utility:edit",'active-item'));
                             }
                             Actions.push(self.createAction("base",self.l.Delete,DELETE_ACTION,self.l.Delete,"utility:close",'active-item'));

@@ -1,4 +1,5 @@
 <template>
+    <c-rh_toast auto-close-time="6000"></c-rh_toast>
     <template if:false={hasrecordid}>
     <template if:true={showList}>
         <div class="slds-clearfix">
@@ -7,28 +8,6 @@
         </div>
         <div>
             
-                        <!-- <template class="slds-align_absolute-center" for:each={visibleProjects} for:item="acc">
-                            <div class="slds-grid slds-gutters slds-align_absolute-center slds-var-m-vertical_medium" key={acc.Name}>
-                                <div class="slds-col" >
-                                    <ul class="slds-listbox slds-listbox_vertical box-border">
-                                    
-                                        <li class="slds-listbox__item" onclick={handleChange}  data-id={acc.Id} data-name={acc.Name}>
-                                        <h1 class="h1-style">  
-                                            <p class="slds-listbox__option slds-listbox__option_plain slds-media slds-media_small">
-                                                {acc.Name}
-                                            </p>
-                                        </h1>
-                                        <h3 class="h2-style">  
-                                            <p class="slds-listbox__option slds-listbox__option_plain slds-media slds-media_small">
-                                                {acc.Description__c}
-                                            </p>
-                                        </h3>
-                                        </li>
-                                    
-                                    </ul> 
-                                </div>
-                            </div>
-                        </template> -->
 
                         <c-rh_cards_view page-size="5"  items={tabReq} onrowselected={handleCardAction}></c-rh_cards_view>
         </div>
@@ -59,7 +38,8 @@
             <c-rh_add_and_remove   initial={allInitialContacts}></c-rh_add_and_remove>
         </div>
         <div class="slds-clearfix">
-            <lightning-button label="Save" class="slds-float_right" onclick={handleSave}></lightning-button>
+            <lightning-button label="Save" class="slds-float_right" onclick={handleSave} data-id="only"></lightning-button>
+            <lightning-button label="Save and Activate" class="slds-float_right" onclick={handleSave} data-id="actif"></lightning-button>
         </div>
     </template>
     
@@ -102,11 +82,11 @@
                                     <a href={file.url} download={file.fname}>Download</a>
                                     </div>
                                     <div class="slds-col slds-large-size_4-of-12 slds-medium-size_4-of-12 slds-size_12-of-12">
-                                    <lightning-button label="Preview" 
+                                    <!-- <lightning-button label="Preview" 
                                     variant="brand"
                                     data-id={file.value}
                                     onclick={previewHandler}
-                                    ></lightning-button>
+                                    ></lightning-button> -->
                                     </div>
                                 </div>
                             </div>

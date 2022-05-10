@@ -113,9 +113,11 @@ export default class Rh_Projects extends NavigationMixin(LightningElement) {
     startSpinner(b){
         fireEvent(this.pageRef, 'Spinner', {start:b});
      }
+
      showToast(variant, title, message){
-         fireEvent(this.pageRef, 'Toast', {variant, title, message});
-     }
+        let toast=this.template.querySelector('c-rh_toast');
+        toast?.showToast(variant, title, message);
+    }
      
  getAllprojects(){
     getProjectList()
@@ -397,11 +399,12 @@ setviewsList(items){
         .then(result=>{
             window.console.log('after save');
            this.getdetailsProject(this.curentProject);
-            const toastEvent = new ShowToastEvent({
-              title:'Success!',
-              message:'Members Updated successfully',
-              variant:'success'
-            });
+           this.showToast('success', 'success !!', 'Members Updated Successfully!!');
+            // const toastEvent = new ShowToastEvent({
+            //   title:'Success!',
+            //   message:'Members Updated successfully',
+            //   variant:'success'
+            // });
             this.dispatchEvent(toastEvent);
             this.showDetails = true;
             this.showManage= false;
@@ -413,7 +416,12 @@ setviewsList(items){
     }
 
     handleSave(e){
-        
+        let tempCopy=e.currentTarget.getAttribute("data-id");
+        console.log('tempCopy',tempCopy);
+        let actif = false;
+        if(tempCopy == 'actif'){
+            actif = true;
+        }
         let initParticipate = [];
         let returnlist = this.template.querySelector('c-rh_add_and_remove').getResult();
         console.log('returnlist',returnlist);
@@ -422,26 +430,16 @@ setviewsList(items){
                 initParticipate.push(returnlist[key]['Id']);
                 // initParticipate.push({'RH_Contact__c':returnlist[key]['Id']});
             }
-            // if(returnlist[key]['isAdd'] == false){
-            //     moveParticipate.push({'RH_Contact__c':returnlist[key]['Id']});
-            // }
              
        }
        this.addParticipate = initParticipate;
        window.console.log('addParticipate' + this.addParticipate);
-        // insertProjectMethod(    {Name:this.inputs.Name,Description:this.inputs.Description,
-        //                         Startdate:this.inputs['Start date'],Manager:this.inputs['Project Manager'],
-        //                         Enddate:this.inputs['End date'],participation:initParticipate}    )
-        insertProjectMethod({project:this.inputs,participation:initParticipate})
+        insertProjectMethod({project:this.inputs,participation:initParticipate,Isactivate:actif})
         .then(result=>{
-            window.console.log('after save' + this.accountid);
+            window.console.log('after save');
             this.getAllprojects();
-            const toastEvent = new ShowToastEvent({
-              title:'Success!',
-              message:'Project created successfully',
-              variant:'success'
-            });
-            this.dispatchEvent(toastEvent);
+            this.showToast('success', 'success !!', 'Project created Successfully!!');
+            
             this.showList = true;
             this.showAddMembers= false;
         })
@@ -451,6 +449,11 @@ setviewsList(items){
         });
 
     }
+
+
+   
+
+
 
     handleSaveEdit(e){
         window.console.log('this.curentProject ',this.curentProject);
@@ -479,12 +482,13 @@ setviewsList(items){
                     window.console.log('after update');
                     window.console.log('result' , result);
                     this.getdetailsProject(this.curentProject);
-                    const toastEvent = new ShowToastEvent({
-                      title:'Success!',
-                      message:'Project updated successfully',
-                      variant:'success'
-                    });
-                    this.dispatchEvent(toastEvent);
+                    this.showToast('success', 'success !!', 'Project Updated Successfully!!');
+                    // const toastEvent = new ShowToastEvent({
+                    //   title:'Success!',
+                    //   message:'Project updated successfully',
+                    //   variant:'success'
+                    // });
+                    // this.dispatchEvent(toastEvent);
                     this.showDetails = true;
                     this.showEdit= false;
                 })
@@ -665,7 +669,8 @@ setviewsList(items){
         uploadFile({ base64, filename, recordId }).then(result=>{
             this.fileData = null
             let title = `${filename} uploaded successfully!!`
-            this.toast(title)
+            // this.toast(title)
+            this.showToast('success', 'success !!', title);
             this.showList = false;
             this.showDetails = true;
             this.showEdit = false;  

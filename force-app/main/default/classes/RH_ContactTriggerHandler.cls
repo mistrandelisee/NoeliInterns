@@ -218,9 +218,9 @@ public class RH_ContactTriggerHandler {
                                 UserName =String.isNotBlank(con.Email) ? formatUsername(con.Email) : formatUsername(con.LastName),
                                 ProfileId = ProfileId,
                                 EmailEncodingKey ='UTF-8',
-                                LanguageLocaleKey = 'it' ,
-                                LocaleSidKey ='it_IT' ,
-                                TimeZoneSidKey = 'Europe/Rome' ,
+                                LanguageLocaleKey ='fr',// 'it' ,
+                                LocaleSidKey ='fr_FR',//it_IT' ,
+                                TimeZoneSidKey ='Africa/Douala',// 'Europe/Rome' ,
                                 IsActive=true
                             );
         return u;

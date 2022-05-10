@@ -76,8 +76,6 @@ public without sharing class RH_Users_controller {
     @AuraEnabled 
     public static Map<String,Object>  InitUserCreation(){
         Map<String, Object> mapReturn = new Map<String, Object>();
-        List<ContactWrapper> listcon = new List<ContactWrapper>();
-        List<String> listcontactId = new List<String>();
         mapReturn.put('error',false);
         try {
             List<RH_WorkGroup__c> grps=workGroupQry.getActiveWorkgroups();
@@ -96,25 +94,26 @@ public without sharing class RH_Users_controller {
     @AuraEnabled 
     public static Map<String,Object>  userCreation(String contactJson){
         Map<String, Object> mapReturn = new Map<String, Object>();
-        Map<String, Object> mapInputs = new Map<String, Object>();
-        List<ContactWrapper> listcon = new List<ContactWrapper>();
+        newContactWrapper mapInputs = new newContactWrapper();
         List<String> listcontactId = new List<String>();
         mapReturn.put('error',false);
         try {
-            mapInputs = (Map<String, Object>) JSON.deserializeUntyped(contactJson);
+             mapInputs = (newContactWrapper) JSON.deserialize(contactJson, newContactWrapper.class);
+            //mapInputs = (Map<String, Object>) JSON.deserializeUntyped(contactJson);
 
-            Boolean isInsert= String.isBlank(String.valueOf(mapInputs.get('Id')));
+            Boolean isInsert= String.isBlank(mapInputs.Id);
             Contact conctactUser=new Contact();
-            conctactUser.LastName= String.valueOf(mapInputs.get('LastName'));
-            conctactUser.FirstName= String.valueOf(mapInputs.get('FirstName'));
-            conctactUser.Email= String.valueOf(mapInputs.get('Email'));
-            conctactUser.RH_Role__c= String.valueOf(mapInputs.get('Role'));
-            String grp=String.valueOf(mapInputs.get('Group'));
+            conctactUser.LastName= mapInputs.LastName;
+            conctactUser.FirstName= mapInputs.FirstName;
+            conctactUser.Email= mapInputs.Email;
+            conctactUser.RH_Role__c= mapInputs.Role;
+            conctactUser.RH_Started_Date__c = mapInputs.startDate;
+            String grp=mapInputs.wGroup;
             if (String.isNotBlank(grp)) {
                 conctactUser.RH_WorkGroup__c=  grp;
             }
             conctactUser.RH_Create_User__c=false;
-            if((Boolean)mapInputs.get('Activated')){
+            if(mapInputs.Activated){
                 conctactUser.RH_Create_User__c=true;
                 conctactUser.RH_Status__c=RH_Constans.ACTIVATED_CONTACT_STATUS;
             }
@@ -134,7 +133,7 @@ public without sharing class RH_Users_controller {
             if(isInsert){
                 insert conctactUser;
             }else{
-                conctactUser.Id=String.valueOf(mapInputs.get('Id'));
+                conctactUser.Id=mapInputs.Id;
                 update conctactUser;
             }
             //conctactUser.Account= String.valueOf(mapInputs.get('Account'));
@@ -156,8 +155,6 @@ public without sharing class RH_Users_controller {
     public static Map<String,Object>  userStatusUpdate(String contactJson){
         Map<String, Object> mapReturn = new Map<String, Object>();
         Map<String, Object> mapInputs = new Map<String, Object>();
-        List<ContactWrapper> listcon = new List<ContactWrapper>();
-        List<String> listcontactId = new List<String>();
         mapReturn.put('error',false);
         System.Savepoint savepoint = null;
         try {
@@ -202,8 +199,6 @@ public without sharing class RH_Users_controller {
     public static Map<String,Object>  userRoleUpdate(String contactJson){
         Map<String, Object> mapReturn = new Map<String, Object>();
         Map<String, Object> mapInputs = new Map<String, Object>();
-        List<ContactWrapper> listcon = new List<ContactWrapper>();
-        List<String> listcontactId = new List<String>();
         mapReturn.put('error',false);
         try {
             mapInputs = (Map<String, Object>) JSON.deserializeUntyped(contactJson);
@@ -335,6 +330,17 @@ public without sharing class RH_Users_controller {
         @AuraEnabled public String RHUser{get;set;}
         @AuraEnabled public String accountName{get;set;}
         @AuraEnabled public String id {get;set;}
+    }
+    public class newContactWrapper {
+        @AuraEnabled public String Id{get;set;}
+        @AuraEnabled public String LastName{get;set;}
+        @AuraEnabled public String FirstName{get;set;}
+        @AuraEnabled public String Email{get;set;}
+        @AuraEnabled public String Role{get;set;}
+        @AuraEnabled public String wGroup{get;set;}
+        @AuraEnabled public Boolean Activated{get;set;}
+        @AuraEnabled public Date  startDate{get;set;}
+        
     }
     public class changepasswordwrapper  {
         @AuraEnabled public String newPassword;

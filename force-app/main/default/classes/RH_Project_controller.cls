@@ -1,4 +1,4 @@
-public class RH_Project_controller {
+public without sharing class RH_Project_controller {
 
     private static RH_Project_Query projectQry = RH_Project_Query.getInstance();
     private static RH_Project_Query projectQry1 = RH_Project_Query.getInstance();
@@ -100,12 +100,14 @@ public class RH_Project_controller {
    
 
     @AuraEnabled 
-    public static Project__c insertProjectMethod(ProjectTo project,List<String> participation){
+    public static Project__c insertProjectMethod(ProjectTo project,List<String> participation, Boolean Isactivate ){
         // public static Project__c insertProjectMethod(String Name,String Description,Date Startdate,String Manager,Date Enddate,List<String> participation){
         try {
             system.debug('Startdate' +project.Startdate);
             List<User> acc11=userQry.getUserById(UserInfo.getUserId());
+            system.debug('User' +acc11);
             List<Contact> acc=contactQry.getAccountId(acc11[0].RH_ContactId__c);
+            system.debug('Contact' +acc);
             List<RH_Participation__c> listParti = new List<RH_Participation__c>();
             Project__c ProjectObj = new Project__c();
             ProjectObj.RH_Account_ID__c = acc[0].AccountId;
@@ -118,7 +120,9 @@ public class RH_Project_controller {
             }
             ProjectObj.Start_Date__c = project.Startdate;
             ProjectObj.Project_Manager__c = project.Manager;
-            
+            if(Isactivate){
+                ProjectObj.Status__c = 'Active';
+            }
             insert ProjectObj;
             for (String Idpartici : participation) {
                 RH_Participation__c part = new RH_Participation__c();
@@ -127,8 +131,14 @@ public class RH_Project_controller {
                 listParti.add(part);
             }
             insert listParti;
+
+
+            if(Isactivate){
+                SendEmail(participation);
+            }
+
             return ProjectObj;
-            // return null;
+            
         } catch (Exception exp) {
             system.debug('exception'+exp.getMessage());
             throw new AuraHandledException(exp.getMessage());
@@ -270,4 +280,58 @@ public class RH_Project_controller {
          }     
          return pickListValuesList;
      }
+
+    public static void SendEmail(List<String> lstids)
+    {
+        List<contact> lstcon=[Select id,Email from contact WHERE Id IN :lstids];
+        List<String> address= new List<String>();
+         for(Contact c:lstcon)
+            {
+                address.add(c.Email);
+            }
+        system.debug('lstids' +lstids);
+        system.debug('lstidsEmail' +address);
+            EmailTemplate et=[Select id,Subject,Description,HtmlValue,DeveloperName,Body from EmailTemplate where name = 'RH-Notify New Member Project' limit 1];
+            
+            system.debug('EmailTemplate' +et.Id);
+            // Messaging.MassEmailMessage mail = new Messaging.MassEmailMessage();
+            // mail.setTargetObjectIds(lstids);
+            // mail.setToAddresses(address);
+            // mail.setSenderDisplayName('System Admin');
+            // mail.setTemplateId(et.id);
+            // Messaging.sendEmail(new Messaging.MassEmailMessage[] { mail });
+
+            // Messaging.SingleEmailMessage email = new Messaging.SingleEmailMessage();
+
+            // // Sets the paramaters of the email
+            // // email.setSubject( subject );
+            // email.setToAddresses( address);
+            // email.setTargetObjectId(lstids);
+            // // email.setPlainTextBody( body );
+            // email.setTemplateId(et.id);
+            // // Sends the email
+            // Messaging.SendEmailResult [] r = Messaging.sendEmail(new Messaging.SingleEmailMessage[] {email});
+
+
+
+            Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
+
+            // String[] toAddresses = new String[] {'wekone8076@mailvxin.net'};
+            mail.setToAddresses(address);
+            // String[] ccAddresses = new String[] {'wekone8076@mailvxin.net'};
+            // mail.setCcAddresses(ccAddresses);
+     
+     
+            mail.setSubject('Email Subject');
+     
+            mail.setBccSender(false);
+     
+            mail.setPlainTextBody('Sample plain text goes here');
+     
+            
+            mail.setHtmlBody('Your Link <a href=https://www.salesforce.com/>click here.</a>');
+     
+            
+            Messaging.sendEmail(new Messaging.SingleEmailMessage[] { mail });
+    }
 }

@@ -223,7 +223,7 @@ export default class Rh_timesheet_details extends NavigationMixin(LightningEleme
             if (this.isMine) {//is mine
                 //add SUBMIT_ACTION ,DELETE_ACTION  
                 
-                if (this.record.TimeSheetEntryCount > 1) { //submit action avalaible only if has sheets
+                if (this.record.TimeSheetEntryCount > 0) { //submit action avalaible only if has sheets
                     Actions.push(this.createAction("brand-outline",this.l.Submit,SUBMIT_ACTION,this.l.Submit,"utility:edit",'slds-m-left_x-small'));
                 }
                 Actions.push(this.createAction("brand-outline",this.l.Delete,DELETE_ACTION,this.l.Delete,"utility:close",'slds-m-left_x-small'));
