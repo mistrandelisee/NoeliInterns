@@ -19,7 +19,8 @@ public  class RH_Contact_Query {
                     Account.Name,Account.NumberOfEmployees,Account.Website,Account.Phone,Account.Description,Account.YearStarted,Account.Industry,
                     RH_WorkGroup__r.Name,RH_WorkGroup__r.CreatedDate,RH_WorkGroup__r.RH_Team_Leader__r.Phone,RH_WorkGroup__r.RH_Team_Leader__c,RH_WorkGroup__r.RH_Team_Leader__r.name,
                     (SELECT Name,CreatedDate,CreatedBy.Name FROM WorkGroups_Leader__r WHERE RH_Status__c =:RH_Constans.ACTIVATED_WORKGROUP_STATUS ),
-                    (SELECT RH_Project__r.Name,RH_Project__r.Link__c,RH_Project__r.Start_Date__c,RH_Project__r.Description__c,RH_Project__r.End_Date__c  FROM Projects__r WHERE RH_Project__r.Status__c =:RH_Constans.ACTIVATED_PROJECT_STATUS)
+                    (SELECT RH_Project__r.Name,RH_Project__r.Link__c,RH_Project__r.Start_Date__c,RH_Project__r.Description__c,RH_Project__r.End_Date__c  FROM Projects__r WHERE RH_Project__r.Status__c =:RH_Constans.ACTIVATED_PROJECT_STATUS ORDER BY CreatedDate DESC),
+                    (SELECT Id ,TimeSheetNumber FROM RH_TimeSheets__r ORDER BY CreatedDate DESC)
                     FROM Contact WHERE Id=:contactId];
     }
 

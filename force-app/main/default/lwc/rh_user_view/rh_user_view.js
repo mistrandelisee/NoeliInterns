@@ -76,12 +76,22 @@ action='';
 isUser;
 jsonInfo=[];
 actionAvailable=[];
+
 hasAction;
     
     get hasDetailsActions(){ return this.detailsActions?.length >0}
     get hasEmployeeInfo(){  return this.contactrecord?true:false; }
     get isAdmin() { return this.currUser?.isCEO || this.currUser?.isTLeader}
     get hasrecordid(){ return this.recordId?true:false; }
+    get userProjects(){ 
+        if (this.contactrecord?.Projects__r?.length>0) {
+         return this.contactrecord?.Projects__r.map(record=>record.RH_Project__r)   
+        }else return [];
+    }
+    get timeSheets(){
+        return this.contactrecord?.RH_TimeSheets__r || [];
+    }
+
     editContactMode=false;
     connectedCallback(){
 		registerListener('ModalAction', this.doModalAction, this);
@@ -374,6 +384,20 @@ hasAction;
         console.log('handleDetailsActions :', event.detail.action);
         const record={Id:this.contactrecord.Id, action:event.detail.action};
             this.handleUserAction(record, FROM_PARENT);
+    }
+    goToProject(event){
+        if(event.detail.action=='Item'){
+            const data=event.detail.data;
+            console.log(data);
+            this.goToPage('rhproject',{'recordId': data.key})
+        }
+    }
+    goToTimsheet(event){
+        if(event.detail.action=='Item'){
+            const data=event.detail.data;
+            console.log(data);
+            this.goToPage('rhtimesheet',{'recordId': data.key})
+        }
     }
      
   

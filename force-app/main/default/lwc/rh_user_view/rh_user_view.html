@@ -81,6 +81,47 @@
                 </lightning-layout-item>
 
             </template>
+
+            <template if:true={isUser}>
+                <lightning-layout-item size="12" padding="around-smallx" small-device-size="6" medium-device-size="6" large-device-size="3">
+                    <div class="custom-box">
+                        <!-- user extraField section -->
+                       <div class="slds-p-around_medium extra_info">
+                           <!-- cssClass 
+                           header-icon -->
+                           <c-rh_list 
+                           css-class="slds-has-dividers_bottom slds-has-block-links_space slds-p-horizontal_medium"
+                           header-title="Projects"
+                            key-id="Id"
+                            key-value="Name"
+                            records={userProjects}
+                            onaction={goToProject}
+                           ></c-rh_list>
+                       </div>
+                    </div>
+                </lightning-layout-item>
+
+            </template>
+            <template if:true={isUser}>
+                <lightning-layout-item size="12" padding="around-smallx" small-device-size="6" medium-device-size="6" large-device-size="3">
+                    <div class="custom-box">
+                        <!-- user extraField section -->
+                       <div class="slds-p-around_medium extra_info">
+                           <!-- cssClass 
+                           header-icon -->
+                           <c-rh_list 
+                            css-class="slds-has-dividers_bottom slds-has-block-links_space slds-p-horizontal_medium"
+                            header-title="TimeSheets"
+                            key-id="Id"
+                            key-value="TimeSheetNumber"
+                            records={timeSheets}
+                            onaction={goToTimsheet}
+                           ></c-rh_list>
+                       </div>
+                    </div>
+                </lightning-layout-item>
+
+            </template>
             
         </lightning-layout>
         
