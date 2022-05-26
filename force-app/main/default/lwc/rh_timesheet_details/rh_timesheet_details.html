@@ -55,7 +55,7 @@
 
             <template if:false={newLineMode}>
                 <lightning-layout-item size="12" padding="around-smallx" small-device-size="12" medium-device-size="12" large-device-size="12">
-                    <div class="custom-box">sheet entries list
+                    <div class="custom-box">
 
                         <c-rh_cards_view page-size="20" items={timesheetEntries} onrowselected={handleCardAction}
                         ly_xs = "12"
@@ -65,6 +65,7 @@
                     </div>
                 </lightning-layout-item>
             </template>
+            <!--  
             <template if:true={newLineMode}>
 
                 <lightning-layout-item size="12" padding="around-smallx" small-device-size="12" medium-device-size="4" large-device-size="3">
@@ -98,10 +99,41 @@
                         ></c-rh_cards_view> </div>
                 </lightning-layout-item>
             </template>
+        -->
         </lightning-layout>
     </template>
     <template if:true={sheetNotFounded}>
         <c-rh_success_operation title="Error" information="Mising rec" recordid={recordId}></c-rh_success_operation>
+    </template>
+
+    <template if:true={newLineMode}>
+        <div class="slds-modal slds-fade-in-open slds-backdrop slds-modal_medium">
+            <div class="slds-modal__container">
+                <div class="slds-modal__header">
+                    <h3 id="modal-heading-01" class="slds-modal__title slds-hyphenate">
+                        <lightning-icon icon-name={lineIcon} size="small" class="slds-p-right_small"></lightning-icon>
+                        
+                        {lineTitle}
+                    </h3>
+                </div>
+                    <div class="slds-modal__content">
+                        <lightning-card class="custom-card">
+                            <c-rh_dynamic_form inputs-items={formEntry}></c-rh_dynamic_form>
+                        </lightning-card>
+                    </div>
+                
+                    <footer class="slds-modal__footer">
+                            <div class="slds-float_left">
+                                <lightning-button variant="base" label={l.Cancel} data-action-name="Cancel" title={l.Cancel} icon-name="utility:close" onclick={handleCancel} class="slds-m-left_x-small"></lightning-button>
+                            </div>
+                            <template if:false={isEntryReadOnly}>
+                                <div class="slds-float_right">
+                                    <lightning-button variant="base" label={l.Save} data-action-name="Edit" title={l.Save} icon-name="utility:save" onclick={handleSave} class="slds-m-left_medium"></lightning-button>
+                                </div>
+                            </template>
+                    </footer>
+            </div>
+        </div>
     </template>
 
 </template>

@@ -116,6 +116,12 @@ export default class Rh_timesheet_details extends NavigationMixin(LightningEleme
     get hasSheetInfo(){  return this.record?true:false; }
     get isAdmin() { return this.currUser?.isCEO || this.currUser?.isTLeader}
     get isApprover() { return this.isAdmin || this.currUser?.isApprover}
+    get isEntryReadOnly(){
+        return !(this.isMine && DRAFT_STATUS.toLowerCase() == this.record?.Status?.toLowerCase())
+    }
+
+    get lineIcon(){ return (this.isEntryReadOnly) ?'':'utility:edit' }
+    get lineTitle(){ return (this.isEntryReadOnly) ?'Line details':'Create Line'}
     get iconName(){
         return (!this.sectionExpanded)? 'utility:chevrondown' : 'utility:chevronup'
     }
@@ -349,7 +355,17 @@ export default class Rh_timesheet_details extends NavigationMixin(LightningEleme
 
     }
     handleEditTimeSheetEntry(){
-        this.initEntryAction();
+        if (this.isEntryReadOnly) {//view mode
+            this.launchViewEntry();
+        }else{
+            this.initEntryAction();
+        }
+    }
+    launchViewEntry(){
+        this.buildEntryForm();
+                
+        this.action=ADD_LINE_ACTION;
+        this.toggleView();
     }
     selectedProject;
     initEntryAction(){  
@@ -367,10 +383,7 @@ export default class Rh_timesheet_details extends NavigationMixin(LightningEleme
                 item.RH_Project__c= (this.sheetItem?.RH_Project__c) ? this.sheetItem?.RH_Project__c : 
                                                                      (   this.myProjects?.length==1 ? this.myProjects[0].value : '');
                 this.sheetItem=item;
-                this.buildEntryForm();
-                
-                this.action=ADD_LINE_ACTION;
-                this.toggleView();
+                this.launchViewEntry();
                 // this.callParent(this.action,{});
             }else{
                 this.showToast(WARNING_VARIANT,'ERROR', result.msg);
@@ -522,17 +535,6 @@ export default class Rh_timesheet_details extends NavigationMixin(LightningEleme
         const endTime=this.lastHours();
         const startTime=this.beginHours();
         this.formEntry=[
-            {
-                label:'Project',
-                name:'ProjectId',
-                picklist: true,
-                options: this.myProjects,
-                value: this.sheetItem?.RH_Project__c,
-                required:true,
-                maxlength:100,
-                ly_md:'12', 
-                ly_lg:'12'
-            },
             /**
              * {
                 label:'Task',
@@ -554,10 +556,12 @@ export default class Rh_timesheet_details extends NavigationMixin(LightningEleme
                 min: startTime,
                 max: endTime,
                 type:'Datetime',
-                ly_md:'12', 
-                ly_lg:'12',
+                ly_md:'6', 
+                ly_lg:'6',
+                ly_xs:'12',
                 isDatetime:true,
                 isText:true,//for avoid render blank field
+                readOnly:this.isEntryReadOnly
             },
             {
                 label:this.l.EndDate,
@@ -568,10 +572,12 @@ export default class Rh_timesheet_details extends NavigationMixin(LightningEleme
                 min: startTime,
                 max: endTime,
                 type:'Datetime',
-                ly_md:'12', 
-                ly_lg:'12',
+                ly_md:'6', 
+                ly_lg:'6',
+                ly_xs:'12',
                 isDatetime:true,
                 isText:true,//for avoid render blank field
+                readOnly:this.isEntryReadOnly
             },
             {
                 label:this.l.Description,
@@ -583,11 +589,43 @@ export default class Rh_timesheet_details extends NavigationMixin(LightningEleme
                 type:'textarea',
                 ly_md:'12', 
                 ly_lg:'12',
-                isTextarea:true
+                ly_xs:'12',
+                isTextarea:true,
+                readOnly:this.isEntryReadOnly
             }
          
         
         ]
+        let projetElt;
+        if (this.isEntryReadOnly) {
+            projetElt={
+                label:'Project',
+                name:'ProjectId', 
+                value: this.sheetItem?.Project,
+                required:true,
+                maxlength:100,
+                ly_md:'12', 
+                ly_lg:'12',
+                ly_xs:'12',
+                isText:true,
+                readOnly:this.isEntryReadOnly
+            };
+        }else{
+            projetElt={
+                label:'Project',
+                name:'ProjectId',
+                picklist: true,
+                options: this.myProjects,
+                value: this.sheetItem?.RH_Project__c,
+                required:true,
+                maxlength:100,
+                ly_md:'12', 
+                ly_lg:'12',
+                ly_xs:'12',
+                readOnly:this.isEntryReadOnly
+            };
+        }
+        this.formEntry.unshift( projetElt );
     }
     lastHours(){
         const d = new Date();
