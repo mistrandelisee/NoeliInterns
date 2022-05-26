@@ -33,8 +33,10 @@ const FROM_PARENT='FROM_PARENT';
 
 const APPROVE_ACTION='approvato';
 const DRAFT_STATUS='nuovo';
+const SUBMITTED_STATUS='inviato';
 const DELETE_ACTION='Delete';
 const ADD_LINE_ACTION='ADD_LINE_ACTION';
+const EXPORT_ACTION='EXPORT_ACTION';
 const SUBMIT_ACTION='inviato';
 export default class Rh_timesheet_details extends NavigationMixin(LightningElement)  {
     END_OF_DAY=20;//19h
@@ -44,6 +46,7 @@ export default class Rh_timesheet_details extends NavigationMixin(LightningEleme
         Delete:'Delete',
         Approve:'Approve',
         AddLines:'Add Items',
+        Export:'Export',
     }
     /*StatusActions=[
 
@@ -219,11 +222,12 @@ export default class Rh_timesheet_details extends NavigationMixin(LightningEleme
     }
     buildActions(){
         let Actions=[];
-        if (ACTIVE_ACTION.toLowerCase() == this.record.Status?.toLowerCase()) {//if already submitted
+        if (SUBMITTED_STATUS.toLowerCase() == this.record.Status?.toLowerCase()) {//if already submitted
             if (this.isApprover) {
                 //add approve action 
                 Actions.push(this.createAction("brand-outline",this.l.Approve,APPROVE_ACTION,this.l.Approve,"utility:edit",'slds-m-left_x-small'));
             }
+            Actions.push(this.createAction("brand-outline",this.l.Export,EXPORT_ACTION,this.l.Export,"utility:pdf_ext",'slds-m-left_x-small'));
         }
         if (DRAFT_STATUS.toLowerCase() == this.record.Status?.toLowerCase()) {//if draft
             if (this.isMine) {//is mine
@@ -268,7 +272,9 @@ export default class Rh_timesheet_details extends NavigationMixin(LightningEleme
                 this.sheetItem={};
                 this.initEntryAction();
                 break;
-        
+            case EXPORT_ACTION:
+                console.log(`EXPORT_ACTION export for this record id `, this.recordId) ;
+                break;
             default:
                 console.error('Actions ',action ,' not reconized');
                 break;
@@ -628,14 +634,14 @@ export default class Rh_timesheet_details extends NavigationMixin(LightningEleme
         this.formEntry.unshift( projetElt );
     }
     lastHours(){
-        const d = new Date();
+        const d =new Date(this.record?.StartDate) || new Date();
         d.setUTCHours(this.END_OF_DAY, 0, 0, 0);
         console.log('Date END_OF_DAY ',d);
         console.log('Date END_OF_DAY GMT ',d.toISOString());
         return d.toISOString();
     }
     beginHours(){
-        const d = new Date();
+        const d =new Date(this.record?.StartDate) || new Date();
         d.setUTCHours(this.START_OF_DAY, 0, 0, 0);
         console.log('Date START_OF_DAY ',d);
         console.log('Date START_OF_DAY GMT ',d.toISOString());

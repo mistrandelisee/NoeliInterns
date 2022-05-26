@@ -71,6 +71,10 @@ const labels = {
 
 
     PromoteBaseUser: 'Mark As Team Leader',
+    
+    Submit:'Submit',
+    Delete:'Delete',
+    Approve:'Approve',
 
 };
 export { labels }

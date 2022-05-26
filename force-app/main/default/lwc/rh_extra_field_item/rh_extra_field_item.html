@@ -1,12 +1,12 @@
 <template>
     <lightning-layout multiple-rows>
-        <lightning-layout-item size="12" class="" padding="vertical-small" small-device-size="10" medium-device-size="10" large-device-size="10" >
+        <lightning-layout-item size="12" class="" padding="vertical-small" small-device-size="12" medium-device-size="10" large-device-size="10" >
             <c-rh_dynamic_form inputs-items={champs}></c-rh_dynamic_form>
         </lightning-layout-item>
-        <lightning-layout-item size="12" class="slds-m-top_large slds-p-top_large" padding="around-small" small-device-size="2" medium-device-size="2" large-device-size="2">
+        <lightning-layout-item size="12" class="slds-m-top_large slds-p-top_large slds-text-align_center" padding="around-small" small-device-size="12" medium-device-size="12" large-device-size="2">
             <lightning-button-group class="slds-p-top_small">
-                <lightning-button  icon-name="utility:close" variant="destructive" data-name="delete"  onclick={handledelte} ></lightning-button>
-                <lightning-button   icon-name="utility:check" variant="success" data-name="save" onclick={handlesave}></lightning-button>
+                <lightning-button  icon-name="utility:close" variant="brand-outline" data-name="delete"  onclick={handledelte} ></lightning-button>
+                <lightning-button   icon-name="utility:check" variant="brand-outline" data-name="save" onclick={handlesave}></lightning-button>
             </lightning-button-group>
         </lightning-layout-item>
     </lightning-layout>

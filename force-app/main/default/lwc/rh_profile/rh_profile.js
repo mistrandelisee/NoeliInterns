@@ -4,7 +4,7 @@ import UpdateInfo from '@salesforce/apex/RH_Profile_controller.UpdateInfo';
 import changeMyPassword from '@salesforce/apex/RH_Profile_controller.changeMyPassword';
 import getpickListValue from '@salesforce/apex/RH_Utility.getpickListValue';
 import UpdateExtraInfo from '@salesforce/apex/RH_Profile_controller.UpdateExtraInfo';
-import { CurrentPageReference } from 'lightning/navigation';
+import { CurrentPageReference ,NavigationMixin} from 'lightning/navigation';
 import { registerListener, unregisterAllListeners,fireEvent } from 'c/pubsub';
 
 import { labels } from 'c/rh_label';
@@ -12,6 +12,7 @@ import { labels } from 'c/rh_label';
 const EDIT_ACTION='Edit';
 const VIEW_ACTION='View';
 const SAVE_ACTION='Save';
+const LINK_ACTION='GOTO';
 
 
 const RESET_ACTION='Reset';
@@ -23,9 +24,10 @@ const ERROR_VARIANT='error';
 const FROMINFO='USER-INFO';
 
 const FROMRESETPWD='ResetPWD';
-export default class Rh_profile extends LightningElement {
+export default class Rh_profile extends NavigationMixin(LightningElement) {
     //extra='[{name:\'\', value:\'\'}]'
-    l={...labels}
+    l={...labels,
+    Group:'Group',Supervisor:'Supervisor',}
     //user-info
     profileinformation = {};
     formPersonanalDetails=[];
@@ -51,7 +53,8 @@ export default class Rh_profile extends LightningElement {
             }else{
 
                 debugger;
-                console.log('profile ' +JSON.stringify(result));
+                console.log('profile ');
+                console.log(result);
                 this.profileinformation = result;
                 this.recordId=this.profileinformation?.contact?.Id;
                 this.buildExtraField(this.profileinformation?.contact?.RH_Extra_Infos__c || '[]');
@@ -72,7 +75,7 @@ export default class Rh_profile extends LightningElement {
         console.log('data >>',data,' \nFORM ',data?.from);
         switch (data?.from) {
             case FROMINFO:
-                this.UpdateUserInfo(data);
+                this.handleUserInfoActions(data);
                 break;
             case FROMRESETPWD:
                 this.ChangePassword(data);
@@ -83,12 +86,49 @@ export default class Rh_profile extends LightningElement {
         }
         
     }
-    UpdateUserInfo(evt){
-        const data={...evt.data,recordId:this.profileinformation?.contact?.Id};
-
-        if(evt.action==SAVE_ACTION)
-            this.callUpdateInfoApex(data);
+    handleGoToLink(data){
+        console.log(`handleGoToLink data `, JSON.stringify(data));
+        this.startSpinner(false);
+        switch (data?.eltName) {
+            case 'Supervisor':
+                this.goToPage('rhusers',{recordId:data?.recordId})
+                break;
+            case 'Group':
+                this.goToPage('rhgroup',{recordId:data?.recordId})
+                break;
+        
+            default:
+                break;
+        }
+        // if (data?.action=='goToLink') {
+        //     if (data?.eltName=='Owner') {
+        //         this.goToPage('rhusers',{recordId:data?.info?.dataId})
+        //     }
+        // }
     }
+    goToPage(pagenname,statesx={}) {
+        let states=statesx; //event.currentTarget.dataset.id , is the recordId of the request
+        
+        this[NavigationMixin.Navigate]({
+            type : 'comm__namedPage',
+            attributes : {
+                pageName : pagenname
+            },
+            state: states
+        });
+    }
+    handleUserInfoActions(evt){
+        
+
+        if(evt.action==SAVE_ACTION){
+            const data={...evt.data,recordId:this.profileinformation?.contact?.Id};
+            this.callUpdateInfoApex(data);
+
+        }else if(evt.action==LINK_ACTION){
+            this.handleGoToLink(evt.data)
+        }
+    }
+
     callUpdateInfoApex(info){
         
         console.log(`@@@@@ callUpdateInfoApex >>> Input : `,info);
@@ -267,6 +307,23 @@ export default class Rh_profile extends LightningElement {
                 label:this.l.Role,
                 name:'Role',
                 value:this.profileinformation?.contact?.RH_Role__c
+            },
+            //Group Supervisor
+            {
+                label:this.l.Group,
+                name:'Group',
+                value:this.profileinformation?.myGroup?.Name,
+                type:'Link',
+                class:'Link',
+                dataId:this.profileinformation?.myGroup?.Id
+            },
+            {
+                label:this.l.Supervisor,
+                name:'Supervisor',
+                value:this.profileinformation?.myTeamLeader?.Name,
+                type:'Link',
+                class:'Link',
+                dataId:this.profileinformation?.myTeamLeader?.RH_User__c || this.profileinformation?.myTeamLeader?.Id//choose first user id not the contact id
             },
             
             {

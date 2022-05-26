@@ -104,7 +104,7 @@ hasAction;
     get hideView(){  return this.action=='' || this.action!=NEW_ACTION; }
     get hasDetailsActions(){ return this.detailsActions?.length >0}
     get hasEmployeeInfo(){  return this.contactrecord?true:false; }
-    get isAdmin() { return this.currUser?.isCEO || this.currUser?.isTLeader}
+    get isAdmin() { return this.currUser?.isCEO || this.currUser?.isRHUser}
     get hascontact(){ return this.listcontact.length >0; }
     get hasrecordid(){ return this.recordId?true:false; }
     editContactMode=false;

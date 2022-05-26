@@ -26,6 +26,7 @@ public  class RH_Profile_controller {
             mapReturn.put('contact', userContact);
             mapReturn.put('account', userContact.Account);
             mapReturn.put('myGroup', userContact.RH_WorkGroup__r);
+            mapReturn.put('myTeamLeader', userContact.RH_WorkGroup__r.RH_Team_Leader__r);
             mapReturn.put('myLeadedGroups', userContact.WorkGroups_Leader__r);
             }
         catch(RH_ControllerException ce) {

@@ -1,0 +1,16 @@
+<aura:component implements="forceCommunity:profileMenuInterface" access="global" controller="rh_mainController">
+    <aura:attribute name="options" type="Object[]" default="[]"/>
+    <aura:attribute name="Username" type="String" description="user nick name" default="" />
+    <aura:handler name="init" value="{!this}" action="{!c.onInit}" />
+    <div class="container-menu slds-p-left_small">
+        <lightning:avatar variant="circle" size="x-small" src="" fallbackIconName="standard:user" alternativeText="Account User"/>
+        <lightning:buttonMenu menuAlignment="bottom-righ" alternativeText="Profile Menu" variant="container" label="{!v.Username}" title="{!v.Username}" onselect="{! c.handleMenuSelect }">
+            <aura:iteration items="{!v.options}" var="item">
+                <lightning:menuItem value="{!item.value}" label="{!item.label}" prefixIconName="{!item.icon}" />
+            </aura:iteration>        
+        </lightning:buttonMenu>
+    </div>
+
+    <!-- Implement the navigation service. -->
+    <lightning:navigation aura:id="navService"/>
+</aura:component>

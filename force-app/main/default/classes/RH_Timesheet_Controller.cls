@@ -110,9 +110,9 @@ public without sharing class RH_Timesheet_Controller {
                 throw new RH_ControllerException('002','No Timsheet founded with this ID'+timesheetId);
             }
             TimeSheet theTimeSheet=TimeSheets[0];
-            String userId=theTimeSheet.OwnerId;
+            String OwnerId=theTimeSheet.OwnerId;
             mapReturn.put('TimeSheet',TimeSheets[0]); 
-            mapReturn.put('isMine',myUserId.equalsIgnoreCase(userId));
+            mapReturn.put('isMine',myUserId.equalsIgnoreCase(OwnerId));
             mapReturn.putAll(RH_Utility.checkRole()); 
             // mapReturn.putAll(RH_Utility.checkRole()); 
             mapReturn.put('Ok',true); 

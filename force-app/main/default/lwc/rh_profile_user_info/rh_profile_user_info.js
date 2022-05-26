@@ -2,6 +2,7 @@ import { api, LightningElement } from 'lwc';
 import { labels } from 'c/rh_label';
 const EDIT_ACTION='Edit';
 const SAVE_ACTION='Save';
+const LINK_ACTION='GOTO';
 const FROMINFO='USER-INFO';
 export default class Rh_profile_user_info extends LightningElement {
     l={...labels};
@@ -16,7 +17,18 @@ export default class Rh_profile_user_info extends LightningElement {
     action;
     actionAvailable=[];
     handleAction(event){
-        this.action=event.detail.action;
+        
+        const data=event.detail;
+        console.log(`data ?? `, JSON.stringify(data));
+        if (data?.action=='goToLink') {
+                const record={
+                    eltName:data?.eltName,//is the link name
+                    recordId:data?.info?.dataId// recordid bind to his link
+                };
+                this.callParent(LINK_ACTION,record)
+        }else{
+            this.action=event.detail.action;
+        }
     }
     get editMode(){
         return this.action==EDIT_ACTION;

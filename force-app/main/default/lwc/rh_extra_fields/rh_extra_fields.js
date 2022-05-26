@@ -107,11 +107,11 @@ export default class Rh_extra_fields extends LightningElement {
             tab.push( {
                 keyx:key,
                 fields:[{ label:'Field Label',placeholder:'..label',name:'Label',value: elt.Label,required:true,
-                            ly_md:'6', ly_lg:'6', variant:'label-hidden',isText:true
+                            ly_md:'12',ly_xs:'12', ly_lg:'6', variant:'label-hidden',isText:true
                         },
                         {
                             label:'Field Value', placeholder:'..value',name:'Value',value: elt.Value,
-                            required:true,ly_md:'6',  ly_lg:'6', variant:'label-hidden',isText:true
+                            required:true,ly_md:'12',ly_xs:'12',  ly_lg:'6', variant:'label-hidden',isText:true
                         }
                 
                 ]

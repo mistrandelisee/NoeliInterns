@@ -57,12 +57,16 @@
     --slds-c-icon-color-background: var(--secondaryColor);
     --sds-c-icon-color-background: var(--secondaryColor);
 }
-.active{
+.active , .Activated{
     --lwc-cardColorBorder: var(--secondaryColor);
 }
 
-.banned{
+.banned, .Desactived{
     --lwc-cardColorBorder: var(--bannedColor);
+}
+.greened{
+    /*Y'a deja une classe de Activated*/
+    --lwc-cardColorBorder: var(--greenedColor);
 }
 .frozen{
     --lwc-cardColorBorder: var(--frozenColor);

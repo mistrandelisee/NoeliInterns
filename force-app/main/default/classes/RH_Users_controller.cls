@@ -185,6 +185,7 @@ public without sharing class RH_Users_controller {
             mapReturn.put('error',true);
             mapReturn.put('msg',e.getMessage());
             mapReturn.put('e',e);
+            mapReturn.put('es',e.getStackTraceString());
         }  
         return mapReturn;
     }

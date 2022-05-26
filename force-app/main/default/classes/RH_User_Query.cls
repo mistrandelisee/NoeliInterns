@@ -16,7 +16,7 @@ public  class RH_User_Query {
     }
 
     public List<User> getUserById(String userId) {
-        return [SELECT id,Name,Username,RH_ContactId__c FROM User WHERE Id=: userId AND isActive= True];
+        return [SELECT id,Name,Username,RH_ContactId__c,CommunityNickname FROM User WHERE Id=: userId AND isActive= True];
     }
     public List<User> getUser(){
         return [SELECT id, Name, Username,RH_ContactId__c FROM User WHERE Profile.Name= :PROFILENAME AND isActive= True];

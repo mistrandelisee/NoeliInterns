@@ -32,12 +32,7 @@ const DRAFT_STATUS='nuovo';
 const DELETE_ACTION='Delete';
 const SUBMIT_ACTION='inviato';
 export default class Rh_timesheet extends NavigationMixin(LightningElement) {
-    l={...labels,
-        Submit:'Submit',
-        Delete:'Delete',
-        Approve:'Approve',
-    
-    }
+    l={...labels,  }
     @track groups=[];
     @track timeSheets = [];
     recordId;

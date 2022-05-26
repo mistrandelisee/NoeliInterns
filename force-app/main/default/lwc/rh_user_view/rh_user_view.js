@@ -81,7 +81,7 @@ hasAction;
     
     get hasDetailsActions(){ return this.detailsActions?.length >0}
     get hasEmployeeInfo(){  return this.contactrecord?true:false; }
-    get isAdmin() { return this.currUser?.isCEO || this.currUser?.isTLeader}
+    get isAdmin() { return this.currUser?.isCEO || this.currUser?.isRHUser}
     get hasrecordid(){ return this.recordId?true:false; }
     get userProjects(){ 
         if (this.contactrecord?.Projects__r?.length>0) {
@@ -143,6 +143,7 @@ hasAction;
                 break;
         }
         this.ShowModal(false,null,[]);//close modal any way
+        event.preventDefault();
     }
     actionRecord={};
     handleUserAction(record,from=''){ 

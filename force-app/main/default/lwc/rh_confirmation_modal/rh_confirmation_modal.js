@@ -28,11 +28,13 @@ export default class Rh_confirmation_modal extends LightningElement {
     handleFooterActions(event){
         console.log('handleDetailsActions :', event.detail.action);
         const action=event.detail.action;
+        event.preventDefault();
         fireEvent(this.pageRef, 'ModalAction', {action});
     }
     
     cancelRequest(event){
         const action = event.currentTarget.dataset.actionName;
+        event.preventDefault();
         fireEvent(this.pageRef, 'ModalAction', {action});
     }
 }

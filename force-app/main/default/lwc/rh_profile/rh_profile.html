@@ -1,40 +1,42 @@
 <template>
     <!-- <c-rh_profile_actions></c-rh_profile_actions> -->
-    <div class="slds-p-around_medium profile_user_info">
-        <c-rh_profile_user_info 
-        title={l.UserProfileTitle}
-        onaction={handleAction} 
-        field-inputs={formPersonanalInputDetails} 
-        field-outputs={formPersonanalDetails}
-        action={infoAction}
-        ></c-rh_profile_user_info>
-    </div>
-    <div class="slds-p-around_medium extra_info">
-        <!-- <pre>
-            -- Extra JSON cmp goes here --
-        </pre> -->
-        <c-rh_extra_fields json-field={jsonInfo} onaction={UpdateExtraInfo} hasaction="true"></c-rh_extra_fields>
-            <!-- <c-rh_extra-fields onextrafield={UpdateExtraInfo}></c-rh_extra-fields> -->
-       
-       
-    
-    </div>
-    <div class="slds-p-around_medium profile_reset_password ">
-        <c-rh_profile_reset_password title={l.ChangePasswordTitle} onaction={handleAction} ></c-rh_profile_reset_password>
-    </div>
-    <div class="slds-p-around_medium account">
-        <c-rh_display_fields title={l.AccountInfoTitle} iconsrc="standard:account" column="3" output-fields={accountFields} ></c-rh_display_fields>
-    </div>
-    <div class="slds-p-around_medium extra_info">
-        <!-- <pre>
-            -- Extra JSON cmp goes here --
-        </pre> -->
-        
-            
-       
-       
-    
-    </div>
+    <lightning-layout multiple-rows>
+        <lightning-layout-item size="12" padding="around-smallx" 
+        small-device-size="12" medium-device-size="12" large-device-size="12">
+            <div class="custom-box">
+                <div class="slds-p-around_medium profile_reset_password ">
+                    <c-rh_profile_reset_password title={l.ChangePasswordTitle} onaction={handleAction} ></c-rh_profile_reset_password>
+                </div>
+                
+           </div>
+        </lightning-layout-item>
+        <lightning-layout-item size="12" padding="around-smallx" 
+        small-device-size="12" medium-device-size="6" large-device-size="3">
+            <div class="custom-box">
+                <div class="slds-p-around_medium account">
+                    <c-rh_display_fields title={l.AccountInfoTitle} iconsrc="standard:account" column="3" output-fields={accountFields} ></c-rh_display_fields>
+                </div>
+           </div>
+        </lightning-layout-item>
+        <lightning-layout-item size="12" padding="around-smallx" 
+        small-device-size="12" medium-device-size="6" large-device-size="9">
+            <div class="custom-box">
+                <div class="slds-p-around_medium profile_user_info">
+                    <c-rh_profile_user_info 
+                    title={l.UserProfileTitle}
+                    onaction={handleAction} 
+                    field-inputs={formPersonanalInputDetails} 
+                    field-outputs={formPersonanalDetails}
+                    action={infoAction}
+                    ></c-rh_profile_user_info>
+                </div>
+                <div class="slds-p-around_medium extra_info">
+                    <c-rh_extra_fields json-field={jsonInfo} onaction={UpdateExtraInfo} hasaction="true"></c-rh_extra_fields>
+                </div>
+
+           </div>
+        </lightning-layout-item>
+    </lightning-layout>
     
     
 
