@@ -83,26 +83,8 @@
             </template>
 
             <template if:true={isUser}>
-                <lightning-layout-item size="12" padding="around-smallx" small-device-size="6" medium-device-size="6" large-device-size="3">
-                    <div class="custom-box">
-                        <!-- user extraField section -->
-                       <div class="slds-p-around_medium extra_info">
-                           <!-- cssClass 
-                           header-icon -->
-                           <c-rh_list 
-                           css-class="slds-has-dividers_bottom slds-has-block-links_space slds-p-horizontal_medium"
-                           header-title="Projects"
-                            key-id="Id"
-                            key-value="Name"
-                            records={userProjects}
-                            onaction={goToProject}
-                           ></c-rh_list>
-                       </div>
-                    </div>
-                </lightning-layout-item>
 
-            </template>
-            <template if:true={isUser}>
+
                 <lightning-layout-item size="12" padding="around-smallx" small-device-size="6" medium-device-size="6" large-device-size="3">
                     <div class="custom-box">
                         <!-- user extraField section -->
@@ -110,9 +92,12 @@
                            <!-- cssClass 
                            header-icon -->
                            <c-rh_list 
-                            css-class="slds-has-dividers_bottom slds-has-block-links_space slds-p-horizontal_medium"
-                            header-title="TimeSheets"
+                            css-class="list-bordered list-centered min-h_10 list-hover_underline slds-has-dividers_bottom slds-has-block-links_space slds-p-horizontal_medium"
+                            header-title={TimeSheetsTitle}
                             key-id="Id"
+                            css-style="max-height:40vh;overflow-y:auto"
+                            header-icon={icon.timesheet}
+        
                             key-value="TimeSheetNumber"
                             records={timeSheets}
                             onaction={goToTimsheet}
@@ -120,7 +105,63 @@
                        </div>
                     </div>
                 </lightning-layout-item>
-
+                <lightning-layout-item size="12" padding="around-smallx" small-device-size="6" medium-device-size="6" large-device-size="3">
+                    <div class="custom-box">
+                        <!-- user extraField section -->
+                       <div class="slds-p-around_medium extra_info">
+                           <!-- cssClass 
+                           header-icon -->
+                           <c-rh_list 
+                            css-class="list-bordered list-centered min-h_10 list-hover_underline slds-has-dividers_bottom slds-has-block-links_space slds-p-horizontal_medium"
+                            header-title={LeadedGroupTitle}
+                            key-id="Id"
+                            css-style="max-height:40vh;overflow-y:auto"
+                            header-icon={icon.group}
+                            key-value="Name"
+                            records={leadedGroups}
+                            onaction={goToGroup}
+                           ></c-rh_list>
+                       </div>
+                    </div>
+                </lightning-layout-item>
+                <lightning-layout-item size="12" padding="around-smallx" small-device-size="6" medium-device-size="6" large-device-size="3">
+                    <div class="custom-box">
+                        <!-- user extraField section -->
+                       <div class="slds-p-around_medium extra_info">
+                           <!-- cssClass 
+                           header-icon -->
+                           <c-rh_list 
+                           css-class="list-bordered list-centered min-h_10 list-hover_underline slds-has-dividers_bottom slds-has-block-links_space slds-p-horizontal_medium"
+                           header-title={projectTitle}
+                            key-id="Id"
+                            css-style="max-height:40vh;overflow-y:auto"
+                            header-icon={icon.project}
+                            key-value="Name"
+                            records={userProjects}
+                            onaction={goToProject}
+                           ></c-rh_list>
+                       </div>
+                    </div>
+                </lightning-layout-item>
+                <lightning-layout-item size="12" padding="around-smallx" small-device-size="6" medium-device-size="6" large-device-size="3">
+                    <div class="custom-box">
+                        <!-- user extraField section -->
+                       <div class="slds-p-around_medium extra_info">
+                           <!-- cssClass 
+                           header-icon -->
+                           <c-rh_list 
+                           css-class="list-bordered list-centered min-h_10 list-hover_underline slds-has-dividers_bottom slds-has-block-links_space slds-p-horizontal_medium"
+                           header-title={LeadedProjectTitle}
+                            key-id="Id"
+                            css-style="max-height:40vh;overflow-y:auto"
+                            header-icon={icon.project}
+                            key-value="Name"
+                            records={leadedProjects}
+                            onaction={goToProject}
+                           ></c-rh_list>
+                       </div>
+                    </div>
+                </lightning-layout-item>
             </template>
             
         </lightning-layout>

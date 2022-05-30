@@ -8,6 +8,7 @@ import { CurrentPageReference ,NavigationMixin} from 'lightning/navigation';
 import { registerListener, unregisterAllListeners,fireEvent } from 'c/pubsub';
 
 import { labels } from 'c/rh_label';
+import { icons } from 'c/rh_icons';
 //Constants
 const EDIT_ACTION='Edit';
 const VIEW_ACTION='View';
@@ -24,10 +25,19 @@ const ERROR_VARIANT='error';
 const FROMINFO='USER-INFO';
 
 const FROMRESETPWD='ResetPWD';
+const KEY_NB='#NB';
 export default class Rh_profile extends NavigationMixin(LightningElement) {
     //extra='[{name:\'\', value:\'\'}]'
     l={...labels,
-    Group:'Group',Supervisor:'Supervisor',}
+    Group:'Group',Supervisor:'Supervisor',
+    myprojects:'My Projects (#NB)',
+    mytimesheets:'My Timesheets (#NB)',
+    myleadedGroups:'My Leaded Groups (#NB)',
+    myleadedProjects:'My Leaded Projects (#NB)',
+};
+icon ={...icons}
+
+
     //user-info
     profileinformation = {};
     formPersonanalDetails=[];
@@ -43,6 +53,30 @@ export default class Rh_profile extends NavigationMixin(LightningElement) {
     @wire(CurrentPageReference) pageRef;
     connectedCallback(){
         this.getProfile();
+    }
+    get hasTimeSheets(){
+        return this.timeSheets.length > 0;
+    }
+    get hasLeadedGroups(){
+        return this.leadedGroups.length > 0;
+    }
+    get timeSheets(){
+        return this.profileinformation?.contact?.RH_TimeSheets__r || [];
+    }
+    get leadedGroups(){
+        return this.profileinformation?.myLeadedGroups || [];
+    }
+    get leadedProjects(){
+        return this.profileinformation?.contact?.Projects_Leaded__r || [];
+    }
+    get myprojectTitle(){ return this.generatedTitle(this.l.myprojects,this.userProjects)}
+    get myTimeSheetsTitle(){ return this.generatedTitle(this.l.mytimesheets,this.timeSheets)}
+    get myLeadedGroupTitle(){ return this.generatedTitle(this.l.myleadedGroups,this.leadedGroups)}
+    get myLeadedProjectTitle(){ return this.generatedTitle(this.l.myleadedProjects,this.leadedProjects)}
+    get userProjects(){ 
+        if (this.profileinformation?.Projects__r?.length>0) {
+         return this.profileinformation?.Projects__r.map(record=>record.RH_Project__r)   
+        }else return [];
     }
     getProfile() {
         this.startSpinner(true);
@@ -105,6 +139,27 @@ export default class Rh_profile extends NavigationMixin(LightningElement) {
         //         this.goToPage('rhusers',{recordId:data?.info?.dataId})
         //     }
         // }
+    }
+    goToTimsheet(event){
+        if(event.detail.action=='Item'){
+            const data=event.detail.data;
+            console.log(data);
+            this.goToPage('rhtimesheet',{'recordId': data.key})
+        }
+    }
+    goToGroup(event){
+        if(event.detail.action=='Item'){
+            const data=event.detail.data;
+            console.log(data);
+            this.goToPage('rhgroup',{'recordId': data.key})
+        }
+    }
+    goToProject(event){
+        if(event.detail.action=='Item'){
+            const data=event.detail.data;
+            console.log(data);
+            this.goToPage('rhproject',{'recordId': data.key})
+        }
     }
     goToPage(pagenname,statesx={}) {
         let states=statesx; //event.currentTarget.dataset.id , is the recordId of the request
@@ -365,6 +420,7 @@ export default class Rh_profile extends NavigationMixin(LightningElement) {
                 value:this.profileinformation?.contact?.LastName,
                 required:true,
                 ly_md:'6', 
+                ly_xs:'12', 
                 ly_lg:'6'
             },
             {
@@ -374,6 +430,7 @@ export default class Rh_profile extends NavigationMixin(LightningElement) {
                 value:this.profileinformation?.contact?.FirstName,
                 required:false,
                 ly_md:'6', 
+                ly_xs:'12', 
                 ly_lg:'6'
             },
             {
@@ -384,8 +441,20 @@ export default class Rh_profile extends NavigationMixin(LightningElement) {
                 placeholder:this.l.EmailPlc,
                 maxlength:255,
                 type:'email',
-                ly_md:'12', 
-                ly_lg:'12'
+                ly_md:'6', 
+                ly_xs:'12', 
+                ly_lg:'6'
+            },
+            {
+                label:this.l.Birthday,
+                placeholder:this.l.BirthdayPlc,
+                name:'Birthday',
+                type:'date',
+                required:true,
+                value:this.profileinformation?.contact?.Birthdate,
+                ly_md:'6', 
+                ly_xs:'12', 
+                ly_lg:'6'
             },
             /*{
                 label:this.l.Role,
@@ -394,6 +463,7 @@ export default class Rh_profile extends NavigationMixin(LightningElement) {
                 value:this.profileinformation?.contact?.RH_Role__c,
                 readOnly:true,
                 ly_md:'12', 
+                ly_xs:'12', 
                 ly_lg:'12'
             },*/
             
@@ -405,6 +475,7 @@ export default class Rh_profile extends NavigationMixin(LightningElement) {
                 required:true,
                 value:this.profileinformation?.contact?.Phone,
                 ly_md:'6', 
+                ly_xs:'12', 
                 ly_lg:'6'
             },
 
@@ -416,6 +487,7 @@ export default class Rh_profile extends NavigationMixin(LightningElement) {
                 required:true,
                 value:this.profileinformation?.user?.Username,
                 ly_md:'6', 
+                ly_xs:'12', 
                 ly_lg:'6'
             },*/
             {
@@ -425,16 +497,7 @@ export default class Rh_profile extends NavigationMixin(LightningElement) {
                 type:'address',
                 value:this.profileinformation?.contact?.OtherAddress,
                 ly_md:'6', 
-                ly_lg:'6'
-            },
-            {
-                label:this.l.Birthday,
-                placeholder:this.l.BirthdayPlc,
-                name:'Birthday',
-                type:'date',
-                required:true,
-                value:this.profileinformation?.contact?.Birthdate,
-                ly_md:'6', 
+                ly_xs:'12', 
                 ly_lg:'6'
             },
             {
@@ -446,6 +509,7 @@ export default class Rh_profile extends NavigationMixin(LightningElement) {
                 maxlength:25000,
                 type:'textarea',
                 ly_md:'12', 
+                ly_xs:'12', 
                 ly_lg:'12'
             }
         
@@ -490,10 +554,8 @@ export default class Rh_profile extends NavigationMixin(LightningElement) {
             {
                 label:this.l.Description,
                 name:'Description',
-                value:this.profileinformation?.account?.About
+                value:this.profileinformation?.account?.Description
             }
-
-         
         
         ];
     }
@@ -509,7 +571,13 @@ export default class Rh_profile extends NavigationMixin(LightningElement) {
         toast?.showToast(variant, title, message);*/
         fireEvent(this.pageRef, 'Toast', {variant, title, message});
     }
-
+    generatedTitle(title,records){
+        let output =title || '';
+        if (records) {
+            output= title.replace(KEY_NB,records.length);
+        }
+        return output;
+    }
 
 
 /*LastName

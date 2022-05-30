@@ -4,7 +4,7 @@
         <lightning-layout-item size="12" padding="around-smallx" 
         small-device-size="12" medium-device-size="12" large-device-size="12">
             <div class="custom-box">
-                <div class="slds-p-around_medium profile_reset_password ">
+                <div class="slds-p-horizontal_small profile_reset_password ">
                     <c-rh_profile_reset_password title={l.ChangePasswordTitle} onaction={handleAction} ></c-rh_profile_reset_password>
                 </div>
                 
@@ -13,15 +13,15 @@
         <lightning-layout-item size="12" padding="around-smallx" 
         small-device-size="12" medium-device-size="6" large-device-size="3">
             <div class="custom-box">
-                <div class="slds-p-around_medium account">
-                    <c-rh_display_fields title={l.AccountInfoTitle} iconsrc="standard:account" column="3" output-fields={accountFields} ></c-rh_display_fields>
+                <div class="slds-p-around_small account">
+                    <c-rh_display_fields title={l.AccountInfoTitle} iconsrc={icon.organization} column="3" output-fields={accountFields} ></c-rh_display_fields>
                 </div>
            </div>
         </lightning-layout-item>
         <lightning-layout-item size="12" padding="around-smallx" 
         small-device-size="12" medium-device-size="6" large-device-size="9">
             <div class="custom-box">
-                <div class="slds-p-around_medium profile_user_info">
+                <div class="slds-p-around_small profile_user_info">
                     <c-rh_profile_user_info 
                     title={l.UserProfileTitle}
                     onaction={handleAction} 
@@ -30,11 +30,88 @@
                     action={infoAction}
                     ></c-rh_profile_user_info>
                 </div>
-                <div class="slds-p-around_medium extra_info">
+                <div class="slds-p-horizontal_small extra_info">
                     <c-rh_extra_fields json-field={jsonInfo} onaction={UpdateExtraInfo} hasaction="true"></c-rh_extra_fields>
                 </div>
 
            </div>
+        </lightning-layout-item>
+        <lightning-layout-item size="12" padding="around-smallx" small-device-size="6" medium-device-size="6" large-device-size="3">
+            <div class="custom-box">
+                <!-- user extraField section -->
+               <div class="slds-p-around_medium extra_info">
+                   <!-- cssClass 
+                   header-icon -->
+                   <c-rh_list 
+                    css-class="list-bordered list-centered min-h_10 list-hover_underline slds-has-dividers_bottom slds-has-block-links_space slds-p-horizontal_medium"
+                    header-title={myTimeSheetsTitle}
+                    key-id="Id"
+                    css-style="max-height:40vh;overflow-y:auto"
+                    header-icon={icon.timesheet}
+
+                    key-value="TimeSheetNumber"
+                    records={timeSheets}
+                    onaction={goToTimsheet}
+                   ></c-rh_list>
+               </div>
+            </div>
+        </lightning-layout-item>
+        <lightning-layout-item size="12" padding="around-smallx" small-device-size="6" medium-device-size="6" large-device-size="3">
+            <div class="custom-box">
+                <!-- user extraField section -->
+               <div class="slds-p-around_medium extra_info">
+                   <!-- cssClass 
+                   header-icon -->
+                   <c-rh_list 
+                    css-class="list-bordered list-centered min-h_10 list-hover_underline slds-has-dividers_bottom slds-has-block-links_space slds-p-horizontal_medium"
+                    header-title={myLeadedGroupTitle}
+                    key-id="Id"
+                    css-style="max-height:40vh;overflow-y:auto"
+                    header-icon={icon.group}
+                    key-value="Name"
+                    records={leadedGroups}
+                    onaction={goToGroup}
+                   ></c-rh_list>
+               </div>
+            </div>
+        </lightning-layout-item>
+        <lightning-layout-item size="12" padding="around-smallx" small-device-size="6" medium-device-size="6" large-device-size="3">
+            <div class="custom-box">
+                <!-- user extraField section -->
+               <div class="slds-p-around_medium extra_info">
+                   <!-- cssClass 
+                   header-icon -->
+                   <c-rh_list 
+                   css-class="list-bordered list-centered min-h_10 list-hover_underline slds-has-dividers_bottom slds-has-block-links_space slds-p-horizontal_medium"
+                   header-title={myprojectTitle}
+                    key-id="Id"
+                    css-style="max-height:40vh;overflow-y:auto"
+                    header-icon={icon.project}
+                    key-value="Name"
+                    records={userProjects}
+                    onaction={goToProject}
+                   ></c-rh_list>
+               </div>
+            </div>
+        </lightning-layout-item>
+        <lightning-layout-item size="12" padding="around-smallx" small-device-size="6" medium-device-size="6" large-device-size="3">
+            <div class="custom-box">
+                <!-- user extraField section -->
+               <div class="slds-p-around_medium extra_info">
+                   <!-- cssClass 
+                   header-icon -->
+                   <c-rh_list 
+                   css-class="list-bordered list-centered min-h_10 list-hover_underline slds-has-dividers_bottom slds-has-block-links_space slds-p-horizontal_medium"
+                   header-title={myLeadedProjectTitle}
+                    key-id="Id"
+                    css-style="max-height:40vh;overflow-y:auto"
+                    header-icon={icon.project}
+                    key-value="Name"
+                    records={leadedProjects}
+                    onaction={goToProject}
+                   ></c-rh_list>
+               </div>
+            </div>
         </lightning-layout-item>
     </lightning-layout>
     

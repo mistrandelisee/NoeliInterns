@@ -1,0 +1,28 @@
+.listStyle li{
+    border-bottom: 1px solid blue;
+    border-radius: 12px;
+    text-align: center;
+}
+
+.listStyle li:hover{
+    text-decoration: underline;
+    font-size: 150%;
+}
+.min-h_10{
+    min-height: 10vh;
+}
+
+.list-hover_underline li:hover{
+    text-decoration: underline;
+}
+.list-bordered li{
+    border-bottom: 1px solid var(--secondaryColor,blue);
+    border-radius: 12px;
+}
+.list-centered li{
+    text-align: center;
+}
+.no-record{
+    text-align: center;
+    padding: var(--lwc-spacingXLarge);
+}

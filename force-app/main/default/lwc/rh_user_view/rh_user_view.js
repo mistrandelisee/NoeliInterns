@@ -2,6 +2,7 @@ import { api, LightningElement,track,wire } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
 
 import { labels } from 'c/rh_label';
+import { icons } from 'c/rh_icons';
 
 import getContacts from '@salesforce/apex/RH_Users_controller.getContacts';
 import getEmployeeDetails from '@salesforce/apex/RH_Users_controller.getEmployeeDetails';
@@ -41,9 +42,17 @@ const FROM_PARENT='FROM_PARENT';
 const OK_DISABLE='OK_DISABLE';
 const OK_FREEZE='OK_FREEZE';
 
+const KEY_NB='#NB';
 export default class Rh_user_view extends NavigationMixin(LightningElement) {
     
-l={...labels}
+l={...labels,
+    projects:'Projects (#NB)',
+    timesheets:'Timesheets (#NB)',
+    leadedGroups:'Leaded Groups (#NB)',
+    leadedProjects:'Leaded Projects (#NB)',
+}
+
+icon ={...icons}
 @track groups=[];
 @track roles=[];
 @api recordId;
@@ -91,6 +100,17 @@ hasAction;
     get timeSheets(){
         return this.contactrecord?.RH_TimeSheets__r || [];
     }
+    get leadedGroups(){
+        return this.contactrecord?.WorkGroups_Leader__r || [];
+    }
+    get leadedProjects(){
+        return this.contactrecord?.Projects_Leaded__r || [];
+    }
+    get projectTitle(){ return this.generatedTitle(this.l.projects,this.userProjects)}
+    get TimeSheetsTitle(){ return this.generatedTitle(this.l.timesheets,this.timeSheets)}
+    get LeadedGroupTitle(){ return this.generatedTitle(this.l.leadedGroups,this.leadedGroups)}
+    get LeadedProjectTitle(){ return this.generatedTitle(this.l.leadedProjects,this.leadedProjects)}
+    
 
     editContactMode=false;
     connectedCallback(){
@@ -798,5 +818,11 @@ hasAction;
         
         ]
     }
-
+    generatedTitle(title,records){
+        let output =title || '';
+        if (records) {
+            output= title.replace(KEY_NB,records.length);
+        }
+        return output;
+    }
 }

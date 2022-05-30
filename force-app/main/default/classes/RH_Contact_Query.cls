@@ -18,10 +18,11 @@ public  class RH_Contact_Query {
         return [SELECT Name,LastName,AccountId,toLabel(RH_Role__c) RoleLabel,RH_Started_Date__c,RH_Role__c, FirstName,RH_User__c,Email,MailingCity,Languages__c,RH_Extra_Infos__c ,RH_Number_Groups_Leaded__c,OtherAddress,Birthdate,Phone,Description,RH_Status__c,toLabel(RH_Status__c) statusLabel,
                     Account.Name,Account.NumberOfEmployees,Account.Website,Account.Phone,Account.Description,Account.YearStarted,Account.Industry,
                     RH_WorkGroup__r.Name,RH_WorkGroup__r.CreatedDate,RH_WorkGroup__r.RH_Team_Leader__r.Phone,RH_WorkGroup__r.RH_Team_Leader__c,RH_WorkGroup__r.RH_Team_Leader__r.name,RH_WorkGroup__r.RH_Team_Leader__r.RH_User__c,
-                    (SELECT Name,CreatedDate,CreatedBy.Name FROM WorkGroups_Leader__r WHERE RH_Status__c =:RH_Constans.ACTIVATED_WORKGROUP_STATUS ),
+                    (SELECT Name,CreatedDate,CreatedBy.Name FROM WorkGroups_Leader__r WHERE RH_Status__c =:RH_Constans.ACTIVATED_WORKGROUP_STATUS ORDER BY CreatedDate DESC),
                     (SELECT RH_Project__r.Name,RH_Project__r.Link__c,RH_Project__r.Start_Date__c,RH_Project__r.Description__c,RH_Project__r.End_Date__c  FROM Projects__r WHERE RH_Project__r.Status__c =:RH_Constans.ACTIVATED_PROJECT_STATUS ORDER BY CreatedDate DESC),
+                    (SELECT Name,Link__c,Start_Date__c,Description__c,End_Date__c  FROM Projects_Leaded__r WHERE Status__c =:RH_Constans.ACTIVATED_PROJECT_STATUS ORDER BY CreatedDate DESC),
                     (SELECT Id ,TimeSheetNumber FROM RH_TimeSheets__r ORDER BY CreatedDate DESC)
-                    FROM Contact WHERE Id=:contactId];
+                FROM Contact WHERE Id=:contactId];
     }
 
     public  List<Contact> getContact(List<String> listcontactId){
@@ -75,7 +76,7 @@ public  class RH_Contact_Query {
     }
     public  List<Contact> getAllContactInitial(){
         Contact currentContact = RH_Utility.getCurentContact();
-        return [SELECT Id,Name FROM Contact WHERE recordTypeId=:RH_Constans.RH_CONTACT_RT AND RH_Status__c=:RH_Constans.ACTIVATED_CONTACT_STATUS AND AccountId=:currentContact.AccountId];
+        return [SELECT Id,Name FROM Contact WHERE recordTypeId=:RH_Constans.RH_CONTACT_RT AND RH_Status__c=:RH_Constans.ACTIVATED_CONTACT_STATUS AND AccountId=:currentContact.AccountId AND RH_Role__c=:RH_Constans.CONTACT_ROLE_BU];
     }
 
     public List<Contact> getAccountId(String rh_contactId){
