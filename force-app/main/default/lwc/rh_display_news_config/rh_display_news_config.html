@@ -4,47 +4,40 @@
             <c-rh_news_creation  onaction={handleActionNew}></c-rh_news_creation>
         </template>
         <template if:true={hideView}>
+            <lightning-card  title="Banner configuration" class="slds-m-top_x-small">
+                <lightning-button label="Save" variant="brand" slot="actions" onclick={saveConfig} ></lightning-button>
+                <lightning-input type="number"  label="Set Interval" data-id="interval" value={config.interval} ></lightning-input>
+            </lightning-card>
+            <!--
             <div class="slds-border_top slds-border_bottom"  >
                 <lightning-input type="text" label="Set Interval" data-id="interval" value={config.interval} ></lightning-input>
-                <lightning-input type="text" label="Number of News To view" data-id="numberOfNews" value={config.numberOfNews}> </lightning-input>
                 <lightning-button variant="brand" label="Save" title="Save Configuration" onclick={saveConfig} class="slds-m-left_x-small"></lightning-button>
-            </div>
+            </div> 
+            -->
             <c-rh_cards_view  page-size="6" items={allNews} onrowselected={handleCardAction}></c-rh_cards_view>  
         </template>
     </template>
-    <template if:true={hasrecordid} > 
-        <template if:false={showEdit}>
-                <template if:true={hasadmin}>
-                    <div class="slds-clearfix">
-                        <lightning-button label="Back" class="slds-float_left" onclick={handleBackConfig}></lightning-button>
-                        <lightning-button label="Edit" class="slds-float_right" onclick={handleEditNews}></lightning-button>
-                        <lightning-button label="Enabled" class="slds-float_right" onclick={handleVisibility}></lightning-button>
-                    </div>
-                </template>
-        
-                <template if:true={hasNews}>
-                    <div class="slds-p-around_medium profile_user_info">
-                        <c-rh_display_fields 
-                        title="News  Details"
-                        iconsrc="standard:news"
-                        column="2"
-                        output-fields={newsInputDetails}
-                        ></c-rh_display_fields>
-                    </div>
-                </template>
+    <template if:true={hasrecordid} >
+        <template if:true={hasNews}>
+            <c-rh_actions  onaction={handleDetailsActions} action-available={detailsActions}></c-rh_actions>
+            <div class="slds-p-around_medium profile_user_info">
+                <c-rh_display_fields 
+                title="News  Details"
+                iconsrc="standard:news"
+                column="2"
+                output-fields={newsInputDetails}
+                onaction={handlePreview}
+                ></c-rh_display_fields>
+            </div>
+            <template if:true={previewFile}>
+                <c-rh_preview inputs-items={newsFileDetails} onaction={handlePreview}></c-rh_preview>
+            </template>
         </template>
-    </template>
-       
-
-    <template if:true={showEdit}>
-        <div class="slds-clearfix">
-            <lightning-button label="Back" class="slds-float_left" onclick={displayDetail}></lightning-button>
-        </div>
-        <div class="slds-var-m-vertical_medium">
-            <c-rh_dynamic_form inputs-items={newsInputDetails}></c-rh_dynamic_form>
-        </div>
-        <div class="slds-clearfix">
-            <lightning-button label="Save" class="slds-float_right" onclick={handleSaveEdit}></lightning-button>
-        </div>
-    </template>
+        <template if:true={editNews}>
+            <div class="slds-p-around_medium ">
+                <c-rh_dynamic_form inputs-items={newsEditDetails} file-data={newFileData} oninputchanged={handleEditchange} ></c-rh_dynamic_form>
+                <c-rh_actions  onaction={handleDetailsActions} action-available={detailsEditActions}></c-rh_actions>
+            </div>
+        </template>
+    </template> 
 </template>

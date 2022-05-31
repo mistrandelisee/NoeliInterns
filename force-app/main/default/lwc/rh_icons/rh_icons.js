@@ -1,4 +1,3 @@
-
 const icons = {
     //ARO_Title
     Edit: 'utility:edit',

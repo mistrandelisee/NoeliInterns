@@ -3,18 +3,15 @@
 
     <lightning-card class="custom-card">
         <h3 slot="title">
-            <lightning-icon icon-name={headerIcon} size="small" class="slds-m-right_small"></lightning-icon>
+            <lightning-icon icon-name={headerIcon} size="small" class="slds-p-right_small"></lightning-icon>
             {headerTitle}
         </h3>
-        <ul class={listClass} style={cssStyle}>
+        <ul class={listClass}>
             <template if:true={items} for:each={items} for:item="item" for:index="index">
                <li class="slds-item" key={item.key} >
                     
                     <a  data-name={item.key} data-type="Item" onclick={goToLink}>{item.value}</a>
                </li>
-            </template>
-            <template if:false={hasRecords}>
-                <p class="no-record">{noRecordsLabel}</p>
             </template>
         </ul>
         

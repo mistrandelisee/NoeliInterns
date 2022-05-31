@@ -19,7 +19,9 @@ export default class Rh_datatable_component extends LightningElement {
     get existElements(){
         return this.items && this.items.length > 0 ? true : false;
     }
-
+    get showPagination(){
+        return (this.existElements && this.items.length > this.pageSize ) ? true : false;
+    }
     get ready(){
         return this.columns?.length>0;
     }

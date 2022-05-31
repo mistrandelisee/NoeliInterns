@@ -8,7 +8,7 @@
     
     /* padding */
     --sds-c-card-spacing-inline-start: 20px;
-    --sds-c-card-spacing-block-start: 20px;
+    --sds-c-card-spacing-block-start: 5px;
     --sds-c-card-spacing-inline-end: 20px;
     --sds-c-card-spacing-block-end: 20px;
     /* header */

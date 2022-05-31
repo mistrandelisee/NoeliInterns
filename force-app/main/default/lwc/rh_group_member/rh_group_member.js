@@ -1,28 +1,66 @@
-import { LightningElement, api, track } from 'lwc';
+import { LightningElement, api, track, wire } from 'lwc';
 import getContactForGroupe from '@salesforce/apex/RH_groupController.getContactForGroupe';
 import addGroupMember from '@salesforce/apex/RH_groupController.addGroupMember';
+import activeGroupe from '@salesforce/apex/RH_groupController.activeGroupe';
+import deleteGroupe from '@salesforce/apex/RH_groupController.deleteGroupe';
+import updateGroupMember from '@salesforce/apex/RH_groupController.updateGroupMember';
+import { registerListener, unregisterAllListeners,fireEvent } from 'c/pubsub';
+import { CurrentPageReference } from 'lightning/navigation';
 
 export default class Rh_group_member extends LightningElement {
+    @wire(CurrentPageReference) pageRef;
     @track listContact=[];
     @track listContactToInsert=[];
+    @track listConts=[];
      contactId;
      contact2Id;
+     @api backSource;
      @api objGroupe;
+     @api groupeId;
+     @api contactMembers;
+     @api statusGroup;
+     statusBoutom = true;
+     listOption = [];
+     listId = [];
+
      handleBack(){
-        this.dispatchEvent(new CustomEvent('previouspage'));
-     }
+       if(this.backSource==='group_create'){
+        deleteGroupe({ id: this.groupeId })
+          .then(result => {
+            console.log('Result', result.result);
+            console.log('error then', result.error);
+          })
+          .catch(error => {
+            console.error('Error:', error);
+        });
+      }
+      this.dispatchEvent(new CustomEvent('previouspage'));  
+   }
 
     connectedCallback(){
+        registerListener('valueMember', this.dovalueMember, this);
+        console.log('backSource groupe_member --->', this.backSource);
         this.listContact=this.listContact || [];
         this.listContactToInsert=this.listContactToInsert || [];
         getContactForGroupe({ })
           .then(result => {
             console.log('Result', result);
+            console.log('groupeId ==', this.groupeId);
+            this.listOption = this.updateListContact(result.listeContact);
+            //this.listId = this.updateId(this.contactMembers);
             this.listContact =this.ccsUpdate(result.listeContact,'') ;
           })
           .catch(error => {
             console.error('Error:', error);
         });
+        console.log('contactMembers ==>', this.contactMembers);
+        this.listId = this.updateId(this.contactMembers || []) ;
+        console.log('Id contactMembers dans group member ==>', this.listId);
+
+        console.log('statusGroup dans group Member ==>', this.statusGroup);
+        if(this.statusGroup==='Activated'){
+            this.statusBoutom = false;
+        }
     }
 
     handleChangeRight(event){
@@ -67,13 +105,40 @@ export default class Rh_group_member extends LightningElement {
         });
         
     }
+    label;
+    value;
+    updateListContact (liste){
+      //  const obj = {label, value};
+        return liste.map( function(item){
+              return  {
+                label: item.Name,
+                value: item.Id,
+                }
+        });
+    }
+
+    updateId (liste){ 
+        return liste.map( function(item){
+              return item.Id
+        });
+    }
 
     handleSaveMember(){
-        addGroupMember({ liste: this.listeId(this.listContactToInsert) , id:this.objGroupe.Id}) 
+       if(this.backSource==='group_create'){
+          this.hgroupMember(this.listConts, this.groupeId,'false');
+       }else{
+          this.hupdateGroupMember(this.listConts,this.groupeId,'false');
+      }
+    }
+    hgroupMember(lst,id,statut){
+        addGroupMember({ liste:lst , id:id}) 
           .then(result => {
             console.log('Result', result);
-            console.log('listeId', this.listeId(this.listContactToInsert));
-            this.dispatchEvent(new CustomEvent('homegroupe'));
+            console.log('listeId', lst);
+            if(statut==='true'){
+                this.hactiveGroupe(id);
+            }
+            this.dispatchEvent(new CustomEvent('gotodetailgroup'));
           })
           .catch(error => {
             console.error('Error:', error);
@@ -84,5 +149,45 @@ export default class Rh_group_member extends LightningElement {
         return liste.map(function(e){
             return e.Id
         });
+    }
+
+    handleSaveMemberAndActive(){
+        if(this.backSource==='group_create'){
+          console.log('listconts--->:', this.listConts);
+          console.log('groupeId--->:', this.groupeId);
+          this.hgroupMember(this.listConts, this.groupeId,'true');
+        }else{
+          this.hupdateGroupMember(this.listConts,this.groupeId,'true');
+        }
+    }
+
+    hactiveGroupe(id){
+        activeGroupe({ id: id })
+          .then(result => {
+            console.log('Result', result.groupeId);
+          })
+          .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+    
+    dovalueMember(event){
+         this.listConts = event.tab;
+         console.log('list id for insert =>:', this.listConts);
+    }
+
+    hupdateGroupMember(lst,id,statut){
+      updateGroupMember({ listId: lst, id: id})
+      .then(result => {
+        console.log('Result', result.result);
+        if(statut==='true'){
+          this.hactiveGroupe(id);
+         } 
+         this.dispatchEvent(new CustomEvent('previouspage'));
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        console.error('Error:', resutl.error);
+    });
     }
 }

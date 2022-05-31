@@ -1,19 +1,50 @@
 <template>
+    <template if:true={detailGroup}>
+        <div class="slds-p-around_medium account">
+            <c-rh_display_fields title="Group detail" iconsrc="standard:team_member" column="2" 
+                output-fields={accountFields} 
+                show-header-action
+                action-available={actionAvailable}
+                onaction={handleEditGroup}>
+            </c-rh_display_fields>
+        </div> 
+    </template> 
     
-    <div class="slds-p-around_medium account">
-        <c-rh_display_fields title="Group detail" iconsrc="standard:team_member" column="2" output-fields={accountFields} ></c-rh_display_fields>
-    </div>  
-
-    <div class="slds-page-header slds-page-header_record-home slds-var-m-vertical_medium slds-clearfix">
+    <template if:true={statusEditGroup}>
+        <c-rh_group_create
+        new-group='Edit group'
+        obj-groupe={groupe}
+        groupe-id={groupeId}
+        label-button='Save' 
+        logo="utility:save"
+        onbackto={handleBack}
+        ongroupmember={handleupdategroup}
+        >
+        </c-rh_group_create>
+    </template>
+    <br>
+    <!--   <div class="slds-page-header slds-page-header_record-home slds-var-m-vertical_medium slds-clearfix">
         <p class="slds-align_absolute-center lds-page-header__title slds-truncate"> Members</p>
         <lightning-button-icon icon-name="utility:edit"  alternative-text="Edit" title="Edit" onclick={handleEditMember} class="slds-float_right"></lightning-button-icon>
-    </div>
-    <div style="height: 300px;">
-        <c-rh_datatable_component 
-            columns={columns} 
-            items={data}
-            statut-row-number
-            resize-column>
-         </c-rh_datatable_component>
-    </div>
+    </div> -->
+    <lightning-card >
+         <h1 slot="title" class="groupLabel">Group Members</h1> 
+        <lightning-button variant="base" label="Edit" slot="actions" 
+            title="Download action with base variant" icon-name="utility:edit" 
+            class="slds-m-left_x-small" onclick={handleEditMember}>
+        </lightning-button>
+        <div style="height: 300px;">
+            <c-rh_datatable_component 
+                columns={columns} 
+                items={data}
+                page-size="5"
+                statut-row-number
+                resize-column>
+             </c-rh_datatable_component>
+        </div>
+    </lightning-card>
+
+    
+    
+    <c-rh_back_buttom title="Back to Groups"  ></c-rh_back_buttom>
 </template>

@@ -19,7 +19,7 @@
                 <div class="custom-box">
                     <lightning-layout vertical-align="center" class="box slds-m-top_mediumx" multiple-rows
                         >
-                        <lightning-layout-item class="pointer slds-p-vertical_medium" size="12" small-device-size="10" medium-device-size="10" large-device-size="11"  onclick={toggleView}>
+                        <lightning-layout-item class="pointer slds-p-vertical_small" size="12" small-device-size="10" medium-device-size="10" large-device-size="11"  onclick={toggleView}>
                             <span  class="slds-p-left_small  textColor" style="font-size: 20px;">{title}</span>
                         </lightning-layout-item>
                         <lightning-layout-item size="12" class="pointer" small-device-size="2" medium-device-size="2" large-device-size="1" onclick={toggleView}>
@@ -33,7 +33,7 @@
                         </lightning-layout-item>
 
                         <template if:true={sectionExpanded}>
-                            <lightning-layout-item alignment-bump="right" size="12" padding="around-small" small-device-size="12" medium-device-size="12" large-device-size="12">
+                            <lightning-layout-item alignment-bump="right" size="12"  small-device-size="12" medium-device-size="12" large-device-size="12">
                                 <div class="slds-p-around_mediumx profile_user_info">
                                     
                                     <!-- title="Sheet Informations"

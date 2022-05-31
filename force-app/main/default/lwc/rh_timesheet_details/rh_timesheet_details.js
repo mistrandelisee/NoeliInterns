@@ -9,6 +9,9 @@ import timeSheetEntryCreation from '@salesforce/apex/RH_Timesheet_Controller.tim
 import submitTimeSheet from '@salesforce/apex/RH_Timesheet_Controller.submitTimeSheet';
 import deleteTimeSheet from '@salesforce/apex/RH_Timesheet_Controller.deleteTimeSheet';
 import deleteTimeSheetEntry from '@salesforce/apex/RH_Timesheet_Controller.deleteTimeSheetEntry';
+import generatedPDF from '@salesforce/apex/RH_Timesheet_Controller.generatedPDF';
+
+
 import { CurrentPageReference } from 'lightning/navigation';
 import { registerListener, unregisterAllListeners,fireEvent } from 'c/pubsub';
 const NEW_ACTION='New';
@@ -95,6 +98,7 @@ export default class Rh_timesheet_details extends NavigationMixin(LightningEleme
     timeSheetFields=[];
     timesheetEntries=[];
     sheetNotFounded;
+    pdfExport;
     currUser={};
     isMine=false;
     action='';
@@ -122,6 +126,7 @@ export default class Rh_timesheet_details extends NavigationMixin(LightningEleme
     get isEntryReadOnly(){
         return !(this.isMine && DRAFT_STATUS.toLowerCase() == this.record?.Status?.toLowerCase())
     }
+    get fileName(){ return this.title }
 
     get lineIcon(){ return (this.isEntryReadOnly) ?'':'utility:edit' }
     get lineTitle(){ return (this.isEntryReadOnly) ?'Line details':'Create Line'}
@@ -273,7 +278,7 @@ export default class Rh_timesheet_details extends NavigationMixin(LightningEleme
                 this.initEntryAction();
                 break;
             case EXPORT_ACTION:
-                console.log(`EXPORT_ACTION export for this record id `, this.recordId) ;
+                this.handleExportTimeSheet();
                 break;
             default:
                 console.error('Actions ',action ,' not reconized');
@@ -287,6 +292,31 @@ export default class Rh_timesheet_details extends NavigationMixin(LightningEleme
         }*/
          //   this.handleUserAction(record, FROM_PARENT);
     }
+
+    /*Generated PDF Functions*/
+    handleExportTimeSheet(){
+        debugger
+        this.startSpinner(true);
+        generatedPDF({listId:this.recordId})
+            .then(result =>{
+                console.log(result)
+                this.saveFile(result);
+                this.startSpinner(false);   
+            }).catch(error => {
+                console.error('Error:', error);
+                this.showToast(ERROR_VARIANT,'ERROR', error);
+            })
+    }
+
+    saveFile(StringBlob) {
+        var link = document.createElement('a');
+        link.innerHTML = 'Download PDF file';
+        link.download = this.fileName+'.pdf';
+        link.href = 'data:application/octet-stream;base64,' + StringBlob;
+        document.body.appendChild(link);
+        link.click();
+    }
+    /*Generated PDF Functions */
     handleDeleteTimeSheet(){
         this.startSpinner(true);
         deleteTimeSheet({ timesheetId:  this.recordId })
@@ -374,7 +404,8 @@ export default class Rh_timesheet_details extends NavigationMixin(LightningEleme
         this.toggleView();
     }
     selectedProject;
-    initEntryAction(){  
+    initEntryAction(){
+         
         this.startSpinner(true);
         const self=this;
         
@@ -385,6 +416,7 @@ export default class Rh_timesheet_details extends NavigationMixin(LightningEleme
             if (!result.error && result.Ok) {
                 this.myProjects=[];
                 this.myProjects = result.Projects?.map(function(project) { return {label:project.RH_Project__r?.Name,value:project.RH_Project__c}});
+                this.myProjects = this.myProjects.concat(result.ProjectsLeaded?.map(function(project) { return {label:project.Name,value:project.Id}}));
                 const item={...this.sheetItem};
                 item.RH_Project__c= (this.sheetItem?.RH_Project__c) ? this.sheetItem?.RH_Project__c : 
                                                                      (   this.myProjects?.length==1 ? this.myProjects[0].value : '');
@@ -540,6 +572,8 @@ export default class Rh_timesheet_details extends NavigationMixin(LightningEleme
         this.formEntry=[];
         const endTime=this.lastHours();
         const startTime=this.beginHours();
+       /* const endTimex=this.lastHoursTime();
+        const startTimex=this.beginHoursTime();*/
         this.formEntry=[
             /**
              * {
@@ -558,7 +592,8 @@ export default class Rh_timesheet_details extends NavigationMixin(LightningEleme
                 placeholder:this.l.StartDate,
                 name:'StartTime',
                 required:true,
-                value: this.sheetItem?.StartTime,
+                // value: this.sheetItem?.StartTime,
+                value:this.formatDateValue(this.sheetItem?.StartTime),
                 min: startTime,
                 max: endTime,
                 type:'Datetime',
@@ -574,7 +609,8 @@ export default class Rh_timesheet_details extends NavigationMixin(LightningEleme
                 placeholder:this.l.EndDate,
                 name:'EndTime',
                 required:true,
-                value: this.sheetItem?.EndTime,
+                // value: this.sheetItem?.EndTime,
+                value: this.formatDateValue(this.sheetItem?.EndTime),
                 min: startTime,
                 max: endTime,
                 type:'Datetime',
@@ -585,6 +621,38 @@ export default class Rh_timesheet_details extends NavigationMixin(LightningEleme
                 isText:true,//for avoid render blank field
                 readOnly:this.isEntryReadOnly
             },
+            /*{
+                label:this.l.StartDate+' x',
+                placeholder:this.l.StartDate,
+                name:'StartTimex',
+                required:true,
+                value: this.formatDateValue(this.sheetItem?.StartTime),
+                min: startTimex,
+                max: endTimex,
+                type:'Time',
+                ly_md:'6', 
+                ly_lg:'6',
+                ly_xs:'12',
+                isDatetime:true,
+                isText:true,//for avoid render blank field
+                readOnly:this.isEntryReadOnly
+            },
+            {
+                label:this.l.EndDate+' x',
+                placeholder:this.l.EndDate,
+                name:'EndTimex',
+                required:true,
+                value: this.formatDateValue(this.sheetItem?.EndTime),
+                min: startTimex,
+                max: endTimex,
+                type:'Time',
+                ly_md:'6', 
+                ly_lg:'6',
+                ly_xs:'12',
+                isDatetime:true,
+                isText:true,//for avoid render blank field
+                readOnly:this.isEntryReadOnly
+            },*/
             {
                 label:this.l.Description,
                 name:'Description',
@@ -634,19 +702,46 @@ export default class Rh_timesheet_details extends NavigationMixin(LightningEleme
         this.formEntry.unshift( projetElt );
     }
     lastHours(){
-        const d =new Date(this.record?.StartDate) || new Date();
+        const d =this.record?.StartDate ? new Date(this.record?.StartDate) : new Date();
         d.setUTCHours(this.END_OF_DAY, 0, 0, 0);
         console.log('Date END_OF_DAY ',d);
         console.log('Date END_OF_DAY GMT ',d.toISOString());
         return d.toISOString();
     }
     beginHours(){
-        const d =new Date(this.record?.StartDate) || new Date();
+        const d =this.record?.StartDate ? new Date(this.record?.StartDate) : new Date();
         d.setUTCHours(this.START_OF_DAY, 0, 0, 0);
         console.log('Date START_OF_DAY ',d);
         console.log('Date START_OF_DAY GMT ',d.toISOString());
         return d.toISOString();
     }
+    formatDateValue(dateIso){
+        const d =dateIso ? new Date(dateIso) : (this.record?.StartDate ? new Date(this.record?.StartDate) : new Date());
+        console.log('Date START_OF_DAY ',d);
+        console.log('Date START_OF_DAY GMT ',d.toISOString());
+        return d.toISOString();
+    }
+    /*
+    lastHoursTime(){
+        const d =this.record?.StartDate ? new Date(this.record?.StartDate) : new Date();
+        d.setUTCHours(this.END_OF_DAY, 0, 0, 0);
+        console.log('Date END_OF_DAY ',d);
+        console.log('Date END_OF_DAY GMT ',d.toISOString());
+        return d.toISOString().split('T')[1];
+    }
+    beginHoursTime(){
+        const d =this.record?.StartDate ? new Date(this.record?.StartDate) : new Date();
+        d.setUTCHours(this.START_OF_DAY, 0, 0, 0);
+        console.log('Date START_OF_DAY ',d);
+        console.log('Date START_OF_DAY GMT ',d.toISOString());
+        return d.toISOString().split('T')[1];
+    }*/
+    /*formatDateValueTime(dateIso){
+        const d =dateIso ? new Date(dateIso) : new Date();
+        console.log('Date START_OF_DAY ',d);
+        console.log('Date START_OF_DAY GMT ',d.toISOString());
+        return d.toISOString().split('T')[1];
+    }*/
     createAction(variant,label,name,title,iconName,className){ 
         return {
             variant, label, name, title, iconName,  class:className

@@ -24,7 +24,7 @@ public class RH_Project_Query {
 
     public List<RH_Participation__c> getMembers(String IdProject){//NON NON le type de retour doit essentiellement etre Project__c puisque c'est la classe query de project
     //creer une RH_Participation__c query classe svp
-        return [SELECT id, RH_Contact__r.Name,RH_Contact__r.Email FROM RH_Participation__c WHERE RH_Project__c = :IdProject];
+        return [SELECT id,RH_Contact__c, RH_Contact__r.Name,RH_Contact__r.Email FROM RH_Participation__c WHERE RH_Project__c = :IdProject];
     }
 
     public List<RH_Participation__c> getParticipate(List<String> contactId){//NON NON le type de retour doit essentiellement etre Project__c puisque c'est la classe query de project
@@ -40,7 +40,7 @@ public class RH_Project_Query {
         for (RH_Participation__c vare : ldt) {
             lstr.add(vare.RH_Contact__c);
         }
-        return [SELECT id, Name,Email FROM Contact WHERE Id NOT IN :lstr AND recordTypeId=:RH_Constans.RH_CONTACT_RT];
+        return [SELECT id, Name,Email FROM Contact WHERE Id NOT IN :lstr AND recordTypeId=:RH_Constans.RH_CONTACT_RT AND RH_Status__c=:RH_Constans.ACTIVATED_CONTACT_STATUS];
     }
     //EM 27-04-2022 19:24
     public List<Project__c> getActiveProjects(){

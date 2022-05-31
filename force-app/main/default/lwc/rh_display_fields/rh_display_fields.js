@@ -12,6 +12,8 @@ export default class Rh_display_fields extends NavigationMixin(LightningElement)
     column;
     @api
     hasAction;
+    @api
+    showHeaderAction;
 
     @api displayEdit;
 

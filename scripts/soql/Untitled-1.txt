@@ -1,0 +1,9 @@
+List<account> accounts =[SELECT Name , (SELECT Firstname FROM Contacts) FROM Account];
+accounts[0].Contacts
+
+
+List<Contact> cons=[SELECT Account.Name,account.Type ,Firstname FROM Contact]
+Account acc= cons[0].Account;
+acc (Name
+Type
+Id)

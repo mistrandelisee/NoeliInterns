@@ -1,2 +1,16 @@
 .box-border { border : 2px solid rgb(12, 10, 10);height:8rem; width:34rem;background-color: rgb(227, 228, 238);border-radius: 5px;} 
-.h1-style {font-size: 30px;color: rgb(247, 247, 252, 0.925);font-weight: bold;background-color: rgb(0, 15, 89);border-radius: 4px 4px 0px 0px;}
+.h1-style {font-size: 30px;color: rgb(247, 247, 252, 0.925);font-weight: bold;background-color: rgb(0, 15, 89);border-radius: 4px 4px 0px 0px;} 
+
+.btn_back{
+    bottom: 10px;
+    position: fixed;
+    z-index: 999;
+}
+
+lightning-button{
+    --lwc-brandAccessible: var(--primaryColor);
+    --lwc-brandAccessibleActive: var(--primaryColor);;
+    --lwc-buttonBorderRadius: 15px;
+    --lwc-borderWidthThin: 1px;
+    font-weight: 700;
+ }

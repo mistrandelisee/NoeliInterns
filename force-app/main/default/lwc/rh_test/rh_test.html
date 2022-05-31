@@ -1,0 +1,12 @@
+<template>
+    <div>                     
+        <button class="slds-button slds-button_neutral slds-float_right" slot="actions" onclick={handleOpenComponentSave} style="margin-right: 15px;border-bottom: 1px solid rgb(0,22,57); color:rgb(0,22,57);border-radius: 15px;">
+            <b style="font-size:20px; color:white;">+</b><b style="font-size:15px;">Event</b>
+        </button>
+    </div>
+    <div key={file.value} class="slds-box">
+        <div class="slds-col slds-large-size_4-of-12 slds-medium-size_4-of-12 slds-size_12-of-12">
+            <p><strong>FileName - </strong>{file.label} || <strong><a href={file.url} download={file.fname}>Download</a></strong></p>
+        </div>
+    </div>
+</template>

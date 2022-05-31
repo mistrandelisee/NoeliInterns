@@ -10,6 +10,7 @@ public  class RH_Constans {
     public static final String CONTACT_ROLE_TL ='Team Leader';
     public static final String CONTACT_ROLE_BU ='Base User';
     public static final String CONTACT_ROLE_RH ='Ressource Manager';
+    public static final String test ='test Manager';
     public RH_Constans() {
 
     }

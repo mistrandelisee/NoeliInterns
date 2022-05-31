@@ -110,9 +110,9 @@ public without sharing class RH_Timesheet_Controller {
                 throw new RH_ControllerException('002','No Timsheet founded with this ID'+timesheetId);
             }
             TimeSheet theTimeSheet=TimeSheets[0];
-            String OwnerId=theTimeSheet.OwnerId;
+            String userId=theTimeSheet.OwnerId;
             mapReturn.put('TimeSheet',TimeSheets[0]); 
-            mapReturn.put('isMine',myUserId.equalsIgnoreCase(OwnerId));
+            mapReturn.put('isMine',myUserId.equalsIgnoreCase(userId));
             mapReturn.putAll(RH_Utility.checkRole()); 
             // mapReturn.putAll(RH_Utility.checkRole()); 
             mapReturn.put('Ok',true); 
@@ -200,6 +200,7 @@ public without sharing class RH_Timesheet_Controller {
             Contact userContact=userContacts[0];
             mapReturn.put('userContact', userContact); 
             mapReturn.put('Projects', userContact.Projects__r); 
+            mapReturn.put('ProjectsLeaded', userContact.Projects_Leaded__r); 
             mapReturn.put('Ok',true); 
         } catch(Exception e) {
             System.debug(e.getMessage());
@@ -210,7 +211,23 @@ public without sharing class RH_Timesheet_Controller {
         return mapReturn;
     }
     
+    @AuraEnabled
+    public static String generatedPDF(String listId){
+        String fileContent = createPDF(listId);
+        return fileContent;
+}
 
+
+    // retrieve the content of the Pdf File
+    public static String createPDF(String listId){
+        Pagereference pg =Page.RH_PDF_Timesheet;
+        System.debug(pg);
+        pg.getParameters().put('recordId',listId);
+       // Blob blb = Test.isRunningTest() ? blob.valueOf('Test') : pg.getContentAsPDF();
+       Blob blb = Test.isRunningTest() ? blob.valueOf('Test') : pg.getContent();
+        System.debug('doc Content : '+blb);
+        return EncodingUtil.base64Encode(blb);
+   }
 
 
     

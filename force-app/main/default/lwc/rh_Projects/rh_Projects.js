@@ -1,4 +1,4 @@
-import { LightningElement ,track ,wire} from 'lwc';
+import { LightningElement ,track ,wire,api} from 'lwc';
 import getProjectList from '@salesforce/apex/RH_Project_controller.getProjectList';
 import getTeamMemberList from '@salesforce/apex/RH_Project_controller.getTeamMemberList';
 import getInitialMembersList from '@salesforce/apex/RH_Project_controller.getInitialMembersList';
@@ -8,14 +8,11 @@ import insertUpdateMembers from '@salesforce/apex/RH_Project_controller.insertUp
 import insertProjectMethod from '@salesforce/apex/RH_Project_controller.insertProjectMethod';
 import uploadFile from '@salesforce/apex/RH_Project_controller.uploadFile';
 import insertProjectupdated from '@salesforce/apex/RH_Project_controller.insertProjectupdated';
+import getFileInfos from '@salesforce/apex/RH_FileUploader.getFileInfos';
 import getRelatedFilesByRecordId from '@salesforce/apex/RH_Project_controller.getRelatedFilesByRecordId';
 import getPickListValuesIntoList from '@salesforce/apex/RH_Project_controller.getPickListValuesIntoList';
 import {NavigationMixin} from 'lightning/navigation';
 
-import { getObjectInfo } from 'lightning/uiObjectInfoApi';
-import { getPicklistValues } from 'lightning/uiObjectInfoApi';
-import PROJECT_OBJECT from '@salesforce/schema/Project__c';
-import STATUS_FIELD from '@salesforce/schema/Project__c.Status__c';
 
 import {ShowToastEvent} from 'lightning/platformShowToastEvent';
 import { CurrentPageReference } from 'lightning/navigation';
@@ -26,11 +23,13 @@ export default class Rh_Projects extends NavigationMixin(LightningElement) {
      memberProjects = []; 
     @track notmemberProjects = [];   
     @track addParticipate = [];
-    filesList =[]; 
-    optionpick = []; 
+    @track listConts=[];
+    @track filesList =[]; 
+    optionpick =[]; 
     visibleProjects; 
     curentProject;
     curentDetails;
+    curentDetailsToUpdate;
     fileData;
     initermediate = [];
     showList = true;
@@ -40,7 +39,7 @@ export default class Rh_Projects extends NavigationMixin(LightningElement) {
     showManage = false;
     showInsertform = false;
     showAddMembers= false;
-    statusPicklist = [];
+     statusPicklist =[];
     @track error;
     @track returnList =[];
     @track val =[];
@@ -49,65 +48,63 @@ export default class Rh_Projects extends NavigationMixin(LightningElement) {
     @track memberNotSelected = [];
     @track inputsItems = [];
     @track allInitialContacts = [];
-    @track projects = {
-        Name:'',       
-        Description__c:'',  
-        Start_Date__c:'', 
-        End_Date__c:'',
-        Project_Manager__c:'',
-        Status__c:'',
-        Link__c:'',
-    };
+    @track columns = [{label: 'Name',fieldName: 'Name',type: 'text'},{label: 'Email adress',fieldName: 'Email',type: 'text'}];
+    @track columnsAttach = [{label: 'File Name',fieldName: 'File Name',type: 'text'},
+                            {label: 'Download',fieldName: 'Download',
+                            type: 'url',typeAttributes: { tooltip: { fieldName: 'Download' } },
+                            }];
      inputs= {};
-
-    keysFields={AddressedTo:'ok'};//non used now
-    keysLabels={
-    CreatedDate:'Create date',
+     @api
+     title;
+     @api
+    iconsrc;
+    initDefault(){
+        this.title=this.title || 'User Informations';
+        this.iconsrc= this.iconsrc || 'utility:people';
+    }
+    keysFields={
+    StartdDate:'Start date',
     Statut:'Statut',
 
     Name:'Name',
+    };
+    keysLabels={
+    StartdDate:'Start date',
+    Statut:'Statut',
 
-    Description:'Description'
+    Name:'Name',
     };
     fieldsToShow={
-        CreatedDate:'Create date',
+        StartdDate:'Start date',
         Statut:'Statut',
-        Description:'Description'
     };
 
-     // to get the default record type id, if you dont' have any recordtypes then it will get master
+    
 
-    //  @wire(getObjectInfo, { objectApiName: PROJECT_OBJECT })
-    //     projectMetadata;
- 
-     // now get the industry picklist values
- 
-    //  @wire(getPicklistValues,
-    //      {
-    //          recordTypeId: '$projectMetadata.data.defaultRecordTypeId', 
-    //          fieldApiName: STATUS_FIELD
-    //      }
-    //  )
 
      getPicklistValues(){
         getPickListValuesIntoList()
         .then(result => {
+            console.log('piclist',result);
+            // this.statusPicklist =[];
                 for(let key in result) {
                     this.statusPicklist.push({label: result[key] , value: result[key]});
                 }
+                // this.statusPicklist = tab;
         })
      }
      
 
     @wire(CurrentPageReference) pageRef;
     connectedCallback(){
-        
+        registerListener('valueMember', this.dovalueMember, this);
         this.curentProject = this.getUrlParamValue(window.location.href, 'recordId');
         if (this.curentProject) {
             this.getdetailsProject(this.curentProject);
         }else{
             this.getAllprojects();
         }
+        this.initDefault();
     }
 
     startSpinner(b){
@@ -123,15 +120,13 @@ export default class Rh_Projects extends NavigationMixin(LightningElement) {
     getProjectList()
     .then(result => {
         console.log('result',result);
-        // this.initial = result;
+        const self=this;
         let tabReq111 = [];
         for(let key in result) {
-            // inputs[ret1[key]['label']] = ret1[key]['value'];
             let objetRep = {};
             objetRep = {
-            "Description": result[key]?.Description__c,
             "Statut": result[key]?.Status__c,
-            "CreatedDate":  (new Date(result[key].CreatedDate)).toLocaleString(),
+            "StartdDate":  result[key].Start_Date__c,
             "Name": result[key].RH_Addressed_To__r?.Name,
             "id" : result[key].Id,
             icon:"standard:people",
@@ -199,26 +194,33 @@ setviewsList(items){
     getdetailsProject(projectIds){
         getProject({ProjectId :projectIds})
         .then(result => {
+            this.getPicklistValues();
             console.log('result',result);
-            this.memberProjects = result['projectMembers'];
-            // this.memberProjects = [...result.projectMembers];
-            // for(let key in result.projectMembers) {
-            //     this.memberProjects.push(result.projectMembers[key]);
-            // }
+            let bat =[];
+                for(let key in result['projectMembers']) {
+                    bat.push({Name: result['projectMembers'][key].RH_Contact__r.Name, Email: result['projectMembers'][key].RH_Contact__r.Email});
+                }
+            this.memberProjects = bat;
+            // this.memberProjects = result['projectMembers'];
             console.log(this.memberProjects);
             let index;
-            this.getPicklistValues();
+
+           
 
             getTeamMemberList()
             .then(result => {
                
-                let option = [];
+                // let option= [];
                 for(let key in result) {
                     this.optionpick.push({label: result[key]['Name'] , value: result[key]['Id'] });
                     
                            }
                 // this.optionpick = option;
 
+                })
+                .catch(error => {
+                    console.log('error',error);
+                    this.error = error;
                 });
                 console.log('this.optionpick',this.optionpick);
                 console.log('this.statusPicklist',this.statusPicklist);
@@ -226,8 +228,8 @@ setviewsList(items){
             this.curentDetails =[
                 {
                     label:'Name',
-                    placeholder:'',
                     name:'Name',
+                    type:'text',
                     value: result.project.Name,
                     required:true,
                     ly_md:'12', 
@@ -235,14 +237,90 @@ setviewsList(items){
 
                 },
                 {
+                    label:'Manager',
+                    name:'Manager',
+                    value: result.project.Project_Manager__r.Name,
+                    required:true,
+                    picklist: true,
+                    // options: this.optionpick,
+                    ly_md:'12', 
+                    ly_lg:'12'
+                },
+               
+                {
+                    label:'Status',
+                    name:'Status',
+                    value: result.project.Status__c,
+                    required:false,
+                    picklist: true,
+                    // options: tab,
+                    // options: this.statusPicklist,
+                    ly_md:'12', 
+                    ly_lg:'12'
+                },
+                {
+                    label:'Link',
+                    name:'Link',
+                    type:'text',
+                    value: result.project.Link__c,
+                    required:false,
+                    ly_md:'12', 
+                    ly_lg:'12'
+                },
+                {
+                    label:'Start date',
+                    name:'Startdate',
+                    value: result.project.Start_Date__c,
+                    required:true,
+                    type:'date',
+                    ly_md:'12', 
+                    ly_lg:'12'
+                },
+                
+                {
+                    label:'End date',
+                    name:'Enddate',
+                    value: result.project.End_Date__c,
+                    required:false,
+                    type:'date',
+                    ly_md:'12', 
+                    ly_lg:'12'
+                },
+                {
                     label:'Description',
-                    placeholder:'',
                     name:'Description',
+                    type:'textarea',
                     value: result.project.Description__c,
                     required:false,
                     ly_md:'12', 
                     ly_lg:'12'
                 },
+            ];
+
+            this.curentDetailsToUpdate =[
+                {
+                    label:'Name',
+                    placeholder:'',
+                    name:'Name',
+                    value: result.project.Name,
+                    required:true,
+                    ly_md:'12', 
+                    ly_lg:'6'
+
+                },
+                {
+                    label:'Manager',
+                    // placeholder:result.project.Project_Manager__r.Name,
+                    name:'Manager',
+                    // value: str,
+                    value: result.project.Project_Manager__r.Id,
+                    required:true,
+                    picklist: true,
+                    options: this.optionpick,
+                    ly_md:'12', 
+                    ly_lg:'6'
+                },
+               
                 {
                     label:'Status',
                     placeholder:'',
@@ -253,7 +331,7 @@ setviewsList(items){
                     // options: tab,
                     options: this.statusPicklist,
                     ly_md:'12', 
-                    ly_lg:'12'
+                    ly_lg:'6'
                 },
                 {
                     label:'Link',
@@ -262,53 +340,70 @@ setviewsList(items){
                     value: result.project.Link__c,
                     required:false,
                     ly_md:'12', 
-                    ly_lg:'12'
+                    ly_lg:'6'
                 },
                 {
-                    label:'Startdate',
+                    label:'Start date',
                     placeholder:'',
-                    name:'Start_Date',
+                    name:'Startdate',
                     value: result.project.Start_Date__c,
                     required:true,
                     type:'date',
                     ly_md:'12', 
-                    ly_lg:'12'
+                    ly_lg:'6'
                 },
                 
                 {
-                    label:'Enddate',
+                    label:'End date',
                     placeholder:'',
-                    name:'End_Date',
+                    name:'Enddate',
                     value: result.project.End_Date__c,
                     required:false,
                     type:'date',
                     ly_md:'12', 
-                    ly_lg:'12'
+                    ly_lg:'6'
                 },
                 {
-                    label:'Manager',
-                    placeholder:result.project.Project_Manager__r.Name,
-                    name:'Project_Manager',
-                    value: result.project.Project_Manager__r.Id,
-                    required:true,
-                    picklist: true,
-                    options: this.optionpick,
+                    label:'Description',
+                    placeholder:'',
+                    name:'Description',
+                    type:'textarea',
+                    value: result.project.Description__c,
+                    required:false,
                     ly_md:'12', 
                     ly_lg:'12'
                 },
             ];
+
             getRelatedFilesByRecordId({recordId: projectIds})
             .then(result11=>{
-                console.log(result11)
-                this.filesList = Object.keys(result11).map(id=>({
-                "label":result11[id].obj.Title,
-                 "value": result11[id].obj.Title,
-                 "fname": result11[id].obj.Title,
+                console.log('file111',result11)
+                this.filesList = (result11.data).map(element=>({
+                "label":element.Name,
+                 "value": element.Name,
+                 "File Name": element.Name,
 
-                 "url":`data:application/octet-stream;base64,${result11[id].link}`
+                 "Download":  element.ContentDownloadUrl  
+                //  "Download":  `<a href=${element.ContentDownloadUrl} download=${element.Name}>Download</a>`  
                 }))
                 console.log(this.filesList);
             })
+            .catch(error => {
+                console.log('error',error);
+                this.error = error;
+            });
+            // .then(result11=>{
+            //     console.log('file111',result11)
+            //     this.filesList = (result11.data).map(element=>({
+            //     "label":element.Name,
+            //      "value": element.Name,
+            //      "fname": element.Name,
+
+            //      "url": element.ContentDownloadUrl
+            //     }))
+            //     console.log(this.filesList);
+            // })
+
 
             this.showList = false;
             this.showDetails = true;
@@ -331,41 +426,38 @@ setviewsList(items){
             getInitialMembersList()
             .then(result => {
                 console.log('result',result);
-                this.allInitialContacts = result;
+                let bat =[];
+                for(let key in result) {
+                    bat.push({value: result[key].Id, label: result[key].Name});
+                }
+                // this.allInitialContacts = bat;
                 let ret1;
                 let undefin;
                 // let inputs= {};
                 let ret = this.template.querySelector('c-rh_dynamic_form').save();
                 ret1 = ret['outputsItems'];
                 for(let key in ret1) {
-                    this.inputs[ret1[key]['label']] = ret1[key]['value'];
+                    this.inputs[ret1[key]['name']] = ret1[key]['value'];
                 }
-                 this.projects.Name = this.inputs['Name'];
-                this.projects.Description__c = this.inputs['Description'];
-                this.projects.Start_Date__c = this.inputs['Startdate'];
-                this.projects.Project_Manager__c = this.inputs['Manager'];
-                this.projects.End_Date__c = this.inputs['Enddate'];
-        
-                // if(this.inputs['Enddate'] == ''){
-                //     this.inputs['Enddate'] = undefin;
-                // }
+                let taber = bat.filter(word => word.value != this.inputs['Manager']);
+                this.allInitialContacts = taber;
 
-                if(this.inputs['Name'] == null || this.inputs['Startdate'] == null || this.inputs['Manager'] == null){
-                    this.showList = false;
-                    this.showDetails = false;
-                    this.showEdit = false;
-                    this.showManage = false;
+                let d1 = new Date();
+                let d2 = this.process(this.inputs['Startdate']);
+                let d3 = this.process(this.inputs['Enddate']);
+                if(this.inputs['Name'] == null || this.inputs['Startdate'] == null || this.inputs['Manager'] == null || d1.getTime() > d2.getTime() || d2.getTime() > d3.getTime()){
+                    
                     this.showInsertform = true;
                     this.showAddMembers= false;
-                    this.addAttach = false;
+                    if(d1.getTime() > d2.getTime()){
+                        this.showToast('error', 'Error', 'Start date must be grater than today');
+                    }
+                    if(d2.getTime() > d3.getTime()){
+                        this.showToast('error', 'Error', 'End date must be grater than start date');
+                    }
                 }else{
-                    this.showList = false;
-                    this.showDetails = false;
-                    this.showEdit = false;
-                    this.showManage = false;
                     this.showInsertform = false;
                     this.showAddMembers= true;
-                    this.addAttach = false;
                 }
                 
         
@@ -383,37 +475,26 @@ setviewsList(items){
     handleSaveEditMember(e){
         let initParticipate = [];
         let moveParticipate = [];
-        let returnlist = this.template.querySelector('c-rh_add_and_remove').getResult();
-        console.log('returnlist',returnlist);
-        for(let key in returnlist) {
-            if(returnlist[key]['isAdd'] == true){
-                initParticipate.push(returnlist[key]['Id']);
-            }
-            if(returnlist[key]['isAdd'] == false){
-                moveParticipate.push(returnlist[key]['Id']);
-            }
-             
-        }
+        // let returnlist = this.template.querySelector('c-rh_add_and_remove').getResult();
+        console.log('this.listConts',this.listConts);
+        
 
-        insertUpdateMembers({AddMembers:initParticipate,MoveMembers:moveParticipate,IDProject:this.curentProject})
+        insertUpdateMembers({AddMembers:this.listConts,IDProject:this.curentProject})
         .then(result=>{
             window.console.log('after save');
            this.getdetailsProject(this.curentProject);
            this.showToast('success', 'success !!', 'Members Updated Successfully!!');
-            // const toastEvent = new ShowToastEvent({
-            //   title:'Success!',
-            //   message:'Members Updated successfully',
-            //   variant:'success'
-            // });
-            this.dispatchEvent(toastEvent);
+            // this.dispatchEvent(toastEvent);
             this.showDetails = true;
             this.showManage= false;
         })
         .catch(error=>{
             this.error=error.message;
+            this.showToast('error', 'Error', 'Update failed');
             window.console.log('error',this.error);
         });
     }
+
 
     handleSave(e){
         let tempCopy=e.currentTarget.getAttribute("data-id");
@@ -422,30 +503,19 @@ setviewsList(items){
         if(tempCopy == 'actif'){
             actif = true;
         }
-        let initParticipate = [];
-        let returnlist = this.template.querySelector('c-rh_add_and_remove').getResult();
-        console.log('returnlist',returnlist);
-        for(let key in returnlist) {
-            if(returnlist[key]['isAdd'] == true){
-                initParticipate.push(returnlist[key]['Id']);
-                // initParticipate.push({'RH_Contact__c':returnlist[key]['Id']});
-            }
-             
-       }
-       this.addParticipate = initParticipate;
-       window.console.log('addParticipate' + this.addParticipate);
-        insertProjectMethod({project:this.inputs,participation:initParticipate,Isactivate:actif})
+        console.log('listConts',this.listConts);
+        insertProjectMethod({project:this.inputs,participation:this.listConts,Isactivate:actif})
         .then(result=>{
             window.console.log('after save');
             this.getAllprojects();
             this.showToast('success', 'success !!', 'Project created Successfully!!');
-            
-            this.showList = true;
+            this.goToRequestDetail(result.Id);
             this.showAddMembers= false;
         })
         .catch(error=>{
             this.error=error.message;
             window.console.log('error',this.error);
+            this.showToast('error', 'Error', 'insert failed');
         });
 
     }
@@ -459,41 +529,30 @@ setviewsList(items){
         window.console.log('this.curentProject ',this.curentProject);
             let inputs= {};
              
-            let undef;
             let ret1;
                 let ret = this.template.querySelector('c-rh_dynamic_form').save();
                 ret1 = ret['outputsItems'];
                 // ret11 = ret.obj;
                 window.console.log('ret.obj' , ret.obj);
                 for(let key in ret1) {
-                     inputs[ret1[key]['label']] = ret1[key]['value'];
+                     inputs[ret1[key]['name']] = ret1[key]['value'];
                 }
-                // if(inputs['Enddate'] == '' || inputs['Enddate'] == null){
-                //     inputs['Enddate'] = undef;
-                // }
-                window.console.log('undef' , undef);
-                window.console.log('Enddate' , inputs.Enddate);
+
+                
                 window.console.log('ret1' , ret['outputsItems']);
-                // insertProjectupdated({Name:inputs.Name,Description:inputs.Description,Startdate:inputs.StartDate,Manager:inputs.Manager,
-                //                         Enddate:inputs.EndDate,Link:inputs.Link,
-                //                         Status:inputs.Status,IDProject:this.curentProject})
+                window.console.log('inputs' , inputs);
                 insertProjectupdated({project:inputs,IDProject:this.curentProject})
                 .then(result=>{
                     window.console.log('after update');
                     window.console.log('result' , result);
                     this.getdetailsProject(this.curentProject);
                     this.showToast('success', 'success !!', 'Project Updated Successfully!!');
-                    // const toastEvent = new ShowToastEvent({
-                    //   title:'Success!',
-                    //   message:'Project updated successfully',
-                    //   variant:'success'
-                    // });
-                    // this.dispatchEvent(toastEvent);
                     this.showDetails = true;
                     this.showEdit= false;
                 })
                 .catch(error=>{
                     this.error=error.message;
+                    this.showToast('error', 'Error', 'Update failed');
                     window.console.log('error',this.error);
                 });
     }
@@ -534,14 +593,15 @@ setviewsList(items){
             .then(result => {
                 console.log('result',result);
                 // this.initial = result;
-                var memberSelectedinit =[];
-                var memberNotSelectedinit = [];
+                let memberSelectedinit =[];
+                let memberNotSelectedinit = [];
                  for(let key in result['projectMembers']) {
-                        memberSelectedinit.push(result['projectMembers'][key]['RH_Contact__r']); 
+                        memberSelectedinit.push( result['projectMembers'][key]['RH_Contact__r'].Id); 
                     }
+                    console.log('memberSelectedinit',memberSelectedinit);
                 this.memberSelected = memberSelectedinit;
                 for(let key in result['projectNotMembers']) {
-                    memberNotSelectedinit.push(result['projectNotMembers'][key]); 
+                    memberNotSelectedinit.push(  { value: result['projectNotMembers'][key].Id, label: result['projectNotMembers'][key].Name }); 
                 }
                 this.memberNotSelected  = memberNotSelectedinit;
 
@@ -577,40 +637,41 @@ setviewsList(items){
                             type:'text',
                             required:true,
                             ly_md:'12', 
-                            ly_lg:'12'
+                            ly_lg:'6'
+                        },
+                        
+                        {
+                            label:'Manager',
+                            placeholder:'select Project Manager',
+                            name:'Manager',
+                            picklist: true,
+                            options:option,
+                            required:true,
+                            ly_md:'12', 
+                            ly_lg:'6'
+                        },
+                        {
+                            label:'Start date',
+                            placeholder:'Enter Start date',
+                            name:'Startdate',
+                            type:'date',
+                            required:true,
+                            ly_md:'12', 
+                            ly_lg:'6'
+                        },
+                        {
+                            label:'End date',
+                            placeholder:'Enter End date',
+                            name:'Enddate',
+                            type:'date',
+                            ly_md:'12', 
+                            ly_lg:'6'
                         },
                         {
                             label:'Description',
                             placeholder:'Enter your Project Description',
                             name:'Description',
                             type:'textarea',
-                            ly_md:'12', 
-                            ly_lg:'12'
-                        }, 
-                        {
-                            label:'Manager',
-                            placeholder:'select Project Manager',
-                            name:'Project_Manager__c',
-                            picklist: true,
-                            options:option,
-                            required:true,
-                            ly_md:'12', 
-                            ly_lg:'12'
-                        },
-                        {
-                            label:'Startdate',
-                            placeholder:'Enter Start date',
-                            name:'StartDate',
-                            type:'date',
-                            required:true,
-                            ly_md:'12', 
-                            ly_lg:'12'
-                        },
-                        {
-                            label:'Enddate',
-                            placeholder:'Enter End date',
-                            name:'EndDate',
-                            type:'date',
                             ly_md:'12', 
                             ly_lg:'12'
                         },
@@ -638,6 +699,10 @@ setviewsList(items){
         this.showInsertform = false;
         this.showAddMembers= false;
         this.addAttach = false;
+    }
+    handleBacktoForm(e){
+        this.showInsertform = true;
+        this.showAddMembers= false;
     }
 
     handleAttach(e){
@@ -668,8 +733,9 @@ setviewsList(items){
         const {base64, filename, recordId} = this.fileData
         uploadFile({ base64, filename, recordId }).then(result=>{
             this.fileData = null
+            this.getdetailsProject(recordId);
             let title = `${filename} uploaded successfully!!`
-            // this.toast(title)
+           
             this.showToast('success', 'success !!', title);
             this.showList = false;
             this.showDetails = true;
@@ -702,4 +768,14 @@ setviewsList(items){
             }
         })
     }
+
+    dovalueMember(event){
+        this.listConts = event.tab;
+        console.log('list id for insert =>:', this.listConts);
+    }
+
+    process(date){
+        var parts = date.split("-");
+        return new Date(parts[0], parts[1] - 1, parts[2]);
+     }
 }

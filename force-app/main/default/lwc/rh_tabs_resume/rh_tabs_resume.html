@@ -1,13 +1,34 @@
 <template> 
     <lightning-tabset>
         <lightning-tab label="Request">
-            One Content !
+            <c-rh_list 
+            css-class="listStyle slds-has-dividers_bottom slds-has-block-links_space slds-p-horizontal_medium"
+            header-title=""
+            key-id="Id"
+            key-value="Name"
+            records={requests}
+            onaction={goToRequest}
+            ></c-rh_list>
         </lightning-tab>
         <lightning-tab label="Event" title="2nd tab extended title">
-            Two Content !
+            <c-rh_list 
+            css-class="listStyle slds-has-dividers_bottom slds-has-block-links_space slds-p-horizontal_medium"
+            header-title=""
+            key-id="Id"
+            key-value="Name"
+            records={events}
+            onaction={goToEvent}
+            ></c-rh_list>
         </lightning-tab>
         <lightning-tab label="Accomplishment">
-            Three Content !
+            <c-rh_list 
+            css-class="listStyle slds-has-dividers_bottom slds-has-block-links_space slds-p-horizontal_medium"
+            header-title="accomplishments"
+            key-id="Id"
+            key-value="Name"
+            records={accomplishments}
+            onaction={goToAccomplishments}
+            ></c-rh_list>
         </lightning-tab>
     </lightning-tabset>   
 </template>

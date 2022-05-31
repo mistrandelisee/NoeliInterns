@@ -16,14 +16,16 @@
         <lightning-layout-item size="12" padding="around-small" small-device-size="12" medium-device-size="12"
             large-device-size="12">
             <template if:true={ready}>
-                <div class="custom-box slds-align_absolute-center">
-                    <lightning-button label="Prev" onclick={handlePrev} title="Download action" variant=" brand-outline"
-                        icon-name="utility:chevronleft" disabled={isFirstIndex} class="slds-m-left_x-small">
-                    </lightning-button>
-                    <lightning-button label="Next" onclick={handleNext} title="Download action" variant=" brand-outline"
-                        icon-name="utility:chevronright" disabled={isLastIndex} icon-position="right"
-                        class="slds-m-left_x-small"></lightning-button>
-                </div>
+                <template if:true={showPagination}>
+                    <div class="custom-box slds-align_absolute-center">
+                        <lightning-button label="Prev" onclick={handlePrev} title="Download action" variant=" brand-outline"
+                            icon-name="utility:chevronleft" disabled={isFirstIndex} class="slds-m-left_x-small">
+                        </lightning-button>
+                        <lightning-button label="Next" onclick={handleNext} title="Download action" variant=" brand-outline"
+                            icon-name="utility:chevronright" disabled={isLastIndex} icon-position="right"
+                            class="slds-m-left_x-small"></lightning-button>
+                    </div>
+                </template>
             </template>
         </lightning-layout-item>
         <template if:false={hideExport}>

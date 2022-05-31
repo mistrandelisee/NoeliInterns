@@ -1,0 +1,44 @@
+<template>
+    <c-rh_toast auto-close-time="6000"></c-rh_toast>
+    <template if:false={hasRecordId}>
+        <c-rh_cards_view page-size="6"  items={tabReq} onrowselected={handleCardAction}></c-rh_cards_view>
+    </template>
+
+    <template if:true={hasRecordId}>
+        <template if:false={isApprovedRejeted}>
+            <div class="slds-clearfix">
+                <div class="slds-float_right">
+                    <template if:false={isRejetedOrApproved}>
+                        <template if:false={isComplain}>
+                            <lightning-button variant="brand-outline" label="Approve request" icon-name="action:new_note" title="Primary action with lighter look" onclick={handleApproveRequest} class="slds-m-left_x-small"></lightning-button>
+                        </template>
+                        <template if:true={isComplain}>
+                            <lightning-button variant="brand-outline" label="Ask an explanation" icon-name="action:new_note" title="Primary action with lighter look" onclick={handleEditValue} class="slds-m-left_x-small"></lightning-button>
+                        </template>                    
+                        <lightning-button variant="brand-outline" label="Rejet request" icon-name="utility:add" title="Primary action with lighter look" onclick={handleRejetRequest} class="slds-m-left_x-small"></lightning-button>
+                    </template>
+                     <lightning-button variant="brand-outline" label="Cancel" icon-name="action:preview" title="Primary action with lighter look" onclick={handleCancelDetail} class="slds-m-left_x-small"></lightning-button>
+
+                </div>
+            </div>
+            <div class="slds-p-around_medium profile_user_info">
+                <c-rh_display_fields 
+                title="Request Informations"
+                iconsrc="utility:people"
+                column="2"
+                output-fields={formPersonanalInputDetails}
+                ></c-rh_display_fields>
+            </div>
+        </template>
+        <template if:true={isApprovedRejeted}>
+            <c-rh_dynamic_form inputs-items={fieldForRejet}></c-rh_dynamic_form>
+            <div class="slds-clearfix">
+                <div class="slds-float_right">
+                    <lightning-button variant="brand-outline" label="Cancel" icon-name="action:preview" title="Primary action with lighter look" onclick={handleCancelRejet} class="slds-m-left_x-small"></lightning-button>
+                    <lightning-button variant="brand-outline" label={appOrRej} icon-name="utility:add" title="Primary action with lighter look" onclick={handleSaveRejet} class="slds-m-left_x-small"></lightning-button>
+                </div>
+            </div>
+        </template>
+
+    </template>
+</template>

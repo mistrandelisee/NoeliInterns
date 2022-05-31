@@ -1,21 +1,49 @@
 public without sharing class RH_EventController {
 
+    private static RH_Event_Query eventQuery = RH_Event_Query.getInstance();
+    private static RH_User_Query userQuery = RH_User_Query.getInstance();
+
+    /*
+        @@@@kb Add 
+        27/05/2022
+    */
+    @AuraEnabled
+    public static List<Event__c>  getLastEventList(Integer endLimit){
+        try{    
+                
+                User u = userQuery.getUserInfoId();
+                System.debug('u-->' + u);
+                String conId = u.RH_ContactId__c;
+                String userRole = u.UserRole.Name;
+                System.debug('userRole-->' + userRole);
+                if(userRole == 'CEO'){
+                     //List<Event__c> evenList = eventQuery.get_EventList();
+                     List<Event__c> evenList = eventQuery.getMyLastEvent(conId,endLimit);
+                    return evenList;
+                }else{
+                    return eventQuery.getMyLastEvent(conId,endLimit);
+                }
+            }
+            catch(Exception ex) {
+                throw new AuraHandledException(ex.getMessage());
+            }
+    }
+
     @AuraEnabled
     public static List<Event__c>  getEventList(){
         try{
             System.debug('UserInfo-->' + UserInfo.getUserId());
-            User u = [Select Id, RH_ContactId__c,UserRole.Name From User where Id =: UserInfo.getUserId()];
+            User u = userQuery.getUserInfoId();
                 String conId = u.RH_ContactId__c;
                 String userRole = u.UserRole.Name;
                 if(userRole == 'CEOza'){
-                    List<Event__c> evenList = [SELECT Id,Name,Contact_Id__r.Name,Description__c, Start_Date__c, End_Date__c, Status__c, CreatedBy.UserRole.Name FROM Event__c];
+                     List<Event__c> evenList = eventQuery.get_EventList(); //[SELECT Id,Name,Contact_Id__r.Name,Description__c, Start_Date__c, End_Date__c, Status__c, CreatedBy.UserRole.Name FROM Event__c 
+                     //order by createddate desc];
                     //System.debug('event-->' + evenList);
                     return evenList;
                 }else{
-                    List<Event__c> evenList = [SELECT Id,Name,Contact_Id__r.Name,Description__c, Start_Date__c, End_Date__c, Status__c, CreatedBy.UserRole.Name FROM Event__c 
-                    Where Contact_Id__c =: conId And CreatedBy.UserRole.Name =: userRole];
-                    System.debug('event-->' + evenList);
-                    return evenList;
+                    System.debug('event-->' + eventQuery.getEventListByUserRole(userRole,conId));
+                    return eventQuery.getEventListByUserRole(userRole,conId);
                 }
             }
             catch(Exception ex) {
@@ -23,44 +51,24 @@ public without sharing class RH_EventController {
             }
         // return [SELECT Id, Name,Phone,Industry FROM Account order by createddate desc LIMIT 5];
     }
-
-    // @AuraEnabled
-    // public static List<Event__c> getMyEvent() {
-    //     try{
-    //     User u = [Select Id, RH_ContactId__c,UserRole.Name From User where Id =: UserInfo.getUserId()];
-    //         String conId = u.RH_ContactId__c;
-    //         String userRole = u.UserRole.Name;
-    //         if(userRole == 'CEOza'){
-    //             List<Event__c> evenList = [SELECT Id,Name,Contact_Id__r.Name,Description__c, Start_Date__c, End_Date__c, Status__c, CreatedBy.UserRole.Name FROM Event__c];
-    //             //System.debug('event-->' + evenList);
-    //             return evenList;
-    //         }else{
-    //             List<Event__c> evenList = [SELECT Id,Name,Contact_Id__r.Name,Description__c, Start_Date__c, End_Date__c, Status__c, CreatedBy.UserRole.Name FROM Event__c 
-    //             Where Contact_Id__c =: conId And CreatedBy.UserRole.Name =: userRole];
-    //             //System.debug('event-->' + evenList);
-    //             return evenList;
-    //         }
-    //     }
-    //     catch(Exception ex) {
-    //         throw new AuraHandledException(ex.getMessage());
-    //     }
-    // }
+    
+    @AuraEnabled 
+    public static Event__c  getEvent(String evId){
+        Event__c ev = eventQuery.getEvent(evId); //[SELECT Id,Name,Contact_Id__r.Name,Description__c, Start_Date__c, End_Date__c, Status__c FROM Event__c Where Id =: evId];
+        return ev;
+    }
     @AuraEnabled
     public static List<Event__c> getEventEdite(String evenId) {
         try{
             System.debug('UserInfo-->' + UserInfo.getUserId());
-            User u = [Select Id, RH_ContactId__c,UserRole.Name From User where Id =: UserInfo.getUserId()];
+            User u = userQuery.getUserInfoId();
                 String conId = u.RH_ContactId__c;
                 String userRole = u.UserRole.Name;
                 if(userRole == 'CEOza'){
-                    List<Event__c> evenList = [SELECT Id,Name,Contact_Id__r.Name,Description__c, Start_Date__c, End_Date__c, Status__c, CreatedBy.UserRole.Name FROM Event__c Where Id =: evenId];
-                    //System.debug('event-->' + evenList);
+                    List<Event__c> evenList = eventQuery.getEventList(evenId);
                     return evenList;
                 }else{
-                    List<Event__c> evenList = [SELECT Id,Name,Contact_Id__r.Name,Description__c, Start_Date__c, End_Date__c, Status__c, CreatedBy.UserRole.Name FROM Event__c 
-                    Where  Id =: evenId];//Contact_Id__c =: conId And CreatedBy.UserRole.Name =: userRole And
-                    //System.debug('event-->' + evenList);
-                    return evenList;
+                    return eventQuery.getEventList(evenId);
                 }
         }
         catch(Exception ex) {
@@ -70,20 +78,21 @@ public without sharing class RH_EventController {
     @AuraEnabled
     public static List<Event__c> getMyEventManager() {
         try{
-            User u = [Select Id, RH_ContactId__c,UserRole.Name From User where Id =: UserInfo.getUserId()];
+            User u = userQuery.getUserInfoId();
                 String conId = u.RH_ContactId__c;
                 String userRole = u.UserRole.Name;
-                if(userRole == 'CEO'){
-                    List<Event__c> evenList = [SELECT Id,Name,Contact_Id__r.Name,Description__c, Start_Date__c, End_Date__c, Status__c, CreatedBy.UserRole.Name FROM Event__c Where
-                    //CreatedBy.UserRole.Name =: 'Base User'
-                    (Status__c='Submitted' OR Status__c='Approved')
-                    ];
+                if(userRole == 'CEO' || userRole =='Human Resource Managment'){
+                    List<Event__c> evenList = eventQuery.getMyEventManagerForCEO();
+                    for(Event__c ev: evenList){
+                        ev.Message__c = 'CEO';
+                    }
                     //System.debug('event-->' + evenList);
                     return evenList;
                 }else{
-                    List<Event__c> evenList = [SELECT Id,Name,Contact_Id__r.Name,Description__c, Start_Date__c, End_Date__c, Status__c, CreatedBy.UserRole.Name FROM Event__c 
-                    Where Contact_Id__c =: conId 
-                    And CreatedBy.UserRole.Name =: userRole];
+                    List<Event__c> evenList = eventQuery.getMyEventManagerForBaseUser();
+                    for(Event__c ev: evenList){
+                        ev.Message__c = 'Base User';
+                    }
                     //System.debug('event-->' + evenList);
                     return evenList;
                 }
@@ -92,14 +101,33 @@ public without sharing class RH_EventController {
                 throw new AuraHandledException(ex.getMessage());
             }
     }
-
     @AuraEnabled
-    public static Event__c saveEvent(String objEven) {
+    public static List<Event__c> saveAndSendEvent(String objEven, String eId) {
+        system.debug('@@@@objEven--->' + objEven);
+        system.debug('@@@@ eId---> '+ eId);
+        try{
+            wrapperDataToUpdate datas = (wrapperDataToUpdate)JSON.deserialize(objEven, wrapperDataToUpdate.class);
+            User u = userQuery.getUserInfoId();
+            String conId = u.RH_ContactId__c;
+            List<Event__c> event = eventQuery.getEventList(eId);
+            for(Event__c even : event){
+                even.Status__c ='Submitted';
+            }
+
+            update event;
+            system.debug('@@@@EventDatas--->' + event);
+            return event;
+        }
+        catch(Exception ex) {
+            throw new AuraHandledException(ex.getMessage());
+        }
+    }
+    @AuraEnabled
+    public static Event__c saveEvenWithoutStatus(String objEven) {
         system.debug('@@@@EventDatas' + objEven);
         try{
             wrapperData datas = (wrapperData)JSON.deserialize(objEven, wrapperData.class);
-            User u = [Select Id, RH_ContactId__c From User where Id =: UserInfo.getUserId()];
-            // String userId = u.Id+ ' | ' + userId;
+            User u = userQuery.getUserInfoId();
             String conId = u.RH_ContactId__c;	
                 Event__c even = new Event__c(
                     Name = datas.Name,
@@ -107,12 +135,40 @@ public without sharing class RH_EventController {
                     Description__c  = datas.Description,
                     Start_Date__c =dateToParse(datas.StartDate),
                     End_Date__c =dateToParse(datas.EndDate),
-                    Status__c =datas.Status
+                    Status__c =''
 
                 );
                 insert even;
                 system.debug('@@@@EventDatasReturn' + even);
                 return even;
+        }
+        catch(Exception ex) {
+            throw new AuraHandledException(ex.getMessage());
+        }
+    }
+
+    @AuraEnabled 
+    public static void  cancelEven(String eId){
+        Event__c ev = eventQuery.getEvent(eId);
+        delete ev;
+    }
+
+    @AuraEnabled 
+    public static List<Event__c> saveEvent(String objEven, String eId) {
+        system.debug('@@@@objEven--->' + objEven);
+        system.debug('@@@@ eId---> '+ eId);
+        try{
+            wrapperDataToUpdate datas = (wrapperDataToUpdate)JSON.deserialize(objEven, wrapperDataToUpdate.class);
+            User u = userQuery.getUserInfoId();
+            String conId = u.RH_ContactId__c;
+            List<Event__c> event = eventQuery.getEventList(eId);
+            for(Event__c even : event){
+                even.Status__c ='Draft';
+            }
+
+            update event;
+            system.debug('@@@@EventDatas--->' + event);
+            return event;
         }
         catch(Exception ex) {
             throw new AuraHandledException(ex.getMessage());
@@ -125,18 +181,35 @@ public without sharing class RH_EventController {
         public String StartDate { get; set; }
         public String EndDate { get; set; }
         public String Status { get; set; }
+        public String Message { get; set; }
     }
 
+    @AuraEnabled 
+    public static List<Event__c> sendEvent(String evId) {
+        system.debug('@@@@ eId---> '+ evId);
+        try{
+            List<Event__c> event = eventQuery.getEventList(evId);
+            for(Event__c even : event){
+                    even.Status__c = 'Submitted';
+            }
+
+            update event;
+            system.debug('@@@@EventDatas--->' + event);
+            return event;
+        }
+        catch(Exception ex) {
+            throw new AuraHandledException(ex.getMessage());
+        }
+    }
     @AuraEnabled
     public static List<Event__c> updateEven(String updEven, String eId) {
         system.debug('@@@@updEven--->' + updEven);
         system.debug('@@@@ eId---> '+ eId);
         try{
             wrapperDataToUpdate datas = (wrapperDataToUpdate)JSON.deserialize(updEven, wrapperDataToUpdate.class);
-            String evId = eId;
-            User u = [Select Id, RH_ContactId__c From User where Id =: UserInfo.getUserId()];
+            User u = userQuery.getUserInfoId();
             String conId = u.RH_ContactId__c;
-            List<Event__c> event = [Select Id,Name,Contact_Id__c,Description__c,Start_Date__c,End_Date__c,Status__c,Message__c From Event__c Where Id =: evId];
+            List<Event__c> event = eventQuery.getEventList(eId);
             for(Event__c even : event){
                 if(even.Status__c=='Approved'){
                     even.Message__c='Event has been already sent';
@@ -147,18 +220,34 @@ public without sharing class RH_EventController {
                     even.Description__c  = datas.Description;
                     even.Start_Date__c =dateToParse(datas.StartDate);
                     even.End_Date__c =dateToParse(datas.EndDate);
-                    even.Status__c =datas.Status;
+                    even.Status__c = 'Draft';
                 }
             }
-            // Event__c even = new Event__c(
-            //         Id = string.isNotBlank(evId)?evId:null,
-            //         Name = datas.Name,
-            //         Contact_Id__c = conId,
-            //         Description__c  = datas.Description,
-            //         Start_Date__c =dateToParse(datas.StartDate),
-            //         End_Date__c =dateToParse(datas.EndDate),
-            //         Status__c =datas.Status
-            // );
+
+            update event;
+            system.debug('@@@@EventDatas--->' + event);
+            return event;
+        }
+        catch(Exception ex) {
+            throw new AuraHandledException(ex.getMessage());
+        }
+    }
+    @AuraEnabled
+    public static List<Event__c> updateAndSendEven(String updEven, String eId){
+        system.debug('@@@@updEven--->' + updEven);
+        system.debug('@@@@ eId---> '+ eId);
+        try{
+            wrapperDataToUpdate datas = (wrapperDataToUpdate)JSON.deserialize(updEven, wrapperDataToUpdate.class);
+            User u = userQuery.getUserInfoId();
+            String conId = u.RH_ContactId__c;
+            List<Event__c> event = eventQuery.getEventList(eId);
+            for(Event__c even : event){
+                even.Name = datas.Name;
+                even.Description__c  = datas.Description;
+                even.Start_Date__c =dateToParse(datas.StartDate);
+                even.End_Date__c =dateToParse(datas.EndDate);
+                even.Status__c ='Submitted';
+            }
 
             update event;
             system.debug('@@@@EventDatas--->' + event);
@@ -174,21 +263,23 @@ public without sharing class RH_EventController {
         public String StartDate { get; set; }
         public String EndDate { get; set; }
         public String Status { get; set; }
+        public String Message { get; set; }
     }
     
     @AuraEnabled
     public static List<Event__c> deleteEvent(String evid) {
         system.debug('@@@@ eId---> '+ evid );
         try{
-            User u = [Select Id, RH_ContactId__c,UserRole.Name From User where Id =: UserInfo.getUserId()];
+            User u = userQuery.getUserInfoId();
             String conId = u.RH_ContactId__c;
             String userRole = u.UserRole.Name;
             system.debug('@@@@ userRole---> '+ userRole );
-            List<Event__c> event = [Select Id,Contact_Id__c,Status__c,CreatedBy.UserRole.Name,Message__c From Event__c Where Contact_Id__c=:conId And Id=:evid];
-            if(userRole=='CEO'){ //
+            List<Event__c> event = eventQuery.getEventList(evid);
+            system.debug('&&&event ---> '+ event[0] );
+            if(userRole=='CEO' || userRole =='Human Resource Managment'){
                 for(Event__c ev : event){
+                    system.debug('@@@@ ev ---> '+ ev );
                     if(ev.Status__c=='Submitted'){
-                        // delete ev;
                         ev.Message__c='Event do not send';
                     }else{
                         delete ev;
@@ -199,7 +290,6 @@ public without sharing class RH_EventController {
                     if(ev.Status__c=='Draft' || ev.Status__c=='Rejected'){
                         delete ev;
                     }else{
-                        // delete ev;
                         ev.Message__c='Right no allowed';
                     }
                 }
@@ -213,8 +303,32 @@ public without sharing class RH_EventController {
         }
     }
     @AuraEnabled 
+    public static Event__c checkStatus(String evid){
+        Event__c even = eventQuery.getEvent(evid);
+        if(even.Status__c=='Submitted' || even.Status__c=='Approved' || even.Status__c=='Rejected'){
+            even.Message__c='No right to modify the event';
+        }
+        system.debug('@@@@ event---> '+ even );
+        return even;
+    }
+    @AuraEnabled 
+    public static List<User> getIdUserCEO(){
+        List<Event__c> event = eventQuery.get_EventList();
+        List<String> ids = new List<String>();
+        for(Event__c ev : event){
+            String id = ev.Contact_Id__c;
+            ids.add(id);
+        }
+        system.debug('@@@@ USER---> '+ ids );
+        List<User> u = userQuery.getIdUser(ids);
+        system.debug('@@@@ USER---> '+ u );
+        return u;
+    }
+    @AuraEnabled 
     public static List<User> getIdUser(String idU){
-        List<User> u = [Select Id,RH_ContactId__c,UserRole.Name From User Where RH_ContactId__c =: idU];
+        List<String> idUs = new List<String>();
+        idUs.add(idU);
+        List<User> u = userQuery.getIdUser(idUs); //[Select Id,RH_ContactId__c,UserRole.Name From User Where RH_ContactId__c =: idU];
         system.debug('@@@@ USER---> '+ u );
         return u;
     }
@@ -225,12 +339,17 @@ public without sharing class RH_EventController {
     }
     @AuraEnabled
     public static List<User> getInfBaseUsers() {
-        List<User> u = [Select Id,UserRole.Name From User Where UserRole.Name =: 'Base User'];
+        List<Id> conIds = new List<Id>();
+        List<Event__c> even = eventQuery.get_EventList();
+        for(Event__c e : even){
+            conIds.add(e.Contact_Id__c);
+        }
+        List<User> u = userQuery.getInfoUser(conIds);
         return u;
     }
     @AuraEnabled
     public static List<Event__c> getEventInfos(String infoId) {
-        List<Event__c> even = [Select Id, Name, Description__c, Status__c,Message__c From Event__c Where Id =: infoId];
+        List<Event__c> even = eventQuery.getEventList(infoId);
         for(Event__c ev : even){
             if(ev.Status__c=='Approved'){
                     ev.Message__c='Already approved';
@@ -244,7 +363,7 @@ public without sharing class RH_EventController {
     }
     @AuraEnabled 
     public static List<Event__c> changeEventStatus(String infoId) {
-        List<Event__c> even = [Select Id, Name,Contact_Id__c, Description__c, Status__c,Message__c From Event__c Where Id =: infoId];
+        List<Event__c> even = eventQuery.getEventList(infoId);
         for(Event__c ev : even){
             if(ev.Status__c=='Approved'){
                 ev.Message__c='Already approved';
@@ -267,7 +386,7 @@ public without sharing class RH_EventController {
         system.debug('@@@@pgRefIdId--->  ' + pgRefId);
         
         // String pgRef = '{ type : "standard__recordPage",attributs :{recordId : 0017Q00000Dck8lQAB ,objectApiName : "Account",actionName : "view"} }' ;
-        String pgRef = '{type : \'comm__namedPage\',attributes : {pageName : \'Event\'},state: {\'recordId\': '+pgRefId+'}}' ;
+        String pgRef = '{type : \'comm__namedPage\',attributes : {pageName : \'event-management\'},state: {\'recordId\': '+pgRefId+'}}' ;
         system.debug('@@@@pgRef--->  ' + pgRef);
 
         // Get the Id for our custom notification type
@@ -357,5 +476,82 @@ public without sharing class RH_EventController {
             //System.debug('AccountUtils dateToParse Exception, message: '+e.getCause()+'\n'+e.getStackTraceString());
         }
         return res;
+    }
+
+    @AuraEnabled
+    public static String uploadFile(String base64, String filename, String recordId) {
+        return RH_FileUploader.uploadFile(base64, filename, recordId);
+    }
+
+    @AuraEnabled
+    public static Map<String, Object> getRelatedFilesByRecordId(String recordId){
+        return RH_FileUploader.getFileInfos(recordId); 
+    }
+    // @AuraEnabled
+    // public static Map<ID, Object> getRelatedFilesByRecordId(String recordId) {
+    //     // Get record file IDs        
+    //     List<ContentDocumentLink> files = [SELECT ContentDocumentId FROM ContentDocumentLink WHERE LinkedEntityId = :recordId];
+    //     List<ID> fileIDs = new List<ID>();
+    //     for (ContentDocumentLink docLink : files) {
+    //         fileIDs.add(docLink.ContentDocumentId);
+    //     }
+ 
+    //     List<ContentVersion> docs = [SELECT ContentDocumentId,VersionData, FileExtension, Title 
+    //         FROM ContentVersion WHERE ContentDocumentId IN : fileIDs];
+    //     Map<ID, Object> mapIdTitle = new Map<ID, Object>();
+    //     for (ContentVersion docLink : docs) {
+    //         Map<string, Object> mapobj = new Map<string, Object>();
+    //         mapobj.put('obj', docLink);
+    //         mapobj.put('link', EncodingUtil.base64Encode(docLink.VersionData));
+    //         mapIdTitle.put(docLink.ContentDocumentId, mapobj);
+    //     }
+    //     system.debug('@@@ mapIdTitle --->'+ mapIdTitle);
+    //     return mapIdTitle;
+    // }
+    @AuraEnabled
+    public static String checkcontentDocumentByRcrdId(String recId) {
+        ContentDocumentLink files = [SELECT ContentDocumentId FROM ContentDocumentLink WHERE LinkedEntityId = :recId];
+        String str = files.ContentDocumentId;
+        return str;
+    }
+    @AuraEnabled
+    public static Boolean checkcontentDocumentId(String recId, String docId) {
+        List<ContentDocumentLink> files = [SELECT ContentDocumentId FROM ContentDocumentLink WHERE LinkedEntityId = :recId];
+        Boolean bool = true;
+        Boolean str;
+        for (ContentDocumentLink docLink : files) {
+            if(docLink.ContentDocumentId == docId){
+                str = bool;
+            }else{
+                str = !bool;
+            }
+        }
+        return str;
+    }
+
+    @AuraEnabled
+    public static void deleteFile(String recId, String docId){
+        RH_FileUploader.deleteFile(recId, docId);
+    }
+    // Test
+
+    // @AuraEnabled(cacheable=true)
+    // public static List<Account> getAccountList() {
+    //     return [SELECT Id, Name, Type, Rating,
+    //             Phone, Website, AnnualRevenue
+    //         FROM Account Limit 5];
+    // }
+    @AuraEnabled
+    public static List<ContentDocument> checkcontentDocumentByRcrdIdTest() {
+        String recId = 'a087Q000000OkKAQA0';
+        List<ContentDocumentLink> files = [SELECT ContentDocumentId FROM ContentDocumentLink WHERE LinkedEntityId = :recId];
+        List<Id> listId = new List<Id>();
+        for(ContentDocumentLink file : files){
+            listId.add(file.ContentDocumentId);
+        }
+        system.debug('@@@ listId --->'+ listId);
+        List<ContentDocument> ContntDocmnt = [SELECT Id, Title, FileType FROM ContentDocument WHERE Id IN : listId];
+        system.debug('@@@ ContntDocmnt --->'+ ContntDocmnt);
+        return ContntDocmnt;
     }
 }

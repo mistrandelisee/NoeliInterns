@@ -120,7 +120,7 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
                             name:'RH_AddressedTo',
                             picklist: true,
                             options: this.addressedRecord,
-                            value:profileinformation?.RH_Addressed_To__r?.Id,
+                            value:profileinformation?.RH_Addressed_To__r?.Name,
                             required:false,
                             ly_md:'6', 
                             ly_lg:'6'
@@ -230,7 +230,7 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
                     name:'RH_AddressedTo',
                     picklist: true,
                     options: this.addressedRecord,
-                    value:profileinformation?.RH_Addressed_To__r?.Id,
+                    value:profileinformation?.RH_Addressed_To__r?.Name,
                     required:false,
                     ly_md:'6', 
                     ly_lg:'6'

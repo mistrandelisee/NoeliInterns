@@ -22,4 +22,18 @@ public  class RH_WorkGroup_Query {
     public static RH_WorkGroup__c getGroupId(String idTeamLeader){
         return [SELECT Id, Name FROM RH_WorkGroup__c WHERE RH_Team_Leader__c =: idTeamLeader];
     }
+
+   /* public static Map<String, Object>  getGroupContact(String id){
+        Map<String, Object> mapName = new Map<String, Object>();
+        try {
+            RH_WorkGroup__c groupe = [SELECT Id, (SELECT Id, Name FROM RH_GroupMembers__r) 
+                FROM RH_WorkGroup__c WHERE Id =: id];
+            mapName.put('result', groupe);
+        } catch(Exception e) {
+            System.debug(e.getMessage());
+            mapName.put('error', e.getMessage());
+        }
+        
+        return mapName;
+    } */
 }

@@ -44,11 +44,11 @@ export default class Rh_timesheet extends NavigationMixin(LightningElement) {
     keysFields={TimeSheetNumber:'ok'};
     keysLabels={
         TimeSheetNumber:'Name', TotalDurationInHours:'Total Duration In Hours',
-        StartDate:'StartDate',TotalDurationInMinutes:'Total Duration In Minutes',Status:'Status',TimeSheetEntryCount:'Entries'
+        StartDate:'StartDate',TotalDurationInMinutes:'Total Duration In Minutes',StatusLabel:'Status',TimeSheetEntryCount:'Entries'
     };
     fieldsToShow={
          TotalDurationInHours:'',TimeSheetEntryCount:'',
-        StartDate:'ok',TotalDurationInMinutes:'',Status:''
+        StartDate:'ok',TotalDurationInMinutes:'',StatusLabel:''
     };
 
     constants={};

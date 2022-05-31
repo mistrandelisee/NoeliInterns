@@ -5,6 +5,16 @@
                 <lightning-icon icon-name={iconsrc} size="small" class="slds-m-right_small"></lightning-icon>
                 {title}
             </h3>
+            <template if:true={showHeaderAction}>
+                <div class="slds-clearfix" slot="actions">
+                    <template  for:each={actionAvailable} for:item="action" for:index="index">
+                    <div class="slds-float_right" key={action.name}>
+                            <lightning-button variant={action.variant} label={action.label} data-action-name={action.name} title={action.title}
+                            icon-name={action.iconName} onclick={handleClick} class={action.class}></lightning-button>
+                    </div>
+                    </template>
+                </div>
+            </template>
             <div class="slds-form" role="list">
                 <template if:true={hasFieldsRows} for:each={getFieldsRows} for:item="row" for:index="index">
                     <div class="slds-form__row" key={row.index}>

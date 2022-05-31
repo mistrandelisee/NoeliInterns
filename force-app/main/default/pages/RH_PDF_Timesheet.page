@@ -1,0 +1,181 @@
+<apex:page Controller="RH_PDF_Timesheet_Controller" renderAs="pdf" applyBodyTag="false">
+
+    <head>
+        <style> 
+
+            @Page {
+                /* add page's header and footer */
+                @top-left { 
+                    content: element(header-section); 
+                }
+                @bottom-left { 
+                    content: element(footer-section);
+                }
+            }
+            /* sets the header as the matching element */
+            .header-section { 
+            position: running(header-section); 
+            padding-right: 20px;
+            padding-left: 20px;
+            height: 80px;
+            background: #eeeeee;
+            }
+            /* sets the footer as the matching element */
+            .footer-section { 
+            position: running(footer-section); 
+            left: 0; 
+            right: 0; 
+            height: 50px;
+            background: #cccccc;
+            }
+            /* add the page number to any matching elements */
+            .page-number:before { 
+            content: counter(page); 
+            }
+            /* add the page total to any matching elements */
+            .page-count:before { 
+            content: counter(pages); 
+            }
+
+            .table1 {
+            font-family: Arial, Helvetica, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+            }
+            .table1 td, .table1 th {
+            border: 1px solid #ddd;
+            padding: 8px;
+            }
+            .table1 th {
+                padding-top: 12px;
+                padding-bottom: 12px;
+                text-align: left;
+                background-color: #0895f3;
+                color: white;
+                }
+
+            tr:nth-child(even){background-color: #D6EEEE;}
+
+            .tab1{
+                margin-bottom: 80px;
+                padding-top: 50px;
+                width: 60%;
+            }
+            
+            .tab1 td, .tab1 th {
+            border: 1px solid #ddd;
+            padding: 8px;
+           
+            }
+            .t1{
+                text-align: center;
+                border: 1px solid #ddd;
+                background-color: #0895f3;
+                width: 100%;
+                font-size: 25px;
+                height:100%;
+            }
+            .tab2{
+                margin-top: 50px;
+            }
+            
+            .tab3{
+                padding-top: 15px;
+            }
+        </style>
+    </head>
+    <body>
+
+
+        <div class="header-section">
+            <div class="img">
+                <apex:image alt="eye" title="eye" url="{!URLFOR($Resource.logo)}" width="100px" height="90px" />
+            </div>    
+        </div>
+
+        <div>
+            <table class="tab1">
+                <tr>
+                    <th>Name:</th>
+                    <td><apex:outputText value="{!accountList.RH_Approver__r.Account.Name}"/></td>
+                </tr>
+                <tr>
+                    <th>Phone:</th>
+                    <td><apex:outputText value="{!accountList.RH_Approver__r.Account.Phone}"/></td>
+                </tr>
+                <tr>
+                    <th>Type:</th>
+                    <td><apex:outputText value="{!accountList.RH_Approver__r.Account.Type}"/></td>
+                </tr>
+                <tr>
+                    <th>Website:</th>
+                    <td><apex:outputText value="{!accountList.RH_Approver__r.Account.Website}"/></td>
+                </tr>
+                <tr>
+                    <th>Owner Name:</th>
+                    <td><apex:outputText value="{!accountList.RH_Approver__r.Account.Owner.Name}"/></td> 
+                </tr>               
+            </table>
+        </div>
+
+        <div class="t1">
+            <p class="pp">TimeSheet Information {!sheet.timesheetNumber}</p>
+        </div>
+        <table class="tab3">
+            <tr><th>Status :</th>
+                <td><apex:outputText value="{!timeSheetList.Status}"/></td>
+                </tr>
+            <tr><th>Duration :</th>
+                <td><apex:outputText value="{!timeSheetList.TotalDurationInHours}"/></td>
+                </tr>
+            <tr><th>Start Date :</th>
+                <td><apex:outputText value="{!timeSheetList.StartDate}"/></td>
+                </tr>
+            </table>
+        <div class="tab2">
+            <table style="width:100%" class="table1" >
+                <thead>
+                        <th >
+                            Project Name
+                        </th>
+                        <th >
+                            Duration(Minutes)
+                        </th>
+                        <th>
+                            Start Time
+                        </th>
+                        <th >
+                            End Time
+                        </th>
+                
+                </thead>
+                <tbody>
+                    <apex:repeat value="{!timeSheetEntryList}" var="time">
+                    <tr>
+                            <td >
+                                {!time.RH_Project__r.Name}
+                            </td>
+                            <td >
+                                {!time.DurationInMinutes }
+                            </td>
+                            <td >
+                                {!time.StartTime}
+                            </td>
+                            <td >
+                                {!time.EndTime}
+                            </td>             
+                    </tr>
+                </apex:repeat>
+                </tbody>
+            </table>
+        </div>
+        <div class="footer-section">
+             page <span class="page-number"></span> of <span class="page-count"></span>
+        </div>
+        
+        <!-- <div class="sign">
+            <p>Professeur Titulaire</p>
+            <p class="prov">Proviseur</p>
+        </div> -->
+    </body>
+</apex:page>

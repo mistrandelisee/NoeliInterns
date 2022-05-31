@@ -1,0 +1,8 @@
+:host{
+    color:#626575;
+    --primaryColor: #001639;
+    --secondaryColor: rgb(3 45 96);
+    --warningColor: #c1a60e;
+    --bannedColor:#e41d0b;
+    --frozenColor:#62f70cfe;
+}

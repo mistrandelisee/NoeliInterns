@@ -36,4 +36,14 @@ public  class RH_User_Query {
                                                                     //AND Id != :UserInfo.getUserId()
                                                                     AND isActive= True];
     }
+
+    public User getUserInfoId() {
+        return [Select Id, RH_ContactId__c,UserRole.Name From User where Id =: UserInfo.getUserId()];
+    }
+    public List<User> getIdUser(List<String> idUs) {
+        return [Select Id,RH_ContactId__c,UserRole.Name From User Where RH_ContactId__c IN: idUs];
+    }
+    public List<User> getInfoUser(List<Id> conIds) {
+        return [Select Id, RH_ContactId__c, UserRole.Name From User Where UserRole.Name =: 'Base User' And RH_ContactId__c IN:conIds];
+    }
 }

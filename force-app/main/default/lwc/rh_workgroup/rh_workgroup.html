@@ -3,7 +3,8 @@
     <template if:true={isVisiblecreate}> 
         <c-rh_group_create 
             ongroupmember={handleGroupmember}
-            onbacktogrouplist={handleBacktogrouplist}
+            onbackto={handleBacktogrouplist}
+            groupe-id={groupeId}
            obj-groupe={objGroupe}> </c-rh_group_create> 
     </template>
 
@@ -18,6 +19,8 @@
     <template if:true={isVisibleDetailgroup}> 
         <c-rh_group_detail groupe-id={groupeId}
             oneditmember={handleEditMember}
+            oncontactgroup={handleContactgroup}
+            oneditgroup={handleEditGroupe}
            > </c-rh_group_detail> 
     </template>
 
@@ -25,7 +28,12 @@
         <c-rh_group_member
         onpreviouspage={handlepreviousPage} 
         obj-groupe={objGroupe}
-        onhomegroupe={handleHomeGroupe}> </c-rh_group_member> 
+        groupe-id={groupeId}
+        back-source={backSource}
+        contact-members={contactMembers}
+        onhomegroupe={handleHomeGroupe}
+        ongotodetailgroup={handlegotodetailgroup}
+        status-group={statusGroup}> </c-rh_group_member> 
     </template>
     
 </template>

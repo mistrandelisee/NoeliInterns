@@ -30,12 +30,14 @@ export default class Rh_display_news extends LightningElement {
                 this.news = result;
                 this.bannerNews= this.news.map((e,Index) => { 
                     return Index==0?{
+                        Id: e.Id,
                         Title: e.Name.length>70? e.Name.slice(0, 67) +'...': e.Name,
                         Description: e.Description__c.length>230? e.Description__c.slice(0, 230) +'...': e.Description__c ,
                         Image:  e.Image__c? e.Image__c: CommunityBackground1jpg,
                         Index:Index+1,
                         Visibility: 'slds-show'
                     }:{
+                        Id: e.Id,
                         Title: e.Name.length>70? e.Name.slice(0, 67) +'...': e.Name,
                         Description: e.Description__c.length>230? e.Description__c.slice(0, 230) +'...': e.Description__c,
                         Image:  e.Image__c? e.Image__c: CommunityBackground1jpg,

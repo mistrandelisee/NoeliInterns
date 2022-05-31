@@ -5,27 +5,34 @@ import createGroupe from '@salesforce/apex/RH_groupController.createGroupe';
 export default class Rh_group_create extends LightningElement {
     @api
     fieldInputs;
-    leaders=[];
+    leaders=[]; 
     @api objGroupe;
+    @api groupeId;
+    @api labelButton='Next';
+    @api logo="utility:chevronright";
+    @api newGroup = 'new group';
+    updateView;
     handleClick (){
-     
+        console.log('updateView dans le save--->:', this.updateView);
        let form=this.template.querySelector('c-rh_dynamic_form');
         let saveResult=form.save();
         let outputs = saveResult.outputs;
      
             createGroupe({ name: saveResult.obj.Namex, 
                            description: saveResult.obj.Description, 
-                           Leader: saveResult.obj.Leader })
+                           Leader: saveResult.obj.Leader,
+                           id: this.groupeId})
               .then(result => {
                 console.log('Result:', result); 
-                this.dispatchEvent(new CustomEvent('groupmember',{detail: result})); 
+                    this.dispatchEvent(new CustomEvent('groupmember',{detail: result}));               
               })
               .catch(error => {
                 console.error('Error:', error);
-            });             
+            });
+                         
     }
     handleClick1(){
-        this.dispatchEvent(new CustomEvent('backtogrouplist'));
+        this.dispatchEvent(new CustomEvent('backto'));
     }
     formLoaded;
     initDefault(){
@@ -65,6 +72,7 @@ export default class Rh_group_create extends LightningElement {
     }
     connectedCallback(){
     //    this.initDefault();
+    console.log('backSource create--->:', this.backSource);
        getContactLeader()
           .then(result => {
             console.log('Result', result);
@@ -77,6 +85,8 @@ export default class Rh_group_create extends LightningElement {
           .catch(error => {
             console.error('Error:', error);
         });
+        this.updateView = true;
+        console.log('updateView dans connectedCallback--->:', this.updateView);
      }
 
 

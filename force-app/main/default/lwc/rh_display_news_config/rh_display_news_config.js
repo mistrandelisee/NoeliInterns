@@ -1,13 +1,19 @@
-import { LightningElement,track } from 'lwc';
+import { LightningElement,track,wire } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
-
-import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import getOrgConfig from '@salesforce/apex/RH_News_controller.getOrgConfig';
 import setOrgConfig from '@salesforce/apex/RH_News_controller.setOrgConfig';
 import getAllNews from '@salesforce/apex/RH_News_controller.getAllNews';
 import getNewsDetails from '@salesforce/apex/RH_News_controller.getNewsDetails';
 import updateNewsVisibility from '@salesforce/apex/RH_News_controller.updateNewsVisibility';
+import updateNews from '@salesforce/apex/RH_News_controller.updateNews';
+import updateFile from '@salesforce/apex/RH_News_controller.updateFile';
+import getFileInfos from '@salesforce/apex/RH_FileUploader.getFileInfos';
+import { CurrentPageReference } from 'lightning/navigation';
+import { registerListener, unregisterAllListeners,fireEvent } from 'c/pubsub';
 
+const SUCCESS_VARIANT='success';
+const WARNING_VARIANT='warning';
+const ERROR_VARIANT='error';
 
 
 const SAVE_ACTION='Save';
@@ -23,10 +29,16 @@ export default class Rh_display_news_config extends NavigationMixin(LightningEle
     r=0;
     allNews=[];
     hasadmin=true;
-    showEdit=false;
+    editNews=false;
+    previewFile=false;
+    newFileData={};
 
-    newsRecord;
+    newsRecord={};
+    detailsActions;
+    detailsEditActions;
     @track newsInputDetails=[];
+    @track newsEditDetails=[];
+    @track newsFileDetails=[];
     recordId;
 
     keysFields={Name:'ok'};
@@ -37,23 +49,24 @@ export default class Rh_display_news_config extends NavigationMixin(LightningEle
         summaryTitle:'ok', summaryDescription:'',
     };
 
+    @wire(CurrentPageReference) pageRef;
+
     get hasNews(){
-        return this.newsRecord?true:false;
+        return this.newsRecord && !this.editNews?true:false;
     }
     get hasrecordid(){
         return this.recordId?true:false;
     }
 
-    connectedCallback(){
-        
+     connectedCallback(){
         this.recordId = this.getUrlParamValue(window.location.href, 'recordId');
         if (this.recordId) {
             //this.startSpinner(true);
             this.displayNewsInfo(this.recordId);
-           // this.startSpinner(false);
         }else{
             this.getConfig();
             this.getNews();
+
         }
     }
 
@@ -65,12 +78,14 @@ export default class Rh_display_news_config extends NavigationMixin(LightningEle
             console.log('display news ' +JSON.stringify(result))
             if (result) {
                 this.newsRecord = result;
-                this.buildform(this.newsRecord);
+                this.handleFileInfo(this.recordId);
+               /* this.buildform(this.newsRecord);
+                this.buildAction(this.newsRecord);*/
             }else{
                // this.showToast(WARNING_VARIANT,'ERROR', result.msg);
                 this.title = 'Failled';
                 this.information = result.msg;
-                this.contactNotFounded=true;
+                this.contactNotFounded = true;
             }
         }).catch(e =>{
             //this.showToast(ERROR_VARIANT,'ERROR', e.message);
@@ -79,6 +94,33 @@ export default class Rh_display_news_config extends NavigationMixin(LightningEle
             //this.startSpinner(false);
         })
       }
+
+      handleFileInfo(recordid){
+        //this.startSpinner(true);
+        getFileInfos({
+             recordId: recordid
+         }).then(result =>{
+             console.log('File info ' +JSON.stringify(result))
+             if (result) {
+                 this.newFileData.name= result.data[0]?.Name;
+                 this.newsRecord.fileName = result.data[0]?.Name;
+                 this.newsRecord.fileUrl =  result.data[0]?.ContentDownloadUrl;
+                 this.newsRecord.ContentVersionId =  result.data[0]?.ContentVersionId;
+                 this.buildform(this.newsRecord);
+                 this.buildAction(this.newsRecord);
+             }else{
+                // this.showToast(WARNING_VARIANT,'ERROR', result.msg);
+                 this.title = 'Failled';
+                 this.information = result.msg;
+                 this.contactNotFounded=true;
+             }
+         }).catch(e =>{
+             //this.showToast(ERROR_VARIANT,'ERROR', e.message);
+             console.error(e)
+         }).finally(() => {
+             //this.startSpinner(false);
+         })
+       }
 
       getUrlParamValue(url, key) {
         return new URL(url).searchParams.get(key);
@@ -99,6 +141,7 @@ export default class Rh_display_news_config extends NavigationMixin(LightningEle
                 label:'Activate ?',
                 name:'IsActive__c',
                 checked:newsInfo?.IsActive__c,
+                value:newsInfo?.IsActive__c? "Yes": "No",
                 type:'toggle',
                 ly_md:'6', 
                 ly_lg:'6'
@@ -113,8 +156,127 @@ export default class Rh_display_news_config extends NavigationMixin(LightningEle
                 type:'textarea',
                 ly_md:'12', 
                 ly_lg:'12'
+            },
+            {
+                label:'Upload File',
+                name:'uploadFile',
+                value:newsInfo?.fileName,
+                fileName: newsInfo?.fileName,
+               // isLink: true,
+               // href: newsInfo?.Image__c,
+                type:'Link',
+                accept:['.png','.jpg','.jpeg'] ,
+                ly_md:'12', 
+                ly_lg:'12'
             }
         ];
+
+        this.newsEditDetails= this.newsInputDetails.filter(e => e.type != 'Link');
+        this.newsEditDetails.push({
+            label:'Upload File',
+            name:'uploadFile',
+            fileName: newsInfo?.fileName,
+            type:'file',
+            accept:['.png','.jpg','.jpeg'] ,
+            ly_md:'12', 
+            ly_lg:'12'
+        });
+
+        this.newsFileDetails=[
+            {
+                label:'Upload File',
+                name:'image',
+                fileName: newsInfo?.fileName,
+                type:'image',
+                source: newsInfo?.fileUrl, 
+            }
+        ];
+    }
+
+    buildAction(newsInfo){
+        this.detailsActions= [
+            {
+                name: 'Back',
+                title :  'Back',
+                label: 'Back',
+                class: 'slds-float_left'
+            },
+            {
+                name: 'Edit',
+                title :  'Edit',
+                label: 'Edit',
+                class: 'slds-float_right'
+            },
+            {
+                name: newsInfo.IsActive__c? 'Deactivated':'Activated', 
+                title : newsInfo.IsActive__c? 'Deactivated':'Activated',
+                label:  newsInfo.IsActive__c? 'Deactivated':'Activated',
+                variant: newsInfo.IsActive__c? "destructive" :"success",
+                class: 'slds-float_right'
+            }
+        ];
+
+        
+        this.detailsEditActions= [ 
+            {
+                name: 'Save',
+                title :  'Save',
+                label: 'Save',
+                class: 'slds-float_right'
+            },{
+                name: 'Cancel',
+                title :  'Cancel',
+                label: 'Cancel',
+                class: 'slds-float_right'
+            }
+        ];
+
+    }
+
+    handleDetailsActions(event){
+        const action= event.detail.action;
+        switch (action){
+            case 'Edit': this.editNews=true; 
+                         this.hasNews= false;
+                         break;
+            case 'Back': this.goToHome();
+                         break;
+             case 'Activated': this.updateVisibility(this.recordId,true);                              
+                               break;
+            case 'Deactivated': this.updateVisibility(this.recordId,false);                              
+                                break;
+                                
+            case 'Cancel': /*this.editNews=false; 
+                          this.hasNews= true;*/
+                          this.goToRequestDetail(this.recordId);
+                          break;
+            case 'Save': this.handleUpdate();
+                         break;
+
+        }
+    }
+
+    handlePreview(event){
+        const action= event.detail.action;
+        switch (action){
+            case 'goToLink': this.previewFile=true; 
+                         break;
+            case 'closeModal': this.previewFile=false;
+                         break;
+
+        }
+    }
+
+    handleEditchange(event){
+        console.log('event ' +JSON.stringify(event));
+        let fieldname = event.detail.name? event.detail.name:event.detail.info.name;
+        switch(fieldname) {
+            case 'uploadFile':
+                this.newFileData = event.detail.info.file; 
+                break;
+            default:
+                break;
+        }
     }
 
 
@@ -199,8 +361,7 @@ export default class Rh_display_news_config extends NavigationMixin(LightningEle
         .then(result => {
             if(result===null){
                 this.config={
-                    interval: 5000,
-                    numberOfNews: 3
+                    interval: 5000
                 } 
             }else{
                  this.config = result;
@@ -226,14 +387,19 @@ export default class Rh_display_news_config extends NavigationMixin(LightningEle
     }
 
     updateVisibility(recordId,visibility){
+        this.startSpinner(true);
         updateNewsVisibility({recordId: recordId , enabled: visibility })
         .then(result => {
             if(result){
+                this.displayNewsInfo(this.recordId);
                 this.getNews();
+                this.showToast(SUCCESS_VARIANT,'Success', 'the news has been '+ ( result.IsActive__c? 'successfully activated': 'successfully deactivated')); 
             }
         })
         .catch(error => {
             this.error = error;
+            this.startSpinner(false);
+            this.showToast(ERROR_VARIANT,ERROR_VARIANT, error.body);
             console.log('@@@@@@@@@@ getConfig  '+error.body)
         });
     }
@@ -253,29 +419,29 @@ export default class Rh_display_news_config extends NavigationMixin(LightningEle
         });
     }
 
+    goToHome() {
+        var pagenname ='rhbannerConfig'; //request page nam
+        this[NavigationMixin.Navigate]({
+            type : 'comm__namedPage',
+            attributes : {
+                pageName : pagenname
+            }
+        });
+    }
+
 
     saveConfig(){
+        this.startSpinner(true);
         this.draftConfig.interval = this.template.querySelector('[data-id="interval"]').value;
-        this.draftConfig.numberOfNews =this.template.querySelector('[data-id="numberOfNews"]').value;
-
         let input = JSON.stringify(this.draftConfig);
-
         setOrgConfig({ data: input })
         .then((result) => {
-            const evt = new ShowToastEvent({
-                title: 'Save configuration',
-                message: 'Your configuration has been successfully saved',
-                variant: 'success',
-            });
-            this.dispatchEvent(evt);  
+            this.startSpinner(false);
+            this.showToast(SUCCESS_VARIANT,'Save configuration', 'Your configuration has been successfully saved');
         })
         .catch((error) => {
-            const evt = new ShowToastEvent({
-                title: 'Configuration ',
-                message: error.body,
-                variant: 'error',
-            });
-            this.dispatchEvent(evt); 
+            this.startSpinner(false);
+            this.showToast(ERROR_VARIANT,'Configuration ', error.body);
         });
     }
 
@@ -291,5 +457,93 @@ export default class Rh_display_news_config extends NavigationMixin(LightningEle
         this.showEdit=false;
     }
 
+    
+
+    handleUpdateNews(input){
+        updateNews({ recordId: this.recordId, newsJson: JSON.stringify(input) })
+          .then(result => {
+            this.updateFile();
+          })
+          .catch(error => {
+            this.startSpinner(false);
+            this.showToast(ERROR_VARIANT,ERROR_VARIANT, 'The record has not been updated ');
+            console.error('Error:', error);
+        });
+    }
+
+    handleUpdate(evt){
+        this.startSpinner(true);
+        let record={};
+        let result= this.save();
+        if (result.isvalid) {
+            record={...record,...result.obj};
+            // this.emp[TYPE_FIELD_NAME]=this.empType;
+            this.handleUpdateNews(record);
+        }else{
+            this.startSpinner(false);
+            this.showToast(ERROR_VARIANT,ERROR_VARIANT, 'The field Is not valid');
+            console.log(`Is not valid `);
+        }
+        console.log(`record `, record);
+    }
+
+    save(){
+        let form=this.template.querySelector('c-rh_dynamic_form');
+        console.log(form);
+        let isvalid=true;  
+        let obj={};
+        
+        let saveResult=form.save();
+        console.log(`>>>>>>>>>>>>saveResult `, saveResult );
+        let outputs = saveResult.outputs;
+        isvalid=isvalid && saveResult.isvalid;
+        console.log(`>>>>>>>>>>>>outputs `, outputs );
+        obj=saveResult.obj;
+        console.log(`>>>>>>>>>>>>obj `, obj );
+        return  {isvalid,obj};
+    }
+
+
+    updateFile(){
+        if(this.newFileData?.size){
+            this.getBase64(this.newFileData)
+            .then(data => {
+                    var base64= data.split(',')[1];
+                   updateFile({ base64 : base64, filename : this.newFileData.name, ContentVersionId :this.newsRecord.ContentVersionId })
+                    .then(result=>{
+                        this.newFileData = null
+                        this.startSpinner(false);
+                        this.showToast(SUCCESS_VARIANT,'Success', 'the news has been successfully Update '); 
+                        this.goToRequestDetail(this.recordId);
+                    }).catch(error => {
+                        this.startSpinner(false);
+                        this.showToast(ERROR_VARIANT,ERROR_VARIANT, 'The file has not been updated ');
+                        console.error('Error:', error);
+                    })
+                });   
+        }else{
+            this.startSpinner(false);
+            this.showToast(SUCCESS_VARIANT,'Success', 'the news has been successfully Update ');
+            this.goToRequestDetail(this.recordId);    
+        }
+        
+    }
+
+    //convert a file in Base64
+    getBase64(file) {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.readAsDataURL(file);
+          reader.onload = () => resolve(reader.result);
+          reader.onerror = error => reject(error);
+        });
+      }
+
+    showToast(variant, title, message){
+        fireEvent(this.pageRef, 'Toast', {variant, title, message});
+    }
+    startSpinner(b){
+        fireEvent(this.pageRef, 'Spinner', {start:b});
+     }
 
 }

@@ -91,8 +91,9 @@ public without sharing class RH_Project_controller {
         ReturnClass12 returnList = new ReturnClass12();
         List<Project__c> proj=projectQry.getProjectById(ProjectId);
         List<RH_Participation__c> proMem=projectQry.getMembers(ProjectId);
-        List<Contact> proNotMem=projectQry1.getNotMembers(ProjectId,proj[0].Project_Manager__c);
-        returnList.projectNotMembers = proNotMem;
+        List<Contact> initcont=contactQry.getAllContactInitial();
+        // List<Contact> proNotMem=projectQry1.getNotMembers(ProjectId,proj[0].Project_Manager__c);
+        returnList.projectNotMembers = initcont;
         returnList.projectMembers = proMem;
         return returnList;
     }
@@ -101,7 +102,6 @@ public without sharing class RH_Project_controller {
 
     @AuraEnabled 
     public static Project__c insertProjectMethod(ProjectTo project,List<String> participation, Boolean Isactivate ){
-        // public static Project__c insertProjectMethod(String Name,String Description,Date Startdate,String Manager,Date Enddate,List<String> participation){
         try {
             system.debug('Startdate' +project.Startdate);
             List<User> acc11=userQry.getUserById(UserInfo.getUserId());
@@ -115,7 +115,7 @@ public without sharing class RH_Project_controller {
             if (String.isNotBlank(project.Description)) {
                 ProjectObj.Description__c = project.Description;
             }
-            if (String.isNotBlank(project.Description)) {
+            if (String.isNotBlank(project.Enddate)) {
                 ProjectObj.End_Date__c = date.valueOf(project.Enddate);
             }
             ProjectObj.Start_Date__c = project.Startdate;
@@ -134,7 +134,7 @@ public without sharing class RH_Project_controller {
 
 
             if(Isactivate){
-                SendEmail(participation);
+                SendEmail(participation, ProjectObj.ID);
             }
 
             return ProjectObj;
@@ -153,6 +153,7 @@ public without sharing class RH_Project_controller {
             system.debug('Manager'+project.Manager);
             system.debug('Description'+project.Description);
             List<Project__c> proj=projectQry.getProjectById(IDProject);
+            String stat = proj[0].Status__c ;
             for(Project__c pro :proj){
                 if (String.isNotBlank(project.Status)) {
                 pro.Status__c = project.Status;
@@ -171,6 +172,15 @@ public without sharing class RH_Project_controller {
                 }
             }
             update proj;
+
+            if (project.Status == 'Active' && stat != 'Active') {
+                List<RH_Participation__c> proMem=projectQry.getMembers(IDProject);
+                List<String> participation = new List<String>();
+                for(RH_Participation__c part: proMem){
+                    participation.add(part.RH_Contact__c);
+                }
+                SendEmail(participation,IDProject);
+            }
             system.debug('proj  '+proj); 
             return proj[0];
         } catch (Exception exp) {
@@ -180,9 +190,14 @@ public without sharing class RH_Project_controller {
     }
 
     @AuraEnabled
-    public static Boolean insertUpdateMembers(List<String> AddMembers,List<String> MoveMembers,String IDProject){
+    public static Boolean insertUpdateMembers(List<String> AddMembers,String IDProject){
         try {
             List<RH_Participation__c> parti =new List<RH_Participation__c>();
+            List<Project__c> proj=projectQry.getProjectById(IDProject);
+
+            List<RH_Participation__c> proMem=projectQry.getMembers(IDProject);
+            delete proMem;
+
             for (String contId : AddMembers) {
                 RH_Participation__c par = new RH_Participation__c();
                 par.RH_Contact__c = contId;
@@ -191,14 +206,17 @@ public without sharing class RH_Project_controller {
             }
             if(parti.size()>0){
                 insert parti;
+                if (proj[0].Status__c == 'Active') {
+                    SendEmail(AddMembers,IDProject);
+                }
             }
             
-            List<String> lstr = new List<String>();
-            for (String part : MoveMembers) {
-                lstr.add(part);
-            }
-            List<RH_Participation__c> proMem=projectQry.getParticipate(lstr);
-            delete proMem;
+            // List<String> lstr = new List<String>();
+            // for (String part : MoveMembers) {
+            //     lstr.add(part);
+            // }
+            // List<RH_Participation__c> proMem=projectQry.getParticipate(lstr);
+            
             return true;
         } catch (Exception exp) {
             system.debug('exception'+exp.getMessage());
@@ -206,70 +224,44 @@ public without sharing class RH_Project_controller {
            
         }
     }
-
     @AuraEnabled
-    public static String uploadFile(String base64, String filename, String recordId) {
-          ContentVersion cv = createContentVersion(base64, filename);
-          ContentDocumentLink cdl = createContentLink(cv.Id, recordId);
-          if (cv == null || cdl == null) { return null; }
-          return cdl.Id;
+    public static String uploadFile(String base64, String filename, String recordId){
+        return RH_FileUploader.uploadFile( base64,  filename,  recordId);
     }
 
-    private static ContentVersion createContentVersion(String base64, String filename) {
-        ContentVersion cv = new ContentVersion();
-        cv.VersionData = EncodingUtil.base64Decode(base64);
-        cv.Title = filename;
-        cv.PathOnClient = filename;
-        try {
-          insert cv;
-          return cv;
-        } catch(DMLException e) {
-          System.debug(e);
-          return null;
-        }
-    }
+   
 
-    private static ContentDocumentLink createContentLink(String contentVersionId, String recordId) {
-                    if (contentVersionId == null || recordId == null) { return null; }
-                        ContentDocumentLink cdl = new ContentDocumentLink();
-                        cdl.ContentDocumentId = [
-                        SELECT ContentDocumentId 
-                        FROM ContentVersion 
-                        WHERE Id =: contentVersionId
-                        ].ContentDocumentId;
-                        cdl.LinkedEntityId = recordId;
-                        // ShareType is either 'V', 'C', or 'I'
-                        // V = Viewer, C = Collaborator, I = Inferred
-                        cdl.ShareType = 'V';
-                        try {
-                        insert cdl;
-                        return cdl;
-                        } catch(DMLException e) {
-                        System.debug(e);
-                        return null;
-                        }
-    }
+   
 
-    @AuraEnabled
-    public static Map<ID, Object> getRelatedFilesByRecordId(String recordId) {
-        // Get record file IDs        
-        List<ContentDocumentLink> files = [SELECT ContentDocumentId FROM ContentDocumentLink WHERE LinkedEntityId = :recordId];
-        List<ID> fileIDs = new List<ID>();
-        for (ContentDocumentLink docLink : files) {
-            fileIDs.add(docLink.ContentDocumentId);
-        }
+
+    // @AuraEnabled
+    // public static Map<ID, Object> getRelatedFilesByRecordId(String recordId) {
+    //     // Get record file IDs        
+    //     List<ContentDocumentLink> files = [SELECT ContentDocumentId FROM ContentDocumentLink WHERE LinkedEntityId = :recordId];
+    //     List<ID> fileIDs = new List<ID>();
+    //     for (ContentDocumentLink docLink : files) {
+    //         fileIDs.add(docLink.ContentDocumentId);
+    //     }
  
-        List<ContentVersion> docs = [SELECT ContentDocumentId,VersionData, FileExtension, Title 
-            FROM ContentVersion WHERE ContentDocumentId IN : fileIDs];
-        Map<ID, Object> mapIdTitle = new Map<ID, Object>();
-        for (ContentVersion docLink : docs) {
-            Map<string, Object> mapobj = new Map<string, Object>();
-            mapobj.put('obj', docLink);
-            mapobj.put('link', EncodingUtil.base64Encode(docLink.VersionData));
-            mapIdTitle.put(docLink.ContentDocumentId, mapobj);
-        }
-        return mapIdTitle;
+    //     List<ContentVersion> docs = [SELECT ContentDocumentId,VersionData, FileExtension, Title 
+    //         FROM ContentVersion WHERE ContentDocumentId IN : fileIDs];
+    //     Map<ID, Object> mapIdTitle = new Map<ID, Object>();
+    //     for (ContentVersion docLink : docs) {
+    //         Map<string, Object> mapobj = new Map<string, Object>();
+    //         mapobj.put('obj', docLink);
+    //         mapobj.put('link', EncodingUtil.base64Encode(docLink.VersionData));
+    //         mapIdTitle.put(docLink.ContentDocumentId, mapobj);
+    //     }
+    //     return mapIdTitle;
+    // }
+
+
+    @AuraEnabled
+    public static Map<String, Object> getRelatedFilesByRecordId(String recordId) {
+        return RH_FileUploader.getFileInfos(recordId);
     }
+
+
     @AuraEnabled
     public static List<String> getPickListValuesIntoList(){
         List<String> pickListValuesList= new List<String>();
@@ -281,22 +273,25 @@ public without sharing class RH_Project_controller {
          return pickListValuesList;
      }
 
-    public static void SendEmail(List<String> lstids)
+    public static void SendEmail(List<String> lstids, String IDProject)
     {
         List<contact> lstcon=[Select id,Email from contact WHERE Id IN :lstids];
         List<String> address= new List<String>();
          for(Contact c:lstcon)
             {
-                address.add(c.Email);
+                if(c.Email != null){
+                    address.add(c.Email);
+                }
+                
             }
         system.debug('lstids' +lstids);
         system.debug('lstidsEmail' +address);
             EmailTemplate et=[Select id,Subject,Description,HtmlValue,DeveloperName,Body from EmailTemplate where name = 'RH-Notify New Member Project' limit 1];
             
-            system.debug('EmailTemplate' +et.Id);
+            // system.debug('EmailTemplate' +et.Id);
             // Messaging.MassEmailMessage mail = new Messaging.MassEmailMessage();
             // mail.setTargetObjectIds(lstids);
-            // mail.setToAddresses(address);
+            // // mail.setToAddresses(address);
             // mail.setSenderDisplayName('System Admin');
             // mail.setTemplateId(et.id);
             // Messaging.sendEmail(new Messaging.MassEmailMessage[] { mail });
@@ -312,26 +307,25 @@ public without sharing class RH_Project_controller {
             // // Sends the email
             // Messaging.SendEmailResult [] r = Messaging.sendEmail(new Messaging.SingleEmailMessage[] {email});
 
-
+            String sfdcBaseURL = URL.getSalesforceBaseUrl().toExternalForm() +'/NoeliInterns/s/rhproject?recordId='+IDProject;
+            System.debug('Base URL: ' + sfdcBaseURL );
+            
+            // String currentRequestURL = URL.getCurrentRequestUrl().toExternalForm();
+            // System.debug('Current request URL: ' + currentRequestURL);
 
             Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
-
-            // String[] toAddresses = new String[] {'wekone8076@mailvxin.net'};
-            mail.setToAddresses(address);
-            // String[] ccAddresses = new String[] {'wekone8076@mailvxin.net'};
-            // mail.setCcAddresses(ccAddresses);
-     
-     
+            // mail.setToAddresses(address); 
+            if(address.size() > 0){
+                mail.toAddresses= address; 
             mail.setSubject('Email Subject');
-     
             mail.setBccSender(false);
-     
-            mail.setPlainTextBody('Sample plain text goes here');
-     
-            
-            mail.setHtmlBody('Your Link <a href=https://www.salesforce.com/>click here.</a>');
-     
-            
+            mail.setPlainTextBody('You are new Project Member');
+            mail.setHtmlBody('Hello <br/>'+ 
+                            'You are new Project Member <br/>'+
+                            'click the follow link to view project details <br/>'+
+                            'Your Link <a href='+sfdcBaseURL+'>   click here.</a>');
             Messaging.sendEmail(new Messaging.SingleEmailMessage[] { mail });
+            }
+           
     }
 }

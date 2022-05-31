@@ -48,6 +48,11 @@ public class RH_News_controller {
         }  
         return mapReturn;
     }
+    
+    @AuraEnabled
+    public static Map<string,Object> updateFile(String base64, String filename, String ContentVersionId) {
+        return RH_FileUploader.updateFile(base64, filename, ContentVersionId);
+    }
 
     @AuraEnabled
     public static List<News__c> getAllNews() {
@@ -67,6 +72,21 @@ public class RH_News_controller {
         update news;
         
         return newsQry.getNewsById(recordId);   
+    }
+    
+    @AuraEnabled 
+    public static News__c updateNews(String recordId, String newsJson){
+         try {
+            News__c news = (News__c)JSON.deserialize(newsJson,News__c.class);
+            news.Id=recordId;
+            update news;
+            System.debug('Update News ' + news);
+            return news;
+            
+        } catch(Exception e) {
+            System.debug('echec Update ' + e.getMessage());
+            return null;
+        }    
     }
     
      // get the datas in  default partition

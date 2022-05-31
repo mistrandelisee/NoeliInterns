@@ -9,3 +9,10 @@
     --lwc-colorBackgroundRowHover: rgba(9, 80, 161, 0.911);
     background-color: rgba(9, 80, 161, 0.911);
     color : white}
+lightning-button{
+    --lwc-brandAccessible: var(--primaryColor);
+    --lwc-brandAccessibleActive: var(--primaryColor);;
+    --lwc-buttonBorderRadius: 15px;
+    --lwc-borderWidthThin: 1px;
+    font-weight: 700;
+ }
