@@ -3,104 +3,15 @@
     <section class="form-section" data-id="section"> 
         <div class="slds-text-heading_medium  title slds-m-left_medium">{title}</div>
         <lightning-layout multiple-rows>
-            <template if:true={inputsItems} for:each={inputsItems} for:item="item">
+           
+            <template for:each={inputsItems} for:item="item">
                 <lightning-layout-item key={item.name} size="12" small-device-size={item.ly_xs} medium-device-size={item.ly_md} large-device-size={item.ly_lg} padding="horizontal-medium" class="slds-m-vertical_small slds-m-horizontal_none">
-                    <!--Kb add-->
-                    <template if:true={item.isFile}>
-                        <lightning-input 
-                            label={item.label} 
-                            type={item.type} 
-                            data-id={item.name}
-                            accept={item.accept}  
-                            onchange={handleChanged}>
-                        </lightning-input>
-                        <template if:true={fileData}>
-                            {fileData.name}
-                        </template>
-                    </template> 
 
-                    <template if:true={item.isText}>
-                        <lightning-input 
-                        
-                        field-level-help={item.helpText}
-                        placeholder={item.placeholder}
-                        data-id={item.name}  
-                        type={item.type} 
-                        required={item.required} 
-                        label={item.label} 
-                        class="name" 
-                        value={item.value}
-                        max={item.max}
-                        min={item.min}
-                        max-length={item.maxlength}
-                        pattern={item.pattern}
-                        read-only={item.readOnly}
-                        checked={item.checked}
-                        onchange={handleChanged} 
-                       
-                        ></lightning-input>
-                        <!--  message-when-value-missing='Complete this field.(custom message)' -->
-                    </template>
-                    <template if:true={item.isTextarea}>
-                        <lightning-textarea 
-                            field-level-help={item.helpText}
-                            placeholder={item.placeholder}
-                            data-id={item.name}  
-                            required={item.required} 
-                            label={item.label} 
-                            class={item.className}
-                            value={item.value}
-                            max-length={item.maxlength}
-                            read-only={item.readOnly}
-                            onchange={handleChanged} 
-                         >
-
-                        </lightning-textarea>
-                        <!--  message-when-value-missing='Complete this field.(custom message)' -->
-                    </template>
-                    <template if:true={item.picklist}>
-                        <lightning-combobox
-                                data-id={item.name}
-                                name={item.name}
-                                label={item.label}
-                                value={item.value}
-                                placeholder={item.placeholder}
-                                options={item.options}
-                                onchange={handleChanged} 
-                                read-only={item.readOnly}
-                                required={item.required}
-                                
-                        ></lightning-combobox>
-                    <!-- message-when-value-missing={item.valueMissing}  -->
-                    </template>
-                    <template if:true={item.datalist}>
-                        
-                        
-                        {item.label} 
-                        <input 
-                        
-                        placeholder={item.placeholder}
-                        data-id={item.name}   
-                        type="text"
-                        required={item.required} 
-                        class="name datalist" 
-                        value={item.value}
-                        max={item.max}
-                        min={item.min}
-                        pattern={item.pattern}
-                        checked={item.checked}
-                        onchange={handleChanged} 
-                       
-                        />
-                        <template if:true={item.options}>
-                            <datalist id={item.name} data-listid={item.name} data-type="dataList">
-                                <template for:each={item.options} for:item="item">
-                                    <option key={item.value} value={item.value}>{item.label}</option>
-                                </template>
-                            </datalist>
-                        </template> 
-                    <!-- message-when-value-missing={item.valueMissing}  -->
-                    </template>
+                    <c-rh_dynamic_form_item  item={item} data-item-id={item.name}
+                        time-out={timeOut} file-data={fileData}
+                        oninputchanged={handleChanged}>
+    
+                    </c-rh_dynamic_form_item>
                 </lightning-layout-item>
             </template>
         </lightning-layout> 

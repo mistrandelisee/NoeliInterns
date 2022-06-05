@@ -1,38 +1,43 @@
 <template>
-    
-        <template if:false={hasrecordid}>
-            <template if:true={showNew}>
-                <c-rh_user_creation groups={groups} onaction={handleActionNew}></c-rh_user_creation>
+        <lightning-layout multiple-rows>
+            <template if:false={hasrecordid}>
+                <template if:true={showNew}>
+                    <lightning-layout-item size="12" padding="around-small" small-device-size="12" medium-device-size="12" large-device-size="12" >
+                        <div class="custom-box">
+                            <c-rh_user_creation groups={groups} onaction={handleActionNew}></c-rh_user_creation>
+                        </div>
+                    </lightning-layout-item>
+                </template>
+                <template if:true={hideView}>
+                    <lightning-layout-item size="12" padding="around-small" small-device-size="12" medium-device-size="12" large-device-size="12" >
+                        <div class="custom-box">
+                            <c-rh_filter></c-rh_filter>
+                        </div>
+                    </lightning-layout-item>
+                    <lightning-layout-item size="12" padding="around-small" small-device-size="12" medium-device-size="12" large-device-size="12" >
+                        <div class="custom-box">
+                            <c-rh_cards_view page-size="20" items={allEmployees} onrowselected={handleCardAction}
+                                ly_xs = "12"
+                                ly_md = "6"
+                                ly_lg = "4">
+                            </c-rh_cards_view>
+                        </div>
+                    </lightning-layout-item>
+
+                </template>
+
             </template>
-            <template if:true={hideView}>
-                <!-- <lightning-layout multiple-rows="true">
-                    <template if:true={hascontact} for:each={listcontact} for:item="contact">
-                        <lightning-layout-item size="12" key={contact.id} class="slds-p-left_small" small-device-size="12" medium-device-size="6" large-device-size="4">
-                            
-                            <c-rh_card record={contact}
-                            icone-name="standard:people"
-                            title={contact.LastName}
-                            keys-fields={keysFields}
-                            keys-labels={keysLabels}
-                            fields-to-show   ={fieldsToShow} 
-                            onaction={handleCardAction}
-                            ></c-rh_card>
-                        </lightning-layout-item>
-                    </template>
-                   
-                </lightning-layout> -->
-                <c-rh_cards_view page-size="20" items={listcontact} onrowselected={handleCardAction}
-                    ly_xs = "12"
-                    ly_md = "6"
-                    ly_lg = "4"
-                        ></c-rh_cards_view>
+            <template if:true={hasrecordid}>   
+                <lightning-layout-item size="12" padding="around-small" small-device-size="12" medium-device-size="12" large-device-size="12" >
+                    <div class="custom-box">
+                        <c-rh_user_view record-id={recordId}></c-rh_user_view> 
+                    </div>
+                </lightning-layout-item>       
             </template>
-        
-        </template>
+            
+        </lightning-layout>
         
 
-        <template if:true={hasrecordid}>   
-            <c-rh_user_view record-id={recordId}></c-rh_user_view>        
-        </template>
+        
        
 </template>

@@ -110,7 +110,7 @@ export default class Rh_timesheet_details extends NavigationMixin(LightningEleme
     keysLabels={
         Project:'Project', 
         EndTimeF:'End Time',
-        DurationInMinutes:'Duration',
+        DurationInMinutes:'Duration (Minutes)',
         StartTimeF:'StaFrt Time'
     };
     fieldsToShow={
@@ -594,8 +594,8 @@ export default class Rh_timesheet_details extends NavigationMixin(LightningEleme
                 required:true,
                 // value: this.sheetItem?.StartTime,
                 value:this.formatDateValue(this.sheetItem?.StartTime),
-                min: startTime,
-                max: endTime,
+                // min: startTime,
+                // max: endTime,
                 type:'Datetime',
                 ly_md:'6', 
                 ly_lg:'6',
@@ -611,8 +611,8 @@ export default class Rh_timesheet_details extends NavigationMixin(LightningEleme
                 required:true,
                 // value: this.sheetItem?.EndTime,
                 value: this.formatDateValue(this.sheetItem?.EndTime),
-                min: startTime,
-                max: endTime,
+                // min: startTime,
+                // max: endTime,
                 type:'Datetime',
                 ly_md:'6', 
                 ly_lg:'6',

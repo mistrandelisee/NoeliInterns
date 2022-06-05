@@ -74,8 +74,8 @@ icon ={...icons}
     get myLeadedGroupTitle(){ return this.generatedTitle(this.l.myleadedGroups,this.leadedGroups)}
     get myLeadedProjectTitle(){ return this.generatedTitle(this.l.myleadedProjects,this.leadedProjects)}
     get userProjects(){ 
-        if (this.profileinformation?.Projects__r?.length>0) {
-         return this.profileinformation?.Projects__r.map(record=>record.RH_Project__r)   
+        if (this.profileinformation?.contact?.Projects__r?.length>0) {
+         return this.profileinformation?.contact?.Projects__r.map(record=>record.RH_Project__r)   
         }else return [];
     }
     getProfile() {

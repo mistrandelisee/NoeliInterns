@@ -2,6 +2,7 @@ import { api, LightningElement } from 'lwc';
 
 export default class Rh_dynamic_form extends LightningElement {
     @api inputsItems=[];
+     items=[];
     @api title;
     @api timeOut;
     @api backcolor;
@@ -15,14 +16,11 @@ export default class Rh_dynamic_form extends LightningElement {
         this.timeOut=this.timeOut || 0;
         this.inputsItems=this.inputsItems?.map(function(item, index) {
             let elt={...item};
-            elt.ly_xs=  elt.ly_xs ?  elt.ly_xs: '6';
+            elt.ly_xs=  elt.ly_xs ?  elt.ly_xs: '12';
             elt.ly_md=  elt.ly_md ?  elt.ly_md: '4';
             elt.ly_lg=  elt.ly_lg ?  elt.ly_lg: '3';
-           // elt.variant=  elt.variant ?  elt.variant: 'label-stacked';
-            elt.isTextarea=  elt.type=='textarea' ? true: false;
-            elt.isFile=  elt.type=='file' ? true: false;// Kb if you want to upload file  
-            elt.isText=  elt.type=='text' ? true: ! (elt.isTextarea || elt.isFile || elt.picklist || elt.datalist);//is text or not textarea or picklist
-            console.log(`elt`, elt);
+            elt.keyField=  elt.name+ new Date().getTime();
+
             return elt;
         });
 
@@ -30,6 +28,15 @@ export default class Rh_dynamic_form extends LightningElement {
         
         
         
+    }
+    regenerateKeys(){
+        this.inputsItems=this.inputsItems?.map(function(item, index) {
+            let elt={...item};
+            elt.keyField=  elt.name+ new Date().getTime();
+            return elt;
+        });
+
+        console.log(`this.inputsItems`, this.inputsItems);
     }
      backgroundcolor(){
         console.log('get');
@@ -40,6 +47,7 @@ export default class Rh_dynamic_form extends LightningElement {
     }
     
     connectedCallback(){
+        this.timeOut=this.timeOut || 0;
         console.log('ddd');
         // let addbackgroung = this.template.querySelector('[class="form-section"]');
         // let addbackgroung = this.template.querySelector('[data-id="section"]');
@@ -48,15 +56,26 @@ export default class Rh_dynamic_form extends LightningElement {
         // }
         // this.title=this.title || 'Form 0';
         this.inputsItems=(this.inputsItems?.length>0)?this.inputsItems:[]
-        this.preCompileDefaultValues();
+       this.preCompileDefaultValues();
+    //    setTimeout(() => {
+    //     this.inputsItems=[]
+    //     console.log(`@@@@@@@@@@@@@@@@@@@@@@@@@@@in Timeout`);
+    //   }, 10e3);
+    this.items=[...this.inputsItems];
         
     }
     renderedCallback(){
         console.log('renderedCallback >>>> Rh_dynamic_form');
-        this.attachDataListsToTextBox();
+        // this.attachDataListsToTextBox();
+        // this.items=this.inputsItems;
+        // this.rendered=this.items==this.inputsItems;
+        // if (!this.rendered) {
+        //     this.items=this.inputsItems;
+        //     this.preCompileDefaultValues();
+        // }
     }
     
-    @api save(){
+    /*@api saveOLD(){
         const isvalid =this.validateFields(); 
          let output={};
         let outputs=[];
@@ -103,9 +122,33 @@ export default class Rh_dynamic_form extends LightningElement {
         console.log('OUTPUTS VALUES outputsItems : ',outputsItems);
         console.log('OUTPUTS VALUES outputsItems111 : ',{isvalid,outputs,obj:output,outputsItems});
         return {isvalid,outputs,obj:output,outputsItems};
+    }*/
+    @api save(){
+        const isvalid =this.validateFields(); 
+        let output={};
+        let outputs=[];
+        let outputsItems=[];
+        if (isvalid) {
+            let self=this;
+            this.inputsItems.forEach(function(item){
+                const key=item.name;
+                let cmp=self.template.querySelector(`c-rh_dynamic_form_item[data-item-id="${key}"]`);
+                // const cmp=self.template.querySelector(`[data-id="${key}"]`);
+                if (cmp) {
+                     let saveFieldResult=cmp.saveField();
+                     outputs=outputs.concat(saveFieldResult.outputs);
+                     outputsItems=outputsItems.concat(saveFieldResult.outputsItems);
+                     output={...output , ...saveFieldResult.obj};
+                }
+            });
+        }
+        // console.log('OUTPUT VALUE : ',output);
+        console.log('OUTPUTS VALUES  PARENT outputsItems111 : ',{isvalid,outputs,obj:output,outputsItems});
+        return {isvalid,outputs,obj:output,outputsItems};
     }
+
     timer;
-    handleChanged(event) {
+    /*handleChangedOLD(event) {
         const delay= +this.timeOut;
         const value = event.detail.value;
         const name = event.currentTarget.dataset.id;
@@ -119,6 +162,11 @@ export default class Rh_dynamic_form extends LightningElement {
             this.publishChangedEvt({info: {name, value,file} , event:event});
         }, delay);//2000
        
+    }*/
+    handleChanged(event){
+        // this.rendered=false;
+        console.log(event.detail.info);
+        this.publishChangedEvt({info: event.detail.info , event:event.detail.event});
     }
     publishChangedEvt(evt){
         console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$4 Publish evt ' ,evt);
@@ -127,7 +175,7 @@ export default class Rh_dynamic_form extends LightningElement {
                this.dispatchEvent(event);
         
     }
-    @api validateFields() {
+    /*@api validateFieldsOLD() {
         console.log('start verification');   
         let isvalid = true;
         let self=this;
@@ -144,7 +192,26 @@ export default class Rh_dynamic_form extends LightningElement {
         // console.log('>>>>>> inputsItems ',this.inputsItems);
        console.log('@@@@@@@@@@ isvalid '+isvalid);
        return isvalid;
-   }
+   }*/
+   @api validateFields() {
+    console.log('start verification');   
+    let isvalid = true;
+    let self=this;
+    this.inputsItems.forEach(function(item){
+        let key=item.name;
+        
+        let cmp=self.template.querySelector(`c-rh_dynamic_form_item[data-item-id="${key}"]`);
+        if (cmp) {
+            isvalid = isvalid && cmp.validateField();
+            // if(!cmp.reportValidity('')) {
+            //     isvalid = false;
+            // }
+        }
+    });
+    // console.log('>>>>>> inputsItems ',this.inputsItems);
+   console.log('@@@@@@@@@@ isvalid '+isvalid);
+   return isvalid;
+}
    attachDataListsToTextBox(){
     const dataLists=this.template.querySelectorAll('[data-type="dataList"]');
     dataLists.forEach(dataList => {

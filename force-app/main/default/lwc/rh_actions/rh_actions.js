@@ -10,7 +10,7 @@ export default class Rh_actions extends LightningElement {
     prefilActions(){
         if (this.actionAvailable?.length) {
             this.actionAvailable=this.actionAvailable.map(function(e){
-                return {...e, class:e?.class?.includes('slds-float_left')? e?.class +' slds-m-left_x-small': e?.class+ ' slds-m-left_x-small slds-float_right' }
+                return {...e,pclass: e?.pclass || ' slds-float_right', class: e?.class +' slds-m-left_x-small' }
             })
             
         }

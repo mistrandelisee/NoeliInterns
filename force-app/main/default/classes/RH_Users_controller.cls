@@ -252,11 +252,12 @@ public without sharing class RH_Users_controller {
             mapReturn.put('input',changepasswordjson);
             changepasswordwrapper pwdResetter = (changepasswordwrapper) JSON.deserialize(changepasswordjson, changepasswordwrapper.class);
             //Uncomment Later
-            List<User> users=userQry.getUserByContactId(pwdResetter.recordId);
+            /*List<User> users=userQry.getUserByContactId(pwdResetter.recordId);
             if (users.isEmpty()){
                 throw new RH_ControllerException('004','Invalid User');
             }
-            pwdResetter.recordId=users[0].id;
+            
+            pwdResetter.recordId=users[0].id;*/
             pwdResetter.changePassword();
                 
                 // String newPassword='0037Q000007I2h0QACwqaa';

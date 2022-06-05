@@ -4,12 +4,8 @@ import { NavigationMixin } from 'lightning/navigation';
 import { labels } from 'c/rh_label';
 
 import getContacts from '@salesforce/apex/RH_Users_controller.getContacts';
-import getEmployeeDetails from '@salesforce/apex/RH_Users_controller.getEmployeeDetails'
-import getExtraFields from '@salesforce/apex/RH_Users_controller.getExtraFields'
 import userStatusUpdate from '@salesforce/apex/RH_Users_controller.userStatusUpdate'
 import userRoleUpdate from '@salesforce/apex/RH_Users_controller.userRoleUpdate'
-import changeMyPassword from '@salesforce/apex/RH_Profile_controller.changeMyPassword';
-import changeUserPassword from '@salesforce/apex/RH_Users_controller.changeUserPassword';
 import { CurrentPageReference } from 'lightning/navigation';
 import { registerListener, unregisterAllListeners,fireEvent } from 'c/pubsub';
 const NEW_ACTION='New';
@@ -33,7 +29,7 @@ const FROM_PARENT='FROM_PARENT';
 export default class Rh_users extends NavigationMixin(LightningElement) {
 
 l={...labels}
-@track listcontact = [];
+@track allEmployees = [];
 recordId;
 contactrecord;
 contactNotFounded=false;
@@ -103,11 +99,8 @@ hasAction;
     get showNew(){ return this.isAdmin && (this.action=='' || this.action==NEW_ACTION || this.action==SAVE_ACTION); }
     get hideView(){  return this.action=='' || this.action!=NEW_ACTION; }
     get hasDetailsActions(){ return this.detailsActions?.length >0}
-    get hasEmployeeInfo(){  return this.contactrecord?true:false; }
     get isAdmin() { return this.currUser?.isCEO || this.currUser?.isRHUser}
-    get hascontact(){ return this.listcontact.length >0; }
     get hasrecordid(){ return this.recordId?true:false; }
-    editContactMode=false;
     connectedCallback(){
         
         this.recordId = this.getUrlParamValue(window.location.href, 'recordId');
@@ -121,7 +114,7 @@ hasAction;
         }
     }
     getAllEmployees(){
-        this.listcontact=[];
+        this.allEmployees=[];
         this.startSpinner(true);
         getContacts({}).then(result =>{
             console.log('result @@@ + ' +(result));
@@ -136,7 +129,7 @@ hasAction;
                                 isBaseUser:result.isBaseUser,
                 }
                 const isAD=this.isAdmin;
-                this.listcontact = []
+                this.allEmployees = []
                 result.Employes.forEach(function (e ){
                     let item={...e};
                     item.title=e.LastName;
@@ -162,9 +155,9 @@ hasAction;
                     console.log(item);
 
                     if(isAD || (!isAD && (self.constants.LWC_ACTIVE_CONTACT_STATUS?.toLowerCase() == e.Status?.toLowerCase())))
-                        self.listcontact.push(item) ;
+                        self.allEmployees.push(item) ;
                 });
-                this.setviewsList(this.listcontact)
+                this.setviewsList(this.allEmployees)
 
                 this.currUser={...result.currentContact,
                                 isCEO:result.isCEO,
@@ -199,15 +192,6 @@ hasAction;
                 break;
         }
             
-        
-    }
-   
-    handleuser(event){
-   
-        console.log('event parent ' +event.detail);
-        //this.getEmployeeInfos(event.detail);
-        
-        this.goToRequestDetail(event.detail);
         
     }
     handleCardAction(event){
@@ -281,17 +265,6 @@ hasAction;
     buildUserRoleActions(role){
         return (role==this.constants?.LWC_CONTACT_ROLE_BU) ? this.RoleActions : [];
     }
-    buildDetailsActions(e){
-        let Actions=[];
-        Actions=Actions.concat(this.buildUserStatusActions(e?.RH_Status__c));
-        Actions=Actions.concat(this.buildUserRoleActions(e?.RH_Role__c));
-        this.detailsActions=Actions.map(function(e, index) {return { ...e,variant:"brand-outline",class:e.class+" slds-m-left_x-small" } });
-    }
-    /*handleDetailsActions(event){
-        console.log('handleDetailsActions :', event.detail.action);
-        const record={Id:this.contactrecord.Id, action:event.detail.action};
-            this.handleUserAction(record, FROM_PARENT);
-    }*/
     callApexUpdateStatus(record,from=''){
         this.startSpinner(true)
         userStatusUpdate({ contactJson: JSON.stringify(record) })
@@ -349,28 +322,6 @@ hasAction;
          * record(id, role)
          */
          this.callApexUpdateRole(record,from);
-    }
-    // handle password 
-
-    handleAction(event){
-        this.startSpinner(true);
-        const data=event.detail;
-        console.log('data >>',data,' \nFORM ',data?.from);
-        switch (data?.from) {
-            case FROMRESETPWD:
-                this.ChangePassword(data);
-                break;
-            default:
-                break;
-        }
-        
-    }
-
-    
-
-
-    quiteEditMode(cmp){
-        cmp?.cancel();
     }
 
     startSpinner(b){

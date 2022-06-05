@@ -44,7 +44,7 @@ public  class RH_Profile_controller {
         
         return mapReturn;
     }
-    private static void getContactDetails(User u, Map<String, Object> mapReturn){
+    private static void getContactDetails(User u, Map<String, Object> mapReturn){//to delete! don/t test
         List<Contact> userContacts=contactQry.getContactById(u.RH_ContactId__c);
         if (userContacts.isEmpty()) throw new RH_ControllerException('002','No RH Contact Founded');
 
@@ -115,7 +115,7 @@ public  class RH_Profile_controller {
 
 
     @AuraEnabled
-    public static Map<String,Object> newUser(String contactjson){
+    public static Map<String,Object> newUser(String contactjson){//don\t test
         Map<String, Object> mapReturn = new Map<String, Object>();
         mapReturn.put('error',false);
         try {

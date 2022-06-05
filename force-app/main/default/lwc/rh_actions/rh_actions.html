@@ -6,7 +6,7 @@
     </div> -->
     <div class="slds-clearfix">
         <template  for:each={actionAvailable} for:item="action" for:index="index">
-        <div class={action.class} key={action.name}>
+        <div class={action.pclass} key={action.name}>
                 <lightning-button variant={action.variant} label={action.label} data-action-name={action.name} title={action.title}
                 icon-name={action.iconName} onclick={handleClick} class={action.class}></lightning-button>
         </div>
