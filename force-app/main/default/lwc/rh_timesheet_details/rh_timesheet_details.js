@@ -39,8 +39,10 @@ const DRAFT_STATUS='nuovo';
 const SUBMITTED_STATUS='inviato';
 const DELETE_ACTION='Delete';
 const ADD_LINE_ACTION='ADD_LINE_ACTION';
-const EXPORT_ACTION='EXPORT_ACTION';
+const EXPORT_ACTION_PDF='EXPORT_ACTION_PDF';
+const EXPORT_ACTION_XLS='EXPORT_ACTION_XLS';
 const SUBMIT_ACTION='inviato';
+
 export default class Rh_timesheet_details extends NavigationMixin(LightningElement)  {
     END_OF_DAY=20;//19h
     START_OF_DAY=8;//19h
@@ -49,7 +51,8 @@ export default class Rh_timesheet_details extends NavigationMixin(LightningEleme
         Delete:'Delete',
         Approve:'Approve',
         AddLines:'Add Items',
-        Export:'Export',
+        ExportPDF:'Export PDF',
+        ExportXLS:'Export XLSX',
     }
     /*StatusActions=[
 
@@ -111,12 +114,53 @@ export default class Rh_timesheet_details extends NavigationMixin(LightningEleme
         Project:'Project', 
         EndTimeF:'End Time',
         DurationInMinutes:'Duration (Minutes)',
-        StartTimeF:'StaFrt Time'
+        StartTimeF:'Start Time'
     };
     fieldsToShow={
         Project:'',DurationInMinutes:'',
         StartTimeF:'ok',EndTimeF:'',
     };
+    SheetItemsCols = [
+        // Column #1
+        {   key:'Project',
+            column: 'Project',
+        },
+        // Column #3
+        {
+            key:'DurationInMinutes',
+            column: 'Duration (Minutes)',
+        },
+        // Column #4
+        {
+            key:'StartTimeF',
+            column: 'Start Time',
+        },
+        // Column #2
+        {
+            key:'EndTimeF',
+            column: 'End Time',
+        }
+    ]
+    SheetCols = [
+        {
+            column:'Status',
+            key:'Status',
+        },
+        
+        {
+            column:"Total Duration In Minutes",
+            key:'TotalDurationInMinutes',
+        },
+        {
+            column:"Total Duration In Hours",
+            key:'TotalDurationInHours',
+        },
+        {
+            column:'Date',
+            key:'StartDate',
+        }
+        
+    ]
     @wire(CurrentPageReference) pageRef;
     get hasDetailsActions(){ return this.detailsActions?.length >0}
     get newLineMode(){ return this.action==ADD_LINE_ACTION}
@@ -232,7 +276,8 @@ export default class Rh_timesheet_details extends NavigationMixin(LightningEleme
                 //add approve action 
                 Actions.push(this.createAction("brand-outline",this.l.Approve,APPROVE_ACTION,this.l.Approve,"utility:edit",'slds-m-left_x-small'));
             }
-            Actions.push(this.createAction("brand-outline",this.l.Export,EXPORT_ACTION,this.l.Export,"utility:pdf_ext",'slds-m-left_x-small'));
+            Actions.push(this.createAction("brand-outline",this.l.ExportPDF,EXPORT_ACTION_PDF,this.l.ExportPDF,"utility:pdf_ext",'slds-m-left_x-small'));
+            Actions.push(this.createAction("brand-outline",this.l.ExportXLS,EXPORT_ACTION_XLS,this.l.ExportXLS,"utility:pdf_ext",'slds-m-left_x-small'));
         }
         if (DRAFT_STATUS.toLowerCase() == this.record.Status?.toLowerCase()) {//if draft
             if (this.isMine) {//is mine
@@ -277,8 +322,11 @@ export default class Rh_timesheet_details extends NavigationMixin(LightningEleme
                 this.sheetItem={};
                 this.initEntryAction();
                 break;
-            case EXPORT_ACTION:
+            case EXPORT_ACTION_PDF:
                 this.handleExportTimeSheet();
+                break;
+            case EXPORT_ACTION_XLS:
+                this.handleExportXLSTimeSheet();
                 break;
             default:
                 console.error('Actions ',action ,' not reconized');
@@ -306,6 +354,22 @@ export default class Rh_timesheet_details extends NavigationMixin(LightningEleme
                 console.error('Error:', error);
                 this.showToast(ERROR_VARIANT,'ERROR', error);
             })
+    }
+    /*Generated PDF Functions*/
+     handleExportXLSTimeSheet(){
+        const HeaderTemplate=[{value: 'Sheet Informations', wrap: true, fontWeight: 'bold'}];
+        const HeaderItemsTemplate=[{value: 'Sheet Items', wrap: true, fontWeight: 'bold'}];
+        const divider=[];
+        let exporter=this.template.querySelector('c-rh_export_excel');
+        const sheetObj=exporter.buildRows(this.SheetCols,[this.record]);
+        const sheetItemsObj=exporter.buildRows(this.SheetItemsCols,this.timesheetEntries);
+
+        const allRows =[HeaderTemplate,...sheetObj.rows,divider,HeaderItemsTemplate,...sheetItemsObj.rows] 
+        const maxCols= sheetObj.columns?.length >=sheetItemsObj.columns?.length ? sheetObj.columns   :  sheetItemsObj.columns;
+        console.log(allRows);
+        console.log(maxCols);
+
+         exporter.setDatas(allRows,maxCols);
     }
 
     saveFile(StringBlob) {

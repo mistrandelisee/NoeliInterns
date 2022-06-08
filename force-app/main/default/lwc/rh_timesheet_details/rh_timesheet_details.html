@@ -1,6 +1,8 @@
 <template>
     
     <template if:true={hasSheetInfo}>
+        <c-rh_export_excel hide-btn mode="CUSTOM" file-name={fileName}>
+        </c-rh_export_excel>
         <lightning-layout multiple-rows>
             <lightning-layout-item size="12" padding="around-smallx" small-device-size="12" medium-device-size="12" large-device-size="12" >
                 <div class="custom-box">
