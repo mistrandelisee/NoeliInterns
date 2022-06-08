@@ -70,9 +70,11 @@ const labels = {
     Freeze: 'Freeze',
     Disable: 'Disable',
     Delete: 'Delete',
-    Groeup: 'Group',
+    Group: 'Group',
     SaveAndActive: 'Save And Active',
     Back: 'Back',
+    IsPublic: 'Is Public',
+    Submiter: 'Submit By',
 
     Name: 'Name',
     GroupeMember: 'The Groupe Member are',
@@ -84,6 +86,22 @@ const labels = {
     Submit:'Submit',
     Delete:'Delete',
     Approve:'Approve',
+
+    Submited:'Submited',
+    Delete:'Delete',
+    Approved:'Approved',
+    Draft:'Draft',
+    SaveandSubmited:'Save and Submit',
+    Deleterequest:'Delete request',
+    Clonerequest: 'Clone request',
+    Editrequest: 'Edit request',
+    Sendrequest: 'Send request',
+    Createrequest:'Create request',
+
+    FilterTitle: 'Filter the news',
+    ConfigTitle: 'News configuration',
+    
+
 
 };
 export { labels }
