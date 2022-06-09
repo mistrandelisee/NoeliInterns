@@ -25,17 +25,16 @@ public without sharing class RH_Users_controller {
     
     
     }
-
     @AuraEnabled 
-    public static Map<String,Object>  getContacts(){
+    public static Map<String,Object>  getContacts(String filterTxt){
         Map<String, Object> mapReturn = new Map<String, Object>();
         List<Map<String, Object>> listcon = new List<Map<String, Object>>();
-        List<String> listcontactId = new List<String>();
         mapReturn.put('error',false);
         try {
             
-                
-            Map<Id, Contact> mapContacts=contactQry.getAllContacts();
+            mapReturn.put('filterTxt',filterTxt); 
+            ContactFilterWrapper filter= (ContactFilterWrapper) JSON.deserialize(filterTxt, ContactFilterWrapper.class); 
+            Map<Id, Contact> mapContacts=contactQry.getFilteredContacts(filter);
             
             List<User> users=userQry.getOtherUsersByContactIds(new List<Id>(mapContacts.keySet()));
             if (users.size()>0){
@@ -47,22 +46,48 @@ public without sharing class RH_Users_controller {
                     conId = u.RH_ContactId__c;
                     if (String.isNotBlank(conId)) {
                         mapContactToUser.put(conId,u.Id);
-                        listcontactId.add(conId);
                     }
                 }
-            }else{
-                throw new RH_ControllerException('004','No User for This Profile Founded');
             }
+            // else{
+            //     throw new RH_ControllerException('004','No User for This Profile Founded');
+            // }
                 if (mapContacts.values().size()>0){
                     listcon = populateContact(mapContacts.values());
-                }else{
-                    throw new RH_ControllerException('002','No RH Contact Founded');
+                }
+                else{
+                    throw new RH_ControllerException('002','No Records Founded');
                 } 
             mapReturn.put('Employes',listcon); 
+            mapReturn.put('in',filter); 
             // mapReturn.put('users',users); 
             mapReturn.put('Constants',RH_Constans.getAllConstants()); 
-            mapReturn.put('Timesheets',[select Id,TotalDurationInHours, EndDate, StartDate, (SELECT Id,Status, Description from TimeSheetEntries) from TimeSheet]); 
 
+            mapReturn.putAll(RH_Utility.checkRole()); 
+            mapReturn.put('Ok',true); 
+        } catch(Exception e) {
+            System.debug(e.getMessage());
+            mapReturn.put('error',true);
+            mapReturn.put('msg',e.getMessage());
+            mapReturn.put('msgLine',e.getStackTraceString());
+            mapReturn.put('e',e);
+        }  
+        return mapReturn;
+    }
+    @AuraEnabled 
+    public static Map<String,Object>  InitFilter(){
+        Map<String, Object> mapReturn = new Map<String, Object>();
+        mapReturn.put('error',false);
+        try {
+            List<RH_Utility.PickOption> OrderBys = new List<RH_Utility.PickOption>();
+            OrderBys.add(new RH_Utility.PickOption('None', ''));
+            OrderBys.add(new RH_Utility.PickOption('Created Date', 'CreatedDate'));
+            OrderBys.add(new RH_Utility.PickOption('Name', 'FirstName'));
+            OrderBys.add(new RH_Utility.PickOption('Groups', 'RH_WorkGroup__c'));
+            // OrderBys.add(new RH_Utility.PickOption('Created Date', 'CreatedDate'));
+            // List<RH_WorkGroup__c> grps=workGroupQry.getActiveWorkgroups();
+            mapReturn.put('OrderBys',OrderBys); 
+            mapReturn.put('Picklists',RH_Utility.getPickListOptions(new List<String> {'RH_Role__c','RH_Status__c'},'Contact')); 
             mapReturn.putAll(RH_Utility.checkRole()); 
             mapReturn.put('Ok',true); 
         } catch(Exception e) {
@@ -324,7 +349,17 @@ public without sharing class RH_Users_controller {
        }
        return null;
     }
-
+    
+    public class ContactFilterWrapper {
+        @AuraEnabled public String searchText{get;set;}
+        @AuraEnabled public String status{get;set;}
+        @AuraEnabled public Datetime startDate{get;set;}
+        @AuraEnabled public Datetime endDate{get;set;}
+        @AuraEnabled public String role{get;set;}
+        @AuraEnabled public Boolean isActive{get;set;}
+        @AuraEnabled public String orderBy{get;set;}
+        @AuraEnabled public String orderOn{get;set;}
+    } 
     public class ContactWrapper {
         @AuraEnabled public String LastName{get;set;}
         @AuraEnabled public String RHRolec{get;set;}
