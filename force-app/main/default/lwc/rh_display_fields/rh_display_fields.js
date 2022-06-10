@@ -44,7 +44,7 @@ export default class Rh_display_fields extends NavigationMixin(LightningElement)
             }
             i=i+1;
         }
-        console.log(`outfields  `, outfields );
+        // console.log(`outfields  `, outfields );
         return outfields;
     }
     initDefaultAction(){
