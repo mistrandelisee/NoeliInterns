@@ -7,7 +7,7 @@
         <lightning-layout multiple-rows>
             <template if:true={hasDetailsActions} >
                 
-                <lightning-layout-item size="12" padding="around-smallx" small-device-size="12" medium-device-size="12" large-device-size="12">
+                <lightning-layout-item size="12" padding="horizontal-small" small-device-size="12" medium-device-size="12" large-device-size="12">
                     <div class="custom-box">
                        <!-- Actions -->
                        <c-rh_actions  onaction={handleDetailsActions} action-available={detailsActions} >  </c-rh_actions>
@@ -59,15 +59,16 @@
                                 </lightning-card>
                             </template>
                         </div>
-                        <template if:true={isUser}>
+                         <!--<template if:true={isUser}>
                             <template if:true={isAdmin}>
-                                <!-- reset passzord -->
+                                //reset passzord 
                                 <div class="slds-p-around_medium profile_reset_password ">
                                     <c-rh_reset_password title={l.ChangePasswordTitle} onaction={handleAction} ></c-rh_reset_password>
                                 </div>
                                             
                             </template>
                         </template>
+                        -->
                 </div>
             </lightning-layout-item>
             <template if:true={isUser}>

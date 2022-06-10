@@ -108,9 +108,16 @@ const labels = {
     FilterTitle: 'Filter the news',
     ConfigTitle: 'News configuration',
     UploadFile: 'Upload File',
-    FilterAccomplishment: 'Filter Accomplishment'
+    FilterAccomplishment: 'Filter Accomplishment',
     
-
+    label: 'Field Label',
+    value: 'Field Value',
+    userInfoHlp : 'View user details',
+    userEditHlp : 'Edit user details',
+    moreInfo:'More Informations',
+    
+    userMoreInfoHlp : 'More details',
+    userEditMoreHlp : 'Edit additionnal information about you , check each time you edit an information. then save all...',
 
 };
 export { labels }

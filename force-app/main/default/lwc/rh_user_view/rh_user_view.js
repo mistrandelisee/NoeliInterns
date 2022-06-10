@@ -30,6 +30,7 @@ const SAVE_ACTION='Save';
 
 const ACTIVE_ACTION='active';
 const DISABLE_ACTION='banned';
+const RESETPWD='RESETPWD';
 const FREEZE_ACTION='frozen';
 const PROMOTE_ACTION='PromoteBaseUser';
 const CARD_ACTION='stateAction';
@@ -78,8 +79,7 @@ RoleActions=[
         // class:"active-item"
     }
 ]
-detailsActions=[
-]
+detailsActions=[]
 @wire(CurrentPageReference) pageRef;
 action='';
 isUser;
@@ -154,9 +154,17 @@ hasAction;
         switch (event.action) {
             case OK_DISABLE:
                 this.doUpdateStatus(this.actionRecord,OK_DISABLE)
+                this.actionRecord={};
                 break;
             case OK_FREEZE:
                 this.doUpdateStatus(this.actionRecord,OK_FREEZE)
+                this.actionRecord={};
+                break;
+            case RESETPWD:
+                if (this.actionRecord.action == RESETPWD) {
+                    this.ChangePasswordApex({});
+                    this.actionRecord={};
+                }
                 break;
             default:
                 this.actionRecord={}; 
@@ -195,6 +203,15 @@ hasAction;
                  extra.style+='--lwc-colorBorder: var(--warningColor);';
                 this.actionRecord=record;
                 Actions.push(this.createAction("brand-outline",'Yes',OK_FREEZE,'Yes',"utility:close",'slds-m-left_x-small'));
+                this.ShowModal(true,text,Actions,extra);
+                break;
+            case RESETPWD:
+                // record.Status=this.constants.LWC_FREEZE_CONTACT_STATUS;
+                    text='Are you sure you want to reset this user Password?';
+                    extra.title='Confirm Reset Password';
+                    extra.style+='--lwc-colorBorder: var(--warningColor);';
+                this.actionRecord=record;
+                Actions.push(this.createAction("brand-outline",'Yes',RESETPWD,'Yes',"utility:close",'slds-m-left_x-small'));
                 this.ShowModal(true,text,Actions,extra);
                 break;
             case PROMOTE_ACTION:
@@ -399,6 +416,9 @@ hasAction;
         if ((this.constants.LWC_ACTIVE_CONTACT_STATUS?.toLowerCase() == e.Status?.toLowerCase())) {//
             Actions=Actions.concat(this.buildUserRoleActions(e?.RH_Role__c));
         }
+        if (this.isUser) {
+            Actions.push(this.createAction("brand-outline",this.l.ChangePasswordTitle,RESETPWD,this.l.ChangePasswordTitle,"utility:close",'slds-m-left_x-small'));
+        }
         this.detailsActions=Actions.map(function(e, index) {return { ...e,variant:"brand-outline",class:e.class+" slds-m-left_x-small" } });
     }
     handleDetailsActions(event){
@@ -546,8 +566,8 @@ hasAction;
     ChangePassword(evt){
         const data={...evt.data};
 
-        if(evt.action==RESET_ACTION)
-            this.ChangePasswordApex(data);
+        //if(evt.action==RESET_ACTION)
+            //this.ChangePasswordApex(data);
     }
 
     ChangePasswordApex(info){
