@@ -3,6 +3,7 @@ import { NavigationMixin } from 'lightning/navigation';
 
 import { labels } from 'c/rh_label';
 
+import initConfig from '@salesforce/apex/RH_Timesheet_Controller.InitFilter';
 import getTimeSheets from '@salesforce/apex/RH_Timesheet_Controller.getTimeSheets';
 import timeSheetCreation from '@salesforce/apex/RH_Timesheet_Controller.timeSheetCreation';
 import { CurrentPageReference } from 'lightning/navigation';
@@ -32,7 +33,15 @@ const DRAFT_STATUS='nuovo';
 const DELETE_ACTION='Delete';
 const SUBMIT_ACTION='inviato';
 export default class Rh_timesheet extends NavigationMixin(LightningElement) {
-    l={...labels,  }
+   
+    l={...labels, 
+        Number: 'Number',
+        From: 'From',
+        To: 'To',
+        OrderBy:'sort By',
+        selectPlc:'Select an option'
+    }
+
     @track groups=[];
     @track timeSheets = [];
     recordId;
@@ -51,6 +60,19 @@ export default class Rh_timesheet extends NavigationMixin(LightningElement) {
         StartDate:'ok',TotalDurationInMinutes:'',StatusLabel:''
     };
 
+    filter={
+        status:null,
+        startDate:null,
+        endDate:null,
+        isActive:null,
+        orderBy:null,
+        orderOn:null,
+    };
+
+    Status=[];
+    OrderBys=[];
+
+    filterInputs=[];
     constants={};
 
     StatusActions=[
@@ -107,10 +129,12 @@ export default class Rh_timesheet extends NavigationMixin(LightningElement) {
     get showNew(){ return this.isMine && (this.action=='' || this.action==NEW_ACTION || this.action==SAVE_ACTION); }
     get hideView(){  return this.action=='' || this.action!=NEW_ACTION; }
     get hasDetailsActions(){ return this.detailsActions?.length >0}
+    get filterReady(){ return this.filterInputs?.length >0}
     get isAdmin() { return this.currUser?.isCEO || this.currUser?.isTLeader}
     get isApprover() { return this.isAdmin || this.currUser?.isApprover}
     get hasTimeSheets(){ return this.timeSheets.length >0; }
     get hasrecordid(){ return this.recordId?true:false; }
+    
     connectedCallback(){
         // console.log(`RECORD ID`, this.recordId);
         this.recordId = this.getUrlParamValue(window.location.href, 'recordId');
@@ -118,14 +142,49 @@ export default class Rh_timesheet extends NavigationMixin(LightningElement) {
             console.log(`RECORD ID`, this.recordId);
         }else{
             this.userId = this.getUrlParamValue(window.location.href, 'uId');
-            this.getTimesheets(this.userId);
+            this.initFilter();
+            this.getTimesheets(this.filter, this.userId);
         }
     }
+    
+    initFilter(){
+        // this.startSpinner(true)
+        initConfig()
+          .then(result => {
+            console.log('Result INIT FILTER ');
+            console.log(result);
+            if (!result.error && result.Ok) {
+                this.Status = result.Picklists?.Status;
+                // this.roles = result.Picklists?.RH_Role__c;
+                this.OrderBys = result.OrderBys;
+                this.Status.unshift({
+                    label:this.l.selectPlc,value:''
+                });
+                this.buildFilter();
+            }else{
+                this.showToast(WARNING_VARIANT,'ERROR Initialising', result.msg);
+            }
+          })
+          .catch(error => {
+            console.error('Error in calling :', error);
+        }).finally(() => {
+            // this.startSpinner(false)
+        });
+    }
+
     isMine;
+
+    handleSubmitFilter(event){
+        const record=event.detail;
+        this.filter={... this.filter ,...record ,
+                    orderOn: record.orderOn ? 'DESC' : 'ASC'};
+        this.getTimesheets();
+    }
+
     getTimesheets(){
         this.timeSheets=[];
         this.startSpinner(true);
-        getTimeSheets({}).then(result =>{
+        getTimeSheets({filterTxt:JSON.stringify(this.filter), userId:this.userId}).then(result =>{
             console.log('result @@@ + ' +(result));
             console.log(result);
             const self=this;
@@ -182,10 +241,10 @@ export default class Rh_timesheet extends NavigationMixin(LightningElement) {
                 });
                 this.setviewsList(this.timeSheets)
             }else{
-                this.showToast(WARNING_VARIANT,'ERROR', result.msg);
+                this.showToast(WARNING_VARIANT,'ERROR in getting results', result.msg);
             }
         }).catch(e => {
-            this.showToast(ERROR_VARIANT,'ERROR', e.message);
+            this.showToast(ERROR_VARIANT,'ERROR Catch', e.message);
             console.error(e);
         })
         .finally(() => {
@@ -279,9 +338,82 @@ export default class Rh_timesheet extends NavigationMixin(LightningElement) {
             state: states
         });
     }
+
+    buildFilter(){
+        /*{
+            searchText:null,
+            status:null,
+            startDate:null,
+            endDate:null,
+            role:null,
+            isActive:null,
+            orderBy:null,
+            orderOn:null,
+        }*/
+        
+            
+            this.filterInputs =[
+            {
+                label:this.l.Status,
+                name:'status',
+            
+                picklist: true,
+                options: this.Status,
+                value: '',
+                ly_md:'3',
+                ly_xs:'12',  
+                ly_lg:'3'
+            },
+            {
+                label:this.l.From,
+                placeholder:this.l.From,
+                name:'startDate',
+               
+                value: '',
+                type:'Date',
+                ly_md:'3', 
+                ly_xs:'6', 
+                ly_lg:'3',
+            },
+            {
+                label:this.l.To,
+                placeholder:this.l.To,
+                name:'EndDate',
+               
+                value: '',
+                type:'Date',
+                ly_md:'3', 
+                ly_xs:'6', 
+                ly_lg:'3',
+            },
+            {
+                label:this.l.OrderBy,
+                name:'orderBy',
+
+                picklist: true,
+                options: this.OrderBys,
+                value: 'CreatedDate',
+                ly_md:'3',
+                ly_xs:'12',  
+                ly_lg:'3'
+            },
+            {
+                label:'As',
+                name:'orderOn',
+                checked:true,
+                type:'toggle',
+                toggleActiveText:'DESC',
+                toggleInactiveText:'ASC',
+                ly_md:'6', 
+                ly_lg:'6'
+            }   
+        ];
+
+    }
+
     createAction(variant,label,name,title,iconName,className){ 
         return {
-            variant, label, name, title, iconName,  class:className
+            variant, label, name, title, iconName,  class:className ,pclass :' slds-float_right'
         };
     }
     startSpinner(b){
