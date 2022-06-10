@@ -6,6 +6,7 @@
 
 const labels = {
     //ARO_Title
+    Add: 'Add',
     Edit: 'Edit',
     Save: 'Save',
     New: 'New',
@@ -64,10 +65,12 @@ const labels = {
     Note: 'Reason',
     RequestTypeName: 'Request Type',
     ComplainOn: 'Complain On',
-    Come: 'Come from',
+    Come: 'Submit by',
     DateLb: 'Date',
     DatePlc: 'Enter Your Date',
     Visibility: 'Public ?',
+
+
 
     Activate: 'Activate',
     Freeze: 'Freeze',
@@ -78,6 +81,7 @@ const labels = {
     Back: 'Back',
     IsPublic: 'Is Public',
     Submiter: 'Submit By',
+    StatusPlc: 'Select one status',
 
     Name: 'Name',
     GroupeMember: 'The Groupe Member are',
@@ -103,6 +107,8 @@ const labels = {
 
     FilterTitle: 'Filter the news',
     ConfigTitle: 'News configuration',
+    UploadFile: 'Upload File',
+    FilterAccomplishment: 'Filter Accomplishment'
     
 
 
