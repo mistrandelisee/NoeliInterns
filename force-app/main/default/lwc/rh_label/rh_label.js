@@ -32,6 +32,7 @@ const labels = {
     EmailPlc: 'Enter Email Address',
     Title: 'Title',
     TitlePlc: 'Enter Your Title',
+    NotePlc: 'Insert a note',
 
     Phone:'Phone',
     PhonePlc:'Enter Phone Number',
@@ -59,6 +60,8 @@ const labels = {
     StartDate: 'Start date',
     EndDate: 'End date',
     AddressedCc: 'Addressed Cc',
+    ComplainOn: 'Complain On',
+    Note: 'Reason',
     RequestTypeName: 'Request Type',
     ComplainOn: 'Complain On',
     Come: 'Come from',
@@ -80,7 +83,6 @@ const labels = {
     GroupeMember: 'The Groupe Member are',
     Leader: 'Leader Name',
 
-
     PromoteBaseUser: 'Mark As Team Leader',
     
     Submit:'Submit',
@@ -91,6 +93,7 @@ const labels = {
     Delete:'Delete',
     Approved:'Approved',
     Draft:'Draft',
+    Reject:'Reject',
     SaveandSubmited:'Save and Submit',
     Deleterequest:'Delete request',
     Clonerequest: 'Clone request',
