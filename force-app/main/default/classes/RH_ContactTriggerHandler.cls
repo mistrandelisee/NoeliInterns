@@ -37,18 +37,7 @@ public class RH_ContactTriggerHandler {
         }
     }
     public static void createIdentyUser(List<Contact> RHContacts) {
-        // List<User> RHUsers = new List<User>();
-        // for (Contact con : RHContacts){
-        //     RHUsers.add(addEmployee(con));
-        // }
-        // try {
-        //     insert RHUsers;
-        // } catch (Exception e) {
-        //     System.debug('eee' + e);
-        //     throw e;
-        // }
         Id ProfileId = [SELECT ID FROM Profile WHERE Name =:RH_Constans.RH_PROFILE_NAME].Id;
-       // ExecuteLogic(RHContacts,ProfileId);
         ID manageJobID = System.enqueueJob(new UserManager(RHContacts,ProfileId));
     }
     public static void ExecuteLogic(List<Contact> RHContacts,Id ProfileId) {
@@ -56,7 +45,6 @@ public class RH_ContactTriggerHandler {
         List<List<Database.Error>> listError = new List<List<Database.Error>>();
         List<User> listSucces = new List<User>();
         List<String> listeError = new List<String>();
-        //Map<String ,String> MapError = new Map<String, String>();
         Map<String ,List<String>> MapError = new Map<String, List<String>>();
         List<String> listIdErrorRecord = new List<String>();
         Map<String, UserRole> RH_Map_Role= new Map<String, UserRole>(); 
@@ -68,30 +56,24 @@ public class RH_ContactTriggerHandler {
         if (!RHContacts.isEmpty()) {
             for (Contact con : RHContacts){ 
                 if (con.RH_Create_User__c) {
-                //    RHUsers.add(addEmployee(con,ProfileId));
                     User u = addEmployee(con,ProfileId);
                     u.UserRoleId = (RH_Map_Role.get(RH_Constans.RH_Map_RoleName.get(con.RH_Role__c))).Id;
                     RHUsers.add(u);
                 }
                 
             }
-           // insert RHUsers;
-
             Database.SaveResult[] srList = Database.insert(RHUsers, false);
-            system.debug('dans le ExecuteLogic apres insertion du User');
+            system.debug('dans le ExecuteLogic apres insertion des Users');
             integer i = 0;
             for(Database.SaveResult sr : srList){
                 String chaineError ='';
                 if(!sr.isSuccess()){
-  //                  listError.add(sr.getErrors());
-                    
                     listIdErrorRecord.add(RHUsers[i].RH_ContactId__c);
                     for(Database.Error err : sr.getErrors()){
                         chaineError = chaineError + err.getStatusCode() + ': ' + err.getMessage();
                         listeError.add(err.getStatusCode() + ',' +err.getMessage());
                     }
-  //                  MapError.put(RHUsers[i].RH_ContactId__c, chaineError);
-                      MapError.put(RHUsers[i].RH_ContactId__c, listeError);
+                    MapError.put(RHUsers[i].RH_ContactId__c, listeError);
                 }else{
                     listSucces.add(RHUsers[i]);
                 }
@@ -132,8 +114,6 @@ public class RH_ContactTriggerHandler {
         Contact[] contact_to_delete = [SELECT Id, Name, Email, RH_Role__c FROM Contact WHERE Id IN :ContactId];
         for(Contact con : contact_to_delete){
             stringListe.add(con.Name + ',' + con.Email+ ',' +string.valueOf(MapError.get(con.Id)));
-        /*  chaine = chaine + 'Contact Name: '+con.Name+ ' Email: '+con.Email+' And with Id:'+con.Id+'\n with these error '+
-            string.valueOf(MapError.get(con.Id))+'\n'; */
         }
 
         csvFile = columnHeader + String.join(stringListe, '\n');
@@ -170,16 +150,6 @@ public class RH_ContactTriggerHandler {
             try {
                 
                 savepoint = Database.setSavepoint();
-                /*List<User> RHUsers = new List<User>();
-                if (!AllcontactList.isEmpty()) {
-                    for (Contact con : AllcontactList){
-                        if (con.RH_Create_User__c) {
-                            RHUsers.add(addEmployee(con,ProfileId));
-                        }
-                    }
-                    insert RHUsers;
-                }
-                setDefaultPassWord(RHUsers);*/
                 ExecuteLogic(AllcontactList,ProfileId);
             }
             catch(Exception e) {
@@ -199,30 +169,26 @@ public class RH_ContactTriggerHandler {
     }
     public static User addEmployee(Contact con,Id ProfileId){
         Map<String, Object> mapReturn = new Map<String, Object>();
-        //Id ProfileId = [SELECT ID FROM Profile WHERE Name ='Custom Identity User'].Id;
-      
-       
-            string alias=(String.isNotBlank(con.FirstName )? con.FirstName.left(3) : 'x' ) +''+(String.isNotBlank(con.LastName )? con.LastName.left(3) : 'x') ;
-            string nickname=(String.isNotBlank(con.FirstName )? con.FirstName.left(19) : 'x' ) +' '+(String.isNotBlank(con.LastName )? con.LastName.left(20) : 'x') ;
-            //String password =alias+System.now().getTime();                
-            User u=new User(Alias = alias,
-                                CommunityNickname=nickname,
-                                Email =con.Email,
-                                Title =con.Title,
-                                RH_ContactId__c = con.Id,
-                                RH_Password__c = con.Id,
-                                FirstName =con.FirstName,
-                                LastName =con.LastName,
-                                Phone =con.Phone,
-                                Department =con.Department,
-                                UserName =String.isNotBlank(con.Email) ? formatUsername(con.Email) : formatUsername(con.LastName),
-                                ProfileId = ProfileId,
-                                EmailEncodingKey ='UTF-8',
-                                LanguageLocaleKey ='fr',// 'it' ,
-                                LocaleSidKey ='fr_FR',//it_IT' ,
-                                TimeZoneSidKey ='Africa/Douala',// 'Europe/Rome' ,
-                                IsActive=true
-                            );
+        string alias=(String.isNotBlank(con.FirstName )? con.FirstName.left(3) : 'x' ) +''+(String.isNotBlank(con.LastName )? con.LastName.left(3) : 'x') ;
+        string nickname=(String.isNotBlank(con.FirstName )? con.FirstName.left(19) : 'x' ) +' '+(String.isNotBlank(con.LastName )? con.LastName.left(20) : 'x') ;
+        User u=new User(Alias = alias,
+                            CommunityNickname=nickname,
+                            Email =con.Email,
+                            Title =con.Title,
+                            RH_ContactId__c = con.Id,
+                            RH_Password__c = con.Id,
+                            FirstName =con.FirstName,
+                            LastName =con.LastName,
+                            Phone =con.Phone,
+                            Department =con.Department,
+                            UserName =String.isNotBlank(con.Email) ? formatUsername(con.Email) : formatUsername(con.LastName),
+                            ProfileId = ProfileId,
+                            EmailEncodingKey ='UTF-8',
+                            LanguageLocaleKey ='fr',// 'it' ,
+                            LocaleSidKey ='fr_FR',//it_IT' ,
+                            TimeZoneSidKey ='Africa/Douala',// 'Europe/Rome' ,
+                            IsActive=true
+                        );
         return u;
 
     }
@@ -233,7 +199,6 @@ public class RH_ContactTriggerHandler {
         if (checkValidUsername(inUsername)) {
             username= inUsername+'.'+orgname;
         }else{
-        //  username=inUsername.toLowerCase() + system.now().getTime() +'@aro.it' ;
          username=inUsername.toLowerCase() +'@'+orgname+'.it' ;
         }
         username=customTrim(username);
