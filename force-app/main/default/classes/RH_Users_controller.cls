@@ -137,10 +137,11 @@ public without sharing class RH_Users_controller {
             if (String.isNotBlank(grp)) {
                 conctactUser.RH_WorkGroup__c=  grp;
             }
-            conctactUser.RH_Create_User__c=false;
-            if(mapInputs.Activated){
-                conctactUser.RH_Create_User__c=true;
-                conctactUser.RH_Status__c=RH_Constans.ACTIVATED_CONTACT_STATUS;
+            if(mapInputs.Activated != null){
+                conctactUser.RH_Create_User__c=mapInputs.Activated;
+                if(mapInputs.Activated){
+                    conctactUser.RH_Status__c=RH_Constans.ACTIVATED_CONTACT_STATUS;
+                }
             }
             List<User> users=userQry.getUserById(Userinfo.getUserId());
             if (!users.isEmpty()) {
@@ -283,7 +284,12 @@ public without sharing class RH_Users_controller {
             }
             
             pwdResetter.recordId=users[0].id;*/
-            pwdResetter.changePassword();
+            Map<String, Object> mapRole = RH_Utility.checkRole();
+            if ((Boolean) mapRole.get('isCEO') || (Boolean) mapRole.get('isRHUser')) {
+                pwdResetter.changePassword();
+            }else {
+                throw new RH_ControllerException('002','Unsufficient rights for this action');
+            }
                 
                 // String newPassword='0037Q000007I2h0QACwqaa';
                 // String verifyNewPassword='0037Q000007I2h0QACwqaa';
@@ -383,7 +389,15 @@ public without sharing class RH_Users_controller {
         @AuraEnabled public String newPassword;
         @AuraEnabled public String recordId;
         public void changePassword() {
-           System.setPassword(recordId, newPassword);
+            Blob b = Crypto.GenerateAESKey(128);
+            String h = EncodingUtil.ConvertTohex(b);
+            newPassword=h;//'nl!'+recordId.abbreviate(5)+system.now().getTime();//auto generate default pass
+            System.setPassword(recordId, newPassword);
+            Map<String, Object> emailInputMap = new  Map<String, Object>{
+                'userId'=> recordId,
+                'Password'=> newPassword
+            };
+            RH_Emails_Utility.sendUserResetPassword(emailInputMap);
         }
     }
 
