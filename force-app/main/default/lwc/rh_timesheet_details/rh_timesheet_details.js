@@ -2,11 +2,13 @@ import { api, LightningElement,track,wire } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
 
 import { labels } from 'c/rh_label';
+import { icons } from 'c/rh_icons';
 
 import getTimeSheet from '@salesforce/apex/RH_Timesheet_Controller.getTimeSheet';
 import initConfig from '@salesforce/apex/RH_Timesheet_Controller.InitEntryCreation';
 import timeSheetEntryCreation from '@salesforce/apex/RH_Timesheet_Controller.timeSheetEntryCreation';
 import submitTimeSheet from '@salesforce/apex/RH_Timesheet_Controller.submitTimeSheet';
+import approvalTimesheet from '@salesforce/apex/RH_Timesheet_Controller.approvalTimesheet';
 import deleteTimeSheet from '@salesforce/apex/RH_Timesheet_Controller.deleteTimeSheet';
 import deleteTimeSheetEntry from '@salesforce/apex/RH_Timesheet_Controller.deleteTimeSheetEntry';
 import generatedPDF from '@salesforce/apex/RH_Timesheet_Controller.generatedPDF';
@@ -35,6 +37,7 @@ const FROM_CHILD='FROM_CHILD';
 const FROM_PARENT='FROM_PARENT';
 
 const APPROVE_ACTION='approvato';
+const REJECT_ACTION='Reject';
 const DRAFT_STATUS='nuovo';
 const SUBMITTED_STATUS='inviato';
 const DELETE_ACTION='Delete';
@@ -53,7 +56,10 @@ export default class Rh_timesheet_details extends NavigationMixin(LightningEleme
         AddLines:'Add Items',
         ExportPDF:'Export PDF',
         ExportXLS:'Export XLSX',
+        approvalTitle:'APPROVAL ACTION',
+        noTimesheetItems:'No Timesheet Items found for this timesheet. Use the Add times Action to add items',
     }
+    icon={...icons}
     /*StatusActions=[
 
 
@@ -161,21 +167,35 @@ export default class Rh_timesheet_details extends NavigationMixin(LightningEleme
         }
         
     ]
+    
+    approvalInputs=[];
+    approvalLbl;
     @wire(CurrentPageReference) pageRef;
     get hasDetailsActions(){ return this.detailsActions?.length >0}
     get newLineMode(){ return this.action==ADD_LINE_ACTION}
+    get approval(){ return this.action==APPROVE_ACTION || this.action==REJECT_ACTION}
     get hasSheetInfo(){  return this.record?true:false; }
     get isAdmin() { return this.currUser?.isCEO || this.currUser?.isTLeader}
     get isApprover() { return this.isAdmin || this.currUser?.isApprover}
+    get isApproved(){ return APPROVE_ACTION.toLowerCase() == this.record.Status?.toLowerCase() ; }
+
+    get isRejected(){ return REJECT_ACTION.toLowerCase() == this.record.Status?.toLowerCase() ; }
+
+    get isSubmitted(){ return SUBMITTED_STATUS.toLowerCase() ==this.record.Status?.toLowerCase() ; }
+
+    get isDraft(){ return DRAFT_STATUS.toLowerCase() ==this.record.Status?.toLowerCase() ; }
+
+    get isEditable(){return this.isDraft || this.isRejected}
+    get isFinal(){return this.isApproved || this.isRejected}
     get isEntryReadOnly(){
-        return !(this.isMine && DRAFT_STATUS.toLowerCase() == this.record?.Status?.toLowerCase())
+        return !(this.isMine && this.isEditable)
     }
     get fileName(){ return this.title }
 
-    get lineIcon(){ return (this.isEntryReadOnly) ?'':'utility:edit' }
+    get lineIcon(){ return (this.isEntryReadOnly) ?'':this.icon.Edit }
     get lineTitle(){ return (this.isEntryReadOnly) ?'Line details':'Create Line'}
     get iconName(){
-        return (!this.sectionExpanded)? 'utility:chevrondown' : 'utility:chevronup'
+        return (!this.sectionExpanded)? this.icon.chevrondown  : this.icon.chevronup 
     }
     toggleView(){
         this.sectionExpanded=!this.sectionExpanded;
@@ -233,14 +253,14 @@ export default class Rh_timesheet_details extends NavigationMixin(LightningEleme
             let item={...e};
             item.title=e.TimeSheetEntryNumber;
             item.id=e.Id;
-            item.icon="standard:people";
+            item.icon=self.icon.timesheetEntry;
             item.class=e.Status;
             item.Project=e.RH_Project__r.Name;
             if (e.StartTime) {
-                item.StartTimeF= new Date(e.StartTime).toLocaleTimeString() ;
+                item.StartTimeF=new Date(e.StartTime).toLocaleString();// new Date(e.StartTime).toLocaleTimeString() ;
             }
             if (e.EndTime) {
-                item.EndTimeF= new Date(e.EndTime).toLocaleTimeString() ;
+                item.EndTimeF= new Date(e.EndTime).toLocaleString() ;
             }
             item.Project=e.RH_Project__r.Name;
             item.keysFields=self.keysFields;
@@ -249,11 +269,11 @@ export default class Rh_timesheet_details extends NavigationMixin(LightningEleme
             let Actions=[];
             //add status actions
             
-            if (DRAFT_STATUS.toLowerCase() == self.record?.Status?.toLowerCase()) {//if draft
+            if (self.isEditable) {//if draft
                 if (self.isMine) {//is mine
                     //add DELETE_ACTION  
-                    Actions.push(self.createAction("base",self.l.Edit,EDIT_ACTION,self.l.Edit,"utility:edit",'active-item'));
-                    Actions.push(self.createAction("base",self.l.Delete,DELETE_ACTION,self.l.Delete,"utility:close",'active-item'));
+                    Actions.push(self.createAction("base",self.l.Edit,EDIT_ACTION,self.l.Edit,self.icon.Edit,'active-item'));
+                    Actions.push(self.createAction("base",self.l.Delete,DELETE_ACTION,self.l.Delete,self.icon.Delete,'active-item'));
                 }
             }
             
@@ -271,24 +291,29 @@ export default class Rh_timesheet_details extends NavigationMixin(LightningEleme
     }
     buildActions(){
         let Actions=[];
-        if (SUBMITTED_STATUS.toLowerCase() == this.record.Status?.toLowerCase()) {//if already submitted
+        if (this.isSubmitted ) {//if already submitted
             if (this.isApprover) {
                 //add approve action 
-                Actions.push(this.createAction("brand-outline",this.l.Approve,APPROVE_ACTION,this.l.Approve,"utility:edit",'slds-m-left_x-small'));
+                Actions.push(this.createAction("brand-outline",this.l.Approve,APPROVE_ACTION,this.l.Approve,this.icon.approve,'slds-m-left_x-small'));
+                Actions.push(this.createAction("brand-outline",this.l.Reject,REJECT_ACTION,this.l.Reject,this.icon.reject,'slds-m-left_x-small'));
             }
-            Actions.push(this.createAction("brand-outline",this.l.ExportPDF,EXPORT_ACTION_PDF,this.l.ExportPDF,"utility:pdf_ext",'slds-m-left_x-small'));
-            Actions.push(this.createAction("brand-outline",this.l.ExportXLS,EXPORT_ACTION_XLS,this.l.ExportXLS,"utility:pdf_ext",'slds-m-left_x-small'));
+            Actions.push(this.createAction("brand-outline",this.l.ExportPDF,EXPORT_ACTION_PDF,this.l.ExportPDF,this.icon.exportPdf,'slds-m-left_x-small'));
+            Actions.push(this.createAction("brand-outline",this.l.ExportXLS,EXPORT_ACTION_XLS,this.l.ExportXLS,this.icon.exportXls,'slds-m-left_x-small'));
         }
-        if (DRAFT_STATUS.toLowerCase() == this.record.Status?.toLowerCase()) {//if draft
+        if (this.isFinal) { //export
+            Actions.push(this.createAction("brand-outline",this.l.ExportPDF,EXPORT_ACTION_PDF,this.l.ExportPDF,this.icon.exportPdf,'slds-m-left_x-small'));
+            Actions.push(this.createAction("brand-outline",this.l.ExportXLS,EXPORT_ACTION_XLS,this.l.ExportXLS,this.icon.exportXls,'slds-m-left_x-small'));
+        }
+        if (this.isEditable) {//if draft or rejected
             if (this.isMine) {//is mine
                 //add SUBMIT_ACTION ,DELETE_ACTION  
                 
                 if (this.record.TimeSheetEntryCount > 0) { //submit action avalaible only if has sheets
-                    Actions.push(this.createAction("brand-outline",this.l.Submit,SUBMIT_ACTION,this.l.Submit,"utility:edit",'slds-m-left_x-small'));
+                    Actions.push(this.createAction("brand-outline",this.l.Submit,SUBMIT_ACTION,this.l.Submit,this.icon.submit,'slds-m-left_x-small'));
                 }
-                Actions.push(this.createAction("brand-outline",this.l.Delete,DELETE_ACTION,this.l.Delete,"utility:close",'slds-m-left_x-small'));
+                Actions.push(this.createAction("brand-outline",this.l.Delete,DELETE_ACTION,this.l.Delete,this.icon.Delete,'slds-m-left_x-small'));
                 // Actions.push(this.createAction("brand-outline",this.l.Edit,EDIT_ACTION,this.l.Edit,"utility:edit",'slds-m-left_x-small'));
-                Actions.push(this.createAction("brand-outline",this.l.AddLines,ADD_LINE_ACTION,this.l.AddLines,"utility:add",'slds-m-left_x-small'));
+                Actions.push(this.createAction("brand-outline",this.l.AddLines,ADD_LINE_ACTION,this.l.AddLines,this.icon.Add,'slds-m-left_x-small'));
             }
         }
         console.log('Actions');
@@ -300,7 +325,7 @@ export default class Rh_timesheet_details extends NavigationMixin(LightningEleme
         const data=event.detail;
         console.log(`data ?? `, JSON.stringify(data));
         if (data?.action=='goToLink') {
-            if (data?.eltName=='Owner') {
+            if (data?.eltName=='Owner' || data?.eltName=='Approver') {
                 this.goToPage('rhusers',{recordId:data?.info?.dataId})
             }
         }
@@ -310,10 +335,13 @@ export default class Rh_timesheet_details extends NavigationMixin(LightningEleme
         const action=event.detail.action;
         switch (action) {
             case APPROVE_ACTION:
-                
+                this.handleApprovalTimeSheet(APPROVE_ACTION);
+                break;
+            case REJECT_ACTION:
+                this.handleApprovalTimeSheet(REJECT_ACTION);
                 break;
             case SUBMIT_ACTION:
-                this.handleSubmitTimeSheet()
+                this.handleSubmitTimeSheet();
                 break;
             case DELETE_ACTION:
                 this.handleDeleteTimeSheet();
@@ -339,6 +367,71 @@ export default class Rh_timesheet_details extends NavigationMixin(LightningEleme
             // this.createTimesheetApex()
         }*/
          //   this.handleUserAction(record, FROM_PARENT);
+    }
+    doApporoval(obj){
+        this.startSpinner(true);
+        approvalTimesheet({ SheetJson:  JSON.stringify(obj) })
+          .then(result => {
+            console.log('Result', result);
+            if (!result.error && result.Ok) {
+                this.showToast(SUCCESS_VARIANT,'SUCCES', 'Action Done Successfully');
+                this.resetApproval();
+
+                //Refresh Page
+                this.reloadPage();
+            }else{
+                this.showToast(WARNING_VARIANT,'ERROR', result.msg);
+            }
+          })
+          .catch(error => {
+            console.error('Error:', error);
+            this.showToast(ERROR_VARIANT,'ERROR', error);
+        }).finally(() => {
+            this.startSpinner(false)
+        });
+    }
+
+    approvalRecord={}
+    handleNote(event){
+        const info = event.detail;
+        console.log(JSON.stringify(info));
+        if (info.operation=='positive') {
+            if (info.isvalid) {
+                this.approvalRecord={...this.approvalRecord,...info.fields} ;
+               this.doApporoval(this.approvalRecord);
+            }
+        }else{
+            this.resetApproval();
+        }
+    }
+    resetApproval(){
+        this.action='';
+        this.approvalInputs=[];
+        this.approvalRecord={};
+    }
+    handleApprovalTimeSheet(status){
+       
+        this.approvalInputs=[{
+            label:this.l.Note,
+            name:'note',
+            value: '',
+            required:(status==REJECT_ACTION),
+            placeholder:this.l.NotePlc,
+            className:'textarea',
+            maxlength:25000,
+            type:'textarea',
+            ly_md:'12', 
+            ly_lg:'12',
+            ly_xs:'12',
+            isTextarea:true
+        }]
+        this.approvalRecord={Id:this.recordId, note:'',status, approverId:this.currUser.Id};
+        this.action=status;//open modal
+        if(status==APPROVE_ACTION){
+            this.approvalLbl=this.l.Approve
+        } else{
+            this.approvalLbl=this.l.Reject
+        }
     }
 
     /*Generated PDF Functions*/
@@ -631,6 +724,23 @@ export default class Rh_timesheet_details extends NavigationMixin(LightningEleme
                 }
             )
         }
+        if (this.isFinal) {
+            this.timeSheetFields.push(
+                {
+                    label:'Approver',
+                    name:'Approver',
+                    value:this.record?.RH_Approver__r?.Name,
+                    type:'Link',
+                    class:'Link',
+                    dataId:this.RH_Approver__r?.RH_User__c
+                },
+                {
+                    label:this.l.Note,
+                    name:'Note',
+                    value:this.record?.RH_NoteApprover__c
+                }
+            )
+        }
     }
     buildEntryForm(){
         this.formEntry=[];
@@ -808,7 +918,7 @@ export default class Rh_timesheet_details extends NavigationMixin(LightningEleme
     }*/
     createAction(variant,label,name,title,iconName,className){ 
         return {
-            variant, label, name, title, iconName,  class:className
+            variant, label, name, title, iconName,  class:className ,pclass :' slds-float_right'
         };
     }
     startSpinner(b){

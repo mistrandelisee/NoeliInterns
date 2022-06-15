@@ -41,7 +41,7 @@
                                     <!-- title="Sheet Informations"
                                     iconsrc="utility:people" -->
                                     <c-rh_display_fields 
-                                    column="4"
+                                    column="3"
                                     output-fields={timeSheetFields}
                                     onaction={handleGoToLink}
                                     ></c-rh_display_fields>
@@ -63,6 +63,7 @@
                         ly_xs = "12"
                         ly_md = "6"
                         ly_lg = "4"
+                        no-records-label={l.noTimesheetItems}
                         ></c-rh_cards_view>
                     </div>
                 </lightning-layout-item>
@@ -126,16 +127,23 @@
                 
                     <footer class="slds-modal__footer">
                             <div class="slds-float_left">
-                                <lightning-button variant="base" label={l.Cancel} data-action-name="Cancel" title={l.Cancel} icon-name="utility:close" onclick={handleCancel} class="slds-m-left_x-small"></lightning-button>
+                                <lightning-button variant="base" label={l.Cancel} data-action-name="Cancel" title={l.Cancel} icon-name={icon.close} onclick={handleCancel} class="slds-m-left_x-small"></lightning-button>
                             </div>
                             <template if:false={isEntryReadOnly}>
                                 <div class="slds-float_right">
-                                    <lightning-button variant="base" label={l.Save} data-action-name="Edit" title={l.Save} icon-name="utility:save" onclick={handleSave} class="slds-m-left_medium"></lightning-button>
+                                    <lightning-button variant="base" label={l.Save} data-action-name="Edit" title={l.Save} icon-name={icon.Save} onclick={handleSave} class="slds-m-left_medium"></lightning-button>
                                 </div>
                             </template>
                     </footer>
             </div>
         </div>
+    </template>
+
+    <!-- APPROVAL MODAL -->
+    <template if:true={approval}>
+        <c-rh_dynamic_form_modal title={l.approvalTitle} form-modal-inputs={approvalInputs} onbuttonclicked={handleNote} btn-create={approvalLbl}>
+
+        </c-rh_dynamic_form_modal>
     </template>
 
 </template>
