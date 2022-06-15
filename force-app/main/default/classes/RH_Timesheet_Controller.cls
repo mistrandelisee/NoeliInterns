@@ -24,7 +24,7 @@ public without sharing class RH_Timesheet_Controller {
                 RH_Submiter__c=con.Id,
                 RH_Approver__c=con.RH_WorkGroup__r.RH_Team_Leader__c,
                 ServiceResourceId='0Hn7Q0000004zSNSAY',//TO DO: remove and store in constants, then take values from custom Settings
-                EndDate= System.Today().addDays(1),
+                EndDate= System.Today().addDays(30),
                 Status='Nuovo'//TO DO: remove and store in constants
             );
             insert myTimesheet;
@@ -38,6 +38,33 @@ public without sharing class RH_Timesheet_Controller {
         }  
         return mapReturn;
     }
+
+    @AuraEnabled 
+    public static Map<String,Object>  InitFilter(){
+        Map<String, Object> mapReturn = new Map<String, Object>();
+        mapReturn.put('error',false);
+        try {
+            List<RH_Utility.PickOption> OrderBys = new List<RH_Utility.PickOption>();
+            OrderBys.add(new RH_Utility.PickOption('None', ''));
+            OrderBys.add(new RH_Utility.PickOption('Created Date', 'CreatedDate'));
+            OrderBys.add(new RH_Utility.PickOption('Number', 'TimeSheetNumber'));
+            // OrderBys.add(new RH_Utility.PickOption('Groups', 'RH_WorkGroup__c'));
+            // OrderBys.add(new RH_Utility.PickOption('Created Date', 'CreatedDate'));
+            // List<RH_WorkGroup__c> grps=workGroupQry.getActiveWorkgroups();
+            
+            mapReturn.put('OrderBys',OrderBys); 
+            mapReturn.put('Picklists',RH_Utility.getPickListOptions(new List<String> {'Status'},'Timesheet')); 
+
+            mapReturn.put('Ok',true); 
+        } catch(Exception e) {
+            System.debug(e.getMessage());
+            mapReturn.put('error',true);
+            mapReturn.put('msg',e.getMessage());
+            mapReturn.put('e',e);
+        }  
+        return mapReturn;
+    }
+
     @AuraEnabled 
     public static Map<String,Object>  timeSheetEntryCreation(String entryJson){
         Map<String, Object> mapReturn = new Map<String, Object>();
@@ -76,6 +103,7 @@ public without sharing class RH_Timesheet_Controller {
         return mapReturn;
     }
 
+    /*
     @AuraEnabled 
     public static Map<String,Object>  getTimeSheets(String userId){
         Map<String, Object> mapReturn = new Map<String, Object>();
@@ -99,6 +127,59 @@ public without sharing class RH_Timesheet_Controller {
         }  
         return mapReturn;
     }
+
+    @AuraEnabled 
+    public static Map<String,Object>  getTimeSheets(String filterTxt){
+        Map<String, Object> mapReturn = new Map<String, Object>();
+        mapReturn.put('error',false);
+
+        try {
+            
+            mapReturn.put('filterTxt',filterTxt);
+            TimeSheetFilterWrapper filter= (TimeSheetFilterWrapper)JSON.deserialize(filterTxt, TimeSheetFilterWrapper.class);
+            Map<Id, TimeSheet> mapTimesheets = RH_Timesheet_Query.getFilteredTimesheets(Filter);
+
+            list<Timesheet> timesheets = RH_Timesheet_Query.getTim
+
+        } catch (Exception) {
+            
+        }
+    }*/
+
+    @AuraEnabled
+    public static Map<String,Object> getTimeSheets(String filterTxt, String userId){
+
+        Map<String, Object> mapReturn = new Map<String, Object>();
+        // List<Map<String, Object>> listsheets = new List<Map<String, Object>>();
+        mapReturn.put('error',false);
+
+        try {
+
+            String myUserId=UserInfo.getUserId();
+            userId=String.isBlank(userId) ? myUserId : userId;
+
+            mapReturn.put('filterTxt',filterTxt); 
+            TimesheetFilterWrapper filter = (TimesheetFilterWrapper) JSON.deserialize(filterTxt, TimesheetFilterWrapper.class); 
+            Map<Id, Timesheet> mapTimesheets = RH_Timesheet_Query.getFilteredTimesheets(filter, UserId);
+           
+            mapReturn.put('in',filter); 
+            mapReturn.put('TimeSheets',mapTimesheets.values()); 
+            mapReturn.put('isMine',myUserId.equalsIgnoreCase(userId));
+            mapReturn.put('Constants',RH_Constans.getAllConstants());  
+            mapReturn.putAll(RH_Utility.checkRole()); 
+            mapReturn.put('Ok',true); 
+
+
+        } catch (Exception e){
+            System.debug(e.getMessage());
+            mapReturn.put('error',true);
+            mapReturn.put('msg',e.getMessage() + ' :  ' + e.getStackTraceString());
+            mapReturn.put('e',e);
+        }
+
+        return mapReturn;
+    }
+
     @AuraEnabled 
     public static Map<String,Object>  getTimeSheet(String timesheetId){
         Map<String, Object> mapReturn = new Map<String, Object>();
@@ -115,6 +196,34 @@ public without sharing class RH_Timesheet_Controller {
             mapReturn.put('isMine',myUserId.equalsIgnoreCase(userId));
             mapReturn.putAll(RH_Utility.checkRole()); 
             // mapReturn.putAll(RH_Utility.checkRole()); 
+            mapReturn.put('Ok',true); 
+        } catch(Exception e) {
+            System.debug(e.getMessage());
+            mapReturn.put('error',true);
+            mapReturn.put('msg',e.getMessage());
+            mapReturn.put('e',e);
+        }  
+        return mapReturn;
+    }
+    
+    @AuraEnabled 
+    public static Map<String,Object>  approvalTimesheet(String SheetJson){
+        Map<String, Object> mapReturn = new Map<String, Object>();
+        Map<String, Object> mapInputs = new Map<String, Object>();
+
+        mapReturn.put('error',false);
+        try {
+            
+            mapReturn.put('Input',SheetJson);
+            mapInputs = (Map<String, Object>) JSON.deserializeUntyped(SheetJson);
+            String TimeSheetId = String.valueOf(mapInputs.get('Id'));
+            String status = String.valueOf(mapInputs.get('status'));
+            String note = String.valueOf(mapInputs.get('note'));
+            String approverId = String.valueOf(mapInputs.get('approverId'));
+            TimeSheet sheet= new TimeSheet(Id=TimeSheetId,RH_NoteApprover__c=note,Status=status,RH_Approver__c=approverId);
+            update sheet;
+            mapReturn.put('TimeSheet',sheet);
+            
             mapReturn.put('Ok',true); 
         } catch(Exception e) {
             System.debug(e.getMessage());
@@ -250,4 +359,13 @@ public without sharing class RH_Timesheet_Controller {
                 EndTime=this.EndTime);
         }
     }  
+
+    public class TimesheetFilterWrapper {
+        @AuraEnabled public String status{get;set;}
+        @AuraEnabled public Date startDate{get;set;}
+        @AuraEnabled public Date endDate{get;set;}
+        @AuraEnabled public Boolean isActive{get;set;}
+        @AuraEnabled public String orderBy{get;set;}
+        @AuraEnabled public String orderOn{get;set;}
+    }
 }

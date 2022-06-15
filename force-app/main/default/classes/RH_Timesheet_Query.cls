@@ -40,8 +40,8 @@ public  class RH_Timesheet_Query {
     public static Map<Id,TimeSheet> getFilteredTimesheets(RH_Timesheet_Controller.TimeSheetFilterWrapper filter,String UserId){
         
         String status=filter.status;
-        DateTime startdate=filter.startdate;
-        DateTime enddate=filter.enddate;
+        Date startdate=filter.startdate;
+        Date enddate=filter.enddate;
         String ordBy=String.isNotBlank(filter.orderBy)?filter.orderBy: ' CreatedDate ' ;
         String ordOn= String.isNotBlank(filter.orderOn)?filter.orderOn: ' DESC ';
 
@@ -50,16 +50,16 @@ public  class RH_Timesheet_Query {
         +'TotalDurationInMinutes,TimeSheetEntryCount,'
         +'StartDate,EndDate,CreatedDate from TimeSheet '; 
         
-        String queryWhere = 'Where OwnerId = :userId ';
+        String queryWhere = ' Where OwnerId = :userId';
         
         if(String.isNotBlank(status)){
-			queryWHERE = queryWHERE + 'AND (Status =: status) ';
+			queryWHERE = queryWHERE + ' AND (Status =: status) ';
 		}
         if(startdate != null){
-			queryWHERE = queryWHERE + 'AND (CreatedDate >= : startdate) ';
+			queryWHERE = queryWHERE + ' AND (StartDate >= : startdate) ';
 		}
         if(enddate != null){
-			queryWHERE = queryWHERE + 'AND (CreatedDate <= : enddate) ';
+			queryWHERE = queryWHERE + ' AND (StartDate <= : enddate) ';
 		}
         String queryORDER='';
         if(String.isNotBlank(ordBy)){
