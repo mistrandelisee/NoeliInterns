@@ -1,5 +1,6 @@
 public without sharing class RH_Timesheet_Controller {
     private static RH_User_Query userQry = RH_User_Query.getInstance();
+    private static RH_Project_Query projectQry = RH_Project_Query.getInstance();
     private static RH_Contact_Query contactQry = RH_Contact_Query.getInstance();
     private static RH_WorkGroup_Query workGroupQry = RH_WorkGroup_Query.getInstance();
     private static RH_Timesheet_Query timesheetQry = RH_Timesheet_Query.getInstance();
@@ -24,7 +25,7 @@ public without sharing class RH_Timesheet_Controller {
                 RH_Submiter__c=con.Id,
                 RH_Approver__c=con.RH_WorkGroup__r.RH_Team_Leader__c,
                 ServiceResourceId='0Hn7Q0000004zSNSAY',//TO DO: remove and store in constants, then take values from custom Settings
-                EndDate= System.Today().addDays(30),
+                EndDate= System.Today().addMonths(1).toStartofMonth().addDays(-1),//last day of the month
                 Status='Nuovo'//TO DO: remove and store in constants
             );
             insert myTimesheet;
@@ -305,10 +306,11 @@ public without sharing class RH_Timesheet_Controller {
             mapReturn.put('user', u);
             List<Contact> userContacts=contactQry.getContactById(u.RH_ContactId__c);
             if (userContacts.isEmpty()) throw new RH_ControllerException('002','No RH Contact Founded');
-
+            List<Project__c> freeProjects = projectQry.getFreeProjects();
             Contact userContact=userContacts[0];
             mapReturn.put('userContact', userContact); 
             mapReturn.put('Projects', userContact.Projects__r); 
+            mapReturn.put('freeActivities', freeProjects); 
             mapReturn.put('ProjectsLeaded', userContact.Projects_Leaded__r); 
             mapReturn.put('Ok',true); 
         } catch(Exception e) {
