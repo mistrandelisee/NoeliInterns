@@ -1,9 +1,9 @@
 <template>
     
     <template if:false={hasrecordid}>
+
         <template if:true={showNew}>
             <template if:true={hasDetailsActions} >
-                        
                 <lightning-layout-item size="12" padding="around-smallx" small-device-size="12" medium-device-size="12" large-device-size="12">
                     <div class="custom-box">
                        <!-- Actions -->
@@ -11,15 +11,43 @@
                    </div>
                 </lightning-layout-item>
             </template>
+        
+            <template if:true={hideView}>
+                
+                <template if:true={filterReady}> 
+                    <lightning-layout-item size="12" class="slds-p-left_small" small-device-size="12" medium-device-size="12" large-device-size="12" >
+                        <div class="custom-box">
+                            <c-rh_filter onsubmit={handleSubmitFilter} onreset={handleSubmitFilter} field-details={filterInputs}></c-rh_filter>
+                        </div>
+                    </lightning-layout-item>
+                </template>
+
+                <lightning-layout-item size="12" class="slds-p-left_small" small-device-size="12" medium-device-size="12" large-device-size="12" >
+                    <c-rh_cards_view page-size="20" items={timeSheets} onrowselected={handleCardAction}
+                        ly_xs = "12"
+                        ly_md = "6"
+                        ly_lg = "4"
+                        ></c-rh_cards_view>
+                </lightning-layout-item>
+
+                
+
+                <!-- <lightning-layout-item size="12" padding="around-smallx" small-device-size="12" medium-device-size="12" large-device-size="12" >
+                    <div class="custom-box">
+                        <c-rh_cards_view page-size="20" items={allEmployees} onrowselected={handleCardAction}
+                            ly_xs = "12"
+                            ly_md = "6"
+                            ly_lg = "4">
+                        </c-rh_cards_view>
+                    </div>
+                </lightning-layout-item> -->
+            </template>
         </template>
-        <template if:true={hideView}>
-            <c-rh_cards_view page-size="20" items={timeSheets} onrowselected={handleCardAction}
-            ly_xs = "12"
-            ly_md = "6"
-            ly_lg = "4"
-            ></c-rh_cards_view>
+        
+        <!-- <template if:true={hideView}>
+            
         </template>
-    
+     -->
     </template>
     
 
