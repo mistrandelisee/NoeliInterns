@@ -47,6 +47,75 @@ public  class RH_Contact_Query {
         return mapContacts;
 
     }
+    /** The class instance
+     RH_Users_controller.ContactFilterWrapper filter = new RH_Users_controller.ContactFilterWrapper ();
+    filter.searchText='eli';
+    filter.status='';
+    filter.role='';
+    // filter.startdate
+    // filter.enddate
+    // filter.orderBy
+    // filter.orderOn
+     RH_Contact_Query conQry = RH_Contact_Query.getInstance();
+    conQry.getFilteredContacts(filter);
+
+
+
+
+    */
+
+    public  Map<Id,Contact> getFilteredContacts(RH_Users_controller.ContactFilterWrapper filter ){
+        Contact currentContact = RH_Utility.getCurentContact(); 
+        String statusActive=RH_Constans.ACTIVATED_WORKGROUP_STATUS;
+        String statusProjectActive=RH_Constans.ACTIVATED_PROJECT_STATUS;
+        String recordTypeId=RH_Constans.RH_CONTACT_RT;
+        String AccountId=currentContact.AccountId; 
+        String text=String.isNotBlank(filter.searchText) ? '%'+filter.searchText+'%' :'';
+        String status=filter.status;
+        String role=filter.role;
+        DateTime startdate=filter.startdate;
+        DateTime enddate=filter.enddate;
+        String ordBy=String.isNotBlank(filter.orderBy)?filter.orderBy: ' CreatedDate ' ;
+        String ordOn= String.isNotBlank(filter.orderOn)?filter.orderOn: ' DESC ';
+
+        String query = 'SELECT Id, LastName,AccountId,toLabel(RH_Role__c) RoleLabel,RH_Started_Date__c,RH_Role__c, FirstName,RH_User__c,Email,MailingCity,Languages__c,RH_Extra_Infos__c ,RH_Number_Groups_Leaded__c,OtherAddress,Birthdate,Phone,Description,RH_Status__c,toLabel(RH_Status__c) statusLabel, '
+							+ 'Account.Name,Account.NumberOfEmployees,Account.Website,Account.Phone,Account.Description,Account.YearStarted,Account.Industry,'
+							+ 'RH_WorkGroup__r.Name,RH_WorkGroup__r.CreatedDate,RH_WorkGroup__r.RH_Team_Leader__r.Phone,RH_WorkGroup__r.RH_Team_Leader__r.name,RH_WorkGroup__r.RH_Team_Leader__r.RH_User__c,'
+                            +'(SELECT Name,CreatedDate,CreatedBy.Name FROM WorkGroups_Leader__r WHERE RH_Status__c =: statusActive ),'
+                            +'(SELECT RH_Project__r.Name,RH_Project__r.Link__c,RH_Project__r.Start_Date__c,RH_Project__r.Description__c,RH_Project__r.End_Date__c  FROM Projects__r WHERE RH_Project__r.Status__c =:statusProjectActive)'
+                            + ' FROM Contact  ';
+        String queryWHERE ='WHERE recordTypeId=:recordTypeId AND AccountId=:AccountId ';
+		if(String.isNotBlank(text)){
+			queryWHERE = queryWHERE + 'AND (LastName LIKE: text OR FirstName LIKE: text ) ';
+		}
+		if(String.isNotBlank(status)){
+			queryWHERE = queryWHERE + 'AND (RH_Status__c =: status) ';
+		}
+		if(String.isNotBlank(role)){
+			queryWHERE = queryWHERE + 'AND (RH_Role__c =: role) ';
+        }
+		if(startdate != null){
+			queryWHERE = queryWHERE + 'AND (CreatedDate >= : startdate) ';
+		}
+        if(enddate != null){
+			queryWHERE = queryWHERE + 'AND (CreatedDate <= : enddate) ';
+		}
+
+        String queryORDER='';
+        if(String.isNotBlank(ordBy)){
+
+			queryORDER = queryORDER + ' Order by '+ordBy+' '+ordOn;
+		}
+        System.debug('########### query ' + query);
+        System.debug('########### queryWHERE ' + queryWHERE);
+        System.debug('########### queryORDER ' + queryORDER);
+        query= query+queryWHERE+queryORDER;
+
+        Map<Id, Contact> mapContacts=new Map<Id, Contact>((List<Contact>) Database.query(query));
+        
+        return mapContacts;
+
+    }
     public  List<Contact> getExtrafied(String recordId){
         return [SELECT Id,RH_Extra_Infos__c FROM Contact WHERE id=:recordId];
     }
