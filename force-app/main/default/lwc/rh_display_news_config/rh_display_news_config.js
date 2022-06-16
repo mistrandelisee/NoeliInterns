@@ -3,13 +3,20 @@ import { NavigationMixin } from 'lightning/navigation';
 import getOrgConfig from '@salesforce/apex/RH_News_controller.getOrgConfig';
 import setOrgConfig from '@salesforce/apex/RH_News_controller.setOrgConfig';
 import getAllNews from '@salesforce/apex/RH_News_controller.getAllNews';
+import getActiveNews from '@salesforce/apex/RH_News_controller.getActiveNews';
 import getNewsDetails from '@salesforce/apex/RH_News_controller.getNewsDetails';
 import updateNewsVisibility from '@salesforce/apex/RH_News_controller.updateNewsVisibility';
 import updateNews from '@salesforce/apex/RH_News_controller.updateNews';
 import updateFile from '@salesforce/apex/RH_News_controller.updateFile';
+import filterNews from '@salesforce/apex/RH_News_controller.filterNews';
+import deleteNews from '@salesforce/apex/RH_News_controller.deleteNews';
 import getFileInfos from '@salesforce/apex/RH_FileUploader.getFileInfos';
+import checkRole from '@salesforce/apex/RH_Utility.checkRole';
 import { CurrentPageReference } from 'lightning/navigation';
 import { registerListener, unregisterAllListeners,fireEvent } from 'c/pubsub';
+
+import { icons } from 'c/rh_icons';
+import { labels } from 'c/rh_label';
 
 const SUCCESS_VARIANT='success';
 const WARNING_VARIANT='warning';
@@ -21,9 +28,17 @@ const NEW_ACTION='New';
 
 const ENABLED_ACTION='Enabled';
 const DISABLED_ACTION='Disabled';
+const DELETE_ACTION='Delete';
+
+const CANCEL_ACTION='Cancel';
+
+
+
 
 export default class Rh_display_news_config extends NavigationMixin(LightningElement) {
 
+    icon={...icons};
+    label={...labels};
     config={};
     draftConfig={};
     r=0;
@@ -34,21 +49,44 @@ export default class Rh_display_news_config extends NavigationMixin(LightningEle
     newFileData={};
 
     newsRecord={};
-    detailsActions;
-    detailsEditActions;
+    detailsActions=[];
+    detailsEditActions=[];
     @track newsInputDetails=[];
     @track newsEditDetails=[];
     @track newsFileDetails=[];
     recordId;
 
+    bannerTitle;
+    displayFields=false;
+    inputFilter;
+    isModalOpen = false;
+
+    dataId;
+    isBaseUser=true;
+
     keysFields={Name:'ok'};
     keysLabels={
-        summaryTitle:'Title', summaryDescription:'Description',
+        summaryTitle: this.label.Title, summaryDescription: this.label.Description,
     };
     fieldsToShow={
         summaryTitle:'ok', summaryDescription:'',
     };
+    // add
+    inputBannerConfig=[];
+    
+    bannerConfigAction= [];
 
+    
+/*
+    bannerConfigAction= [ 
+        {
+            name: 'Save',
+            title : slabel.Save,
+            label: slabel.Save,
+            class: 'slds-float_right'
+        }
+    ];
+*/
     @wire(CurrentPageReference) pageRef;
 
     get hasNews(){
@@ -59,15 +97,85 @@ export default class Rh_display_news_config extends NavigationMixin(LightningEle
     }
 
      connectedCallback(){
+        registerListener('ModalAction', this.doModalAction, this);
+        registerListener('backbuttom', this.staticBack, this);
         this.recordId = this.getUrlParamValue(window.location.href, 'recordId');
-        if (this.recordId) {
-            //this.startSpinner(true);
-            this.displayNewsInfo(this.recordId);
-        }else{
-            this.getConfig();
-            this.getNews();
+        this.checkUserRole();
+    }
 
-        }
+    buildfFormConfig(){
+        this.inputBannerConfig=[
+            {
+                label: this.label.Interval,
+                placeholder: this.label.IntervalPlc,
+                name:'Interval',
+                required:false,
+                ly_md:'6', 
+                ly_lg:'6'
+            }
+        ];
+        
+        this.bannerConfigAction= [ 
+          {
+                name: 'Save',
+                title : this.label.Save,
+                label: this.label.Save,
+                class: 'slds-float_right'
+            },{
+                name: 'Cancel',
+                title : this.label.Cancel,
+                label: this.label.Cancel,
+                class: 'slds-float_left'
+            }
+        ];
+
+        this.inputFilter=[
+            {
+                label: this.label.Title,
+                placeholder: this.label.TitlePlc,
+                name:'Name',
+                required:false,
+                ly_md:'6', 
+                ly_lg:'6'
+            },
+            {
+                label: this.label.Description,
+                placeholder: this.label.DescriptionPlc,
+                name:'Description__c',
+                required:false,
+                ly_md:'6', 
+                ly_lg:'6'
+            }];
+
+            if(!this.isBaseUser){
+                this.inputFilter.push({
+                    label: this.label.Activate,
+                    name:'IsActive__c',
+                    checked:true,
+                    type:'toggle',
+                    ly_md:'6', 
+                    ly_lg:'6'
+                });  
+            }
+    }
+
+
+    checkUserRole(){
+        checkRole({ })
+          .then(result => {
+            if(result.isCEO||result.isRHUser) this.isBaseUser = false;
+
+            if (this.recordId) {
+                //this.startSpinner(true);
+                this.displayNewsInfo(this.recordId);
+            }else{
+                //this.getConfig();
+                this.getNews();
+            }
+          })
+          .catch(error => {
+            console.error('Error:', error);
+        });
     }
 
     displayNewsInfo(recordid){
@@ -81,14 +189,9 @@ export default class Rh_display_news_config extends NavigationMixin(LightningEle
                 this.handleFileInfo(this.recordId);
                /* this.buildform(this.newsRecord);
                 this.buildAction(this.newsRecord);*/
-            }else{
-               // this.showToast(WARNING_VARIANT,'ERROR', result.msg);
-                this.title = 'Failled';
-                this.information = result.msg;
-                this.contactNotFounded = true;
             }
         }).catch(e =>{
-            //this.showToast(ERROR_VARIANT,'ERROR', e.message);
+            this.showToast(ERROR_VARIANT,'ERROR', e.message);
             console.error(e)
         }).finally(() => {
             //this.startSpinner(false);
@@ -108,14 +211,9 @@ export default class Rh_display_news_config extends NavigationMixin(LightningEle
                  this.newsRecord.ContentVersionId =  result.data[0]?.ContentVersionId;
                  this.buildform(this.newsRecord);
                  this.buildAction(this.newsRecord);
-             }else{
-                // this.showToast(WARNING_VARIANT,'ERROR', result.msg);
-                 this.title = 'Failled';
-                 this.information = result.msg;
-                 this.contactNotFounded=true;
              }
          }).catch(e =>{
-             //this.showToast(ERROR_VARIANT,'ERROR', e.message);
+             this.showToast(ERROR_VARIANT,'ERROR', e.message);
              console.error(e)
          }).finally(() => {
              //this.startSpinner(false);
@@ -129,8 +227,8 @@ export default class Rh_display_news_config extends NavigationMixin(LightningEle
       buildform(newsInfo){
         this.newsInputDetails=[
             {
-                label:'Title',
-                placeholder:'Enter Title',
+                label: this.label.Title,
+                placeholder: this.label.TitlePlc,
                 name:'Name',
                 value:newsInfo?.Name,
                 required:true,
@@ -138,7 +236,7 @@ export default class Rh_display_news_config extends NavigationMixin(LightningEle
                 ly_lg:'6'
             },
             {
-                label:'Activate ?',
+                label: this.label.Activate,
                 name:'IsActive__c',
                 checked:newsInfo?.IsActive__c,
                 value:newsInfo?.IsActive__c? "Yes": "No",
@@ -147,10 +245,10 @@ export default class Rh_display_news_config extends NavigationMixin(LightningEle
                 ly_lg:'6'
             },
             {
-                label:'Description',
+                label: this.label.Description,
                 name:'Description__c',
                 value:newsInfo?.Description__c,
-                placeholder:'Enter Description',
+                placeholder: this.label.DescriptionPlc,
                 className:'textarea',
                 maxlength:25000,
                 type:'textarea',
@@ -158,7 +256,7 @@ export default class Rh_display_news_config extends NavigationMixin(LightningEle
                 ly_lg:'12'
             },
             {
-                label:'Upload File',
+                label: this.label.UploadFile,
                 name:'uploadFile',
                 value:newsInfo?.fileName,
                 fileName: newsInfo?.fileName,
@@ -173,7 +271,7 @@ export default class Rh_display_news_config extends NavigationMixin(LightningEle
 
         this.newsEditDetails= this.newsInputDetails.filter(e => e.type != 'Link');
         this.newsEditDetails.push({
-            label:'Upload File',
+            label: this.label.UploadFile,
             name:'uploadFile',
             fileName: newsInfo?.fileName,
             type:'file',
@@ -184,7 +282,7 @@ export default class Rh_display_news_config extends NavigationMixin(LightningEle
 
         this.newsFileDetails=[
             {
-                label:'Upload File',
+                label: this.label.UploadFile,
                 name:'image',
                 fileName: newsInfo?.fileName,
                 type:'image',
@@ -194,42 +292,55 @@ export default class Rh_display_news_config extends NavigationMixin(LightningEle
     }
 
     buildAction(newsInfo){
-        this.detailsActions= [
-            {
-                name: 'Back',
-                title :  'Back',
-                label: 'Back',
-                class: 'slds-float_left'
-            },
-            {
-                name: 'Edit',
-                title :  'Edit',
-                label: 'Edit',
-                class: 'slds-float_right'
-            },
-            {
-                name: newsInfo.IsActive__c? 'Deactivated':'Activated', 
-                title : newsInfo.IsActive__c? 'Deactivated':'Activated',
-                label:  newsInfo.IsActive__c? 'Deactivated':'Activated',
-                variant: newsInfo.IsActive__c? "destructive" :"success",
-                class: 'slds-float_right'
-            }
-        ];
+        if(this.isBaseUser==false){
+            this.detailsActions= [
+                /*{
+                    name: 'Back',
+                    title :  'Back',
+                    label: 'Back',
+                    class: 'slds-float_left'
+                },*/
+    
+                {
+                    name: 'Edit',
+                    title :  this.label.Edit,
+                    label: this.label.Edit,
+                    iconName: this.icon.Edit,
+                    class: 'slds-float_right slds-m-left_x-small'
+                },
+                {
+                    name: 'Delete',
+                    title :  this.label.Delete,
+                    label: this.label.Delete,
+                    iconName: this.icon.Delete,
+                    class: 'slds-float_right slds-m-left_x-small'
+                },
+                {
+                    name: newsInfo.IsActive__c? 'Deactivated':'Activated', 
+                    title : newsInfo.IsActive__c? 'Deactivated':'Activated',
+                    label:  newsInfo.IsActive__c? 'Deactivated':'Activated',
+                    class: 'slds-float_right slds-m-left_x-small'
+                }
+            ];
+
+            this.detailsEditActions= [ 
+                {
+                    name: 'Save',
+                    title :  this.label.Save,
+                    label: this.label.Save,
+                    class: 'slds-float_right'
+                },{
+                    name: 'Cancel',
+                    title : this.label.Cancel,
+                    label: this.label.Cancel,
+                    class: 'slds-float_right'
+                }
+            ];
+        }
+        
 
         
-        this.detailsEditActions= [ 
-            {
-                name: 'Save',
-                title :  'Save',
-                label: 'Save',
-                class: 'slds-float_right'
-            },{
-                name: 'Cancel',
-                title :  'Cancel',
-                label: 'Cancel',
-                class: 'slds-float_right'
-            }
-        ];
+        
 
     }
 
@@ -252,6 +363,10 @@ export default class Rh_display_news_config extends NavigationMixin(LightningEle
                           break;
             case 'Save': this.handleUpdate();
                          break;
+            case 'Delete': 
+                        this.confirmDelete();
+                         break;
+            
 
         }
     }
@@ -278,6 +393,18 @@ export default class Rh_display_news_config extends NavigationMixin(LightningEle
                 break;
         }
     }
+    
+    
+    handleActions(event){
+        const action= event.detail.action;
+        switch (action){
+            case 'Save': this.closeModal();
+                        this.saveConfig(); 
+                         break;
+            case 'Cancel': this.closeModal(); 
+            break;
+        }
+    }
 
 
     action='';
@@ -290,7 +417,40 @@ export default class Rh_display_news_config extends NavigationMixin(LightningEle
 
 
     getNews(){
-        getAllNews()
+        this.startSpinner(true);
+        this.buildfFormConfig();
+        
+        if(this.isBaseUser){
+            getActiveNews()
+            .then(result => {
+                const self=this;
+                this.allNews = result.map(function (e){
+                    let item={...e};
+                    item.title=e.Name?.length>27? e.Name.slice(0, 27) +'...': e.Name ;
+                    item.icon="standard:news";
+                    item.class='banned card';
+                    item.id= e.Id;
+                    item.summaryTitle= e.Name?.length>27? e.Name.slice(0, 27) +'...': e.Name ;
+                    item.summaryDescription= e.Description__c?.length>27? e.Description__c.slice(0, 27) +'...': e.Description__c ;
+                    item.keysFields=self.keysFields;
+                    item.keysLabels=self.keysLabels;
+                    item.fieldsToShow=self.fieldsToShow;
+                    item.actions=[];
+
+                    console.log(`item Base User` +item);
+
+                    return item;    
+                })
+                this.setviewsList(this.allNews);
+                this.getConfig();
+            })
+            .catch(error => {
+                this.startSpinner(false);
+                this.showToast(ERROR_VARIANT,ERROR_VARIANT, error.message);
+                console.log('@@@@@@@@@  getAllNews: ' + error );
+            });
+        }else{
+            getAllNews()
             .then(result => {
                 const self=this;
                 this.allNews = result.map(function (e){
@@ -299,26 +459,37 @@ export default class Rh_display_news_config extends NavigationMixin(LightningEle
                     item.icon="standard:news";
                     item.class=e.IsActive__c?'banned card':'active card';
                     item.id= e.Id;
-                    item.summaryTitle= e.Name?.length>38? e.Name.slice(0, 38) +'...': e.Name ;
-                    item.summaryDescription= e.Description__c?.length>80? e.Description__c.slice(0, 75) +'...': e.Description__c ;
+                    item.summaryTitle= e.Name?.length>27? e.Name.slice(0, 27) +'...': e.Name ;
+                    item.summaryDescription= e.Description__c?.length>27? e.Description__c.slice(0, 27) +'...': e.Description__c ;
                     item.keysFields=self.keysFields;
                     item.keysLabels=self.keysLabels;
                     item.fieldsToShow=self.fieldsToShow;
                     
-                    let Actions=[
-                        {
-                            name:e.IsActive__c?'Disabled':'Enabled',
-                            label:e.IsActive__c?'Disabled':'Enabled',
-                            iconName: e.IsActive__c? 'utility:preview':'action:preview'
-                           // class
-                        }
+                    if(self.isBaseUser==false){
+                        let Actions=[
+                            {
+                                name:e.IsActive__c?'Disabled':'Enabled',
+                                label:e.IsActive__c? self.label.Disable : self.label.Activate,
+                                iconName: e.IsActive__c? 'utility:preview':'action:preview'
+                               // class
+                            },
+                            {
+                                name:'Delete',
+                                label: self.label.Delete,
+                                iconName: self.icon.Delete
+                               // class
+                            }
+    
+                        ];
 
-                    ];
+                        item.actions=Actions;
+                    }
+                   
 
 
                     //add status actions
                     //Actions=Actions.concat(self.buildUserStatusActions(e.Status));
-                    item.actions=Actions;
+                    
                     
                     console.log(`item`);
                     console.log(item);
@@ -327,11 +498,79 @@ export default class Rh_display_news_config extends NavigationMixin(LightningEle
                     
                 })
                 this.setviewsList(this.allNews);
+                this.getConfig();
             })
             .catch(error => {
-                alert('KB ' + error);
-                console.log(' error@@@@@@@@@@@@@@@@@@' + error );
+                this.startSpinner(false);
+                this.showToast(ERROR_VARIANT,ERROR_VARIANT, error.message);
+                console.log('@@@@@@@@@  getAllNews: ' + error );
             });
+        }
+        
+    }
+
+
+    filterNews(event){
+        this.startSpinner(true);
+
+        const description= event.detail.Description__c;
+        const isActive= event.detail.IsActive__c;
+        const name= event.detail.Name;
+
+        filterNews({name: name ,description: description , isactive: isActive })
+        .then(result => {
+              if(result){
+                this.builAllNews(result);
+              }
+                
+                this.startSpinner(false);
+        })
+        .catch(error => {
+            
+            this.startSpinner(false);
+            this.showToast(ERROR_VARIANT,ERROR_VARIANT, error.message);
+        });
+    }
+
+
+
+    builAllNews(result){
+        const self=this;
+        
+        this.allNews = result.map(function (e){
+            let item={...e};
+            item.title=e.Name?.length>27? e.Name.slice(0, 27) +'...': e.Name ;
+            item.icon= self.icon.NewsStd;
+            item.class=e.IsActive__c?'banned card':'active card';
+            item.id= e.Id;
+            item.summaryTitle= e.Name?.length>27? e.Name.slice(0, 27) +'...': e.Name ;
+            item.summaryDescription= e.Description__c?.length>27? e.Description__c.slice(0, 27) +'...': e.Description__c ;
+            item.keysFields=self.keysFields;
+            item.keysLabels=self.keysLabels;
+            item.fieldsToShow=self.fieldsToShow;
+            
+            let Actions=[
+                {
+                    name:e.IsActive__c?'Disabled':'Enabled',
+                    label:e.IsActive__c? self.label.Disable : self.label.Activate,
+                    iconName: e.IsActive__c? 'utility:preview':'action:preview'
+                   // class
+                }
+
+            ];
+
+
+            //add status actions
+            //Actions=Actions.concat(self.buildUserStatusActions(e.Status));
+            item.actions=Actions;
+            
+            console.log(`item`);
+            console.log(item);
+
+            return item;
+            
+        })
+        this.setviewsList(this.allNews);
     }
 
 
@@ -366,25 +605,52 @@ export default class Rh_display_news_config extends NavigationMixin(LightningEle
             }else{
                  this.config = result;
             } 
+            this.startSpinner(false);
+            
         })
         .catch(error => {
-            this.error = error;
-            console.log('@@@@@@@@@@ getConfig  '+error.body)
+            this.startSpinner(false);
+            
+            console.log('@@@@@@@@@@ getConfig:  '+error)
         });
     }
 
     handleCardAction(event){
         console.log('event parent ' +JSON.stringify(event.detail));
         const info=event.detail;
+
         if(info.extra.item==DISABLED_ACTION || info.extra.item==ENABLED_ACTION){
             let isVisible= info.extra.item==DISABLED_ACTION?false:true;
             this.updateVisibility(info?.data?.id,isVisible);
-        }else{
+        }else if(info.extra.item==DELETE_ACTION){
+            this.confirmDelete();
+            this.dataId= info?.data?.id;
+        } else{
             this.goToRequestDetail(info?.data?.id);
         }
        
         
     }
+
+    deleteNews(recordId){
+            this.startSpinner(true);
+            deleteNews({recordId: recordId})
+            .then(result => {
+                if(result){
+                    this.goToHome();
+                    this.startSpinner(false);
+                    this.showToast(SUCCESS_VARIANT,SUCCESS_VARIANT, this.label.NewsDelete); 
+                }
+            })
+            .catch(error => {
+                
+                this.startSpinner(false);
+                this.showToast(ERROR_VARIANT,ERROR_VARIANT, error.message);
+                console.log('@@@@@@@@@@ deleteNews:  '+error)
+            });   
+    }
+
+    
 
     updateVisibility(recordId,visibility){
         this.startSpinner(true);
@@ -393,14 +659,14 @@ export default class Rh_display_news_config extends NavigationMixin(LightningEle
             if(result){
                 this.displayNewsInfo(this.recordId);
                 this.getNews();
-                this.showToast(SUCCESS_VARIANT,'Success', 'the news has been '+ ( result.IsActive__c? 'successfully activated': 'successfully deactivated')); 
+                this.showToast(SUCCESS_VARIANT,SUCCESS_VARIANT,  result.IsActive__c?  this.label.NewsActivated : this.label.NewsDeactivated); 
             }
         })
         .catch(error => {
-            this.error = error;
+            
             this.startSpinner(false);
-            this.showToast(ERROR_VARIANT,ERROR_VARIANT, error.body);
-            console.log('@@@@@@@@@@ getConfig  '+error.body)
+            this.showToast(ERROR_VARIANT,ERROR_VARIANT, error.message);
+            console.log('@@@@@@@@@@ updateVisibility  '+error)
         });
     }
 
@@ -437,11 +703,12 @@ export default class Rh_display_news_config extends NavigationMixin(LightningEle
         setOrgConfig({ data: input })
         .then((result) => {
             this.startSpinner(false);
-            this.showToast(SUCCESS_VARIANT,'Save configuration', 'Your configuration has been successfully saved');
+            this.config=this.draftConfig;
+            this.showToast(SUCCESS_VARIANT,SUCCESS_VARIANT, this.label.SaveConfiguration);
         })
         .catch((error) => {
             this.startSpinner(false);
-            this.showToast(ERROR_VARIANT,'Configuration ', error.body);
+            this.showToast(ERROR_VARIANT,ERROR_VARIANT, error.body.message);
         });
     }
 
@@ -466,7 +733,7 @@ export default class Rh_display_news_config extends NavigationMixin(LightningEle
           })
           .catch(error => {
             this.startSpinner(false);
-            this.showToast(ERROR_VARIANT,ERROR_VARIANT, 'The record has not been updated ');
+            this.showToast(ERROR_VARIANT,ERROR_VARIANT, this.label.UpdateNewsError);
             console.error('Error:', error);
         });
     }
@@ -481,7 +748,7 @@ export default class Rh_display_news_config extends NavigationMixin(LightningEle
             this.handleUpdateNews(record);
         }else{
             this.startSpinner(false);
-            this.showToast(ERROR_VARIANT,ERROR_VARIANT, 'The field Is not valid');
+            this.showToast(ERROR_VARIANT,ERROR_VARIANT, this.label.InvalidField);
             console.log(`Is not valid `);
         }
         console.log(`record `, record);
@@ -509,21 +776,21 @@ export default class Rh_display_news_config extends NavigationMixin(LightningEle
             this.getBase64(this.newFileData)
             .then(data => {
                     var base64= data.split(',')[1];
-                   updateFile({ base64 : base64, filename : this.newFileData.name, ContentVersionId :this.newsRecord.ContentVersionId })
+                   updateFile({ base64 : base64, filename : this.newFileData.name, recordId :this.recordId })
                     .then(result=>{
                         this.newFileData = null
                         this.startSpinner(false);
-                        this.showToast(SUCCESS_VARIANT,'Success', 'the news has been successfully Update '); 
+                        this.showToast(SUCCESS_VARIANT,SUCCESS_VARIANT, this.label.UpdateNews); 
                         this.goToRequestDetail(this.recordId);
                     }).catch(error => {
                         this.startSpinner(false);
-                        this.showToast(ERROR_VARIANT,ERROR_VARIANT, 'The file has not been updated ');
+                        this.showToast(ERROR_VARIANT,ERROR_VARIANT, this.label.FileUpdate);
                         console.error('Error:', error);
                     })
                 });   
         }else{
             this.startSpinner(false);
-            this.showToast(SUCCESS_VARIANT,'Success', 'the news has been successfully Update ');
+            this.showToast(SUCCESS_VARIANT,SUCCESS_VARIANT, this.label.UpdateNews);
             this.goToRequestDetail(this.recordId);    
         }
         
@@ -539,6 +806,51 @@ export default class Rh_display_news_config extends NavigationMixin(LightningEle
         });
       }
 
+       
+    openModal() {
+        this.isModalOpen = true;
+    }
+    closeModal() {
+        this.isModalOpen = false;
+    }
+
+    createAction(variant,label,name,title,iconName,className){ 
+        return {
+            variant, label, name, title, iconName,  class:className
+        };
+    }
+
+    confirmDelete(){
+        let text= this.label.DeleteNews_Confirm;
+        let  extra={style:'width:20vw;'};
+        let  Actions=[];
+        extra.title=this.label.DeleteNews_Title;
+        extra.style+='--lwc-colorBorder: var(--bannedColor);';
+        Actions.push(this.createAction("brand-outline",DELETE_ACTION,DELETE_ACTION,DELETE_ACTION,"utility:close",'slds-m-left_x-small'));
+        this.ShowModal(true,text,Actions,extra);
+    }
+
+    doModalAction(event){
+        console.log('doModalAction in user view ', JSON.stringify(event.action));
+        switch (event.action) {
+            case DELETE_ACTION:
+                this.deleteNews(this.dataId?this.dataId:this.recordId);
+                break;
+        }
+        this.dataId=null;
+        this.ShowModal(false,null,[]);//close modal any way
+        //event.preventDefault();
+    }
+    
+    staticBack(event){
+        this.goToHome();
+    }
+
+    ShowModal(show,text,actions,extra={}){
+        fireEvent(this.pageRef, 'Modal', {show,text,actions,extra});
+    }
+
+    
     showToast(variant, title, message){
         fireEvent(this.pageRef, 'Toast', {variant, title, message});
     }

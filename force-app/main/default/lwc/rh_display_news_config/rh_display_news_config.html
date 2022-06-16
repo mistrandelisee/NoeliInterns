@@ -1,26 +1,24 @@
 <template>
     <template if:false={hasrecordid}>
         <template if:true={showNew}>
-            <c-rh_news_creation  onaction={handleActionNew}></c-rh_news_creation>
+            <template if:false={isBaseUser}>
+                <div class="slds-float_right">
+                    <lightning-button variant="brand-outline" label={label.ConfigTitle} icon-name={icon.News}  onclick={openModal} class="slds-m-left_x-small"></lightning-button>
+                </div>
+                <c-rh_news_creation  onaction={handleActionNew}></c-rh_news_creation>
+            </template>
         </template>
         <template if:true={hideView}>
-            <lightning-card  title="Banner configuration" class="slds-m-top_x-small">
-                <lightning-button label="Save" variant="brand" slot="actions" onclick={saveConfig} ></lightning-button>
-                <lightning-input type="number"  label="Set Interval" data-id="interval" value={config.interval} ></lightning-input>
-            </lightning-card>
-            <!--
-            <div class="slds-border_top slds-border_bottom"  >
-                <lightning-input type="text" label="Set Interval" data-id="interval" value={config.interval} ></lightning-input>
-                <lightning-button variant="brand" label="Save" title="Save Configuration" onclick={saveConfig} class="slds-m-left_x-small"></lightning-button>
-            </div> 
-            -->
+            <div class="form-section ">
+                <c-rh_filter title={label.FilterTitle} field-details={inputFilter} onsubmit={filterNews} onreset={getNews}></c-rh_filter>
+            </div>
             <c-rh_cards_view  page-size="6" items={allNews} onrowselected={handleCardAction}></c-rh_cards_view>  
         </template>
     </template>
     <template if:true={hasrecordid} >
         <template if:true={hasNews}>
             <c-rh_actions  onaction={handleDetailsActions} action-available={detailsActions}></c-rh_actions>
-            <div class="slds-p-around_medium profile_user_info">
+            <div class="slds-p-around_medium">
                 <c-rh_display_fields 
                 title="News  Details"
                 iconsrc="standard:news"
@@ -39,5 +37,47 @@
                 <c-rh_actions  onaction={handleDetailsActions} action-available={detailsEditActions}></c-rh_actions>
             </div>
         </template>
+
+        <c-rh_back_buttom title="Back to News"  ></c-rh_back_buttom>
     </template> 
+
+
+        <!--Use template if:true to display/hide popup based on isModalOpen value--> 
+        <template if:true={isModalOpen}>
+            <!-- Modal/Popup Box LWC starts here -->
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <!-- Modal/Popup Box LWC header here -->
+                    <header class="slds-modal__header">
+                        <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={closeModal}>
+                            <lightning-icon icon-name="utility:close"
+                                alternative-text="close"
+                                variant="inverse"
+                                size="small" ></lightning-icon>
+                            <span class="slds-assistive-text">Close</span>
+                        </button>
+                        <div class="headerFilter">
+                            <div class="slds-text-heading_medium  slds-m-left_medium">
+                                <lightning-icon icon-name={icon.News} size="small"  variant="inverse"   ></lightning-icon>
+                                <span class="slds-m-left_small"> {label.ConfigTitle} </span>
+                            </div>   
+                        </div>
+                       <!-- <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">{label.ConfigTitle}</h2>-->
+                    </header>
+                    <!-- Modal/Popup Box LWC body starts here -->
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">                         
+                    
+                        <lightning-layout>
+                            <lightning-layout-item size="6" padding="around-small" class="slds-m-vertical_small slds-m-horizontal_none">
+                                <lightning-input type="number"  label="Set Interval" data-id="interval" value={config.interval}  ></lightning-input>
+                            </lightning-layout-item>
+                        </lightning-layout>                                                              
+                            <c-rh_actions   action-available={bannerConfigAction}  onaction={handleActions}></c-rh_actions>  
+                                
+                             
+                    </div>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </template>
 </template>
