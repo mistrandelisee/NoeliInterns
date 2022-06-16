@@ -1,9 +1,12 @@
 import { LightningElement, api } from 'lwc';
+import { NavigationMixin } from 'lightning/navigation';
 import getActiveNews from '@salesforce/apex/RH_News_controller.getActiveNews';
 import getOrgConfig from '@salesforce/apex/RH_News_controller.getOrgConfig';
 import CommunityBackground1jpg from '@salesforce/contentAssetUrl/CommunityBackground1jpg';
 
-export default class Rh_display_news extends LightningElement {
+
+
+export default class Rh_display_news extends NavigationMixin(LightningElement) {
     news=[];
     bannerNews=[];
     slide=1;
@@ -90,7 +93,7 @@ export default class Rh_display_news extends LightningElement {
 
         this.bannerStyle=`color: white; background-image: url(${this.bannerNews[this.slide-1].Image});
         height:200px;background-position:center;background-color: rgba(0, 0, 0, 0.7);
-        background-blend-mode: multiply;text-align: center;font-size:  larger;
+        background-blend-mode: multiply;text-align: center;font-size:  larger;--lwc-spacingSmall: 0px;
         `;
     }
 
@@ -109,6 +112,28 @@ export default class Rh_display_news extends LightningElement {
         .catch(error => {
             this.error = error;
             console.log('@@@@@@@@@@ Rh_display_news  getConfig  '+error.message)
+        });
+    }
+
+
+    handleNewsDetail(event){
+        const recordId= event?.target?.dataset?.id;
+        if(recordId){
+            this.goToNewsDetail(recordId);
+        }
+    }
+
+
+    goToNewsDetail(recordid) {
+        var pagenname ='rhbannerConfig'; //request page nam
+        let states={'recordId': recordid}; //event.currentTarget.dataset.id , is the recordId of the request
+        
+        this[NavigationMixin.Navigate]({
+            type : 'comm__namedPage',
+            attributes : {
+                pageName : pagenname
+            },
+            state: states
         });
     }
 }

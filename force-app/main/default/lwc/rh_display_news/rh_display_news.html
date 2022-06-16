@@ -7,9 +7,9 @@
                             <label>previous </label>
                         </lightning-button-icon>
                     </div>
-                    <div class="text slds-col slds-5-of-7">
-                        <div >
-                            <div class="title">{news.Title} </div>
+                    <div class="text slds-col slds-5-of-7" >
+                        <div>
+                            <div class="title"  data-id={news.Id} onclick={handleNewsDetail} title="Click to view  more detail" >{news.Title} </div>
                             <div>{news.Description}</div> 
                         </div>
                     </div>
