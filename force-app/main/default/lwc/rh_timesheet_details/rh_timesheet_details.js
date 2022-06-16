@@ -45,10 +45,13 @@ const ADD_LINE_ACTION='ADD_LINE_ACTION';
 const EXPORT_ACTION_PDF='EXPORT_ACTION_PDF';
 const EXPORT_ACTION_XLS='EXPORT_ACTION_XLS';
 const SUBMIT_ACTION='inviato';
-
+const actions = [
+    { label: 'Show details', name: EDIT_ACTION,iconPosition: 'left', iconName: icons.Edit, },
+    { label: 'Delete', name: DELETE_ACTION ,iconPosition: 'left',iconName: icons.Delete}
+];
 export default class Rh_timesheet_details extends NavigationMixin(LightningElement)  {
-    END_OF_DAY=20;//19h
-    START_OF_DAY=8;//19h
+    END_OF_DAY=20;//GMT
+    START_OF_DAY=8;//GMT
     l={...labels,
         Submit:'Submit',
         Delete:'Delete',
@@ -57,48 +60,20 @@ export default class Rh_timesheet_details extends NavigationMixin(LightningEleme
         ExportPDF:'Export PDF',
         ExportXLS:'Export XLSX',
         approvalTitle:'APPROVAL ACTION',
+        Date:'Date',
+        startTime:'Start Time',
+        endTime:'End Time',
         noTimesheetItems:'No Timesheet Items found for this timesheet. Use the Add times Action to add items',
+        Activity:'Activity',
+        Duration_mins:'Duration (Minutes)',
+        total_dur_mins:"Total Duration In Minutes",
+        total_free_dur_mins:"Total Free Duration In Minutes",
+        total_work_dur_mins:"Total Working Duration In Minutes",
+        total_dur_h:"Total Duration In Hours",
+        total_free_dur_h:"Total Free Duration In Hours",
+        total_work_dur_h:"Total Working Duration In Hours",
     }
     icon={...icons}
-    /*StatusActions=[
-
-
-        {
-            variant:"base",
-            label:this.l.Activate,
-            name:ACTIVE_ACTION,
-            title:this.l.Activate,
-            iconName:"utility:user",
-            class:"active-item"
-        },
-        {
-            variant:"base",
-            label:this.l.Freeze,
-            name:FREEZE_ACTION,
-            title:this.l.Freeze,
-            iconName:"utility:resource_absence",
-            class:"freeze-item"
-        },
-        {
-            variant:"base",
-            label:this.l.Disable,
-            name:DISABLE_ACTION,
-            title:this.l.Disable,
-            iconName:"utility:block_visitor",
-            class:"disable-item "
-        }
-
-    ]
-    RoleActions=[
-        {
-            variant:"base",
-            label:this.l.PromoteBaseUser,
-            name:PROMOTE_ACTION,
-            title:this.l.PromoteBaseUser,
-            iconName:"utility:user",
-            // class:"active-item"
-        }
-    ]*/
     detailsActions=[
     ]
     @api
@@ -117,38 +92,61 @@ export default class Rh_timesheet_details extends NavigationMixin(LightningEleme
     sectionExpanded=true;
     keysFields={TimeSheetNumber:'ok',Project:''};
     keysLabels={
-        Project:'Project', 
-        EndTimeF:'End Time',
-        DurationInMinutes:'Duration (Minutes)',
-        StartTimeF:'Start Time'
+        /**startTime
+endTime
+Activity
+Duration_mins */
+        Project:this.l.Activity, 
+        EndTimeF:this.l.endTime,
+        DurationInMinutes:this.l.Duration_mins,
+        StartTimeF:this.l.startTime,
     };
     fieldsToShow={
         Project:'',DurationInMinutes:'',
         StartTimeF:'ok',EndTimeF:'',
     };
+
+    @track columns = [
+        { label: 'Name', fieldName: 'title',sortable:true, type: 'button',typeAttributes:{label:{fieldName:'title'},variant:'base'} },
+        { label: this.l.Activity, fieldName: 'Project',sortable:true, type: 'text' },
+        { label: this.l.Duration_mins, fieldName: 'DurationInMinutes',sortable:true, type: 'text',cellAttributes: { alignment: 'left' }, },
+        { label: this.l.startTime, fieldName: 'StartTime',sortable:true, type: "date", typeAttributes:{
+            weekday: "long", year: "numeric",
+            month: "long", day: "2-digit",
+            hour: "2-digit", minute: "2-digit"
+        } },
+        { label: this.l.endTime, fieldName: 'EndTime',sortable:true, type: "date",
+        typeAttributes:{
+            weekday: "long", year: "numeric",
+            month: "long", day: "2-digit",
+            hour: "2-digit", minute: "2-digit"
+        } },
+    ];
     SheetItemsCols = [
         // Column #1
         {   key:'Project',
-            column: 'Project',
+            column: this.l.Activity,
         },
         // Column #3
         {
             key:'DurationInMinutes',
-            column: 'Duration (Minutes)',
+            column: this.l.Duration_mins,
         },
         // Column #4
         {
             key:'StartTimeF',
-            column: 'Start Time',
+            column: this.l.startTime,
         },
         // Column #2
         {
             key:'EndTimeF',
-            column: 'End Time',
+            column: this.l.endTime,
         }
+
+        
     ]
     SheetCols = [
-        {
+       /* {
             column:'Status',
             key:'Status',
         },
@@ -165,7 +163,47 @@ export default class Rh_timesheet_details extends NavigationMixin(LightningEleme
             column:'Date',
             key:'StartDate',
         }
+        */
+        {
+            column:this.l.StartDate,
+            key:'StartDate'
+        },
         
+        {
+            column:this.l.EndDate,
+            key:'EndDate'
+        },
+        {
+            column:this.l.Status,
+            key:'Status'
+        },
+        
+        {
+            column:this.l.total_dur_mins,
+            key:'TotalDurationInMinutes'
+        },
+        
+        {
+            column:this.l.total_free_dur_mins,
+            key:'RH_Total_Free_Duration_Minutes__c'
+        },
+        
+        {
+            column:this.l.total_work_dur_mins,
+            key:'totalWorkingMinutes'
+        },
+        {
+            column:this.l.total_dur_h,
+            key:'TotalDurationInHours'
+        },
+        {
+            column:this.l.total_free_dur_h,
+            key:'RH_Total_Free_Duration_Hours__c',
+        },
+        {
+            column:this.l.total_work_dur_h,
+            key:'totalWorkingHours',
+        }
     ]
     
     approvalInputs=[];
@@ -204,7 +242,7 @@ export default class Rh_timesheet_details extends NavigationMixin(LightningEleme
         console.log('RECORDID connectedCallback ',this.recordId);
        this.getTimsheetApex();
     }
-    get title(){ return this.record?.TimeSheetNumber}
+    get title(){ return this.record?.RH_Name__c}
     getTimsheetApex(){
         this.record={};
         this.startSpinner(true);
@@ -227,7 +265,17 @@ export default class Rh_timesheet_details extends NavigationMixin(LightningEleme
                 this.record=result.TimeSheet;
                 if (this.record?.Id) {
                     const timesheetEntries= result.TimeSheet?.TimeSheetEntries || [];
-                   
+                    /** @type {TotalDurationInMinutes
+TotalDurationInHours
+RH_Total_Free_Duration_Minutes__c
+RH_Total_Free_Duration_Hours__c}*/
+                    this.record.totalWorkingHours= (this.record.TotalDurationInHours || 0) - (this.record.RH_Total_Free_Duration_Hours__c || 0) ;
+                    this.record.totalWorkingMinutes= (this.record.TotalDurationInMinutes || 0) - (this.record.RH_Total_Free_Duration_Minutes__c || 0) ;
+                    if (this.isEditable && this.isMine) {//if draft
+                        this.columns=[...this.columns,
+                         { type: 'action', typeAttributes: { rowActions: actions } },]
+                    }   
+
                     this.buildTimeSheetFields();
                     this.buildActions();
                     this.buildEntriesList(timesheetEntries);
@@ -283,11 +331,45 @@ export default class Rh_timesheet_details extends NavigationMixin(LightningEleme
             console.log(item);
             return item;
         });
-        this.setviewsList(this.timesheetEntries)
+        // this.setviewsList(this.timesheetEntries)
+        this.refreshTable(this.timesheetEntries)
     }
     setviewsList(items){
         let cardsView=this.template.querySelector('c-rh_cards_view');
         cardsView?.setDatas(items);
+    }
+    handleDataTableAction( event ) {
+        const info=event.detail;
+        // const actionName = event.detail.action.name;
+        console.log('event from datatable ' +JSON.stringify(info));
+        this.sheetItem=info.row;
+        if (info?.action?.label?.fieldName=='title') {
+
+            this.handleEditTimeSheetEntry();
+            //this.goToTimeSheetDetail(info?.data?.id);
+            //TO DO Build Details and show it in edit panel
+        }
+        if (info?.action?.name) {//user clicks on the dropdown actions
+            const record={Id:this.sheetItem?.Id, action:info?.action?.name};
+            switch (record.action) {
+                case EDIT_ACTION:
+                    this.handleEditTimeSheetEntry();
+                    break;
+                case DELETE_ACTION:
+                    this.handleDeleteTimeSheetEntry();
+                    break;
+                default:
+                    break;
+            }
+        }
+    }
+    refreshTable(data) {
+        const dataTableCmp = this.template.querySelector('c-rh_datatable_component');
+        if (dataTableCmp) {
+            dataTableCmp?.setDatas(data);
+        } else {
+            console.log('@@@@@@@@@@@@@Not found');
+        }
     }
     buildActions(){
         let Actions=[];
@@ -558,7 +640,7 @@ export default class Rh_timesheet_details extends NavigationMixin(LightningEleme
         this.buildEntryForm();
                 
         this.action=ADD_LINE_ACTION;
-        this.toggleView();
+        // this.toggleView();
     }
     selectedProject;
     initEntryAction(){
@@ -572,7 +654,8 @@ export default class Rh_timesheet_details extends NavigationMixin(LightningEleme
             console.log(result);
             if (!result.error && result.Ok) {
                 this.myProjects=[];
-                this.myProjects = result.Projects?.map(function(project) { return {label:project.RH_Project__r?.Name,value:project.RH_Project__c}});
+                this.myProjects = this.myProjects.concat(result.freeActivities?.map(function(project) { return {label:project.Name,value:project.Id}}));
+                this.myProjects =this.myProjects.concat( result.Projects?.map(function(project) { return {label:project.RH_Project__r?.Name,value:project.RH_Project__c}}));
                 this.myProjects = this.myProjects.concat(result.ProjectsLeaded?.map(function(project) { return {label:project.Name,value:project.Id}}));
                 const item={...this.sheetItem};
                 item.RH_Project__c= (this.sheetItem?.RH_Project__c) ? this.sheetItem?.RH_Project__c : 
@@ -640,12 +723,13 @@ export default class Rh_timesheet_details extends NavigationMixin(LightningEleme
         }
     }
     reloadPage(){
-        window.location.reload()
+        // window.location.reload()
+        this.goToPage('rhtimesheet',{recordId:this.recordId})
     }
     handleCancel(){
         this.action='';
     }
-    handleSave(evt){
+    handleSaveOLD(evt){
         let record={};
         let result= this.save();
         if (result.isvalid) {
@@ -656,6 +740,35 @@ export default class Rh_timesheet_details extends NavigationMixin(LightningEleme
             }else{
                 console.warn('Start date must before end date');
                 this.showToast(WARNING_VARIANT,'VALIDATION ERROR', 'Start date must before end date');
+            }
+            // this.callParent(SAVE_ACTION,record)
+        }else{
+            console.log(`Is not valid `);
+        }
+        console.log(`record `, record);
+    }
+    handleSave(evt){
+        let record={};
+        let result= this.save();
+        if (result.isvalid) {
+            record={...record,...result.obj};
+            const stDateTime=new Date(record.Date+' '+record.StartTime);
+            const eDateTime=new Date(record.Date+' '+record.EndTime);
+            record.StartTime=stDateTime.toISOString();
+            record.EndTime=eDateTime.toISOString();
+            // this.emp[TYPE_FIELD_NAME]=this.empType;
+            var isWeekend = new Date(record.Date).getDay()%6==0;
+            if (isWeekend) {
+                this.showToast(WARNING_VARIANT,'VALIDATION ERROR', 'Please Select a weekday !!!');
+            }else{
+                
+                if (record.StartTime<record.EndTime) {
+                    this.handleCreateEntryApex(record);
+                }else{
+                    console.warn('Start date must before end date');
+                    this.showToast(WARNING_VARIANT,'VALIDATION ERROR', 'Start date must before end date');
+                }
+
             }
             // this.callParent(SAVE_ACTION,record)
         }else{
@@ -686,28 +799,59 @@ export default class Rh_timesheet_details extends NavigationMixin(LightningEleme
                 name:'Name',
                 value:this.record?.TimeSheetNumber
             },*/
+            
             {
-                label:'Status',
+                label:this.l.StartDate,
+                name:'StartDate',
+                value:this.record?.StartDate
+            },
+            
+            {
+                label:this.l.EndDate,
+                name:'EndDate',
+                value:this.record?.EndDate
+            },
+            {
+                label:this.l.Status,
                 name:'Status',
                 value:this.record?.StatusLabel
             },
             
             {
-                label:"Total Duration In Minutes",
+                label:this.l.total_dur_mins,
                 name:'TotalDurationInMinutes',
                 value:this.record?.TotalDurationInMinutes
             },
+            
             {
-                label:"Total Duration In Hours",
+                label:this.l.total_free_dur_mins,
+                name:'TotalDurationInMinutes',
+                value:this.record?.RH_Total_Free_Duration_Minutes__c
+            },
+            
+            {
+                label:this.l.total_work_dur_mins,
+                name:'TotalDurationInMinutes',
+                value:this.record?.totalWorkingMinutes
+            },
+            {
+                label:this.l.total_dur_h,
                 name:'TotalDurationInHours',
                 value:this.record?.TotalDurationInHours
             },
             {
-                label:'Date',
-                name:'StartDate',
-                value:this.record?.StartDate
+                label:this.l.total_free_dur_h,
+                name:'TotalDurationInHours',
+                value:this.record?.RH_Total_Free_Duration_Hours__c
+            },
+            {
+                label:this.l.total_work_dur_h,
+                name:'TotalDurationInHours',
+                value:this.record?.totalWorkingHours
             }
             
+            
+
 
          
         
@@ -742,25 +886,14 @@ export default class Rh_timesheet_details extends NavigationMixin(LightningEleme
             )
         }
     }
-    buildEntryForm(){
+    buildEntryFormOLD(){
         this.formEntry=[];
         const endTime=this.lastHours();
         const startTime=this.beginHours();
        /* const endTimex=this.lastHoursTime();
         const startTimex=this.beginHoursTime();*/
         this.formEntry=[
-            /**
-             * {
-                label:'Task',
-                name:'Task',
-                picklist: true,
-                options: this.myTasks,
-                value: '',
-                maxlength:100,
-                ly_md:'12', 
-                ly_lg:'12'
-            },
-             */
+            
             {
                 label:this.l.StartDate,
                 placeholder:this.l.StartDate,
@@ -795,38 +928,6 @@ export default class Rh_timesheet_details extends NavigationMixin(LightningEleme
                 isText:true,//for avoid render blank field
                 readOnly:this.isEntryReadOnly
             },
-            /*{
-                label:this.l.StartDate+' x',
-                placeholder:this.l.StartDate,
-                name:'StartTimex',
-                required:true,
-                value: this.formatDateValue(this.sheetItem?.StartTime),
-                min: startTimex,
-                max: endTimex,
-                type:'Time',
-                ly_md:'6', 
-                ly_lg:'6',
-                ly_xs:'12',
-                isDatetime:true,
-                isText:true,//for avoid render blank field
-                readOnly:this.isEntryReadOnly
-            },
-            {
-                label:this.l.EndDate+' x',
-                placeholder:this.l.EndDate,
-                name:'EndTimex',
-                required:true,
-                value: this.formatDateValue(this.sheetItem?.EndTime),
-                min: startTimex,
-                max: endTimex,
-                type:'Time',
-                ly_md:'6', 
-                ly_lg:'6',
-                ly_xs:'12',
-                isDatetime:true,
-                isText:true,//for avoid render blank field
-                readOnly:this.isEntryReadOnly
-            },*/
             {
                 label:this.l.Description,
                 name:'Description',
@@ -847,7 +948,7 @@ export default class Rh_timesheet_details extends NavigationMixin(LightningEleme
         let projetElt;
         if (this.isEntryReadOnly) {
             projetElt={
-                label:'Project',
+                label:'Activity',
                 name:'ProjectId', 
                 value: this.sheetItem?.Project,
                 required:true,
@@ -860,7 +961,108 @@ export default class Rh_timesheet_details extends NavigationMixin(LightningEleme
             };
         }else{
             projetElt={
-                label:'Project',
+                label:'Activity',
+                name:'ProjectId',
+                picklist: true,
+                options: this.myProjects,
+                value: this.sheetItem?.RH_Project__c,
+                required:true,
+                maxlength:100,
+                ly_md:'12', 
+                ly_lg:'12',
+                ly_xs:'12',
+                readOnly:this.isEntryReadOnly
+            };
+        }
+        this.formEntry.unshift( projetElt );
+    }
+    buildEntryForm(){
+        this.formEntry=[];
+        const {beginDate, endDate}=this.dateInterval();
+        const {beginTime, endTime}=this.timeInterval();
+        this.formEntry=[
+            {
+                label:this.l.Date,
+                placeholder:this.l.Date,
+                name:'Date',
+                required:true,
+                value:this.formatDateValue(this.sheetItem?.StartTime),
+                min: beginDate,
+                max: endDate,
+                type:'Date',
+                ly_md:'4', 
+                ly_lg:'4',
+                ly_xs:'12',
+                isDatetime:true,
+                isText:true,//for avoid render blank field
+                readOnly:this.isEntryReadOnly
+            },
+            {
+                label:this.l.startTime,
+                placeholder:this.l.startTime,
+                name:'StartTime',
+                required:true,
+                value:this.formatTime(this.sheetItem?.StartTime),
+                min: beginTime,
+                max: endTime,
+                type:'time',
+                ly_md:'4', 
+                ly_lg:'4',
+                ly_xs:'6',
+                isDatetime:true,
+                isText:true,//for avoid render blank field
+                readOnly:this.isEntryReadOnly
+            },
+            {
+                label:this.l.endTime,
+                placeholder:this.l.endTime,
+                name:'EndTime',
+                required:true,
+                value: this.formatTime(this.sheetItem?.EndTime),
+                min: beginTime,
+                max: endTime,
+                type:'time',
+                ly_md:'4', 
+                ly_lg:'4',
+                ly_xs:'6',
+                isDatetime:true,
+                isText:true,//for avoid render blank field
+                readOnly:this.isEntryReadOnly
+            },
+            {
+                label:this.l.Description,
+                name:'Description',
+                value: this.sheetItem?.Description,
+                placeholder:this.l.Description,
+                className:'textarea',
+                maxlength:25000,
+                type:'textarea',
+                ly_md:'12', 
+                ly_lg:'12',
+                ly_xs:'12',
+                isTextarea:true,
+                readOnly:this.isEntryReadOnly
+            }
+         
+        
+        ]
+        let projetElt;
+        if (this.isEntryReadOnly) {
+            projetElt={
+                label:'Activity',
+                name:'ProjectId', 
+                value: this.sheetItem?.Project,
+                required:true,
+                maxlength:100,
+                ly_md:'12', 
+                ly_lg:'12',
+                ly_xs:'12',
+                isText:true,
+                readOnly:this.isEntryReadOnly
+            };
+        }else{
+            projetElt={
+                label:'Activity',
                 name:'ProjectId',
                 picklist: true,
                 options: this.myProjects,
@@ -889,11 +1091,56 @@ export default class Rh_timesheet_details extends NavigationMixin(LightningEleme
         console.log('Date START_OF_DAY GMT ',d.toISOString());
         return d.toISOString();
     }
-    formatDateValue(dateIso){
+    formatDateValueOLD(dateIso){
         const d =dateIso ? new Date(dateIso) : (this.record?.StartDate ? new Date(this.record?.StartDate) : new Date());
         console.log('Date START_OF_DAY ',d);
         console.log('Date START_OF_DAY GMT ',d.toISOString());
         return d.toISOString();
+    }
+
+    lastDate(){
+        const d =this.record?.EndDate ? new Date(this.record?.EndDate) : new Date();
+        d.setUTCHours(this.END_OF_DAY, 0, 0, 0);
+        console.log('Date END_OF_DAY ',d);
+        console.log('Date END_OF_DAY GMT ',d.toISOString());
+        return d.toISOString();
+    }
+    dateInterval(){
+        let beginDate =this.record?.StartDate ? new Date(this.record?.StartDate) : new Date().toISOString();
+        let endDate =this.record?.EndDate ? new Date(this.record?.EndDate) : new Date();
+        console.log('***** dateInterval ');
+        beginDate=beginDate.toISOString().split('T')[0];
+        endDate=endDate.toISOString().split('T')[0];
+        console.log('beginDate ',beginDate);
+        console.log('endDate  ',endDate);
+
+        return {beginDate, endDate};
+    }
+    timeInterval(){
+        
+        console.log('***** timeInterval ');
+        const d =new Date();
+        d.setUTCHours(this.START_OF_DAY, 0, 0, 0);
+        const beginTime=this.formatTime(d);
+        console.log('beginTime ',beginTime);
+        d.setUTCHours(this.END_OF_DAY, 0, 0, 0);
+        const endTime=this.formatTime(d);
+        console.log('endTime ',endTime);
+
+        return {beginTime, endTime};
+    }
+    formatDateValue(dateIso){
+        const d =dateIso ? new Date(dateIso) : (this.record?.StartDate ? new Date(this.record?.StartDate) : new Date());
+        console.log('Date formatDateValue new  ',d);
+        console.log('Date START_OF_DAY GMT ',d.toISOString());
+        return d.toISOString().split('T')[0];
+    }
+    formatTime(dateIso){
+        const d =dateIso ? new Date(dateIso) : (this.record?.StartDate ? new Date(this.record?.StartDate) : new Date());
+        console.log('Date formatTime new  ',d);
+        const outTime=(d.getHours()+'').padStart(2, '0')+':'+(d.getMinutes()+'').padStart(2, '0');
+        console.log('outTime ',outTime);
+        return outTime;
     }
     /*
     lastHoursTime(){

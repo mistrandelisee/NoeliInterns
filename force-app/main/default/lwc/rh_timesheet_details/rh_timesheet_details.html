@@ -17,7 +17,7 @@
                     </template>
                 </div>
             </lightning-layout-item>
-            <lightning-layout-item size="12" padding="around-smallx" small-device-size="12" medium-device-size="12" large-device-size="12" >
+            <lightning-layout-item size="12" padding="around-small" small-device-size="12" medium-device-size="12" large-device-size="12" >
                 <div class="custom-box">
                     <lightning-layout vertical-align="center" class="box slds-m-top_mediumx" multiple-rows
                         >
@@ -59,12 +59,21 @@
                 <lightning-layout-item size="12" padding="around-smallx" small-device-size="12" medium-device-size="12" large-device-size="12">
                     <div class="custom-box">
 
-                        <c-rh_cards_view page-size="20" items={timesheetEntries} onrowselected={handleCardAction}
+                        <!-- <c-rh_cards_view page-size="20" items={timesheetEntries} onrowselected={handleCardAction}
                         ly_xs = "12"
                         ly_md = "6"
                         ly_lg = "4"
                         no-records-label={l.noTimesheetItems}
-                        ></c-rh_cards_view>
+                        ></c-rh_cards_view> -->
+
+                        <c-rh_datatable_component 
+                            columns={columns} 
+                            items={timesheetEntries}
+                            page-size="20"
+                            statut-row-number
+                            resize-column
+                            onrowselected={handleDataTableAction}>
+                         </c-rh_datatable_component>
                     </div>
                 </lightning-layout-item>
             </template>
