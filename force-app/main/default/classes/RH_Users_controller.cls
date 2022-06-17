@@ -15,6 +15,9 @@ public without sharing class RH_Users_controller {
             List<User> users = userQry.getUserByContactId(conID);
             mapReturn.put('Ok', !users.isEmpty());
             mapReturn.put('users', users);
+            if (!users.isEmpty()) {
+                update new contact(RH_User__c=users[0].Id,Id=conId);
+            }
         } catch(Exception e) {
             System.debug(e.getMessage());
             mapReturn.put('error',true);
