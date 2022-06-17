@@ -24,8 +24,9 @@ export default class Rh_dynamic_form_item extends LightningElement {
     get isBase(){
         return ! (this.isTextarea || this.picklist || this.isFile);
     }
-    get picklist(){ return this.item?.picklist;}
-
+    get picklist(){ return this.item?.picklist;};
+    get toggleActiveText(){ return this.item?.toggleActiveText || 'Active'};
+    get toggleInactiveText(){ return this.item?.toggleInactiveText || 'Inactive'};
     handleChanged(event) {
         this.timeOut=this.timeOut || 0;
         const delay= +this.timeOut;
@@ -58,7 +59,7 @@ export default class Rh_dynamic_form_item extends LightningElement {
             const key=item.name;
             const fieldInput=self.template.querySelector(`[data-id="${key}"]`);
             if (fieldInput) {
-                    output[key]=fieldInput.value;
+                    output[key]=fieldInput.value || null;
                 switch (item.type) {
                     case 'datetime':
                         try {
@@ -90,21 +91,21 @@ export default class Rh_dynamic_form_item extends LightningElement {
            
         }
         // console.log('OUTPUT VALUE : ',output);
-        console.log('OUTPUT FIELD VALUES : ',outputs);
-        console.log('OUTPUT FIELD VALUES outputsItems : ',outputsItems);
-        console.log('OUTPUT FIELD VALUES ALL : ',{isvalid,outputs,obj:output,outputsItems});
+        // console.log('OUTPUT FIELD VALUES : ',outputs);
+        // console.log('OUTPUT FIELD VALUES outputsItems : ',outputsItems);
+        // console.log('OUTPUT FIELD VALUES ALL : ',{isvalid,outputs,obj:output,outputsItems});
         return {isvalid,outputs,obj:output,outputsItems};
     }
     @api validateField() {
         const item=this.item;
-        console.log('start verification');   
+        // console.log('start verification');   
         let isvalid = true;
         let key=item.name;
         let fieldInput=this.template.querySelector(`[data-id="${key}"]`);
         if (fieldInput) {
             isvalid = isvalid && fieldInput.reportValidity('');
         }
-       console.log('@@@@@@@@@@ isvalid '+isvalid);
+    //    console.log('@@@@@@@@@@ isvalid '+isvalid);
        return isvalid;
    }
 }
