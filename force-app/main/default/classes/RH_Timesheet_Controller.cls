@@ -20,11 +20,14 @@ public without sharing class RH_Timesheet_Controller {
                 throw new RH_ControllerException('002','Exisisting TimeSheet On this date');
                 
             }
+            ServiceResource sr=new ServiceResource(RH_External_ID__c=myUserId,IsActive=true,ResourceType='T',
+                    RelatedRecordId=myUserId, Name=UserInfo.getName());
+            upsert sr RH_External_ID__c;
             TimeSheet myTimesheet = new TimeSheet(
                 StartDate= System.Today(),
                 RH_Submiter__c=con.Id,
                 RH_Approver__c=con.RH_WorkGroup__r.RH_Team_Leader__c,
-                ServiceResourceId='0Hn7Q0000004zSNSAY',//TO DO: remove and store in constants, then take values from custom Settings
+                ServiceResourceId=sr.Id,//'0Hn7Q0000004zSNSAY',//TO DO: remove and store in constants, then take values from custom Settings
                 EndDate= System.Today().addMonths(1).toStartofMonth().addDays(-1),//last day of the month
                 Status='Nuovo'//TO DO: remove and store in constants
             );
@@ -75,6 +78,14 @@ public without sharing class RH_Timesheet_Controller {
             mapReturn.put('Input',entryJson);
             entryWrapper entryInfo = (entryWrapper) JSON.deserialize(entryJson, entryWrapper.class);
             TimeSheetEntry myTimeSheetEntry =entryInfo.getEntry();
+            if (String.isNotBlank(entryInfo.ProjectId)) {
+                List<Project__c> freeProjects=projectQry.checkFreeProject(entryInfo.ProjectId);
+                if (! freeProjects.isEmpty()) {
+                    myTimeSheetEntry.Type='Free';
+                }else {
+                    myTimeSheetEntry.Type='Diretto';
+                }
+            }
             Boolean isInsert= String.isBlank(myTimeSheetEntry.Id);
             if(isInsert){
                 myTimeSheetEntry.Status= 'Nuovo';//TO DO: remove and store in constants
@@ -161,7 +172,7 @@ public without sharing class RH_Timesheet_Controller {
 
             mapReturn.put('filterTxt',filterTxt); 
             TimesheetFilterWrapper filter = (TimesheetFilterWrapper) JSON.deserialize(filterTxt, TimesheetFilterWrapper.class); 
-            Map<Id, Timesheet> mapTimesheets = RH_Timesheet_Query.getFilteredTimesheets(filter, UserId);
+            Map<Id, Timesheet> mapTimesheets = timesheetQry.getFilteredTimesheets(filter, UserId);
            
             mapReturn.put('in',filter); 
             mapReturn.put('TimeSheets',mapTimesheets.values()); 

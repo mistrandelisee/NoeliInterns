@@ -10,7 +10,7 @@
     --sds-c-card-spacing-inline-start: 20px;
     --sds-c-card-spacing-block-start: 5px;
     --sds-c-card-spacing-inline-end: 20px;
-    --sds-c-card-spacing-block-end: 20px;
+    --sds-c-card-spacing-block-end: 5px;
     /* header */
     
     --sds-c-card-heading-font-weight:800;
@@ -28,4 +28,8 @@
     --lwc-inputStaticColor:var(--secondaryColor);
     --lwc-inputStaticFontSize:0.8125rem;
     --lwc-inputStaticFontWeight:700;
+}
+.icon-md{
+    --lwc-squareIconMediumContentAlt: 1.2rem;
+    font-size: 1.5rem;
 }

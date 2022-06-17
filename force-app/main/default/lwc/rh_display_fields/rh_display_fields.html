@@ -15,6 +15,11 @@
                     </template>
                 </div>
             </template>
+            <template if:true={hasHelpText}>
+                <div  slot="actions">
+                    <c-rh_helper_info help-text={helpText}></c-rh_helper_info>
+                </div>
+            </template>
             <div class="slds-form" role="list">
                 <template if:true={hasFieldsRows} for:each={getFieldsRows} for:item="row" for:index="index">
                     <div class="slds-form__row" key={row.index}>

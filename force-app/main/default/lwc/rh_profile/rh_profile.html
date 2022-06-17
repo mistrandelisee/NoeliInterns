@@ -1,5 +1,4 @@
 <template>
-    <!-- <c-rh_profile_actions></c-rh_profile_actions> -->
     <lightning-layout multiple-rows>
         <lightning-layout-item size="12" padding="around-smallx" 
         small-device-size="12" medium-device-size="12" large-device-size="12">
@@ -31,24 +30,20 @@
                     ></c-rh_profile_user_info>
                 </div>
                 <div class="slds-p-horizontal_small extra_info">
-                    <c-rh_extra_fields json-field={jsonInfo} onaction={UpdateExtraInfo} hasaction="true"></c-rh_extra_fields>
+                    <c-rh_extra_fields json-field={jsonInfo} onaction={UpdateExtraInfo} hasaction></c-rh_extra_fields>
                 </div>
 
            </div>
         </lightning-layout-item>
         <lightning-layout-item size="12" padding="around-smallx" small-device-size="6" medium-device-size="6" large-device-size="3">
             <div class="custom-box">
-                <!-- user extraField section -->
                <div class="slds-p-around_medium extra_info">
-                   <!-- cssClass 
-                   header-icon -->
                    <c-rh_list 
                     css-class="list-bordered list-centered min-h_10 list-hover_underline slds-has-dividers_bottom slds-has-block-links_space slds-p-horizontal_medium"
                     header-title={myTimeSheetsTitle}
                     key-id="Id"
                     css-style="max-height:40vh;overflow-y:auto"
                     header-icon={icon.timesheet}
-
                     key-value="TimeSheetNumber"
                     records={timeSheets}
                     onaction={goToTimsheet}
@@ -58,10 +53,7 @@
         </lightning-layout-item>
         <lightning-layout-item size="12" padding="around-smallx" small-device-size="6" medium-device-size="6" large-device-size="3">
             <div class="custom-box">
-                <!-- user extraField section -->
                <div class="slds-p-around_medium extra_info">
-                   <!-- cssClass 
-                   header-icon -->
                    <c-rh_list 
                     css-class="list-bordered list-centered min-h_10 list-hover_underline slds-has-dividers_bottom slds-has-block-links_space slds-p-horizontal_medium"
                     header-title={myLeadedGroupTitle}
@@ -77,10 +69,7 @@
         </lightning-layout-item>
         <lightning-layout-item size="12" padding="around-smallx" small-device-size="6" medium-device-size="6" large-device-size="3">
             <div class="custom-box">
-                <!-- user extraField section -->
                <div class="slds-p-around_medium extra_info">
-                   <!-- cssClass 
-                   header-icon -->
                    <c-rh_list 
                    css-class="list-bordered list-centered min-h_10 list-hover_underline slds-has-dividers_bottom slds-has-block-links_space slds-p-horizontal_medium"
                    header-title={myprojectTitle}
@@ -96,10 +85,7 @@
         </lightning-layout-item>
         <lightning-layout-item size="12" padding="around-smallx" small-device-size="6" medium-device-size="6" large-device-size="3">
             <div class="custom-box">
-                <!-- user extraField section -->
                <div class="slds-p-around_medium extra_info">
-                   <!-- cssClass 
-                   header-icon -->
                    <c-rh_list 
                    css-class="list-bordered list-centered min-h_10 list-hover_underline slds-has-dividers_bottom slds-has-block-links_space slds-p-horizontal_medium"
                    header-title={myLeadedProjectTitle}

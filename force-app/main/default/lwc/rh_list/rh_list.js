@@ -15,6 +15,11 @@ export default class Rh_list extends LightningElement {
     records;
     @api
     noRecordsLabel='No records found';
+    @api
+    typeIllustration='fish';
+    @api
+    messageIllustration='';
+
     /**
      * [{key:'1', value:'record1'}]
     

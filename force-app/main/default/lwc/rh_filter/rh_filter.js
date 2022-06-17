@@ -17,14 +17,13 @@ export default class Rh_filter extends LightningElement {
     labelRemove={};
 
     //@api fieldDetails=[];
-//  
 
-    fieldDetails=[
+    @api fieldDetails=[
         {
             label:'Title',
             placeholder:'Enter Title',
             name:'Name',
-            
+            value:"Kbrel",
             required:false,
             ly_md:'6', 
             ly_lg:'6'
@@ -63,7 +62,7 @@ export default class Rh_filter extends LightningElement {
     @api timeOut;
     @api backcolor;
 
-    filterAction= [ 
+    @api filterAction= [ 
         {
             name: 'Submit',
             title : labels.Submit,
@@ -97,6 +96,10 @@ export default class Rh_filter extends LightningElement {
                          this.pillList=[];
                          this.resetField(this.fieldDetails,'reset');
                       break;
+            default: 
+                    this.form=this.template.querySelector('c-rh_dynamic_form').save();
+                    this.publishChangedEvt(action,this.form?.obj);
+                    break;
         }
     }
     regenerateKeys(elt){
@@ -185,6 +188,9 @@ export default class Rh_filter extends LightningElement {
             }
              
         }
-        this.resetField(fieldsCopy,'removePill');  
+        if(this.pillList.length>0)
+        this.resetField(fieldsCopy,'submit'); 
+        else 
+            this.resetField(fieldsCopy,'reset');   
     }
 }

@@ -118,6 +118,26 @@ const labels = {
     
     userMoreInfoHlp : 'More details',
     userEditMoreHlp : 'Edit additionnal information about you , check each time you edit an information. then save all...',
-
+    successOp:'Succes operation',
+    errorOp:'Something goes wrong',
+    warningOp:'Warning',
+    rmvfield:'Field removed',
+    addfield:'Field Adjusted',
+    
+    Supervisor:'Supervisor',
+    myprojects:'My Projects (#NB)',
+    mytimesheets:'My Timesheets (#NB)',
+    myleadedGroups:'My Leaded Groups (#NB)',
+    myleadedProjects:'My Leaded Projects (#NB)',
+    About: 'About',
+    
+    projects:'Projects (#NB)',
+    timesheets:'Timesheets (#NB)',
+    leadedGroups:'Leaded Groups (#NB)',
+    leadedProjects:'Leaded Projects (#NB)',
+    ok_confirm:'Yes, I\'m sure',
+    disable_confirm:'Are you sure you want to disable this User?',
+    reset_confirm:'Are you sure you want to reset this user Password?',
+    action_confirm:' Action Confirmation',
 };
 export { labels }

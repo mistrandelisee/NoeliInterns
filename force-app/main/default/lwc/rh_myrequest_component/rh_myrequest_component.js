@@ -77,7 +77,7 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
     @track statusDetail;
     @track showSpinner = false;
     @track requestType;
-    @track allContact=[];
+     allContact=[];
     @track isOpenDualBox=false;
     @track listConts=[];
 
@@ -153,13 +153,17 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
     getAllContact() {
         getAdressedCC()
             .then(result => {
-                this.allContact = result.map(plValue => {
-                    return {
+                console.log('contact', result);
+                 result.forEach(plValue => {
+                    let picklistVal = {};
+                    picklistVal = {
                         label: plValue.Name,
                         value: plValue.Id
                     };
+                    console.log(picklistVal);
+                    this.allContact.push(picklistVal);
                 });
-                // this.handleNext();
+                console.log(this.allContact);
             }).catch(error => {
                 console.error('Error:', error);
             });
@@ -193,14 +197,14 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
 
         console.log('@@@@@RecordType.Name' + profileinformation?.RecordType.Name);
         if (profileinformation?.RecordType.Name == 'Complain') {
+            
             this.formPersonanalInputDetails = [
 
                 {
                     label: this.l.AddressedTo,
                     placeholder: this.l.AddressedTo,
                     name: 'RH_AddressedTo',
-                    picklist: true,
-                    options: this.addressedRecord,
+                    type:'text',
                     value: profileinformation?.RH_Addressed_To__r?.Name,
                     required: false,
                     ly_md: '6',
@@ -219,9 +223,8 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
                     label: this.l.ComplainOn,
                     placeholder: this.l.ComplainOn,
                     name: 'ComplainOn',
-                    picklist: true,
-                    options: this.allContact,
-                    value: profileinformation?.RH_Complain_On__c?.Name,
+                    type:'text',
+                    value: profileinformation?.RH_Complain_On__r?.Name,
                     required: false,
                     ly_md: '6',
                     ly_lg: '6'
@@ -446,7 +449,7 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
                     name: 'ComplainOn',
                     picklist: true,
                     options: this.allContact,
-                    value: profileinformation?.RH_Complain_On__c?.Name,
+                    value: profileinformation?.RH_Complain_On__r?.Name,
                     required: false,
                     ly_md: '6',
                     ly_lg: '6'
@@ -701,7 +704,6 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
     }
 
     handleEditValue() {
-
         getAdressedTo()
             .then(result => {
                 this.addressedRecord = result.map(plValue => {
@@ -804,6 +806,7 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
     }
 
     connectedCallback() {
+        this.getAllContact();
         registerListener('backbuttom', this.dobackbuttom, this);
         registerListener('ModalAction', this.doModalAction, this);
         registerListener('valueMember', this.dovalueMember, this);    
@@ -1185,7 +1188,7 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
                 placeholder: 'Select',
                 name: 'ComplainOn',
                 picklist: true,
-                options: this.addressedRecord,
+                options: this.allContact,
                 value: '',
                 required: true,
                 ly_md: '6',

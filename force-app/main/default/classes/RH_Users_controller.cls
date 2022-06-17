@@ -5,6 +5,19 @@ public without sharing class RH_Users_controller {
     
     public static Map<String, String> mapContactToUser = new Map<String, String>();
     static string myconId='';
+
+    /* Kbrel Add 17/06/2022 
+        Change the language of the  community 
+     */
+    @AuraEnabled
+    public static User changeLanguage(String lang) {
+        // User userInfo = userQry.getUserInfoId();
+        User userInfo = new User(Id =UserInfo.getUserId());
+        userInfo.LanguageLocaleKey = lang;
+        update userInfo;
+        return userInfo;
+    }
+
     @AuraEnabled 
     public static Map<String,Object>  checkUserCreation(String conID){
         Map<String, Object> mapReturn = new Map<String, Object>();

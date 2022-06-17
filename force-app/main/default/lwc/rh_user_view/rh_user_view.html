@@ -17,24 +17,22 @@
             <template if:true={isUser}>
                 <lightning-layout-item size="12" padding="around-smallx" small-device-size="12" medium-device-size="5" large-device-size="3">
                     <div class="custom-box">
-                       <!-- display account -->
                        <div class="slds-p-around_medium account">
-                           <c-rh_display_fields title={l.AccountInfoTitle} iconsrc="standard:account" column="3" output-fields={accountFields} ></c-rh_display_fields>
+                           <c-rh_display_fields title={l.AccountInfoTitle} iconsrc={icon.organization} column="3" output-fields={accountFields} ></c-rh_display_fields>
                        </div>
                    </div>
                 </lightning-layout-item>
             </template>
-            <lightning-layout-item size="12" padding="around-smallx" small-device-size="12" medium-device-size="7" large-device-size="6" >
-                <div class="custom-box"><!-- user information section -->
-                    <!-- <template if:true={hasrec}> -->
+            <lightning-layout-item size="12" padding="around-smallx" small-device-size="12" medium-device-size={md_user} large-device-size={lg_user} >
+                <div class="custom-box">
                         <div class="slds-p-around_medium profile_user_info">
                             <template if:false={editContactMode}>
                                 <c-rh_display_fields 
-                                title="User Informations"
-                                iconsrc="utility:people"
+                                title={l.UserProfileTitle}
+                                iconsrc={icon.user_info}
                                 column="2"
                                 output-fields={userDetails}
-                                onaction={handlUserDetails}
+                                onaction={handleUserDetails}
                                 action-available={actionAvailable}
                                 has-action={hasAction}
                                 ></c-rh_display_fields>
@@ -42,15 +40,17 @@
                             <template if:true={editContactMode}>
                                 <lightning-card class="custom-card">
                                     <h3 slot="title">
-                                        <lightning-icon icon-name="utility:edit" size="small" class="slds-p-right_small"></lightning-icon>
-                                        {title}
+                                        <lightning-icon icon-name={icon.user_info_edit} size="small" class="slds-m-right_small"></lightning-icon>
+                                        {l.UserProfileTitle}
                                     </h3>
                                     <c-rh_dynamic_form inputs-items={userFormInputs}></c-rh_dynamic_form>
                                     <div class="card-footer" slot="footer">
                                         <div class="slds-clearfix">
+                                            <div class="slds-float_left">
+                                                <lightning-button variant="base" label={l.Cancel} data-action-name="Cancel" title={l.Cancel} icon-name={icon.close} onclick={handleCancel} class="icon-md slds-m-left_x-small"></lightning-button>
+                                            </div>
                                             <div class="slds-float_right">
-                                                <lightning-button variant="base" label={l.Cancel} data-action-name="Cancel" title={l.Cancel} icon-name="utility:close" onclick={handleCancel} class="slds-m-left_x-small"></lightning-button>
-                                                <lightning-button variant="base" label={l.Save} data-action-name="Edit" title={l.Save} icon-name="utility:save" onclick={handleSave} class="slds-m-left_medium"></lightning-button>
+                                                <lightning-button variant="base" label={l.Save} data-action-name="Edit" title={l.Save} icon-name={icon.Save} onclick={handleSave} class="icon-md slds-m-left_medium"></lightning-button>
                         
                                             </div>
                                         </div>
@@ -88,10 +88,7 @@
 
                 <lightning-layout-item size="12" padding="around-smallx" small-device-size="6" medium-device-size="6" large-device-size="3">
                     <div class="custom-box">
-                        <!-- user extraField section -->
                        <div class="slds-p-around_medium extra_info">
-                           <!-- cssClass 
-                           header-icon -->
                            <c-rh_list 
                             css-class="list-bordered list-centered min-h_10 list-hover_underline slds-has-dividers_bottom slds-has-block-links_space slds-p-horizontal_medium"
                             header-title={TimeSheetsTitle}
@@ -108,10 +105,7 @@
                 </lightning-layout-item>
                 <lightning-layout-item size="12" padding="around-smallx" small-device-size="6" medium-device-size="6" large-device-size="3">
                     <div class="custom-box">
-                        <!-- user extraField section -->
                        <div class="slds-p-around_medium extra_info">
-                           <!-- cssClass 
-                           header-icon -->
                            <c-rh_list 
                             css-class="list-bordered list-centered min-h_10 list-hover_underline slds-has-dividers_bottom slds-has-block-links_space slds-p-horizontal_medium"
                             header-title={LeadedGroupTitle}
@@ -127,13 +121,10 @@
                 </lightning-layout-item>
                 <lightning-layout-item size="12" padding="around-smallx" small-device-size="6" medium-device-size="6" large-device-size="3">
                     <div class="custom-box">
-                        <!-- user extraField section -->
                        <div class="slds-p-around_medium extra_info">
-                           <!-- cssClass 
-                           header-icon -->
                            <c-rh_list 
-                           css-class="list-bordered list-centered min-h_10 list-hover_underline slds-has-dividers_bottom slds-has-block-links_space slds-p-horizontal_medium"
-                           header-title={projectTitle}
+                            css-class="list-bordered list-centered min-h_10 list-hover_underline slds-has-dividers_bottom slds-has-block-links_space slds-p-horizontal_medium"
+                            header-title={projectTitle}
                             key-id="Id"
                             css-style="max-height:40vh;overflow-y:auto"
                             header-icon={icon.project}
@@ -146,10 +137,7 @@
                 </lightning-layout-item>
                 <lightning-layout-item size="12" padding="around-smallx" small-device-size="6" medium-device-size="6" large-device-size="3">
                     <div class="custom-box">
-                        <!-- user extraField section -->
                        <div class="slds-p-around_medium extra_info">
-                           <!-- cssClass 
-                           header-icon -->
                            <c-rh_list 
                            css-class="list-bordered list-centered min-h_10 list-hover_underline slds-has-dividers_bottom slds-has-block-links_space slds-p-horizontal_medium"
                            header-title={LeadedProjectTitle}

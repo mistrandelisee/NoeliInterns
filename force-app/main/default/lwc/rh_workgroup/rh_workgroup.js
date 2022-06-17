@@ -1,5 +1,5 @@
 import { LightningElement, wire } from 'lwc';
-import { registerListener, unregisterAllListeners,fireEvent } from 'c/pubsub';
+import { registerListener,unregisterListener, unregisterAllListeners,fireEvent } from 'c/pubsub';
 import { CurrentPageReference,NavigationMixin } from 'lightning/navigation';
 export default class Rh_workgroup extends NavigationMixin(LightningElement) {
     @wire(CurrentPageReference) pageRef;
@@ -98,9 +98,11 @@ export default class Rh_workgroup extends NavigationMixin(LightningElement) {
         this.isVisibleDetailgroup = false;
     }
     dobackbuttom(event){
+        unregisterListener('backbuttom', this.dobackbuttom, this);
         console.log('fdgfdgfdgfdfgdgfdgfdg');
         //this.handleHomeGroupe();
         this.goToPage('rhgroup',{});
+        // event.preventDefault();
     }
     handleContactgroup(event){
         this.groupe = event.detail;

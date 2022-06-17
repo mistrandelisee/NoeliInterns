@@ -70,6 +70,28 @@
             ></lightning-combobox>
         <!-- message-when-value-missing={item.valueMissing}  -->
         </template>
+        <template if:true={isLookup}>
+            <c-rh_custom_lookup_adv 
+                data-id={item.name}
+                obj-name={item.objName} 
+                search-placeholder={item.placeholder}
+                icon-name={item.iconName}
+                new-label-prefix={item.newLabel} 
+                field-label={item.label}
+                field-name={item.name}  
+                object-label={item.objectLabel}
+                filter={filter}
+                selected-id={item.value}
+                selected-name={item.selectName}
+                is-value-selected={item.isSelected}
+                show-add-new={item.enableCreate}
+                read-only={item.readOnly}
+                is-required={item.required}
+                onlookupselected={handleLookupSelection}               
+                oncreatelookup={handleLookupCreation}
+                                >
+            </c-rh_custom_lookup_adv>
+        </template>
         <template if:true={item.datalist}>
             
             

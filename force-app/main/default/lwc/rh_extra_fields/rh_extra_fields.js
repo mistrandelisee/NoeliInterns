@@ -1,5 +1,8 @@
-import { api, LightningElement, track } from 'lwc';
+import { api, LightningElement, track, wire } from 'lwc';
+import { CurrentPageReference } from 'lightning/navigation';
+import { registerListener, unregisterAllListeners,fireEvent } from 'c/pubsub';
 import { labels } from 'c/rh_label';
+import {icons} from 'c/rh_icons';
 //Constants
 const EDIT_ACTION='Edit';
 const VIEW_ACTION='View';
@@ -11,7 +14,9 @@ const SUCCESS_VARIANT='success';
 const WARNING_VARIANT='warning';
 const ERROR_VARIANT='error';
 export default class Rh_extra_fields extends LightningElement {
+    @wire(CurrentPageReference) pageRef;
     l={...labels}
+    icon={...icons}
     @api
     jsonField;
     @api
@@ -21,7 +26,8 @@ export default class Rh_extra_fields extends LightningElement {
 
 
     @api displayEdit
-
+    get helpText(){ return this.l?.userMoreInfoHlp || 'More details'}
+    get editHelpText(){ return this.l?.userEditMoreHlp || 'Edit additionnal information about you , check each time you edit an information. then save all...'}
     mapInputs=new Map();
     get fieldTab(){
         return 'test'
@@ -35,8 +41,8 @@ export default class Rh_extra_fields extends LightningElement {
                 label:this.l.Edit,
                 name:"Edit",
                 title:this.l.Edit,
-                iconName:"utility:edit",
-                class:"slds-m-left_x-small"
+                iconName:this.icon.Edit,
+                class:" icon-md slds-m-left_x-small"
             },
         ];
 
@@ -106,11 +112,11 @@ export default class Rh_extra_fields extends LightningElement {
             // alert(`${key}: ${elt}`); // cucumber: 500 etc
             tab.push( {
                 keyx:key,
-                fields:[{ label:'Field Label',placeholder:'..label',name:'Label',value: elt.Label,required:true,
+                fields:[{ label:this.l.label || 'Field Label',placeholder:'..'+this.l.label,name:'Label',value: elt.Label,required:true,
                             ly_md:'12',ly_xs:'12', ly_lg:'6', variant:'label-hidden',isText:true
                         },
                         {
-                            label:'Field Value', placeholder:'..value',name:'Value',value: elt.Value,
+                            label:this.l.value || 'Field Value', placeholder:'..'+this.l.value,name:'Value',value: elt.Value,
                             required:true,ly_md:'12',ly_xs:'12',  ly_lg:'6', variant:'label-hidden',isText:true
                         }
                 
@@ -122,7 +128,7 @@ export default class Rh_extra_fields extends LightningElement {
             
 
     }
-    startSpinner(b){
+    /*startSpinner(b){
         let spinner=this.template.querySelector('c-rh_spinner');
         if (b) {    spinner?.start(); }
             else{   spinner?.stop();}
@@ -130,8 +136,7 @@ export default class Rh_extra_fields extends LightningElement {
     showToast(variant, title, message){
         let toast=this.template.querySelector('c-rh_toast');
         toast?.showToast(variant, title, message);
-    }
-
+    }*/
     handleAction(event){
         const cusEvt=event.detail;
         console.log('cusEvt >>',cusEvt,' \action ',cusEvt?.action);
@@ -139,12 +144,12 @@ export default class Rh_extra_fields extends LightningElement {
             case 'DELETE_ACTION':
                 console.log('key >>',cusEvt?.fieldkey,' \data ',cusEvt?.data);
                 this.handleDelete(cusEvt?.fieldkey);
-                this.showToast(SUCCESS_VARIANT,  'field Removed', 'ok');
+                this.showToast(SUCCESS_VARIANT,this.l.successOp,  this.l.rmvfield);
                 break;
             case 'SAVE_ACTION':
                 console.log('key >>',cusEvt?.fieldkey,' \data ',cusEvt?.data);
                 this.handleUpdate(cusEvt?.fieldkey,cusEvt?.data);
-                this.showToast(SUCCESS_VARIANT,  'field updated', 'ok');
+                this.showToast(SUCCESS_VARIANT,this.l.successOp, this.l.addfield);
                 break;
             default:
                 break;
@@ -168,7 +173,7 @@ export default class Rh_extra_fields extends LightningElement {
             // this.callParent('Save',JSON.stringify(this.getSavedFields))
             this.callParent('Save',JSON.stringify(fields))
         }else{
-            this.showToast(WARNING_VARIANT,  'Missing Input label', '');
+            this.showToast(WARNING_VARIANT, this.l.warningOp ,this.l.errorOp );
         }
     } 
     handleSaveCancel(){
@@ -198,6 +203,16 @@ export default class Rh_extra_fields extends LightningElement {
       
       this.dispatchEvent(actionEvt);
     }
+    
+    startSpinner(b){
+        fireEvent(this.pageRef, 'Spinner', {start:b});
+     }
+     showToast(variant, title, message){
+         fireEvent(this.pageRef, 'Toast', {variant, title, message});
+     }
+     ShowModal(show,text,actions,extra={}){
+         fireEvent(this.pageRef, 'Modal', {show,text,actions,extra});
+      }
 
 
 }

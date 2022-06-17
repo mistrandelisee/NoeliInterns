@@ -14,7 +14,7 @@ export default class Rh_display_fields extends NavigationMixin(LightningElement)
     hasAction;
     @api
     showHeaderAction;
-
+    @api helpText;
     @api displayEdit;
 
     @api
@@ -26,6 +26,9 @@ export default class Rh_display_fields extends NavigationMixin(LightningElement)
     }
     get hasFooterText(){
         return this.footerText?.text;
+    }
+    get hasHelpText(){
+        return this.helpText;
     }
 
     get getFieldsRows(){
@@ -44,7 +47,7 @@ export default class Rh_display_fields extends NavigationMixin(LightningElement)
             }
             i=i+1;
         }
-        // console.log(`outfields  `, outfields );
+        console.log(`outfields  `, outfields );
         return outfields;
     }
     initDefaultAction(){

@@ -8,25 +8,23 @@ public without sharing class RH_EventController {
         27/05/2022
     */
     @AuraEnabled
-    public static List<Event__c>  getLastEventList(Integer endLimit){
-        try{    
-                
-                User u = userQuery.getUserInfoId();
-                System.debug('u-->' + u);
-                String conId = u.RH_ContactId__c;
-                String userRole = u.UserRole.Name;
-                System.debug('userRole-->' + userRole);
-                if(userRole == 'CEO'){
-                     //List<Event__c> evenList = eventQuery.get_EventList();
-                     List<Event__c> evenList = eventQuery.getMyLastEvent(conId,endLimit);
-                    return evenList;
-                }else{
-                    return eventQuery.getMyLastEvent(conId,endLimit);
-                }
+    public static List<Event__c>  getMyLastEvent(Integer endLimit){
+        return eventQuery.getMyLastEvent(endLimit);
+    }
+
+    /** end Add */ 
+
+    @AuraEnabled
+    public static Event__c  getEventSolo(){
+        List<Event__c> event = eventQuery.getEvent();
+        Event__c even;
+        for(Event__c ev : event){
+            if(ev.Status__c==''){
+                even = ev;
             }
-            catch(Exception ex) {
-                throw new AuraHandledException(ex.getMessage());
-            }
+        }
+        System.debug('##### even-->' + even);
+        return even;
     }
 
     @AuraEnabled
@@ -37,7 +35,7 @@ public without sharing class RH_EventController {
                 String conId = u.RH_ContactId__c;
                 String userRole = u.UserRole.Name;
                 if(userRole == 'CEOza'){
-                     List<Event__c> evenList = eventQuery.get_EventList(); //[SELECT Id,Name,Contact_Id__r.Name,Description__c, Start_Date__c, End_Date__c, Status__c, CreatedBy.UserRole.Name FROM Event__c 
+                     List<Event__c> evenList = eventQuery.get_EventList(); //[SELECT Id,Name,Contact_Id__r.Name,Description__c, Start_Dates__c, End_Dates__c, Status__c, CreatedBy.UserRole.Name FROM Event__c 
                      //order by createddate desc];
                     //System.debug('event-->' + evenList);
                     return evenList;
@@ -54,7 +52,7 @@ public without sharing class RH_EventController {
     
     @AuraEnabled 
     public static Event__c  getEvent(String evId){
-        Event__c ev = eventQuery.getEvent(evId); //[SELECT Id,Name,Contact_Id__r.Name,Description__c, Start_Date__c, End_Date__c, Status__c FROM Event__c Where Id =: evId];
+        Event__c ev = eventQuery.getEvent(evId); //[SELECT Id,Name,Contact_Id__r.Name,Description__c, Start_Dates__c, End_Dates__c, Status__c FROM Event__c Where Id =: evId];
         return ev;
     }
     @AuraEnabled
@@ -66,6 +64,7 @@ public without sharing class RH_EventController {
                 String userRole = u.UserRole.Name;
                 if(userRole == 'CEOza'){
                     List<Event__c> evenList = eventQuery.getEventList(evenId);
+                    System.debug('evenList -->' + evenList);
                     return evenList;
                 }else{
                     return eventQuery.getEventList(evenId);
@@ -79,21 +78,24 @@ public without sharing class RH_EventController {
     public static List<Event__c> getMyEventManager() {
         try{
             User u = userQuery.getUserInfoId();
+            System.debug('u-->' + u);
                 String conId = u.RH_ContactId__c;
                 String userRole = u.UserRole.Name;
-                if(userRole == 'CEO' || userRole =='Human Resource Managment'){
+                System.debug('conId-->' + conId);
+                System.debug('userRole-->' + userRole);
+                if(userRole == 'CEO' || userRole =='Human Resource Managment' || userRole =='RH Manager'){
                     List<Event__c> evenList = eventQuery.getMyEventManagerForCEO();
                     for(Event__c ev: evenList){
                         ev.Message__c = 'CEO';
                     }
-                    //System.debug('event-->' + evenList);
+                    System.debug('event ceo-->' + evenList);
                     return evenList;
                 }else{
                     List<Event__c> evenList = eventQuery.getMyEventManagerForBaseUser();
                     for(Event__c ev: evenList){
                         ev.Message__c = 'Base User';
                     }
-                    //System.debug('event-->' + evenList);
+                    System.debug('event base user -->' + evenList);
                     return evenList;
                 }
             }
@@ -123,6 +125,30 @@ public without sharing class RH_EventController {
         }
     }
     @AuraEnabled
+    public static Event__c createEvent(String objEven) {
+        system.debug('@@@@EventDatas' + objEven);
+        try{
+            wrapperData datas = (wrapperData)JSON.deserialize(objEven, wrapperData.class);
+            User u = userQuery.getUserInfoId();
+            String conId = u.RH_ContactId__c;	
+                Event__c even = new Event__c(
+                    Name = datas.Name,
+                    Contact_Id__c = conId,
+                    Description__c  = datas.Description,
+                    Start_Dates__c =datas.StartDate,
+                    End_Dates__c =datas.EndDate,
+                    Status__c =datas.status
+
+                );
+                insert even;
+                system.debug('@@@@EventDatasReturn' + even);
+                return even;
+        }
+        catch(Exception ex) {
+            throw new AuraHandledException(ex.getMessage());
+        }
+    }
+    @AuraEnabled
     public static Event__c saveEvenWithoutStatus(String objEven) {
         system.debug('@@@@EventDatas' + objEven);
         try{
@@ -133,8 +159,8 @@ public without sharing class RH_EventController {
                     Name = datas.Name,
                     Contact_Id__c = conId,
                     Description__c  = datas.Description,
-                    Start_Date__c =dateToParse(datas.StartDate),
-                    End_Date__c =dateToParse(datas.EndDate),
+                    Start_Dates__c =datas.StartDate,
+                    End_Dates__c =datas.EndDate,
                     Status__c =''
 
                 );
@@ -178,8 +204,8 @@ public without sharing class RH_EventController {
     public class wrapperData{
         public String Name { get; set; }
         public String Description { get; set; }
-        public String StartDate { get; set; }
-        public String EndDate { get; set; }
+        public datetime StartDate { get; set; }
+        public datetime EndDate { get; set; }
         public String Status { get; set; }
         public String Message { get; set; }
     }
@@ -218,8 +244,8 @@ public without sharing class RH_EventController {
                 }else{
                     even.Name = datas.Name;
                     even.Description__c  = datas.Description;
-                    even.Start_Date__c =dateToParse(datas.StartDate);
-                    even.End_Date__c =dateToParse(datas.EndDate);
+                    even.Start_Dates__c =datas.StartDate;
+                    even.End_Dates__c =datas.EndDate;
                     even.Status__c = 'Draft';
                 }
             }
@@ -244,8 +270,8 @@ public without sharing class RH_EventController {
             for(Event__c even : event){
                 even.Name = datas.Name;
                 even.Description__c  = datas.Description;
-                even.Start_Date__c =dateToParse(datas.StartDate);
-                even.End_Date__c =dateToParse(datas.EndDate);
+                even.Start_Dates__c =datas.StartDate;
+                even.End_Dates__c =datas.EndDate;
                 even.Status__c ='Submitted';
             }
 
@@ -260,8 +286,8 @@ public without sharing class RH_EventController {
     public class wrapperDataToUpdate{
         public String Name { get; set; }
         public String Description { get; set; }
-        public String StartDate { get; set; }
-        public String EndDate { get; set; }
+        public datetime StartDate { get; set; }
+        public datetime EndDate { get; set; }
         public String Status { get; set; }
         public String Message { get; set; }
     }
@@ -447,35 +473,30 @@ public without sharing class RH_EventController {
         }
     }
 
-    //convert string date to date 
-    public static Date dateToParse(String dateOCS){
-        System.debug('OCSRecuperaDatiPostvenditaController dateToParse input: '+dateOCS);
-        Date res = null; 
-        try{
-            if(dateOCS != '0' && dateOCS != null)
-            { 
-                if(dateOCS.contains('/')){ 
-                    res =  Date.parse(dateOCS);
-                }
-                else if(dateOCS.contains('-')){
-                System.debug('anno' + Integer.valueOf(dateOCS.substring(0, 4)) + ' mese' + Integer.valueOf(dateOCS.substring(5,7)) + 'Giorno ' + Integer.valueOf(dateOCS.substring(8,10))); 
-                    res = Date.newInstance(Integer.valueOf(dateOCS.substring(0, 4)), 
-                            Integer.valueOf(dateOCS.substring(5,7)),
-                            Integer.valueOf(dateOCS.substring(8,10)));
-                }
-                else{ 
-                    res =  Date.newInstance(Integer.valueOf(dateOCS.substring(0, 4)), 
-                            Integer.valueOf(dateOCS.substring(4,6)),
-                            Integer.valueOf(dateOCS.substring(6)));
-                }
-            }   
-            else
-                res = null;
-        }
-        catch(Exception e){
-            //System.debug('AccountUtils dateToParse Exception, message: '+e.getCause()+'\n'+e.getStackTraceString());
-        }
-        return res;
+    @AuraEnabled 
+    public static Map<String,Object>  InitFilter(){
+
+        Map<String, Object> mapReturn = new Map<String, Object>();
+        mapReturn.put('error',false);
+        
+        try {
+            List<RH_Utility.PickOption> OrderBys = new List<RH_Utility.PickOption>();
+            OrderBys.add(new RH_Utility.PickOption('None', ''));
+            OrderBys.add(new RH_Utility.PickOption('Created Date', 'CreatedDate'));
+            OrderBys.add(new RH_Utility.PickOption('Name', 'Name'));
+            // OrderBys.add(new RH_Utility.PickOption('Created Date', 'CreatedDate'));
+            // List<RH_WorkGroup__c> grps=workGroupQry.getActiveWorkgroups();
+            mapReturn.put('OrderBys',OrderBys); 
+            mapReturn.put('Picklists',RH_Utility.getPickListOptions(new List<String> {'Status__c'},'Event__c')); 
+            //mapReturn.putAll(RH_Utility.checkRole()); 
+            mapReturn.put('Ok',true); 
+        } catch(Exception e) {
+            System.debug(e.getMessage());
+            mapReturn.put('error',true);
+            mapReturn.put('msg',e.getMessage());
+            mapReturn.put('e',e);
+        }  
+        return mapReturn;
     }
 
     @AuraEnabled
@@ -487,32 +508,16 @@ public without sharing class RH_EventController {
     public static Map<String, Object> getRelatedFilesByRecordId(String recordId){
         return RH_FileUploader.getFileInfos(recordId); 
     }
-    // @AuraEnabled
-    // public static Map<ID, Object> getRelatedFilesByRecordId(String recordId) {
-    //     // Get record file IDs        
-    //     List<ContentDocumentLink> files = [SELECT ContentDocumentId FROM ContentDocumentLink WHERE LinkedEntityId = :recordId];
-    //     List<ID> fileIDs = new List<ID>();
-    //     for (ContentDocumentLink docLink : files) {
-    //         fileIDs.add(docLink.ContentDocumentId);
-    //     }
  
-    //     List<ContentVersion> docs = [SELECT ContentDocumentId,VersionData, FileExtension, Title 
-    //         FROM ContentVersion WHERE ContentDocumentId IN : fileIDs];
-    //     Map<ID, Object> mapIdTitle = new Map<ID, Object>();
-    //     for (ContentVersion docLink : docs) {
-    //         Map<string, Object> mapobj = new Map<string, Object>();
-    //         mapobj.put('obj', docLink);
-    //         mapobj.put('link', EncodingUtil.base64Encode(docLink.VersionData));
-    //         mapIdTitle.put(docLink.ContentDocumentId, mapobj);
-    //     }
-    //     system.debug('@@@ mapIdTitle --->'+ mapIdTitle);
-    //     return mapIdTitle;
-    // }
     @AuraEnabled
-    public static String checkcontentDocumentByRcrdId(String recId) {
-        ContentDocumentLink files = [SELECT ContentDocumentId FROM ContentDocumentLink WHERE LinkedEntityId = :recId];
-        String str = files.ContentDocumentId;
-        return str;
+    public static List<String> checkcontentDocumentByRcrdId(String recId) {
+        List<ContentDocumentLink> files = [SELECT ContentDocumentId FROM ContentDocumentLink WHERE LinkedEntityId = :recId];
+        List<String> strList = new List<String>();
+        for (ContentDocumentLink docLink : files) {
+            String str = docLink.ContentDocumentId;
+            strList.add(str);
+        }
+        return strList;
     }
     @AuraEnabled
     public static Boolean checkcontentDocumentId(String recId, String docId) {
@@ -533,14 +538,6 @@ public without sharing class RH_EventController {
     public static void deleteFile(String recId, String docId){
         RH_FileUploader.deleteFile(recId, docId);
     }
-    // Test
-
-    // @AuraEnabled(cacheable=true)
-    // public static List<Account> getAccountList() {
-    //     return [SELECT Id, Name, Type, Rating,
-    //             Phone, Website, AnnualRevenue
-    //         FROM Account Limit 5];
-    // }
     @AuraEnabled
     public static List<ContentDocument> checkcontentDocumentByRcrdIdTest() {
         String recId = 'a087Q000000OkKAQA0';

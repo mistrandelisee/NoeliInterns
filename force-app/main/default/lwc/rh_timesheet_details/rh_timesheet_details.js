@@ -15,7 +15,7 @@ import generatedPDF from '@salesforce/apex/RH_Timesheet_Controller.generatedPDF'
 
 
 import { CurrentPageReference } from 'lightning/navigation';
-import { registerListener, unregisterAllListeners,fireEvent } from 'c/pubsub';
+import { registerListener,unregisterListener, unregisterAllListeners,fireEvent } from 'c/pubsub';
 const NEW_ACTION='New';
 const EDIT_ACTION='Edit';
 const SUCCESS_VARIANT='success';
@@ -35,7 +35,9 @@ const CARD_ACTION='stateAction';
 
 const FROM_CHILD='FROM_CHILD';
 const FROM_PARENT='FROM_PARENT';
-
+//MODAL Actions
+const OK_DELETE_ITEM='OK_DELETE_ITEM';
+const OK_DELETE='OK_DELETE_ITEM';
 const APPROVE_ACTION='approvato';
 const REJECT_ACTION='Reject';
 const DRAFT_STATUS='nuovo';
@@ -53,6 +55,7 @@ export default class Rh_timesheet_details extends NavigationMixin(LightningEleme
     END_OF_DAY=20;//GMT
     START_OF_DAY=8;//GMT
     l={...labels,
+        SaveNew:'Save & New',
         Submit:'Submit',
         Delete:'Delete',
         Approve:'Approve',
@@ -72,6 +75,9 @@ export default class Rh_timesheet_details extends NavigationMixin(LightningEleme
         total_dur_h:"Total Duration In Hours",
         total_free_dur_h:"Total Free Duration In Hours",
         total_work_dur_h:"Total Working Duration In Hours",
+        delete_sheet_confirm:'Are you sure you want to delete this sheet?',
+        delete_sheetitem_confirm:'Are you sure you want to delete this sheet entry?',
+        succesDelete:'record Deleted succesfully'
     }
     icon={...icons}
     detailsActions=[
@@ -239,6 +245,7 @@ Duration_mins */
         this.sectionExpanded=!this.sectionExpanded;
     }
     connectedCallback(){
+        registerListener('ModalAction', this.doModalAction, this);
         console.log('RECORDID connectedCallback ',this.recordId);
        this.getTimsheetApex();
     }
@@ -283,12 +290,12 @@ RH_Total_Free_Duration_Hours__c}*/
                     this.sheetNotFounded=true;
                 }
             }else{
-                this.showToast(WARNING_VARIANT,'ERROR', result.msg);
+                this.showToast(WARNING_VARIANT,this.l.warningOp, result.msg);
             }
           })
           .catch(error => {
             this.sheetNotFounded=true;
-            this.showToast(ERROR_VARIANT,'ERROR', error.message);
+            this.showToast(ERROR_VARIANT,this.l.warningOp, error.message);
             console.error(error);
         })
         .finally(() => {
@@ -356,7 +363,17 @@ RH_Total_Free_Duration_Hours__c}*/
                     this.handleEditTimeSheetEntry();
                     break;
                 case DELETE_ACTION:
-                    this.handleDeleteTimeSheetEntry();
+                    let text='';
+                    const Actions=[]
+                    const extra={style:'width:20vw;'};//
+                    text=this.l.delete_sheetitem_confirm;
+                    extra.title=this.l.action_confirm;
+                    extra.style+='--lwc-colorBorder: var(--bannedColor);';
+                    // Actions.push(this.createAction("brand-outline",this.l.Cancel,'KO',this.l.Cancel,"utility:close",'slds-m-left_x-small'));
+                    Actions.push(this.createAction("brand-outline",this.l.ok_confirm,OK_DELETE_ITEM,this.l.ok_confirm,this.icon.check,'slds-m-left_x-small'));
+                    this.ShowModal(true,text,Actions,extra);
+                   
+                    // this.handleDeleteTimeSheetEntry(); //launch confirmation modal
                     break;
                 default:
                     break;
@@ -426,7 +443,17 @@ RH_Total_Free_Duration_Hours__c}*/
                 this.handleSubmitTimeSheet();
                 break;
             case DELETE_ACTION:
-                this.handleDeleteTimeSheet();
+                this.actionRecord={Id:this.recordId}
+                // this.handleDeleteTimeSheet(); //launch confirmation modal
+                let text='';
+                const Actions=[]
+                const extra={style:'width:20vw;'};//
+                text=this.l.delete_sheet_confirm;
+                extra.title=this.l.action_confirm;
+                extra.style+='--lwc-colorBorder: var(--bannedColor);';
+                // Actions.push(this.createAction("brand-outline",this.l.Cancel,'KO',this.l.Cancel,"utility:close",'slds-m-left_x-small'));
+                Actions.push(this.createAction("brand-outline",this.l.ok_confirm,OK_DELETE,this.l.ok_confirm,this.icon.check,'slds-m-left_x-small'));
+                this.ShowModal(true,text,Actions,extra);
                 break;
             case ADD_LINE_ACTION:
                 this.sheetItem={};
@@ -450,24 +477,54 @@ RH_Total_Free_Duration_Hours__c}*/
         }*/
          //   this.handleUserAction(record, FROM_PARENT);
     }
+    doModalAction(event){
+        console.log('doModalAction in user view ', JSON.stringify(event.action));
+        switch (event.action) {
+            case OK_DELETE://delete timesheet
+                if(this.actionRecord){
+                    this.handleDeleteTimeSheet();
+                    this.actionRecord=null;
+                }
+                break;
+            case OK_DELETE_ITEM://delete timesheet item
+                if(this.sheetItem?.Id){
+                    this.handleDeleteTimeSheetEntry();
+                    this.sheetItem=null;
+
+                }
+                break;
+            default:
+                this.actionRecord=null;
+                this.sheetItem=null;
+                break;
+        }
+        this.ShowModal(false,null,[]);//close modal any way
+        // event.preventDefault();
+    }
+    disconnectedCallback() {
+        
+        unregisterListener('ModalAction', this.doModalAction, this);
+        //code
+    }
+    actionRecord={};
     doApporoval(obj){
         this.startSpinner(true);
         approvalTimesheet({ SheetJson:  JSON.stringify(obj) })
           .then(result => {
             console.log('Result', result);
             if (!result.error && result.Ok) {
-                this.showToast(SUCCESS_VARIANT,'SUCCES', 'Action Done Successfully');
+                this.showToast(SUCCESS_VARIANT,this.l.successOp,'');//, 'Action Done Successfully'
                 this.resetApproval();
 
                 //Refresh Page
                 this.reloadPage();
             }else{
-                this.showToast(WARNING_VARIANT,'ERROR', result.msg);
+                this.showToast(WARNING_VARIANT,this.l.warningOp, result.msg);
             }
           })
           .catch(error => {
             console.error('Error:', error);
-            this.showToast(ERROR_VARIANT,'ERROR', error);
+            this.showToast(ERROR_VARIANT,this.l.warningOp, error);
         }).finally(() => {
             this.startSpinner(false)
         });
@@ -527,7 +584,7 @@ RH_Total_Free_Duration_Hours__c}*/
                 this.startSpinner(false);   
             }).catch(error => {
                 console.error('Error:', error);
-                this.showToast(ERROR_VARIANT,'ERROR', error);
+                this.showToast(ERROR_VARIANT,this.l.warningOp, error);
             })
     }
     /*Generated PDF Functions*/
@@ -563,14 +620,15 @@ RH_Total_Free_Duration_Hours__c}*/
             console.log('Result', result);
             if (!result.error && result.Ok) {
                 //GO BACK TO PARENT
+                this.showToast(SUCCESS_VARIANT,this.l.successOp,  this.l.succesDelete);
                 this.goToPage('rhtimesheet');
             }else{
-                this.showToast(WARNING_VARIANT,'ERROR', result.msg);
+                this.showToast(WARNING_VARIANT,this.l.warningOp, result.msg);
             }
           })
           .catch(error => {
             console.error('Error:', error);
-            this.showToast(ERROR_VARIANT,'ERROR', error);
+            this.showToast(ERROR_VARIANT,this.l.errorOp, error);
         }).finally(() => {
             this.startSpinner(false)
         });
@@ -582,14 +640,15 @@ RH_Total_Free_Duration_Hours__c}*/
             console.log('Result', result);
             if (!result.error && result.Ok) {
                 //Refresh Page
+                this.showToast(SUCCESS_VARIANT,this.l.successOp,  '');//this.l.succesDelete
                 this.reloadPage();
             }else{
-                this.showToast(WARNING_VARIANT,'ERROR', result.msg);
+                this.showToast(WARNING_VARIANT,this.l.warningOp, result.msg);
             }
           })
           .catch(error => {
             console.error('Error:', error);
-            this.showToast(ERROR_VARIANT,'ERROR', error);
+            this.showToast(ERROR_VARIANT,this.l.errorOp, error);
         }).finally(() => {
             this.startSpinner(false)
         });
@@ -614,14 +673,15 @@ RH_Total_Free_Duration_Hours__c}*/
             console.log('Result', result);
             if (!result.error && result.Ok) {
                 //Refresh Page
+                this.showToast(SUCCESS_VARIANT,this.l.successOp,  this.l.succesDelete);
                 this.reloadPage();
             }else{
-                this.showToast(WARNING_VARIANT,'ERROR', result.msg);
+                this.showToast(WARNING_VARIANT,this.l.warningOp, result.msg);
             }
           })
           .catch(error => {
             console.error('Error:', error);
-            this.showToast(ERROR_VARIANT,'ERROR', error);
+            this.showToast(ERROR_VARIANT,this.l.errorOp, error);
         }).finally(() => {
             this.startSpinner(false)
         });
@@ -629,8 +689,9 @@ RH_Total_Free_Duration_Hours__c}*/
     handleUpadateTimeSheetEntry(){
 
     }
-    handleEditTimeSheetEntry(){
-        if (this.isEntryReadOnly) {//view mode
+    handleEditTimeSheetEntry(skip=this.isEntryReadOnly){
+        /**skip :::skip initialization */
+        if (skip) {//view mode
             this.launchViewEntry();
         }else{
             this.initEntryAction();
@@ -664,21 +725,28 @@ RH_Total_Free_Duration_Hours__c}*/
                 this.launchViewEntry();
                 // this.callParent(this.action,{});
             }else{
-                this.showToast(WARNING_VARIANT,'ERROR', result.msg);
+                this.showToast(WARNING_VARIANT,this.l.warningOp, result.msg);
             }
           })
           .catch(error => {
             console.error('Error:', error);
-            this.showToast(ERROR_VARIANT,'ERROR', error);
+            this.showToast(ERROR_VARIANT,this.l.errorOp, error);
         }).finally(() => {
             this.startSpinner(false)
         });
     }
-    handleCreateEntryApexFinishOK(result){
-        this.reloadPage();
+    handleCreateEntryApexFinishOK(result,todo={}){
+        this.showToast(SUCCESS_VARIANT,this.l.successOp,  '');//this.l.succesDelete
+        if (todo.action=='SAVE_NEW') {
+            this.sheetItem={};
+            this.launchViewEntry();
+        }else{
+
+            this.reloadPage();
+        }
 
     }
-    handleCreateEntryApex(obj){
+    handleCreateEntryApex(obj,todo={}){
         this.startSpinner(true);
         obj.TimeSheetId=this.recordId;
         obj.Id=this.sheetItem?.Id;
@@ -686,14 +754,14 @@ RH_Total_Free_Duration_Hours__c}*/
           .then(result => {
             console.log('Result', result);
             if (!result.error && result.Ok) {
-                this.handleCreateEntryApexFinishOK(result);
+                this.handleCreateEntryApexFinishOK(result,todo);
             }else{
-                this.showToast(WARNING_VARIANT,'ERROR', result.msg);
+                this.showToast(WARNING_VARIANT,this.l.warningOp, result.msg);
             }
           })
           .catch(error => {
             console.error('Error:', error);
-            this.showToast(ERROR_VARIANT,'ERROR', error);
+            this.showToast(ERROR_VARIANT,this.l.warningOp, error);
         }).finally(() => {
             this.startSpinner(false)
         });
@@ -747,7 +815,14 @@ RH_Total_Free_Duration_Hours__c}*/
         }
         console.log(`record `, record);
     }
+    handleSaveNew(evt){
+        this.doSave({action:'SAVE_NEW'})
+    }
     handleSave(evt){
+        this.doSave({action:'SAVE'})
+    }
+
+    doSave(todo){
         let record={};
         let result= this.save();
         if (result.isvalid) {
@@ -763,7 +838,7 @@ RH_Total_Free_Duration_Hours__c}*/
             }else{
                 
                 if (record.StartTime<record.EndTime) {
-                    this.handleCreateEntryApex(record);
+                    this.handleCreateEntryApex(record,todo);
                 }else{
                     console.warn('Start date must before end date');
                     this.showToast(WARNING_VARIANT,'VALIDATION ERROR', 'Start date must before end date');
@@ -1107,7 +1182,8 @@ RH_Total_Free_Duration_Hours__c}*/
     }
     dateInterval(){
         let beginDate =this.record?.StartDate ? new Date(this.record?.StartDate) : new Date().toISOString();
-        let endDate =this.record?.EndDate ? new Date(this.record?.EndDate) : new Date();
+        // let endDate =this.record?.EndDate ? new Date(this.record?.EndDate) : new Date();
+        let endDate = new Date();// last date must e today
         console.log('***** dateInterval ');
         beginDate=beginDate.toISOString().split('T')[0];
         endDate=endDate.toISOString().split('T')[0];
@@ -1173,5 +1249,9 @@ RH_Total_Free_Duration_Hours__c}*/
      }
      showToast(variant, title, message){
          fireEvent(this.pageRef, 'Toast', {variant, title, message});
+     }
+     
+    ShowModal(show,text,actions,extra={}){
+        fireEvent(this.pageRef, 'Modal', {show,text,actions,extra});
      }
 }

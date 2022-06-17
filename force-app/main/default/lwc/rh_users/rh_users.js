@@ -3,6 +3,7 @@ import { NavigationMixin } from 'lightning/navigation';
 
 import { labels } from 'c/rh_label';
 
+import initConfig from '@salesforce/apex/RH_Users_controller.InitFilter';
 import getContacts from '@salesforce/apex/RH_Users_controller.getContacts';
 import userStatusUpdate from '@salesforce/apex/RH_Users_controller.userStatusUpdate'
 import userRoleUpdate from '@salesforce/apex/RH_Users_controller.userRoleUpdate'
@@ -28,7 +29,17 @@ const FROM_CHILD='FROM_CHILD';
 const FROM_PARENT='FROM_PARENT';
 export default class Rh_users extends NavigationMixin(LightningElement) {
 
-l={...labels}
+l={...labels,
+Name: 'Name',
+srchNamePlc: 'Search by name',
+From:'From',
+To:'To',
+OrderBy:'sort By',
+selectPlc:'Select an option',
+}
+Status=[];
+roles=[];
+OrderBys=[];
 @track allEmployees = [];
 recordId;
 contactrecord;
@@ -47,7 +58,17 @@ fieldsToShow={
     accountName:'ok', FirstName:'',
     RHRolec:'ok',
 };
-
+filter={
+    searchText:null,
+    status:null,
+    startDate:null,
+    endDate:null,
+    role:null,
+    isActive:null,
+    orderBy:null,
+    orderOn:null,
+}
+filterInputs=[];
 constants={};
 
 StatusActions=[
@@ -99,6 +120,7 @@ hasAction;
     get showNew(){ return this.isAdmin && (this.action=='' || this.action==NEW_ACTION || this.action==SAVE_ACTION); }
     get hideView(){  return this.action=='' || this.action!=NEW_ACTION; }
     get hasDetailsActions(){ return this.detailsActions?.length >0}
+    get filterReady(){ return this.filterInputs?.length >0}
     get isAdmin() { return this.currUser?.isCEO || this.currUser?.isRHUser}
     get hasrecordid(){ return this.recordId?true:false; }
     connectedCallback(){
@@ -110,13 +132,59 @@ hasAction;
             // this.getExtraFields(this.recordId);
             this.startSpinner(false);
         }else{
+            this.initFilter();
             this.getAllEmployees();
         }
     }
+    initFilter(){
+        // this.startSpinner(true)
+        initConfig()
+          .then(result => {
+            console.log('Result INIT FILTER ');
+            console.log(result);
+            if (!result.error && result.Ok) {
+                this.currUser={...result.currentContact,
+                                    isCEO:result.isCEO,
+                                    isRHUser:result.isRHUser,
+                                    isTLeader:result.isTLeader,
+                                    isBaseUser:result.isBaseUser,
+                    }
+                this.Status = result.Picklists?.RH_Status__c;
+                this.roles = result.Picklists?.RH_Role__c;
+                this.OrderBys = result.OrderBys;
+                this.Status.unshift({
+                    label:this.l.selectPlc,value:''
+                });
+                this.roles.unshift({
+                    label:this.l.selectPlc,value:''
+                });
+                this.buildFilter();
+            }else{
+                this.showToast(WARNING_VARIANT,'ERROR', result.msg);
+            }
+          })
+          .catch(error => {
+            console.error('Error:', error);
+        }).finally(() => {
+            // this.startSpinner(false)
+        });
+    }
+
+    handleSubmitFilter(event) {
+        const record=event.detail;
+        console.log(`handleSubmitFilter record `, JSON.stringify(record) );
+        this.filter={... this.filter ,...record ,
+            orderOn: record.orderOn ? 'DESC' : 'ASC'};
+        console.log(`handleSubmitFilter this.filter TO CALL `, JSON.stringify(this.filter) );
+        
+        this.getAllEmployees();
+    }
+
     getAllEmployees(){
+        console.log(`getAllEmployees this.filter TO CALL `, JSON.stringify(this.filter) );
         this.allEmployees=[];
         this.startSpinner(true);
-        getContacts({}).then(result =>{
+        getContacts({filterTxt:JSON.stringify(this.filter)}).then(result =>{
             console.log('result @@@ + ' +(result));
             console.log(result);
             const self=this;
@@ -324,6 +392,101 @@ hasAction;
          this.callApexUpdateRole(record,from);
     }
 
+    buildFilter(){
+        /*{
+            searchText:null,
+            status:null,
+            startDate:null,
+            endDate:null,
+            role:null,
+            isActive:null,
+            orderBy:null,
+            orderOn:null,
+        }*/
+        this.filterInputs=[
+            {
+                label:this.l.Name,
+                placeholder:this.l.srchNamePlc,
+                name:'searchText',
+                value: '',
+                ly_md:'3', 
+                ly_xs:'6', 
+                ly_lg:'3'
+            }];
+            if (this.isAdmin) {///add status only if is admin
+                this.filterInputs.push({
+                    label:this.l.Status,
+                    name:'status',
+                
+                    picklist: true,
+                    options: this.Status,
+                    value: '',
+                    ly_md:'3',
+                    ly_xs:'6',  
+                    ly_lg:'3'
+                });
+            }
+            this.filterInputs =[...this.filterInputs,
+            {
+                label:this.l.Role,
+                name:'role',
+               
+                picklist: true,
+                options: this.roles,
+                value: '',
+                ly_md:'3',
+                ly_xs:'6',  
+                ly_lg:'3'
+            },
+            {
+                label:this.l.From,
+                placeholder:this.l.From,
+                name:'startDate',
+               
+                value: '',
+                type:'Date',
+                ly_md:'3', 
+                ly_xs:'6', 
+                ly_lg:'3',
+            },
+            {
+                label:this.l.To,
+                placeholder:this.l.To,
+                name:'EndDate',
+               
+                value: '',
+                type:'Date',
+                ly_md:'3', 
+                ly_xs:'6', 
+                ly_lg:'3',
+            },
+            {
+                label:this.l.OrderBy,
+                name:'orderBy',
+               
+                picklist: true,
+                options: this.OrderBys,
+                value: 'CreatedDate',
+                ly_md:'3',
+                ly_xs:'12',  
+                ly_lg:'3'
+            },
+
+            
+            {
+                label:'As',
+                name:'orderOn',
+                checked:true,
+                type:'toggle',
+                toggleActiveText:'DESC',
+                toggleInactiveText:'ASC',
+                ly_md:'6', 
+                ly_lg:'6'
+            }
+         
+        
+        ];
+    }
     startSpinner(b){
        fireEvent(this.pageRef, 'Spinner', {start:b});
     }

@@ -1,0 +1,49 @@
+<template>
+    <template if:true={isView}>
+        <c-rh_display_fields 
+        title="Extra Fields Informations"
+        iconsrc="utility:note"
+        column="2"
+        onaction={handleedit}
+        output-fields={userInfo}
+        display-edit={displayEdit}
+        has-action></c-rh_display_fields>
+        <!-- </template> -->
+        <!--   action-available={actionAvailable}-->
+    </template>
+
+    <template if:false={isView}>
+        <!-- <c-extra_fields user-info={userInfo}></c-extra_fields> -->
+
+        <section class="sect">
+            <lightning-layout multiple-rows>
+                <!-- <template if:true={userInfo} for:each={userInfo} for:item="item"> -->
+                <template if:true={userInfo} for:each={userInfo} for:item="item">
+                    <template if:false={item.hide}>
+
+                        <lightning-layout-item size="6" key={item.index} medium-device-size="5" padding="around-small">
+                            <lightning-input type="text"  class="input" required="true" data-id="label" data-input={item.index}  value={item.name} key={item.index} > </lightning-input>
+                        </lightning-layout-item>
+                    
+                        <lightning-layout-item size="6" key={item.index} medium-device-size="5" padding="around-small">
+                                    <lightning-input type="text" required="true" class="input" data-id="value" data-input={item.index} value={item.value}  > </lightning-input>
+                        </lightning-layout-item>
+
+                        <lightning-layout-item  key={item.index} size="6" medium-device-size="2" padding="around-small">
+                            <lightning-button-group>
+                                <lightning-button  icon-name="utility:close" variant="destructive" data-id={item.index}  onclick={handledelte} ></lightning-button>
+                                <lightning-button   icon-name="utility:check" variant="success" data-id={item.index} onclick={handlesave}></lightning-button>
+                            </lightning-button-group>
+                        </lightning-layout-item>
+                    </template>
+                </template>
+                <lightning-layout-item size="6" medium-device-size="5" padding="around-small">
+                    <lightning-button   icon-name="utility:add" data-id="ind" onclick={addnewitem}></lightning-button>   
+                </lightning-layout-item>
+                <lightning-layout-item size="6" medium-device-size="5" padding="around-small">
+                    <lightning-button   icon-name="utility:save" variant="brand"  data-id="ind" onclick={save}></lightning-button>   
+                </lightning-layout-item>
+                </lightning-layout>      
+        </section>
+    </template>
+</template>

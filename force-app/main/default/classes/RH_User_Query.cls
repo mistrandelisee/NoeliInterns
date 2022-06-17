@@ -38,7 +38,7 @@ public  class RH_User_Query {
     }
 
     public User getUserInfoId() {
-        return [Select Id, RH_ContactId__c,UserRole.Name From User where Id =: UserInfo.getUserId()];
+        return [Select Id, RH_ContactId__c,UserRole.Name,LanguageLocaleKey From User where Id =: UserInfo.getUserId()];
     }
     public List<User> getIdUser(List<String> idUs) {
         return [Select Id,RH_ContactId__c,UserRole.Name From User Where RH_ContactId__c IN: idUs];

@@ -1,4 +1,4 @@
-public class RH_Project_Query {
+public without sharing class RH_Project_Query {
     /** The class instance */
     private static RH_Project_Query instance = null;
 
@@ -45,5 +45,14 @@ public class RH_Project_Query {
     //EM 27-04-2022 19:24
     public List<Project__c> getActiveProjects(){
         return [SELECT Id, Name, Description__c,End_Date__c,Link__c,Status__c,Start_Date__c,Project_Manager__r.Name,Project_Manager__c FROM Project__c WHERE Status__c=:RH_Constans.ACTIVATED_PROJECT_STATUS ];
+    }
+
+    //EM 15-06-2022 9:51 get free projects
+    public List<Project__c> getFreeProjects(){
+        return [SELECT Id, Name, Description__c,End_Date__c,Link__c,Status__c,Start_Date__c,recordType.developerName FROM Project__c WHERE Is_Effective__c= true AND recordType.developerName=:RH_Constans.RH_VACCATION_RT_NAME ];
+    }
+    //EM 15-06-2022 9:51 check free projects
+    public List<Project__c> checkFreeProject(String IdProject){
+        return [SELECT Id, Name, Description__c,End_Date__c,Link__c,Status__c,Start_Date__c,recordType.developerName FROM Project__c WHERE Id =:IdProject  AND recordType.developerName=:RH_Constans.RH_VACCATION_RT_NAME ];
     }
 }

@@ -2,7 +2,6 @@ import { api, LightningElement,wire, track } from 'lwc';
 import getMyProfile from '@salesforce/apex/RH_Profile_controller.getMyProfile';
 import UpdateInfo from '@salesforce/apex/RH_Profile_controller.UpdateInfo';
 import changeMyPassword from '@salesforce/apex/RH_Profile_controller.changeMyPassword';
-import getpickListValue from '@salesforce/apex/RH_Utility.getpickListValue';
 import UpdateExtraInfo from '@salesforce/apex/RH_Profile_controller.UpdateExtraInfo';
 import { CurrentPageReference ,NavigationMixin} from 'lightning/navigation';
 import { registerListener, unregisterAllListeners,fireEvent } from 'c/pubsub';
@@ -28,13 +27,7 @@ const FROMRESETPWD='ResetPWD';
 const KEY_NB='#NB';
 export default class Rh_profile extends NavigationMixin(LightningElement) {
     //extra='[{name:\'\', value:\'\'}]'
-    l={...labels,
-    Group:'Group',Supervisor:'Supervisor',
-    myprojects:'My Projects (#NB)',
-    mytimesheets:'My Timesheets (#NB)',
-    myleadedGroups:'My Leaded Groups (#NB)',
-    myleadedProjects:'My Leaded Projects (#NB)',
-};
+    l={...labels,}
 icon ={...icons}
 
 
@@ -81,27 +74,33 @@ icon ={...icons}
     getProfile() {
         this.startSpinner(true);
         getMyProfile({}).then(result =>{
+            console.log('profile ');
+            console.log(result);
+
             if (result.error) {
-                console.log('profile ' +JSON.stringify(result));
                 console.error(result.msg);
+                this.showToast(ERROR_VARIANT, this.l.errorOp, result.msg);
             }else{
 
-                debugger;
-                console.log('profile ');
-                console.log(result);
                 this.profileinformation = result;
                 this.recordId=this.profileinformation?.contact?.Id;
                 this.buildExtraField(this.profileinformation?.contact?.RH_Extra_Infos__c || '[]');
-                // this.handlepickListValue();
                 this.refreshDetails();
-                let form = this.template.querySelector('c-rh_extra-fields');
-                if(form) form.setInfo(this.userextrafield);
+                // let form = this.template.querySelector('c-rh_extra-fields');
+                // if(form) form.setInfo(this.userextrafield);
             }
         }).catch(err =>{
             console.error('error',err)
+            this.showToast(ERROR_VARIANT, this.l.errorOp, '');
         }).finally(() =>{
             this.startSpinner(false);
         })
+    }
+    
+    buildExtraField(extrafield){
+        this.jsonInfo=extrafield;
+        let extraFieldCmp=this.template.querySelector('c-rh_extra_fields');
+        extraFieldCmp.initializeMap(extrafield);
     }
     handleAction(event){
         this.startSpinner(true);
@@ -120,6 +119,15 @@ icon ={...icons}
         }
         
     }
+    handleUserInfoActions(evt){
+        if(evt.action==SAVE_ACTION){
+            const data={...evt.data,recordId:this.profileinformation?.contact?.Id};
+            this.callUpdateInfoApex(data);
+
+        }else if(evt.action==LINK_ACTION){
+            this.handleGoToLink(evt.data)
+        }
+    }
     handleGoToLink(data){
         console.log(`handleGoToLink data `, JSON.stringify(data));
         this.startSpinner(false);
@@ -134,11 +142,6 @@ icon ={...icons}
             default:
                 break;
         }
-        // if (data?.action=='goToLink') {
-        //     if (data?.eltName=='Owner') {
-        //         this.goToPage('rhusers',{recordId:data?.info?.dataId})
-        //     }
-        // }
     }
     goToTimsheet(event){
         if(event.detail.action=='Item'){
@@ -162,8 +165,7 @@ icon ={...icons}
         }
     }
     goToPage(pagenname,statesx={}) {
-        let states=statesx; //event.currentTarget.dataset.id , is the recordId of the request
-        
+        let states=statesx;
         this[NavigationMixin.Navigate]({
             type : 'comm__namedPage',
             attributes : {
@@ -172,20 +174,9 @@ icon ={...icons}
             state: states
         });
     }
-    handleUserInfoActions(evt){
-        
-
-        if(evt.action==SAVE_ACTION){
-            const data={...evt.data,recordId:this.profileinformation?.contact?.Id};
-            this.callUpdateInfoApex(data);
-
-        }else if(evt.action==LINK_ACTION){
-            this.handleGoToLink(evt.data)
-        }
-    }
 
     callUpdateInfoApex(info){
-        
+        this.startSpinner(true);
         console.log(`@@@@@ callUpdateInfoApex >>> Input : `,info);
 
         UpdateInfo({ recordId: this.recordId,contactjson: JSON.stringify(info)})
@@ -208,26 +199,9 @@ icon ={...icons}
 
         
     }
-    get getuserextrafield(){
-        return this.userextrafield?.length>=0;
-    }
-    buildExtraField(extrafield){
-            this.jsonInfo=extrafield;
-            let extraFieldCmp=this.template.querySelector('c-rh_extra_fields');
-            extraFieldCmp.initializeMap(extrafield);
-    }
-    buildExtraFieldOLD(extrafield){
-        let tab = JSON.parse(extrafield);
-        this.userextrafield= tab.map(
-            function(elt, i)  {
-                return {...elt, hide : false, index:i};
-            } 
-        );   
-}
-    //add 
     UpdateExtraInfo(event){
-
-         const cusEvt=event.detail;
+        this.startSpinner(true);
+        const cusEvt=event.detail;
         console.log('cusEvt >>',cusEvt,' \naction ',cusEvt?.action);
         console.log('cusEvt >>',cusEvt,' \ndata ',cusEvt?.data);
         const userinfo = cusEvt?.data;
@@ -239,35 +213,16 @@ icon ={...icons}
             if(!result.error){
                 
                 this.buildExtraField(result.input);
-                this.showToast(SUCCESS_VARIANT,' Extra informations', 'Saved');
+                this.showToast(SUCCESS_VARIANT,this.l.moreInfo, this.l.successOp);
             }else{
-                this.showToast(WARNING_VARIANT,' Extra informations', result.msg);
+                this.showToast(WARNING_VARIANT,this.l.moreInfo, result.msg);
             }
             
         }).catch(error =>{
-            this.showToast(ERROR_VARIANT,' Extra informations', 'KO');
+            this.showToast(ERROR_VARIANT,this.l.moreInfo,this.l.errorOp);
         })
-    }
-    UpdateExtraInfoOLD(event){
-
-        console.log('handle eventField TO event', JSON.stringify(event.detail));
-        console.log('handle eventField TO event', this.recordId);
-
-        var userinfo = event.detail;
-        UpdateExtraInfo({
-            recordId: this.recordId,
-            extraInfo: JSON.stringify(userinfo)
-        }).then(result =>{
-            if(!result.error){
-                
-                this.buildExtraField(result.input);
-                let form = this.template.querySelector('c-rh_extra-fields');
-                if(form) form.setInfo(this.userextrafield);
-            }
-            
-            console.log('user extra fields ' +JSON.stringify( this.userextrafield))
-        }).catch(error =>{
-            console.error('error extraFields ' +error);
+        .finally(() =>{
+            this.startSpinner(true);
         })
     }
 
@@ -279,7 +234,7 @@ icon ={...icons}
     callUpdateInfoApexFinishOK(result){
         this.profileinformation = result;
         this.refreshDetails();
-        this.showToast(SUCCESS_VARIANT,  this.l.UserProfileTitle, 'Informations Successfully Updated');
+        this.showToast(SUCCESS_VARIANT,  this.l.UserProfileTitle, this.l.successOp);
 
     }
     callUpdateInfoApexFinishKO(e){
@@ -293,14 +248,15 @@ icon ={...icons}
             this.ChangePasswordApex(data);
     }
     ChangePasswordApex(info){
+        this.startSpinner(true);
         console.log(`@@@@@ callUpdateInfoApex >>> Input : `,info);
         changeMyPassword({ changepasswordjson: JSON.stringify(info) })
           .then(result => {
             console.log('Result', result);
             if (!result.error && result.Ok) {
-                this.ChangePasswordFinishOK();
+                this.showToast(SUCCESS_VARIANT, this.l.ChangePasswordTitle, this.l.successOp);
             }else{
-                this.ChangePasswordFinishKO(result.msg);
+                this.showToast(WARNING_VARIANT,this.l.ChangePasswordTitle, result.msg);
             }
           })
           .catch(error => {
@@ -315,27 +271,11 @@ icon ={...icons}
         this.startSpinner(false);
         this.quiteEditMode(this.template.querySelector('c-rh_profile_reset_password'))
     }
-    ChangePasswordFinishOK(){
-        this.showToast(SUCCESS_VARIANT, this.l.ChangePasswordTitle, 'Password Successfully Changed');
-    }
-    ChangePasswordFinishKO(e){
-        this.showToast(WARNING_VARIANT,this.l.ChangePasswordTitle, e);
-    }
 
     quiteEditMode(cmp){
         cmp?.cancel();
     }
-
-    /*
-    handlepickListValue() {
-        getpickListValue({}).then(result =>{
-            this.roleoption = result.RH_Role__c;
-            console.log('roleoption ' ,JSON.stringify(this.roleoption));
-            
-        }).catch(err =>{
-            console.error('error',err)
-        })
-    }*/
+    
     refreshDetails(){
         this.buildform();
         this.buildSumary();
@@ -387,11 +327,11 @@ icon ={...icons}
                 value:this.profileinformation?.contact?.Phone
             },
 
-            /*{
+            {
                 label:this.l.Username,
                 name:'Login',
                 value:this.profileinformation?.user?.Username
-            },*/
+            },
             {
                 label:this.l.City,
                 name:'City',
@@ -435,10 +375,10 @@ icon ={...icons}
             },
             {
                 label:this.l.Email,
+                placeholder:this.l.EmailPlc,
                 name:'Email',
                 required:true,
                 value:this.profileinformation?.contact?.Email,
-                placeholder:this.l.EmailPlc,
                 maxlength:255,
                 type:'email',
                 ly_md:'6', 
@@ -560,15 +500,9 @@ icon ={...icons}
         ];
     }
     startSpinner(b){
-        /*let spinner=this.template.querySelector('c-rh_spinner');
-        if (b) {    spinner?.start(); }
-            else{   spinner?.stop();}*/
        fireEvent(this.pageRef, 'Spinner', {start:b});
     }
     showToast(variant, title, message){
-        /*
-        let toast=this.template.querySelector('c-rh_toast');
-        toast?.showToast(variant, title, message);*/
         fireEvent(this.pageRef, 'Toast', {variant, title, message});
     }
     generatedTitle(title,records){
@@ -578,15 +512,4 @@ icon ={...icons}
         }
         return output;
     }
-
-
-/*LastName
-FirstName
-Email
-Role
-AccountId
-Login
-City
-Birthday
-Phone*/
 }

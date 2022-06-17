@@ -1,0 +1,10 @@
+<template>
+    <!-- <ul> -->
+        <template for:each={formsInputs} for:item="form" >
+            {form.name} : {form.value}
+            <lightning-input key={form.name} type="text" name={form.name} value={form.value} label={form.name} placeholder="type here... "></lightning-input>
+           
+        </template>
+    <!-- </ul> -->
+    {formsInputsjson}
+</template>

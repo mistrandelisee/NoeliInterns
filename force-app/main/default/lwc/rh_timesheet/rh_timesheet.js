@@ -53,11 +53,15 @@ export default class Rh_timesheet extends NavigationMixin(LightningElement) {
     keysFields={TimeSheetNumber:'ok'};
     keysLabels={
         TimeSheetNumber:'Name', TotalDurationInHours:'Total Duration In Hours',
-        StartDate:'StartDate',TotalDurationInMinutes:'Total Duration In Minutes',StatusLabel:'Status',TimeSheetEntryCount:'Entries'
+        StartDate:'StartDate',EndDate:'EndDate',
+        TotalDurationInMinutes:'Total Duration In Minutes',StatusLabel:'Status',TimeSheetEntryCount:'Entries'
     };
     fieldsToShow={
-         TotalDurationInHours:'',TimeSheetEntryCount:'',
-        StartDate:'ok',TotalDurationInMinutes:'',StatusLabel:''
+        StartDate:'ok',EndDate:'ok',StatusLabel:'',
+        TimeSheetEntryCount:'',
+         /*TotalDurationInHours:'',
+       
+        TotalDurationInMinutes:''*/
     };
 
     filter={
@@ -201,7 +205,7 @@ export default class Rh_timesheet extends NavigationMixin(LightningElement) {
                 const isAD=this.isAdmin;
                 this.timeSheets = result.TimeSheets.map(function (e ){
                     let item={...e};
-                    item.title=e.TimeSheetNumber;
+                    item.title=e.RH_Name__c;
                     item.id=e.Id;
                     item.icon="standard:people";
                     item.class=e.Status;

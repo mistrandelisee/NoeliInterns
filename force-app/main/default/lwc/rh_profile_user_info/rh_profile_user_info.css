@@ -11,9 +11,13 @@
     --sds-c-card-spacing-inline-start: 20px;
     --sds-c-card-spacing-block-start: 20px;
     --sds-c-card-spacing-inline-end: 20px;
-    --sds-c-card-spacing-block-end: 20px;
+    --sds-c-card-spacing-block-end: 5px;
     /* header */
     
     --sds-c-card-heading-font-weight:800;
     --lwc-cardFontWeight:800;
+}
+.icon-md{
+    --lwc-squareIconMediumContentAlt: 1.2rem;
+    font-size: 1.5rem;
 }

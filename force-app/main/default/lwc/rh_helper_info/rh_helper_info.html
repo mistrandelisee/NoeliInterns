@@ -1,0 +1,14 @@
+<template>
+    <lightning-button-icon icon-name={icon.info} tooltip={contentText} size="medium"  class="ico slds-m-right_small"></lightning-button-icon>
+    <!-- <lightning-helptext icon-name={icon.info} content={contentText} class=""></lightning-helptext> -->
+    <template if:true={isCustom}>
+        <!-- To do -->
+        <div style="padding-left:2rem;padding-top:5rem;position:relative">
+            <button class="slds-button" aria-describedby="help2" aria-disabled="true">Help Text</button>
+            <div class="slds-popover slds-popover_tooltip slds-nubbin_bottom-left slds-rise-from-ground" role="tooltip" id="help2" style="position:absolute;top:-4px;left:35px">
+              <div class="slds-popover__body">Sit nulla est ex deserunt exercitation anim occaecat. Nostrud ullamco deserunt aute id consequat veniam incididunt duis in sint irure nisi.</div>
+            </div>
+          </div>
+
+    </template>
+</template>

@@ -30,8 +30,8 @@ export default class Rh_card extends LightningElement {
     initFields(obj){
         this.outputFields=[];
         if (obj) {
-            for (const key in obj) {
-                if (this.fieldsToShow.hasOwnProperty.call(this.fieldsToShow, key)) {
+            for (const key in this.fieldsToShow) {//order the filed to show obj
+                //if (this.fieldsToShow.hasOwnProperty.call(this.fieldsToShow, key)) {
                     if (obj.hasOwnProperty.call(obj, key)) {
                         const element = obj[key];
                         let e={
@@ -41,7 +41,7 @@ export default class Rh_card extends LightningElement {
                         };
                         this.outputFields.push(e);
                     }
-                }
+                //}
                 
             }
         }
@@ -59,9 +59,9 @@ export default class Rh_card extends LightningElement {
                 Price: 5,
                 Date__c: '2020_1_0257'
             };
-            console.log(`availableActions `,this.availableActions );
-            console.log(`iconeName `,this.iconeName );
-            console.log(`iconeName `,this.record );
+            // console.log(`availableActions `,this.availableActions );
+            // console.log(`iconeName `,this.iconeName );
+            // console.log(`iconeName `,this.record );
             
             this.isRendered=true;
              this.initFields(this.record);
@@ -90,7 +90,7 @@ export default class Rh_card extends LightningElement {
             }
             i=i+1;
         }
-        console.log(`outfields  `, outfields );
+        // console.log(`outfields  `, outfields );
         return outfields;
     }
     
@@ -112,7 +112,8 @@ export default class Rh_card extends LightningElement {
         var actionEvt =new CustomEvent('action',
          {detail: { action : actionName,data,extra }}
       );
-      console.log("Watch: actionName ->"+actionName); /*eslint-disable-line*/
+      console.log("Watch:Rh_card  callParent  actionName ->"+JSON.stringify(actionName) ); /*eslint-disable-line*/
+      console.log("Watch:Rh_card  callParent  data ->"+JSON.stringify(data) ); /*eslint-disable-line*/
       
       this.dispatchEvent(actionEvt);
     }

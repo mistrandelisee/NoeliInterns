@@ -14,11 +14,10 @@
                 </div>
                 
             </div> 
-            <footer class="slds-card__footer">
+            <footer class="footer">
                 <template for:each={pillList} for:item="pill" for:index="index">
                         <lightning-pill key={pill.label} label={pill.pillValue}  name={index} onremove={handleRemovePill}></lightning-pill>
                 </template>
-    
             </footer>
         </template>  
     </div>  

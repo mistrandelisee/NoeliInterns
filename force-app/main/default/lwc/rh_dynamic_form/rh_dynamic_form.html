@@ -9,7 +9,9 @@
 
                     <c-rh_dynamic_form_item  item={item} data-item-id={item.name}
                         time-out={timeOut} file-data={fileData}
-                        oninputchanged={handleChanged}>
+                        oninputchanged={handleChanged}
+                        oncreatelookup={handleLookupCreation}
+                        >
     
                     </c-rh_dynamic_form_item>
                 </lightning-layout-item>

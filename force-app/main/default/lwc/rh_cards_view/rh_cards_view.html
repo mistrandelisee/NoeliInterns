@@ -1,11 +1,21 @@
 <template>
     <lightning-layout multiple-rows>
 
-        <lightning-layout-item size="12" padding="around-small" class="lg-wd" small-device-size="12" medium-device-size="12"
+        
+        <lightning-layout-item size="12" padding="vertical-small" class="lg-wd" small-device-size="12" medium-device-size="12"
             large-device-size="12">
             <div class="custom-box">
                 <template if:true={ready}>
                     <lightning-layout horizontal-align="center" multiple-rows>
+                        <template if:true={showExport}>
+                            <lightning-layout-item size="12"  padding="around-small" small-device-size="12" medium-device-size="12"
+                                large-device-size="12" >
+                                 <div class="custom-box" >
+                                    <c-rh_export_excel items={items} export-not-ready={isLoading} header={columns}>
+                                    </c-rh_export_excel>
+                                </div>
+                            </lightning-layout-item>
+                        </template>
                         <template for:each={itemsToShow} for:item="item">
                             <lightning-layout-item size="12" key={item.id} class="slds-p-left_small slds-p-top_small" small-device-size={ly_xs} medium-device-size={ly_md} large-device-size={ly_lg}>
                                 <!-- <div class="custom-box"> <c-rh_user_view of-news={contact} onuserid={handleuser}></c-rh_user_view></div> -->
@@ -28,7 +38,12 @@
                         default-sort-direction={defaultSortDirection} sorted-direction={sortDirection}
                         sorted-by={sortedBy} onsort={onHandleSort}></lightning-datatable> -->
                 </template>
-
+                
+                <template if:false={ready}>
+                    <div class="slds-p-vertical_medium">
+                        <c-rh_illustration message="" title={noRecordsLabel} type="fish"></c-rh_illustration>
+                    </div>
+                </template>
             </div>
         </lightning-layout-item>
         <lightning-layout-item size="12" padding="around-small" small-device-size="12" medium-device-size="12"
@@ -47,15 +62,6 @@
                 </template>
             </template>
         </lightning-layout-item>
-        <template if:false={hideExport}>
-            <lightning-layout-item size="12"  padding="around-small" small-device-size="12" medium-device-size="12"
-                large-device-size="12" if:true={existElements}>
-                <!-- <div class="custom-box" >
-                    <c-reports-export-to-xlsx items={items} export-not-ready={isLoading} header={columns}>
-                    </c-reports-export-to-xlsx>
-                </div> -->
-            </lightning-layout-item>
-        </template>
        
     </lightning-layout>
 </template>

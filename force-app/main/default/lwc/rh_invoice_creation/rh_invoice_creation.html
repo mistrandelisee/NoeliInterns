@@ -1,0 +1,42 @@
+<template>
+    <template if:true={noneMode}>
+        <div class="slds-clearfix">
+            <div class="slds-float_right">
+                <lightning-button variant="brand-outline" label={l.new_invoice} icon-name="utility:add" title="Primary action with lighter look" onclick={handleNew} class="slds-m-left_x-small"></lightning-button>
+            </div>
+        </div>
+    </template>
+    <template if:true={newMode}>
+        <lightning-card class="custom-card">
+            <h3 slot="title">
+                <lightning-icon icon-name="utility:add" size="small" class="slds-p-right_small"></lightning-icon>
+                {l.new_invoice}
+            </h3>
+            <!-- <c-rh_custom_lookup_adv obj-name="Account" search-placeholder="Search Accounts" icon-name="standard:account"
+             new-label-prefix="New" field-label="Account" object-label="Invoice To"
+            show-add-new is-required
+                            onlookupselected={handleLookupSelection}> </c-rh_custom_lookup_adv> -->
+            <c-rh_dynamic_form inputs-items={formInputs} 
+            oninputchanged={handleChanged}
+            oncreatelookup={handleLookupCreation}
+            ></c-rh_dynamic_form>
+            <div class="card-footer" slot="footer">
+                <div class="slds-clearfix">
+                    <div class="slds-float_right">
+                        <lightning-button variant="base" label={l.Cancel} data-action-name="Cancel" title={l.Cancel} icon-name="utility:close" onclick={handleCancel} class="slds-m-left_x-small"></lightning-button>
+                        <lightning-button variant="base" label={l.Save} data-action-name="Edit" title={l.Save} icon-name="utility:save" onclick={handleSave} class="slds-m-left_medium"></lightning-button>
+
+                    </div>
+                </div>
+                
+            </div>
+        </lightning-card>
+    </template>
+
+    <!-- NEW ACCOUNT MODAL -->
+    <template if:true={newAccount}>
+        <c-rh_dynamic_form_modal title={l.new_account} form-modal-inputs={accountInputs} onbuttonclicked={handleCreateAccount} btn-create={l.save}>
+
+        </c-rh_dynamic_form_modal>
+    </template>
+</template>

@@ -1,11 +1,8 @@
 <template>
-    <c-rh_toast auto-close-time="6000"></c-rh_toast>
-    <c-rh_spinner></c-rh_spinner>
-
-
     <template if:false={editMode}>
-        <c-rh_display_fields title="Extra Fields" iconsrc="standard:people" column="3" output-fields={extraFields} 
+        <c-rh_display_fields title={l.moreInfo} iconsrc={icon.more_info} column="3" output-fields={extraFields} 
         onaction={handleActions}
+        help-text={helpText}
         display-edit={displayEdit}
         action-available={actionAvailable}
         has-action={hasaction} ></c-rh_display_fields>
@@ -13,9 +10,12 @@
     <template if:true={editMode}>
         <lightning-card class="custom-card">
             <h3 slot="title">
-                <lightning-icon icon-name="utility:edit" size="small" class="slds-p-right_small"></lightning-icon>
-                Extra Fields
+                <lightning-icon icon-name={icon.Edit} size="small" class="slds-p-right_small"></lightning-icon>
+                {l.moreInfo}
             </h3>
+            <div  slot="actions">
+                <c-rh_helper_info help-text={editHelpText}></c-rh_helper_info>
+            </div>
             <template  for:each={fieldToshow} for:item="row" for:index="keyx">
                 <div key={row.keyx} >
                     <c-rh_extra_field_item champs={row.fields} cle={row.keyx} onaction={handleAction}> </c-rh_extra_field_item>
@@ -23,14 +23,16 @@
             </template>
             <div class="card-footer" slot="footer">
                 <div class="slds-clearfix">
+                    <div class="slds-float_left">
+                        <lightning-button variant="base" label={l.Cancel} data-action-name="Cancel" title={l.Cancel}  icon-name={icon.close} onclick={handleSaveCancel} class="icon-md slds-m-left_medium"></lightning-button>
+                    </div>
                     <div class="slds-float_right">
-                        <lightning-button variant="base" label="Add" data-action-name="Cancel" title="Add"  icon-name="utility:add" onclick={handleAdd} class="slds-m-left_x-small"></lightning-button>
+                        <lightning-button variant="base" label={l.Add} data-action-name="Cancel" title={l.Add}  icon-name={icon.Add} onclick={handleAdd} class="icon-md slds-m-left_x-small"></lightning-button>
                         <template if:true={hasExtraFields}>
-                            <lightning-button variant="base" label="Save" data-action-name="Edit" title="Save"  icon-name="utility:save" onclick={handleSave} class="slds-m-left_medium"></lightning-button>
+                            <lightning-button variant="base" label={l.Save} data-action-name="Edit" title={l.Save}  icon-name={icon.Save} onclick={handleSave} class="icon-md slds-m-left_medium"></lightning-button>
                         </template>
 
-                        <lightning-button variant="base" label="Cancel" data-action-name="Cancel" title="Cancel"  icon-name="utility:close" onclick={handleSaveCancel} class="slds-m-left_medium"></lightning-button>
-            
+                        
                     </div>
                 </div>
             </div>

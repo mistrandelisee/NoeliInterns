@@ -1,13 +1,13 @@
 global without sharing class RH_LoginFlowController {
     private static RH_User_Query userQry = RH_User_Query.getInstance();
     private static RH_Contact_Query contactQry = RH_Contact_Query.getInstance();
-    @InvocableMethod(label='Get User URL')
-    public static List<VisitorUrlOutput> getUrlName() {
-        // String startUrl = System.currentPageReference().getParameters().get('startURL');
-        String startUrl = 'xxxx';
-        string fullUrl=Apexpages.currentPage().getUrl();
+    @InvocableMethod(label='Update Related Contact')
+    public static List<VisitorUrlOutput> getUrlName(List<VisitorInput> VisitorInputs) {
+        String userId=VisitorInputs[0].userId;
+        Map<string,object> mapReturn =getContact(userId);
+        Boolean esito =(Boolean) mapReturn.get('error');
         return new List<VisitorUrlOutput>{
-            new VisitorUrlOutput(fullUrl,startUrl)
+            new VisitorUrlOutput('','',esito)
         };
     }
     /*public class UrlInput {
@@ -54,9 +54,16 @@ global without sharing class RH_LoginFlowController {
     public String fullUrl;
     @InvocableVariable(required=true)
     public String variants;
-        public VisitorUrlOutput(String url,String startUrl) {
+    @InvocableVariable(required=true)
+    public boolean error;
+        public VisitorUrlOutput(String url,String startUrl,boolean err) {
             fullUrl=url;
             variants=startUrl;
+            error=err;
         }
     }
+    public class VisitorInput {
+        @InvocableVariable(required=true)
+        public String userId;
+    }  
 }

@@ -1,57 +1,73 @@
 <template>
-    <c-rh_toast auto-close-time="6000"></c-rh_toast>
     <template if:false={newForm}> 
         <template if:false={hasRecordId}>
             <div class="slds-clearfix">
                 <div class="slds-float_right">
-                    <lightning-button variant="brand-outline" label="New Accomplishment" icon-name="utility:add" title="Primary action with lighter look" onclick={handleChangeValue} class="slds-m-left_x-small"></lightning-button>
+                    <lightning-button variant="brand-outline" label="New Accomplishment" icon-name={icon.Add} title="Primary action with lighter look" onclick={handleChangeValue} class="slds-m-left_x-small addClass"></lightning-button>
                 </div>
             </div>
             <c-rh_cards_view page-size="6"  items={itemCard} onrowselected={handleCardAction}></c-rh_cards_view>
         </template>
         <template if:true={hasRecordId}>
-            <div class="slds-clearfix">
-                <div class="slds-float_right">
-                    <template if:true={showEdit}>
-                        <lightning-button variant="brand-outline" label={l.Edit} icon-name="action:new_note" title="Primary action with lighter look" onclick={handleEditValue} class="slds-m-left_x-small"></lightning-button>
-                    </template>
-                    <template if:true={isActive}>
-                        <lightning-button variant="brand-outline" label={l.Activate} title="Active accomplishment button" onclick={handleActivate} class="slds-m-left_x-small"></lightning-button>
-                    </template>
-                    <lightning-button variant="brand-outline" label={l.Delete} icon-name="action:delete" title="Primary action with lighter look" onclick={handleDeleteValue} class="slds-m-left_x-small"></lightning-button>
+            <template if:false={editMode}>
+                <div class="slds-clearfix" style="margin-right: 15px;">
+                    <div class="slds-float_right">
+                        <template if:true={showEdit}>
+                            <lightning-button variant="brand-outline" label={l.Edit} icon-name={icon.Edit} title="Primary action with lighter look" onclick={handleEditValue} class="slds-m-left_x-small"></lightning-button>
+                        </template>
+                        <template if:true={isCurrent}>
+                            <lightning-button variant="brand-outline" label={l.Delete} icon-name={icon.Delete} title="Primary action with lighter look" onclick={handleDeleteValue} class="slds-m-left_x-small"></lightning-button>
+                        </template>
+                    </div>
                 </div>
-            </div>
-            <div class="slds-p-around_medium profile_user_info">
-                <c-rh_display_fields 
-                title="Accomplishment Details"
-                iconsrc="utility:people"
-                column="2"
-                output-fields={accomInputDetails}
-                ></c-rh_display_fields>
-            </div>
-            <div class="slds-clearfix">
-                <div class="slds-float_left">
-                    <lightning-button variant="neutral" label={l.Back} icon-name="utility:back" class="slds-m-right_medium" onclick={handleCancelDetail}></lightning-button>
+                <div class="slds-p-around_medium profile_user_info">
+                    <c-rh_display_fields 
+                    title="Accomplishment Details"
+                    iconsrc="utility:people"
+                    column="2"
+                    output-fields={accomInputDetails}
+                    ></c-rh_display_fields>
                 </div>
-            </div>
+                <div class="slds-clearfix" style="margin-left: 15px;">
+                    <div class="slds-float_left">
+                        <lightning-button variant="neutral" label={l.Back} icon-name={icon.Back} class="slds-m-right_medium" onclick={handleCancelDetail}></lightning-button>
+                    </div>
+                </div>
+            </template>
+            <template if:true={editMode}>
+                <lightning-card class="custom-card">
+                    <h3 slot="title">
+                        <lightning-icon icon-name={icon.Edit} size="small" class="slds-p-right_small"></lightning-icon>
+                        Edit Accomplishment
+                    </h3> 
+                    <c-rh_dynamic_form inputs-items={formEditInputs} file-data={newFileData} oninputchanged={handleEditchange}></c-rh_dynamic_form>
+                    <div class="card-footer" slot="footer">
+                        <div class="slds-clearfix">
+                            <div class="slds-float_right">
+                                <lightning-button variant="base" label={l.Cancel} data-action-name="Cancel" title="Cancel" icon-name={icon.close} onclick={handleCancelEdit} class="slds-m-left_x-small"></lightning-button>
+                                <lightning-button variant="base" label={l.Save} data-action-name="Edit" title="Save" icon-name={icon.Save} onclick={handleSaveEdit} class="slds-m-left_medium"></lightning-button>
+                            </div>
+                        </div>
+                    </div>
+                </lightning-card>
+            </template>
         </template>
     </template>
     <template if:true={newForm}>
         <lightning-card class="custom-card">
             <h3 slot="title">
-                <lightning-icon icon-name="utility:add" size="small" class="slds-p-right_small"></lightning-icon>
+                <lightning-icon icon-name={icon.Add} size="small" class="slds-p-right_small"></lightning-icon>
                 New Accomplishment
             </h3> 
-            <c-rh_dynamic_form inputs-items={formInputs} ></c-rh_dynamic_form>
+            <c-rh_dynamic_form inputs-items={formInputs} file-data={newFileData} oninputchanged={handleEditchange}></c-rh_dynamic_form>
             <div class="card-footer" slot="footer">
                 <div class="slds-clearfix">
                     <div class="slds-float_right">
-                        <lightning-button variant="base" label={l.Cancel} data-action-name="Cancel" title="Cancel" icon-name="utility:close" onclick={handleCancel} class="slds-m-left_x-small"></lightning-button>
-                        <lightning-button variant="base" label={l.Save} data-action-name="Edit" title="Save" icon-name="utility:save" onclick={handleSave} class="slds-m-left_medium"></lightning-button>
-                        <lightning-button variant="base" label={l.SaveAndActive} data-action-name="Edit" title="Save And Active" icon-name="utility:save" onclick={handleSaveActive} class="slds-m-left_medium"></lightning-button>
+                        <lightning-button variant="base" label={l.Cancel} data-action-name="Cancel" title="Cancel" icon-name={icon.close} onclick={handleCancel} class="slds-m-left_x-small"></lightning-button>
+                        <lightning-button variant="base" label={l.Save} data-action-name="Edit" title="Save" icon-name={icon.Save} onclick={handleSave} class="slds-m-left_medium"></lightning-button>
+                        <lightning-button variant="base" label={l.SaveAndActive} data-action-name="Edit" title="Save And Active" icon-name={icon.Save} onclick={handleSaveActive} class="slds-m-left_medium"></lightning-button>
                     </div>
                 </div>
-                
             </div>
         </lightning-card>
     </template>

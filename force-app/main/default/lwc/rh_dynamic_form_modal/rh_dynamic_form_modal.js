@@ -1,4 +1,5 @@
 import { LightningElement,api,track } from 'lwc';
+import { labels } from 'c/rh_label';
 
 export default class Rh_dynamic_form_modal extends LightningElement {
 @api formModalInputs;
@@ -7,6 +8,17 @@ record;
 @api title;
 @api backcolor;
 
+@api
+btnOkLabel = 'Create';
+l={...labels}
+@api
+btnCancel
+@api
+btnCreate
+connectedCallback(){
+    this.btnCancel= this.btnCancel ? this.btnCancel : this.l.Cancel;
+    this.btnCreate= this.btnCreate ? this.btnCreate : this.l.Submit;
+}
 cancelRequest(){ 
     this.operation = 'negative';
     let obj ={};
@@ -18,26 +30,28 @@ cancelRequest(){
     this.dispatchEvent(myEvent);
 }
 
-
 handleSave(evt){
     this.operation = 'positive';
     let obj={};
     let result= this.save();
+    obj.isvalid=result.isvalid;
+    obj.operation = this.operation;
     if (result.isvalid) {
         
         this.record={...this.record,...result.obj};
         obj.fields = this.record;
-        obj.operation = this.operation;
-        const myEvent = new CustomEvent('buttonclicked', {
-            detail: obj
-        });
-        this.dispatchEvent(myEvent);
+       
 
         // this.emp[TYPE_FIELD_NAME]=this.empType;
     }else{
         console.log(`Is not valid `);
     }
+    
     console.log(`emp`, this.record);
+    const myEvent = new CustomEvent('buttonclicked', {
+        detail: obj
+    });
+    this.dispatchEvent(myEvent);
 }
 save(){
     let form=this.template.querySelector('c-rh_dynamic_form');

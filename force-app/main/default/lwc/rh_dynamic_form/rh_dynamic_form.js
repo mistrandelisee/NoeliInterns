@@ -66,63 +66,8 @@ export default class Rh_dynamic_form extends LightningElement {
     }
     renderedCallback(){
         console.log('renderedCallback >>>> Rh_dynamic_form');
-        // this.attachDataListsToTextBox();
-        // this.items=this.inputsItems;
-        // this.rendered=this.items==this.inputsItems;
-        // if (!this.rendered) {
-        //     this.items=this.inputsItems;
-        //     this.preCompileDefaultValues();
-        // }
     }
     
-    /*@api saveOLD(){
-        const isvalid =this.validateFields(); 
-         let output={};
-        let outputs=[];
-        let outputsItems=[];
-        if (isvalid) {
-            let self=this;
-            this.inputsItems.forEach(function(item){
-                const key=item.name;
-                const cmp=self.template.querySelector(`[data-id="${key}"]`);
-                if (cmp) {
-                     output[key]=cmp.value;
-                    switch (item.type) {
-                        case 'datetime':
-                            try {
-                                let dateTimevalue=cmp.value;
-                                let datevalue=dateTimevalue? new Date(dateTimevalue).toLocaleDateString() :'';
-                                let datelabel=item.label?  item.label.replace('/','').replace('ora','').replace('hour','') :' Date';
-                                let timevalue=dateTimevalue? new Date(dateTimevalue).toLocaleTimeString() :'';
-                                let timelabel=item.label?  item.label.replace('/','').replace('Data','').replace('Date','') :' Time';
-    
-                                outputs.push({label:datelabel,name:key+'d',value:datevalue});
-                                outputs.push({label:timelabel,name:key+'t',value:timevalue});
-                            } catch (error) {
-                                console.log('OUTPUT  : Error while spliting date time output ',error);
-                                outputs.push({label:item.label,name:key,value:cmp.value});
-                            }
-                            break;
-                        case 'toggle':
-                            output[key]=cmp.checked;
-                            outputs.push({label:item.label,name:key,value:cmp.checked});
-                            break;
-                        default:
-                            outputs.push({label:item.label,name:key,value:cmp.value});
-                            break;
-                    }
-                    
-                    
-                    outputsItems.push({...item,value:cmp.value});
-                }
-            });
-        }
-        // console.log('OUTPUT VALUE : ',output);
-        console.log('OUTPUTS VALUES : ',outputs);
-        console.log('OUTPUTS VALUES outputsItems : ',outputsItems);
-        console.log('OUTPUTS VALUES outputsItems111 : ',{isvalid,outputs,obj:output,outputsItems});
-        return {isvalid,outputs,obj:output,outputsItems};
-    }*/
     @api save(){
         const isvalid =this.validateFields(); 
         let output={};
@@ -148,25 +93,15 @@ export default class Rh_dynamic_form extends LightningElement {
     }
 
     timer;
-    /*handleChangedOLD(event) {
-        const delay= +this.timeOut;
-        const value = event.detail.value;
-        const name = event.currentTarget.dataset.id;
-        const file=event.target.files?event.target.files[0]:null; 
-        console.log('OUTPUT : ',value);
-        console.log('OUTPUT :name  ',name);
-        console.log('OUTPUT :name  ',name);
-
-        clearTimeout(this.timer);
-        this.timer=setTimeout(() => {
-            this.publishChangedEvt({info: {name, value,file} , event:event});
-        }, delay);//2000
-       
-    }*/
-    handleChanged(event){
+   handleChanged(event){
         // this.rendered=false;
         console.log(event.detail.info);
         this.publishChangedEvt({info: event.detail.info , event:event.detail.event});
+    }
+    handleLookupCreation(event){
+        const info = event.detail;
+        const createEvent = new CustomEvent('createlookup', {detail: info});
+               this.dispatchEvent(createEvent);
     }
     publishChangedEvt(evt){
         console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$4 Publish evt ' ,evt);
@@ -175,24 +110,7 @@ export default class Rh_dynamic_form extends LightningElement {
                this.dispatchEvent(event);
         
     }
-    /*@api validateFieldsOLD() {
-        console.log('start verification');   
-        let isvalid = true;
-        let self=this;
-        this.inputsItems.forEach(function(item){
-            let key=item.name;
-            let cmp=self.template.querySelector(`[data-id="${key}"]`);
-            if (cmp) {
-                isvalid = isvalid && cmp.reportValidity('');
-                // if(!cmp.reportValidity('')) {
-                //     isvalid = false;
-                // }
-            }
-        });
-        // console.log('>>>>>> inputsItems ',this.inputsItems);
-       console.log('@@@@@@@@@@ isvalid '+isvalid);
-       return isvalid;
-   }*/
+
    @api validateFields() {
     console.log('start verification');   
     let isvalid = true;
@@ -208,10 +126,19 @@ export default class Rh_dynamic_form extends LightningElement {
             // }
         }
     });
-    // console.log('>>>>>> inputsItems ',this.inputsItems);
-   console.log('@@@@@@@@@@ isvalid '+isvalid);
-   return isvalid;
-}
+   
+        // console.log('>>>>>> inputsItems ',this.inputsItems);
+    console.log('@@@@@@@@@@ isvalid '+isvalid);
+    return isvalid;
+    }
+    @api updateField(key,updates,type='default') {
+        
+        let cmp=this.template.querySelector(`c-rh_dynamic_form_item[data-item-id="${key}"]`);
+        if (cmp) {
+            return cmp.updateField(updates,type);
+        }
+        return false;
+    }
    attachDataListsToTextBox(){
     const dataLists=this.template.querySelectorAll('[data-type="dataList"]');
     dataLists.forEach(dataList => {

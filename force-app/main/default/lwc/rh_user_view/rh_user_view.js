@@ -47,10 +47,6 @@ const KEY_NB='#NB';
 export default class Rh_user_view extends NavigationMixin(LightningElement) {
     
 l={...labels,
-    projects:'Projects (#NB)',
-    timesheets:'Timesheets (#NB)',
-    leadedGroups:'Leaded Groups (#NB)',
-    leadedProjects:'Leaded Projects (#NB)',
 }
 
 icon ={...icons}
@@ -75,7 +71,7 @@ RoleActions=[
         label:this.l.PromoteBaseUser,
         name:PROMOTE_ACTION,
         title:this.l.PromoteBaseUser,
-        iconName:"utility:user",
+        iconName:this.icon.promote,
         // class:"active-item"
     }
 ]
@@ -86,6 +82,12 @@ isUser;
 jsonInfo=[];
 actionAvailable=[];
 
+get lg_user(){
+    return this.isUser ? '6' : '12'
+}
+get md_user(){
+    return this.isUser ? '7' : '12'
+}
 hasAction;
     
     get hasDetailsActions(){ return this.detailsActions?.length >0}
@@ -182,11 +184,11 @@ hasAction;
             case DISABLE_ACTION:
                 record.Status=this.constants.LWC_DISABLE_CONTACT_STATUS;
                 this.actionRecord=record;
-                text='Are you sure you want to disable this User?';
-                extra.title='Confirm Deletion';
+                text=this.l.disable_confirm;
+                extra.title=this.l.action_confirm;
                 extra.style+='--lwc-colorBorder: var(--bannedColor);';
                 // Actions.push(this.createAction("brand-outline",this.l.Cancel,'KO',this.l.Cancel,"utility:close",'slds-m-left_x-small'));
-                Actions.push(this.createAction("brand-outline",'Yes',OK_DISABLE,'Yes',"utility:close",'slds-m-left_x-small'));
+                Actions.push(this.createAction("brand-outline",this.l.ok_confirm,OK_DISABLE,this.l.ok_confirm,this.icon.check,'slds-m-left_x-small'));
                 this.ShowModal(true,text,Actions,extra);
                
                 // this.doUpdateStatus(record,from)
@@ -196,7 +198,7 @@ hasAction;
                 this.actionRecord=record;
                 this.doUpdateStatus(record,from)
                 break;
-            case FREEZE_ACTION:
+            /*case FREEZE_ACTION:
                 record.Status=this.constants.LWC_FREEZE_CONTACT_STATUS;
                  text='Are you sure you want to freeze this User?';
                  extra.title='Confirm Freeze';
@@ -204,14 +206,14 @@ hasAction;
                 this.actionRecord=record;
                 Actions.push(this.createAction("brand-outline",'Yes',OK_FREEZE,'Yes',"utility:close",'slds-m-left_x-small'));
                 this.ShowModal(true,text,Actions,extra);
-                break;
+                break;*/
             case RESETPWD:
                 // record.Status=this.constants.LWC_FREEZE_CONTACT_STATUS;
-                    text='Are you sure you want to reset this user Password?';
-                    extra.title='Confirm Reset Password';
+                    text=this.l.reset_confirm;
+                    extra.title=this.l.action_confirm;
                     extra.style+='--lwc-colorBorder: var(--warningColor);';
                 this.actionRecord=record;
-                Actions.push(this.createAction("brand-outline",'Yes',RESETPWD,'Yes',"utility:close",'slds-m-left_x-small'));
+                Actions.push(this.createAction("brand-outline",this.l.ok_confirm,RESETPWD,this.l.ok_confirm,this.icon.check,'slds-m-left_x-small'));
                 this.ShowModal(true,text,Actions,extra);
                 break;
             case PROMOTE_ACTION:
@@ -283,8 +285,8 @@ hasAction;
                                 label:this.l.Edit,
                                 name:EDIT_ACTION,
                                 title:this.l.Edit,
-                                iconName:"utility:edit",
-                                class:"slds-m-left_x-small"
+                                iconName:this.icon.Edit,
+                                class:"icon-md slds-m-left_x-small"
                             },
                         ];
                         //this.buildForm();
@@ -306,11 +308,30 @@ hasAction;
             this.startSpinner(false);
         })
     }
-    handlUserDetails(event){
+    handleUserDetails(event){
         let action=event.detail.action;
         console.log('>>>>>>>>>>>>>. action ',action);
         if (action==EDIT_ACTION) {
             this.handleEdit();
+        }else if(action=='goToLink'){
+            const info = event.detail.info;
+            let record={eltName:info.name,recordId:info.dataId}
+            this.handleGoToLink(record);
+        }
+    }
+    handleGoToLink(data){
+        console.log(`handleGoToLink data `, JSON.stringify(data));
+        this.startSpinner(false);
+        switch (data?.eltName) {
+            case 'Supervisor':
+                this.goToPage('rhusers',{recordId:data?.recordId})
+                break;
+            case 'Group':
+                this.goToPage('rhgroup',{recordId:data?.recordId})
+                break;
+        
+            default:
+                break;
         }
     }
     handleEdit(){
@@ -325,7 +346,7 @@ hasAction;
                  this.buildForm();
                  this.editContactMode=true;
              }else{
-                 this.showToast(WARNING_VARIANT,'ERROR', result.msg);
+                 this.showToast(WARNING_VARIANT,this.l.errorOp, result.msg);
              }
            })
            .catch(error => {
@@ -344,7 +365,7 @@ hasAction;
         if (result.isvalid) {
             record={...record,...result.obj};
             record.Id=this.contactrecord.Id;
-            record.Activated=false;
+            record.Activated=null;
             // this.emp[TYPE_FIELD_NAME]=this.empType;
             this.callApexSave(record);
         }else{
@@ -391,20 +412,20 @@ hasAction;
         const Actions=[];
 
         //delete
-        Actions.push(this.createAction("brand-outline",this.l.Disable,DISABLE_ACTION,this.l.Disable,"utility:close",'slds-m-left_x-small'));
+        Actions.push(this.createAction("brand-outline",this.l.Disable,DISABLE_ACTION,this.l.Disable,this.icon.ban,'slds-m-left_x-small'));
         //Active
         if ((this.constants.LWC_ACTIVE_CONTACT_STATUS?.toLowerCase() != status?.toLowerCase())) {
-            Actions.push(this.createAction("brand-outline",this.l.Activate,ACTIVE_ACTION,this.l.Activate,"utility:user",'slds-m-left_x-small'));
+            Actions.push(this.createAction("brand-outline",this.l.Activate,ACTIVE_ACTION,this.l.Activate,this.icon.approve,'slds-m-left_x-small'));
         }
         //freeze
-        if (this.isUser && (this.constants.LWC_FREEZE_CONTACT_STATUS?.toLowerCase() != status?.toLowerCase())) {
-            Actions.push(this.createAction("brand-outline",this.l.Freeze,FREEZE_ACTION,this.l.Freeze,"utility:resource_absence",'slds-m-left_x-small'));
+        if (this.isUser && (this.constants.LWC_FREEZE_CONTACT_STATUS?.toLowerCase() != status?.toLowerCase())) { //Not used in any logic
+            // Actions.push(this.createAction("brand-outline",this.l.Freeze,FREEZE_ACTION,this.l.Freeze,"utility:resource_absence",'slds-m-left_x-small'));
         }
         return Actions;
     }
     createAction(variant,label,name,title,iconName,className){ 
         return {
-            variant, label, name, title, iconName,  class:className
+            variant, label, name, title, iconName,  class:className ,pclass :' slds-float_right'
         };
     }
     buildUserRoleActions(role){
@@ -417,7 +438,7 @@ hasAction;
             Actions=Actions.concat(this.buildUserRoleActions(e?.RH_Role__c));
         }
         if (this.isUser) {
-            Actions.push(this.createAction("brand-outline",this.l.ChangePasswordTitle,RESETPWD,this.l.ChangePasswordTitle,"utility:close",'slds-m-left_x-small'));
+            Actions.push(this.createAction("brand-outline",this.l.ChangePasswordTitle,RESETPWD,this.l.ChangePasswordTitle,this.icon.close,'slds-m-left_x-small'));
         }
         this.detailsActions=Actions.map(function(e, index) {return { ...e,variant:"brand-outline",class:e.class+" slds-m-left_x-small" } });
     }
@@ -693,6 +714,9 @@ hasAction;
                 label:this.l.Group,
                 name:'Group',
                 value:profileinformation?.RH_WorkGroup__r?.Name,
+                type:'Link',
+                class:'Link',
+                dataId:profileinformation?.RH_WorkGroup__r?.Id
             },
             {
                 label:this.l.StartDate,
@@ -700,46 +724,7 @@ hasAction;
                 value: profileinformation?.RH_Started_Date__c,
             },
             
-            /*{
-                label:this.l.Username,
-                placeholder:this.l.UsernamePlc,
-                name:'Login',
-                type:'email',
-                required:true,
-                value:profileinformation?.Username,
-                ly_md:'6', 
-                ly_lg:'6'
-            },
-            {
-                label:this.l.City,
-                placeholder:this.l.CityPlc,
-                name:'City',
-                type:'address',
-                value:profileinformation?.OtherAddress,
-                ly_md:'6', 
-                ly_lg:'6'
-            },
-            {
-                label:this.l.Birthday,
-                placeholder:this.l.BirthdayPlc,
-                name:'Birthday',
-                type:'date',
-                required:true,
-                value:profileinformation?.Birthdate,
-                ly_md:'6', 
-                ly_lg:'6'
-            },
-            {
-                label:this.l.AboutMe,
-                name:'Description',
-                value:profileinformation?.Description,
-                placeholder:this.l.AboutMePlc,
-                className:'textarea',
-                maxlength:25000,
-                type:'textarea',
-                ly_md:'12', 
-                ly_lg:'12'
-            }*/
+            
     
         ];
         if (this.isUser) {
@@ -762,7 +747,7 @@ hasAction;
                     value:profileinformation?.Birthdate,
                 },
                 {
-                    label:this.l.AboutMe,
+                    label:this.l.About,
                     name:'Description',
                     value:profileinformation?.Description,
                 }
@@ -774,52 +759,55 @@ hasAction;
     buildForm(){
         this.userFormInputs=[
             {
-                label:'Last Name',
-                placeholder:'Enter your Last Name',
+                label:this.l.LastName,
+                placeholder:this.l.LastNamePlc,
                 name:'LastName',
                 value: this.contactrecord?.LastName,
                 required:true,
+                ly_xs:'12', 
                 ly_md:'6', 
                 ly_lg:'6'
             },
             {
-                label:'First Name',
-                placeholder:'Enter your First Name',
+                label:this.l.FirstName,
+                placeholder:this.l.FirstNamePlc,
                 name:'FirstName',
                 value: this.contactrecord?.FirstName,
                 required:false,
+                ly_xs:'12', 
                 ly_md:'6', 
                 ly_lg:'6'
             },
             {
-                label:'Email',
+                label:this.l.Email,
+                placeholder:this.l.EmailPlc,
                 name:'Email',
                 required:true,
                 value: this.contactrecord?.Email,
-                placeholder:'Email',
                 maxlength:100,
                 type:'email',
+                ly_xs:'12', 
                 ly_md:'6', 
                 ly_lg:'6'
             },
             {
-                label:'Role',
+                label:this.l.Role,
                 name:'Role',
                 required:true,
                 picklist: true,
                 options: this.roles,
                 value: this.contactrecord?.RH_Role__c,
-                maxlength:100,
+                ly_xs:'12', 
                 ly_md:'6', 
                 ly_lg:'6'
             },
             {
-                label:'Group',
+                label:this.l.Group,
                 name:'Group',
                 picklist: true,
                 options: this.groups,
                 value: this.contactrecord?.RH_WorkGroup__c,
-                maxlength:100,
+                ly_xs:'12', 
                 ly_md:'6', 
                 ly_lg:'6'
             },
@@ -830,8 +818,9 @@ hasAction;
                 required:true,
                 value: this.contactrecord?.RH_Started_Date__c,
                 type:'Date',
-                ly_md:'12', 
-                ly_lg:'12',
+                ly_xs:'12', 
+                ly_md:'6', 
+                ly_lg:'6',
                 isText:true,//for avoid render blank field
             }
          

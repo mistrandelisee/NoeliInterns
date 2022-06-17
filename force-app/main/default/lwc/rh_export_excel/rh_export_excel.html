@@ -1,5 +1,5 @@
 <template>
-    <lightning-card title="Exceljs file export demo" icon-name="custom:custom14">
-        <button onclick={download} class="btn success">Download</button>
-    </lightning-card>
+    <template if:false={hideBtn}>
+        <button onclick={download} class="btn success" disabled={exportNotReady}>Export</button>
+    </template>
 </template>

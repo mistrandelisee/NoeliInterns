@@ -17,10 +17,10 @@
             <footer class="slds-modal__footer">
                     <div class="slds-float_left">
                       <lightning-button variant="brand-outline" class="btn-action prev" data-action-name="KO"
-                        label="Cancel" onclick={cancelRequest}></lightning-button>
+                        label={btnCancel} onclick={cancelRequest}></lightning-button>
                     </div>
                     <div class="slds-float_right">
-                      <lightning-button class="btn-action" variant="brand-outline" data-action-name="OK" label=Create
+                      <lightning-button class="btn-action" variant="brand-outline" data-action-name="OK" label={btnCreate}
                         title="next" onclick={handleSave}></lightning-button>
                     </div>
               </footer>

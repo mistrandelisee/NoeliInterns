@@ -1,6 +1,8 @@
 lightning-button{
-    --lwc-brandAccessible: var(--primaryColor);
-    --lwc-brandAccessibleActive: var(--primaryColor);;
+    --lwc-brandAccessible: var(--primaryColor, #001639);
+    --lwc-brandAccessibleActive: var(--primaryColor, #001639);;
+    --lwc-buttonColorBorderPrimary: var(--primaryColor, #001639);;
+    --sds-c-button-neutral-color-border: var(--primaryColor, #001639);;
     --lwc-buttonBorderRadius: 15px;
     --lwc-borderWidthThin: 1px;
     font-weight: 700;
@@ -12,7 +14,7 @@ lightning-button{
     /* color: #F8F8F8;  light*/
 }
 .md-footer{
-    border-top: 2px solid var(--primaryColor);;
+    border-top: 2px solid var(--primaryColor, #001639);;
      background-color:rgb(247, 245, 246);
 }
 .btn{

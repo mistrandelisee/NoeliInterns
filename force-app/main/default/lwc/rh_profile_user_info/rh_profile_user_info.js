@@ -1,14 +1,15 @@
-import { api, LightningElement } from 'lwc';
+import { api, LightningElement, track } from 'lwc';
 import { labels } from 'c/rh_label';
+import {icons} from 'c/rh_icons';
 const EDIT_ACTION='Edit';
 const SAVE_ACTION='Save';
 const LINK_ACTION='GOTO';
 const FROMINFO='USER-INFO';
 export default class Rh_profile_user_info extends LightningElement {
-    l={...labels};
+    @track l={...labels};
+    @track icon={...icons};
     @api
     title
-    record;
     @api
     fieldInputs;
     @api
@@ -16,6 +17,8 @@ export default class Rh_profile_user_info extends LightningElement {
     @api
     action;
     actionAvailable=[];
+    get helpText(){ return this.l?.userInfoHlp || 'View user details'}
+    get editHelpText(){ return this.l?.userEditHlp || 'Edit user details'}
     handleAction(event){
         
         const data=event.detail;
@@ -35,7 +38,7 @@ export default class Rh_profile_user_info extends LightningElement {
     }
     initDefault(){
         this.fieldInputs=this.fieldInputs || [
-            {
+            /*{
                 label:'Last Name',
                 placeholder:'Enter your Last Name',
                 name:'LastName',
@@ -72,10 +75,10 @@ export default class Rh_profile_user_info extends LightningElement {
                 required:false,
                 ly_md:'6', 
                 ly_lg:'6'
-            }
+            }*/
         ];
         this.fieldOutputs=this.fieldOutputs || [
-            {
+           /* {
                 label:'Last Name',
                 name:'LastName',
                 value: 'Miatrsn'
@@ -95,10 +98,11 @@ export default class Rh_profile_user_info extends LightningElement {
                 label:'Phone',
                 name:'FirstName',
                 value: '',
-            }
+            }*/
         ];
     }
     connectedCallback(){
+        console.log(`icon`, this.icon);
         //this.initDefault();
         this.actionAvailable =[
             {
@@ -106,8 +110,8 @@ export default class Rh_profile_user_info extends LightningElement {
                 label:this.l.Edit,
                 name:"Edit",
                 title:this.l.Edit,
-                iconName:"utility:edit",
-                class:"slds-m-left_x-small"
+                iconName:this.icon.Edit,
+                class:" icon-md slds-m-left_x-small"
             },
         ];
      }
@@ -121,12 +125,12 @@ export default class Rh_profile_user_info extends LightningElement {
         if (result.isvalid) {
             record={...record,...result.obj};
             // this.emp[TYPE_FIELD_NAME]=this.empType;
+            console.log(`record `, record);
 
             this.callParent(SAVE_ACTION,record)
         }else{
-            console.log(`Is not valid `);
+            // console.log(`Is not valid `);
         }
-        console.log(`record `, record);
     }
     save(){
         let form=this.template.querySelector('c-rh_dynamic_form');
@@ -135,10 +139,7 @@ export default class Rh_profile_user_info extends LightningElement {
         let obj={};
         
         let saveResult=form.save();
-        console.log(`>>>>>>>>>>>>saveResult `, saveResult );
-        let outputs = saveResult.outputs;
         isvalid=isvalid && saveResult.isvalid;
-        console.log(`>>>>>>>>>>>>outputs `, outputs );
         obj=saveResult.obj;
         console.log(`>>>>>>>>>>>>obj `, obj );
         return  {isvalid,obj};
@@ -148,7 +149,7 @@ export default class Rh_profile_user_info extends LightningElement {
         var actionEvt =new CustomEvent('action',
          {detail: { action : actionName,from:FROMINFO,data }}
       );
-      console.log("Watch: actionName ->"+actionName); /*eslint-disable-line*/
+    //   console.log("Watch: actionName ->"+actionName); /*eslint-disable-line*/
       
       this.dispatchEvent(actionEvt);
     }

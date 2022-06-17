@@ -1,25 +1,26 @@
 import { api, LightningElement } from 'lwc';
 import { labels } from 'c/rh_label';
+import {icons} from 'c/rh_icons';
 const RESET_ACTION='Reset';
 const FROMRESETPWD='ResetPWD';
 
 export default class Rh_profile_reset_password extends LightningElement {
     l={...labels}
+    icon={...icons}
     @api
     title;
     @api
     iconsrc;
     
-    record;
     @api
     fieldInputs;
     @api
     action;
     actionAvailable=[];
-
     handleAction(event){
         this.action=event.detail.action;
     }
+    get helpText(){ return this.l?.changePassHlp || 'No info'}
     get editMode(){
         return this.action==RESET_ACTION;
     }
@@ -77,27 +78,21 @@ export default class Rh_profile_reset_password extends LightningElement {
         let result= this.save();
         if (result.isvalid) {
             record={...record,...result.obj};
-            // this.emp[TYPE_FIELD_NAME]=this.empType;
-
+            console.log(`record `, record);
             this.callParent(RESET_ACTION,record)
         }else{
-            console.log(`Is not valid `);
+            // console.log(`Is not valid `);
         }
-        console.log(`record `, record);
     }
     save(){
         let form=this.template.querySelector('c-rh_dynamic_form');
         console.log(form);
         let isvalid=true;  
         let obj={};
-        
         let saveResult=form.save();
-        console.log(`>>>>>>>>>>>>saveResult `, saveResult );
-        let outputs = saveResult.outputs;
         isvalid=isvalid && saveResult.isvalid;
-        console.log(`>>>>>>>>>>>>outputs `, outputs );
         obj=saveResult.obj;
-        console.log(`>>>>>>>>>>>>obj `, obj );
+        // console.log(`>>>>>>>>>>>>obj `, obj );
         return  {isvalid,obj};
     }
 
@@ -105,7 +100,7 @@ export default class Rh_profile_reset_password extends LightningElement {
         var actionEvt =new CustomEvent('action',
          {detail: { action : actionName,from:FROMRESETPWD, data }}
       );
-      console.log("Watch: actionName ->"+actionName); /*eslint-disable-line*/
+    //   console.log("Watch: actionName ->"+actionName); /*eslint-disable-line*/
       
       this.dispatchEvent(actionEvt);
     }

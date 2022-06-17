@@ -3,3 +3,11 @@
     --primaryColor: #001639;
     --secondaryColor: #9735e1;
 }
+
+.addClass {
+    --lwc-brandAccessible: var(--primaryColor);
+    --lwc-brandAccessibleActive: var(--primaryColor);;
+    --lwc-buttonBorderRadius: 15px;
+    --lwc-borderWidthThin: 1px;
+    font-weight: 700;
+}

@@ -1,6 +1,11 @@
 import { api, LightningElement, track, wire } from 'lwc';
 
+
+import { labels } from 'c/rh_label';
 export default class Rh_cards_view extends LightningElement {
+    l={...labels,
+        noRecords:'no record founded',
+    }
     isLoading;
     @api items = [];
     startIndex = 0;
@@ -8,13 +13,13 @@ export default class Rh_cards_view extends LightningElement {
     defaultSortDirection = 'asc';
     sortDirection = 'asc';
     sortedBy;
-    @api hideExport;
+    @api showExport;
     @api pageSize = 15;
     @api ly_xs = '12';
     @api ly_md = '4';
     @api ly_lg = '4';
     @api columns = [];
-
+    @api noRecordsLabel=this.l.noRecords;
     get existElements(){
         return this.items && this.items.length > 0 ? true : false;
     }

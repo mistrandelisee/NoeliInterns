@@ -2,16 +2,15 @@ import { LightningElement, wire, api, track } from 'lwc';
 // import getMyEvent from '@salesforce/apex/RH_EventController.getMyEvent';
 import getEventEdite from '@salesforce/apex/RH_EventController.getEventEdite';
 import getLatestEvents from '@salesforce/apex/RH_EventController.getEventList';
+import initConfig from '@salesforce/apex/RH_EventController.InitFilter';
 import getEvent from '@salesforce/apex/RH_EventController.getEvent';
 import uploadFile from '@salesforce/apex/RH_EventController.uploadFile'
 import deleteFile from '@salesforce/apex/RH_EventController.deleteFile'
-
-import { refreshApex } from '@salesforce/apex';
-import { NavigationMixin } from 'lightning/navigation';
-//#################################### Add Event ##################################################  
-
+import { NavigationMixin } from 'lightning/navigation'; 
+import { labels } from 'c/rh_label';
 import getPicklistStatus from '@salesforce/apex/RH_EventController.getPicklistStatus';
 import saveEvenWithoutStatus from '@salesforce/apex/RH_EventController.saveEvenWithoutStatus';
+import createEvent from '@salesforce/apex/RH_EventController.createEvent';
 import saveEven from '@salesforce/apex/RH_EventController.saveEvent';
 import cancelEven from '@salesforce/apex/RH_EventController.cancelEven';
 import sendEvent from '@salesforce/apex/RH_EventController.sendEvent';
@@ -28,28 +27,50 @@ import sendNotif from '@salesforce/apex/RH_EventController.sendNotifications';
 //import getMyEventManager from '@salesforce/apex/RH_EventController.getMyEventManager';
 // importing to show toast notifictions
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
-
+const DRAFT='Draft';
+const SUBMIT='Submitted';
 export default class Rh_Event extends  NavigationMixin(LightningElement) {
+    l={...labels,
+        //searchText:null,
+        Name: 'Name',
+        srchNamePlc: 'Search by name',
+        From:'From',
+        To:'To',
+        OrderBy:'sort By',
+        selectPlc:'Select an option',
+        };
+
+    Status=[];
+    OrderBys=[];
+
     showAttachement = false;
     showComponentBase = true;
     showComponentEdit = false;
     showComponentDetails = false;
     showModalDelete = false;
+
+
     disable = false;
     isFile = false;
+    bool = false;
+    bool1 = false;
     isUpdate = false;
     hidenButton = true;
     displayButton = true;
     updateSave = false;
+    data0={};
     eventinformation = {};
     eventinformationEdite = {};
+    messageOfUpdate;
     eventDetails;
     fileData;
     file;
     fileId;
+    varStartTime;
+    letEndTime;
     contentDocId;
     _evId;
-    _dataEvent;
+    data_Event;
     evId_ForFile;
     state;
     error;
@@ -59,6 +80,7 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
     @api recordId;
     @api contactId;
     @api eventId;
+    filterInputs=[];
     contentDocIdList = [];
     filesList =[];
     filesLists = [];
@@ -73,17 +95,16 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
         EndDate:'',
         Status:'',
     };
+    filter={
+        status:null,
+        startDate:null,
+        endDate:null,
+        isActive:null,
+        orderBy:null,
+        orderOn:null,
+    }
     columns = [
-        // { label: 'Id', fieldName: 'rowId' },
         { label: 'File Name', fieldName: 'FileName', type: 'text', sortable: true },
-        { 
-            label: 'Download', 
-            fieldName: 'Download',  
-            type: 'url', 
-            typeAttributes: {
-                label: { fieldName: 'Download' }, 
-                target: '_blank'}, 
-                sortable: true },
         {
             label: 'Download',
             type: 'button-icon',
@@ -141,8 +162,13 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
         Description: 'Description',
         StartDate: 'Start Date',
         EndDate: 'End Date',
-        Status:'Status'
+        // Status:'Status'
     };
+
+    get hasDetailsActions(){ return this.detailsActions?.length >0}
+    get filterReady(){ return this.filterInputs?.length >0}
+    get isAdmin() { return this.currUser?.isCEO || this.currUser?.isRHUser}
+    get hasrecordid(){ return this.recordId?true:false; }
 
     getNewEventList(){
         this.datas=[];
@@ -158,8 +184,8 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
                 "id" : elt.Id,
                 "EventName": elt.Name,
                 "ContactName": elt.Contact_Id__r?.Name,
-                "StartDate" : elt.Start_Date__c,
-                "EndDate" : elt.End_Date__c,
+                "StartDate" : elt.Start_Dates__c?.split('T')[0],
+                "EndDate" : elt.End_Dates__c?.split('T')[0],
                 "Status" : elt.Status__c,
                 "Description" :  str,
 
@@ -205,6 +231,7 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
     getUrlParamValue(url, key) {
         return new URL(url).searchParams.get(key);
     }
+
     connectedCallback(){
         this.recordId = this.getUrlParamValue(window.location.href, 'recordId');
         console.log('@@@@@ Id', this.recordId);
@@ -214,9 +241,127 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
             this.getEventDetails(this.recordId);
         }else{
             this.getNewEventList();
+            //this.buildFilter();
+            this.initFilter();
         }
         this.initDefault();
         this.optionsStatus();
+    }
+
+  initFilter(){
+        // this.startSpinner(true)
+        initConfig()
+          .then(result => {
+            console.log('Result INIT FILTER ');
+            console.log(result);
+            if (!result.error && result.Ok) {
+                this.Status = result.Picklists?.Status__c;
+                // this.roles = result.Picklists?.RH_Role__c;
+                this.OrderBys = result.OrderBys;
+                this.Status.unshift({
+                    label:this.l.selectPlc,value:''
+                });
+                this.buildFilter();
+            }else{
+                this.showToast(WARNING_VARIANT,'ERROR Initialising', result.msg);
+            }
+          })
+          .catch(error => {
+            console.error('Error in calling :', error);
+        }).finally(() => {
+            // this.startSpinner(false)
+        });
+    }
+
+    buildFilter(){
+        /*{
+            searchText:null,
+            status:null,
+            startDate:null,
+            endDate:null,
+            role:null,
+            isActive:null,
+            orderBy:null,
+            orderOn:null,
+        }*/
+        
+            
+            this.filterInputs =[
+            {
+                label:this.l.Name,
+                placeholder:this.l.srchNamePlc,
+                name:'searchText',
+                value: '',
+                ly_md:'3', 
+                ly_xs:'6', 
+                ly_lg:'3'
+            },
+            {
+                label:this.l.Status,
+                name:'status',
+            
+                picklist: true,
+                options: this.Status,
+                value: '',
+                ly_md:'3',
+                ly_xs:'12',  
+                ly_lg:'3'
+            },
+            {
+                label:this.l.From,
+                placeholder:this.l.From,
+                name:'startDate',
+               
+                value: '',
+                type:'Date',
+                ly_md:'3', 
+                ly_xs:'6', 
+                ly_lg:'3',
+            },
+            {
+                label:this.l.To,
+                placeholder:this.l.To,
+                name:'EndDate',
+               
+                value: '',
+                type:'Date',
+                ly_md:'3', 
+                ly_xs:'6', 
+                ly_lg:'3',
+            },
+            {
+                label:this.l.OrderBy,
+                name:'orderBy',
+
+                picklist: true,
+                options: this.OrderBys,
+                value: 'CreatedDate',
+                ly_md:'3',
+                ly_xs:'12',  
+                ly_lg:'3'
+            },
+            {
+                label:'As',
+                name:'orderOn',
+                checked:true,
+                type:'toggle',
+                toggleActiveText:'DESC',
+                toggleInactiveText:'ASC',
+                ly_md:'6', 
+                ly_lg:'6'
+            }   
+        ];
+
+    }
+
+    handleSubmitFilter(event) {
+        const record=event.detail;
+        console.log(`handleSubmitFilter record `, JSON.stringify(record) );
+        this.filter={... this.filter ,...record ,
+            orderOn: record.orderOn ? 'DESC' : 'ASC'};
+        console.log(`handleSubmitFilter this.filter TO CALL `, JSON.stringify(this.filter) );
+        
+        this.getAllEmployees();
     }
     optionsStatus() {
         getPicklistStatus()
@@ -239,35 +384,6 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
             });
         return this.StatusList;
     }
-
-    handleSaveAndSendEvent(){
-        if(this.fileId){
-            this.handleClick();
-        }
-        console.log('@@@_eventData ---> ', this._eventData);
-        if(this.state==''){
-            console.log('@@@ --->  TRUE', this.evId_ForFile);
-            saveAndSendEvent({ objEven: this._eventData, eId: this.evId_ForFile})
-            .then(result => {
-                this._dataEvent = result;
-                this._evId = result[0].Id;
-                console.log('result _evId---> ', this._evId);
-                if(this._evId){
-                    this.senNotification(this._evId);
-                }
-                this.getNewEventList();
-                this.closeComponentEdit();
-                this.showToast('Success', 'success !!', 'Event Add Successfully And send to CEO !!');
-            })
-            .catch(error => {
-                this.error = error.message;
-                this.showToast('error', 'Error', 'Add failed');
-            });
-            
-        }else if(this.error=='error'){
-            this.showToast('error', 'Error', 'Add failed');
-        }
-    }
     senNotification(evId){
         console.log('@@senNotification User evId --> ' , evId);
         getIdUserCEO({})
@@ -275,12 +391,13 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
             console.log('@@senNotification User data --> ' , result);
             for(let i=0; i<result.length; i++){
                 console.log('@@@ All IDUSER --> ' , result[i].Id);
-                if(result[i].UserRole.Name=='CEO'){
+                console.log('@@@ UserRole.Name --> ' , result[i].UserRole.Name);
+                if(result[i].UserRole.Name=='CEO' || result[i].UserRole.Name=='Human Resource Managment' || result[i].UserRole.Name=='RH Manager'){
                     console.log('@@@ IDUSER CEO --> ' , result[i].Id);
-                    let status = this._dataEvent[0].Status__c;
-                    let desc = this._dataEvent[0].Description__c;
-                    console.log('@@@ status || desc --> ' , status +' || '+ desc);
-                    sendNotif({strBody:desc, pgRefId:evId, strTargetId:result[i].Id, strTitle:status, setUserIds:result[i].Id})
+                    let name = this.data_Event[0].Name;
+                    let desc = this.data_Event[0].Description__c;
+                    console.log('@@@ status || desc --> ' , name +' || '+ desc);
+                    sendNotif({strBody:desc, pgRefId:evId, strTargetId:result[i].Id, strTitle:name, setUserIds:result[i].Id})
                         .then(result =>{
                             if (result?.error) {
                                 console.error(result?.msg);
@@ -316,89 +433,269 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
             m : m,
             a : a
         };
-      }
-    handleBeforeSave(){debugger
-        let ret1;
-        let inputs= {};
+    }
+
+    doSaveSucces(isSave){
+        this.showToast('Success', 'Success !!', 'Event Add Successfully but Not send to CEO!!');
+        //this.getNewEventList();
+        //this.closeComponentEdit();
+        this.goToEventDetail(this.recordId);
+        window.console.log('result ===> ', result);
+    }
+    doSave(isSave,withFile){
         let ret = this.template.querySelector('c-rh_dynamic_form').save();
-        ret1 = ret['outputs'];
-        for(let key in ret1) {
-            inputs[ret1[key]['label']] = ret1[key]['value'];
-        }
-        this.EventData.Name = inputs['Event Name'];
-        this.EventData.Description = inputs['Description'];
-        this.EventData.Status = inputs['Status'];
-        let currentStartDate = inputs['Start date'];
-        let today = this.addDays();
-        var elt = currentStartDate.split('-');
-        let j = elt[2];
-        let m = elt[1];
-        let a = elt[0];
-        console.log('### today.m----->  ',today.j + '-' + today.m);
-        console.log('### m----->  ', j + '-' + m);
-        if(j<today.j || m<today.m){
-            console.log('### StartDate----->  false');
-            this.showToast('info', 'Toast Info', 'Your start date cannot be less than today\'s !');
-        }else{
-            console.log('### StartDate----->  true');
-            this.EventData.StartDate = currentStartDate;
-            let currentEndDate = inputs['End date'];
-            var _elt = currentEndDate.split('-');
-            let _j = _elt[2];
-            let _m = _elt[1];
-            let _a = _elt[0];
-            console.log('### m----->  ',j + '-' + m);
-            console.log('### _m----->  ', _j + '-' + _m);
-            if(_j<j || _m<m){
+        if (ret.isvalid) {
+            const record=ret.obj;
+            if (record.StartDate > record.EndDate ) {
                 this.showToast('info', 'Toast Info', 'Your end date cannot be less than start date !');
-                console.log('### EndDate----->  false');
+                
             }else{
-                console.log('### EndDate----->  true');
-                this.EventData.EndDate = currentEndDate;
+
+                record.status=isSave ? DRAFT : SUBMIT;
+                this.EventData=record;
                 var jsonEventData = JSON.stringify(this.EventData);
                 this.strEventData = jsonEventData;
-        
                 console.log('### strEventData----->', this.strEventData);
-                saveEvenWithoutStatus({ objEven: jsonEventData})
+                createEvent({ objEven: this.strEventData})
                     .then(result => {
-                        this._eventData = JSON.stringify(result);
-                        console.log('_eventData ---> ', this._eventData);
+                        console.log('### result----->', result );
+                        this.recordId= result.Id;
                         this.evId_ForFile = result.Id;
                         this.state = result.Status__c;
                         console.log('evId_ForFile ---> ', this.evId_ForFile);
+                        if (withFile) {
+                            this.checkIdOfFileBeforeSaveOrBeforeUpdate(); 
+                            this.SaveFile(isSave);
+                            this.checkDataEventBeforeSave();
+                           
+                        }else{
+                            this.doSaveSucces(isSave);
+                        }
+                        
                     })
                     .catch(error => {
                         this.error = error.message;
-                        // this.showToast('error', 'Error', 'Add failed');
+                        this.showToast('error', 'Error', 'Fields Error');
                     });
-                this.nextToAttachementSave();
+
+            }
+        }
+
+        
+    }
+    handleBeforeSave(){
+        let ret = this.template.querySelector('c-rh_dynamic_form').save();
+        if (ret.isvalid) {
+            const record=ret.obj;
+            this.EventData=record;
+            var jsonEventData = JSON.stringify(this.EventData);
+            this.strEventData = jsonEventData;
+            if (record.StartDate > record.EndDate ){
+                this.showToast('info', 'Toast Info', 'Your end date cannot be less than start date !');
+            }else{
+                saveEvenWithoutStatus({ objEven: this.strEventData})
+                .then(result => {
+                    console.log('### result----->', result );
+                    console.log('### res----->', result);
+                    this._eventData = JSON.stringify(result);
+                    console.log('_eventData ---> ', this._eventData);
+                    this.evId_ForFile = result.Id;
+                    this.state = result.Status__c;
+                    console.log('evId_ForFile ---> ', this.evId_ForFile);
+                })
+                .catch(error => {
+                    this.error = error.message;
+                    this.showToast('error', 'Error', 'Fields Error');
+                });
+            }
+            
+        }
+    }
+    handleBeforeUpdate(){
+        this.isFile = true;
+        let ret = this.template.querySelector('c-rh_dynamic_form').save();
+        const record = ret.obj;
+        this.EventData = record;
+        var updatEven = JSON.stringify(this.EventData);
+        this.recordId = this.getUrlParamValue(window.location.href, 'recordId');
+        this.strUpdatEven = updatEven;
+        console.log('eid----->', this.recordId);
+        console.log('strUpdatEven----->', this.strUpdatEven);
+        updateEven({ updEven: this.strUpdatEven, eId: this.recordId})
+        .then(result => {
+            this.data = result;
+            window.console.log('result ===> ', result);
+            this.evId_ForFile = result[0].Id;
+            this.messageOfUpdate = result[0].Message__c;
+        })
+        .catch(error => {
+            this.error = error.message;
+            this.showToast('error', 'Error', 'Update failed');
+        });
+    }
+    handleBeforeUpdateAndSendEvent(){
+        this.isFile = true;
+        let ret1;
+        let inputs= {};
+        let ret = this.template.querySelector('c-rh_dynamic_form').save();
+        const record = ret.obj;
+        this.EventData = record;
+        var updatEven = JSON.stringify(this.EventData);
+        this.recordId = this.getUrlParamValue(window.location.href, 'recordId');
+        this.strUpdatEven = updatEven;
+        console.log('eid----->', this.recordId);
+        console.log('strUpdatEven----->', this.strUpdatEven);
+        updateAndSendEven({ updEven: this.strUpdatEven, eId: this.recordId})
+        .then(result => {
+            this.data_Event = result;
+            this._evId = result[0].Id;
+            this.evId_ForFile = result[0].Id;
+            console.log('result _evId---> ', this._evId);
+            window.console.log('result ===> ', result);
+        })
+        .catch(error => {
+            this.error = error.message;
+            this.showToast('error', 'Error', 'Update failed');
+        });
+    }
+    checkIdOfFileBeforeSaveOrBeforeUpdate(){
+        console.log('&&& &&& evId_ForFile----->', this.evId_ForFile);
+        if(this.evId_ForFile){
+            this.fileData.recordId=this.evId_ForFile;
+            this.fileId = this.fileData.recordId;
+            console.log('### filedata-----> ', this.fileData);
+        }
+    }
+    checkDataEventBeforeSave(){
+        if(this.fileId){
+            console.log('### filedata-----> true');
+            this.handleClick();
+            console.log('@@@_eventData ---> ', this._eventData);
+            if(this.state==''){
+                console.log('@@@ --->  TRUE', this.evId_ForFile);
+                saveEven({ objEven: this._eventData, eId: this.evId_ForFile})
+                .then(result => {
+                    console.log('&&&& &&&& result ---> ', result);
+                    // this.getNewEventList();
+                    // this.closeComponentEdit();
+                    this.goToEventDetail(result[0].Id);
+                    window.console.log('result ===> ', result);
+                    this.showToast('Success', 'Success !!', 'Event Add Successfully but Not send to CEO!!');
+                })
+                .catch(error => {
+                    this.error = error.message;
+                    this.showToast('error', 'Error', 'Add failed');
+                });
+                
+            }else if(this.error=='error'){
+                this.showToast('error', 'Error', 'Add failed');
+            }
+        }else{
+            console.log('@@@_eventData ---> ', this._eventData);
+            if(this.state==''){
+                console.log('@@@ --->  TRUE', this.evId_ForFile);
+                saveEven({ objEven: this._eventData, eId: this.evId_ForFile})
+                .then(result => {
+                    console.log('&&&& &&&& result ---> ', result);
+                    // this.getNewEventList();
+                    // this.closeComponentEdit();
+                    this.goToEventDetail(result[0].Id);
+                    window.console.log('result ===> ', result);
+                    this.showToast('Success', 'Success !!', 'Event Add Successfully but Not send to CEO!!');
+                })
+                .catch(error => {
+                    this.error = error.message;
+                    this.showToast('error', 'Error', 'Add failed');
+                });
+                
+            }else if(this.error=='error'){
+                this.showToast('error', 'Error', 'Add failed');
+            } 
+        }
+    }
+    checkDataEventBeforeSaveAndSend(){
+        if(this.fileId){
+            this.handleClick();
+            console.log('@@@_eventData ---> ', this._eventData);
+            if(this.state==''){
+                console.log('@@@ --->  TRUE', this.evId_ForFile);
+                saveAndSendEvent({ objEven: this._eventData, eId: this.evId_ForFile})
+                .then(result => {
+                    this.data_Event = result;
+                    this._evId = result[0].Id;
+                    console.log('result _evId---> ', this._evId);
+                    if(this._evId){
+                        this.senNotification(this._evId);
+                    }
+                    // this.getNewEventList();
+                    // this.closeComponentEdit();
+                    this.goToEventDetail(result[0].Id);
+                    this.showToast('Success', 'success !!', 'Event Add Successfully And send to CEO !!');
+                })
+                .catch(error => {
+                    this.error = error.message;
+                    this.showToast('error', 'Error', 'Add failed');
+                });
+                
+            }else if(this.error=='error'){
+                this.showToast('error', 'Error', 'Add failed');
+            }
+        }else{
+            console.log('@@@_eventData ---> ', this._eventData);
+            if(this.state==''){
+                console.log('@@@ --->  TRUE', this.evId_ForFile);
+                saveAndSendEvent({ objEven: this._eventData, eId: this.evId_ForFile})
+                .then(result => {
+                    this.data_Event = result;
+                    this._evId = result[0].Id;
+                    console.log('result _evId---> ', this._evId);
+                    if(this._evId){
+                        this.senNotification(this._evId);
+                    }
+                    // this.getNewEventList();
+                    // this.closeComponentEdit();
+                    this.goToEventDetail(result[0].Id);
+                    this.showToast('Success', 'success !!', 'Event Add Successfully And send to CEO !!');
+                })
+                .catch(error => {
+                    this.error = error.message;
+                    this.showToast('error', 'Error', 'Add failed');
+                });
+                
+            }else if(this.error=='error'){
+                this.showToast('error', 'Error', 'Add failed');
             }
         }
     }
     handleSaveEvent(){
-        if(this.fileId){
-            this.handleClick();
+        // this.doSave(true,this.bool);
+        if(this.bool==true){
+            this.handleBeforeSave();
+            setTimeout(()=>{
+                this.checkIdOfFileBeforeSaveOrBeforeUpdate();
+                this.checkDataEventBeforeSave();
+            },500);
+        }else{
+            this.handleBeforeSave();
+            setTimeout(()=>{
+                this.checkDataEventBeforeSave();
+            },500);
         }
-        console.log('@@@_eventData ---> ', this._eventData);
-        if(this.state==''){
-            console.log('@@@ --->  TRUE', this.evId_ForFile);
-            saveEven({ objEven: this._eventData, eId: this.evId_ForFile})
-            .then(result => {
-                console.log('result ---> ', result);
-                this.getNewEventList();
-                this.closeComponentEdit();
-                window.console.log('result ===> ', result);
-                this.showToast('Success', 'Success !!', 'Event Add Successfully but Not send to CEO!!');
-            })
-            .catch(error => {
-                this.error = error.message;
-                this.showToast('error', 'Error', 'Add failed');
-            });
-            
-        }else if(this.error=='error'){
-            this.showToast('error', 'Error', 'Add failed');
+           
+    }
+    handleSaveAndSendEvent(){
+        if(this.bool==true){
+            this.handleBeforeSave();
+            setTimeout(()=>{
+                this.checkIdOfFileBeforeSaveOrBeforeUpdate();
+                this.checkDataEventBeforeSaveAndSend();
+            },500);
+        }else{
+            this.handleBeforeSave();
+            setTimeout(()=>{
+                this.checkDataEventBeforeSaveAndSend();
+            },500);
         }
-             
     }
     handleSendEvent(){
         // this.startSpinner(true);
@@ -407,14 +704,15 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
         sendEvent({evId: this.recordId})
         .then(result => {
             console.log('result ---> ', result);
-            this._dataEvent = result;
+            this.data_Event = result;
             this._evId = result[0].Id;
             console.log('result _evId---> ', this._evId);
             if(this._evId){
                 this.senNotification(this._evId);
             }
-            this.getNewEventList();
-            this.closeComponentEdit();
+            // this.getNewEventList();
+            // this.closeComponentEdit();
+            this.goToEventDetail(result[0].Id);
             this.showToast('success', 'success !!', 'Event Send Successfully !!');
         })
         .catch(error =>{
@@ -441,88 +739,81 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
             this.showToast('error', 'Error', 'Add failed');
         }
     }
-    handleBeforeUpdate(){debugger
-        this.isFile = true;
-        let ret1;
-        let inputs= {};
-        let ret = this.template.querySelector('c-rh_dynamic_form').save();
-        ret1 = ret['outputs'];
-        console.log('ret1----->', ret1);
-        for(let key in ret1) {
-            inputs[ret1[key]['label']] = ret1[key]['value'];
+    checkDataEventBeforeUpdate(){
+        if(this.fileId){
+            this.handleClick();
+            if(this.messageOfUpdate=='Event has been already sent'){
+                this.showToast('info', 'Toast Info', 'This event has been already approved !');
+                
+                this.backToDetails();
+            }
+            else{
+                // this.closeComponentUpdate();
+                this.backToDetails();
+                this.showToast('success', 'success !!', 'Event Update Successfully !!');
+            }
+        }else{
+            if(this.messageOfUpdate=='Event has been already sent'){
+                this.showToast('info', 'Toast Info', 'This event has been already approved !');
+                
+                this.backToDetails();
+            }
+            else{
+                // this.closeComponentUpdate();
+                this.backToDetails();
+                this.showToast('success', 'success !!', 'Event Update Successfully !!');
+            } 
         }
-        this.EventData.Name = inputs['Event Name'];
-        this.EventData.Description = inputs['Description'];
-        this.EventData.StartDate = inputs['Start date'];
-        this.EventData.Status = inputs['Status'];
-        this.EventData.EndDate = inputs['End date'];
-        var updatEven = JSON.stringify(this.EventData);
-        this.recordId = this.getUrlParamValue(window.location.href, 'recordId');
-        this.strUpdatEven = updatEven;
-        console.log('eid----->', this.recordId);
-        console.log('strUpdatEven----->', this.strUpdatEven);
-        this.nextToAttachementUpdate();
     }
     handleUpdateEvent(){
+        console.log('bool1 bool1---> ', this.bool1);
+        if(this.bool1==true){
+            this.handleBeforeUpdate();
+            setTimeout(()=>{
+                this.checkIdOfFileBeforeSaveOrBeforeUpdate();
+                this.checkDataEventBeforeUpdate();
+            },1000);
+        }else{
+            this.handleBeforeUpdate();
+            setTimeout(()=>{
+                this.checkDataEventBeforeUpdate();
+            },1000);
+        }
+    }
+    checkDataEventBeforeUpdateAndSendEvent(){
         if(this.fileId){
             this.handleClick();
+            if(this._evId){
+                window.console.log('Id ===> id', this._evId);
+                this.senNotification(this._evId);
+            }
+            this.backToDetails();
+            this.showToast('success', 'success !!', 'Event Update Successfully and send to CEO !!');
+        }else{
+            if(this._evId){
+                window.console.log('Id ===> id', this._evId);
+                this.senNotification(this._evId);
+            }
+            this.backToDetails();
+            this.showToast('success', 'success !!', 'Event Update Successfully and send to CEO !!');
         }
-        updateEven({ updEven: this.strUpdatEven, eId: this.recordId})
-            .then(result => {
-                this.data = result;
-                window.console.log('result ===> ', result);
-                // if(result[0].Message__c=='No right to modify the event'){
-                //     this.showToast('info', 'Toast Info', 'You no longer have the right to modify the event !');
-                //     this.closeComponentUpdate();
-                // }else 
-                if(result[0].Message__c=='Event has been already sent'){
-                    this.showToast('info', 'Toast Info', 'This event has been already approved !');
-                    
-                    this.backToDetails();
-                }
-                // else if(result[0].Message__c=='Event has been already rejected'){
-                //     this.showToast('info', 'Toast Info', 'This event has been already rejected !');
-                //     this.closeComponentUpdate();
-                // }
-                else{
-                    // this.closeComponentUpdate();
-                    this.backToDetails();
-                    this.showToast('success', 'success !!', 'Event Update Successfully !!');
-                }
-            })
-            .catch(error => {
-                this.error = error.message;
-                this.showToast('error', 'Error', 'Update failed');
-            });
     }
-    handleCancelUpdate(){
-        this.showAttachement = false;
-        this.showComponentEdit = true;
-    }
-    handleUpdateAndSendEvent(){debugger
-        if(this.fileId){
-            this.handleClick();
+    handleUpdateAndSendEvent(){
+        if(this.bool1==true){
+            this.handleBeforeUpdateAndSendEvent();
+            setTimeout(()=>{
+                this.checkIdOfFileBeforeSaveOrBeforeUpdate();
+                this.checkDataEventBeforeUpdateAndSendEvent();
+            },500);
+        }else{
+            this.handleBeforeUpdate();
+            setTimeout(()=>{
+                this.checkDataEventBeforeUpdateAndSendEvent();
+            },500);
         }
-        updateAndSendEven({ updEven: this.strUpdatEven, eId: this.recordId})
-            .then(result => {
-                this._dataEvent = result;
-                this._evId = result[0].Id;
-                console.log('result _evId---> ', this._evId);
-                window.console.log('result ===> ', result);
-                if(this._evId){
-                    this.senNotification(this._evId);
-                }
-                this.backToDetails();
-                this.showToast('success', 'success !!', 'Event Update Successfully and send to CEO !!');
-            })
-            .catch(error => {
-                this.error = error.message;
-                this.showToast('error', 'Error', 'Update failed');
-            });
+             
     }
-    handlepredeleteEvent(){
-        this.showModalDelete=true;
-    }
+
     handledeleteEvent(){debugger
         this.startSpinner(true);
         this.recordId = this.getUrlParamValue(window.location.href, 'recordId');
@@ -600,14 +891,26 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
                 console.error(result.msg);
             }else{
                 console.log('event --> ' , result);
+                this.data0 = result.map(obj => {
+                    var newobj={};
+                        newobj.Id = obj.Id;
+                        newobj.EventName=obj.Name;
+                        newobj.ContactName=obj.Contact_Id__r.Name;
+                        newobj.Description=obj.Description__c;
+                        newobj.StartDate= obj.Start_Dates__c; 
+                        newobj.EndDate= obj.End_Dates__c;
+                        newobj.Status=obj.Status__c;
+                    return newobj;
+                });
+                console.log('data0--->', this.data0);
                 this.eventinformationEdite = result.map(obj => {
                     var newobj={};
                         newobj.Id = obj.Id;
                         newobj.EventName=obj.Name;
                         newobj.ContactName=obj.Contact_Id__r.Name;
                         newobj.Description=obj.Description__c;
-                        newobj.StartDate=obj.Start_Date__c;
-                        newobj.EndDate=obj.End_Date__c;
+                        newobj.StartDate= obj.Start_Dates__c.split('T')[0]+'  à '+ obj.Start_Dates__c.split('T')[1].substring(0,5); 
+                        newobj.EndDate= obj.End_Dates__c.split('T')[0]+'  à '+obj.End_Dates__c.split('T')[1].substring(0,5);
                         newobj.Status=obj.Status__c;
                     return newobj;
                 });
@@ -627,7 +930,7 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
                     {
                         label:'Start date',
                         name:'StartDate',
-                        type:'date',
+                        type:'datetime',
                         value:this.eventinformationEdite[0].StartDate,
                         required:true,
                         ly_md:'12', 
@@ -645,7 +948,7 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
                     {
                         label:'End date',
                         name:'EndDate',
-                        type:'date',
+                        type:'datetime',
                         value:this.eventinformationEdite[0].EndDate,
                         ly_md:'12', 
                         ly_lg:'12'
@@ -659,11 +962,10 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
                         ly_lg:'12'
                     },
                 ];
-
                 getRelatedFilesByRecordId({recordId: eventId})
                 .then(result=>{
                     console.log('@@@ @@@ @@@ 1 result-->', result);
-                    this.filesLists = result.data.map(elt =>{
+                    this.filesList = result.data.map(elt =>{
                         var obj = {};
                         obj.label = elt.Name,
                         obj.value = elt.Name,
@@ -676,15 +978,20 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
                     console.log('@@@ filesList @@@ ===> ',this.filesList);
                     for(let i=0; i<this.filesList.length; i++){
                         this.contentDocId = this.filesList[i].docId;
-                        // this.contentDocIdList.push(this.filesList[i].docId);
+                        this.contentDocIdList.push(this.filesList[i].docId);
                     }
+                    debugger
                     console.log('@@@ contentDocId @@@ ===> ', this.contentDocIdList);
-                    let _data =[];
-                    for(let key in result['data']) {
-                        _data.push({rowId: result['data'][key].ContentDocumentId, FileName: result['data'][key].Name,Id:result[key].Id});
+                    let data_t =[];
+                    for(let key2 in result['data2']) {   
+                        for(let key in result['data']) {
+                            if(result['data'][key].ContentDocumentId == result['data2'][key2].Id){
+                                data_t.push({Id:result['data2'][key2].Id, FileName: result['data2'][key2].Title, url: result['data'][key].ContentDownloadUrl});
+                            }
+                        }
                     }
-                    this.filesList = _data;
-                    console.log('-->',this.filesList);
+                    this.filesLists = data_t;
+                    console.log('-->',this.filesLists);
                 });
             }
         }).catch(err =>{
@@ -693,29 +1000,37 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
     } 
     handleRowAction( event ) {
         const actionName = event.detail.action.name;
-        const row = event.detail.row.Id;
-        console.log('row--> ' , row);
+        const rowId = event.detail.row.Id;
+        console.log('rowId--> ' , rowId);
         console.log('actionName--> ' , actionName); 
         switch (actionName) {
             case 'DeleteFile':
-                checkcontentDocumentByRcrdId({recId:this.recordId})
-                .then(result =>{
-                    let rowId = result;
-                    console.log('----> result' , rowId);
-                    for(let i=0; i<this.contentDocIdList.length; i++){
-                        if (rowId==this.contentDocIdList[i]){
-                            this.contentDocId = rowId;
-                            this.handleDeleteFile();
-                        }
+                for(let i=0; i<this.contentDocIdList.length; i++){
+                    if (rowId==this.contentDocIdList[i]){
+                        this.contentDocId = rowId;
+                        this.handleDeleteFile();
                     }
-                })
+                }
                 break;
             case 'Download':
-                // this.template.querySelector('[data-id="1"]').click();
+                for(let key in this.filesLists){
+                    if(this.filesLists[key].Id == rowId){
+                        this.handleNavigate(this.filesLists[key].url);
+                    }
+                }
                 break;
             default:
         }
     }
+    handleNavigate(url) {
+        const config = {
+            type: 'standard__webPage',
+            attributes: {
+                url: url
+            }
+        };
+        this[NavigationMixin.Navigate](config);
+      }
     buildform(){
         this.inputsItems = [
             {
@@ -728,10 +1043,10 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
                 ly_lg:'6'
             },
             {
-                label:'Start date',
+                label:'Start',
                 placeholder:'Enter Start date',
                 name:'StartDate',
-                type:'date',
+                type:'Datetime',
                 required:true,
                 ly_md:'6', 
                 ly_lg:'6'
@@ -745,10 +1060,10 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
                 ly_lg:'6'
             },
             {
-                label:'End date',
+                label:'End',
                 placeholder:'Enter End date',
                 name:'EndDate',
-                type:'date',
+                type:'Datetime',
                 ly_md:'6', 
                 ly_lg:'6'
             },
@@ -772,7 +1087,7 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
                 placeholder:'Enter your Event Name',
                 name:'Name',
                 type:'text',
-                value:this.eventinformationEdite[0].EventName,
+                value:this.data0[0].EventName,
                 required:true,
                 ly_md:'6', 
                 ly_lg:'6'
@@ -781,18 +1096,18 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
                 label:'Start date',
                 placeholder:'Enter Start date',
                 name:'StartDate',
-                type:'date',
-                value:this.eventinformationEdite[0].StartDate,
+                type:'Datetime',
+                value:this.data0[0].StartDate,
                 required:true,
-                ly_md:'6', 
-                ly_lg:'6'
+                ly_md:'12', 
+                ly_lg:'12'
             },
             {
                 label:'Description',
                 placeholder:'Enter your Event Description',
                 name:'Description',
                 type:'textarea',
-                value:this.eventinformationEdite[0].Description,
+                value:this.data0[0].Description,
                 ly_md:'6', 
                 ly_lg:'6'
             },
@@ -800,10 +1115,10 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
                 label:'End date',
                 placeholder:'Enter End date',
                 name:'EndDate',
-                type:'date',
-                value:this.eventinformationEdite[0].EndDate,
-                ly_md:'6', 
-                ly_lg:'6'
+                type:'Datetime',
+                value:this.data0[0].EndDate,
+                ly_md:'12', 
+                ly_lg:'12'
             },
             // {
             //     label:'Status',
@@ -811,14 +1126,15 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
             //     name:'Status',
             //     picklist: true,
             //     options:this.StatusList,
-            //     value:this.eventinformationEdite[0].Status,
+            //     value:this.data0[0].Status,
             //     required:true,
             //     ly_md:'12', 
             //     ly_lg:'12'
             // },
         ];
     }
-    openfileUpload(event) { 
+    openfileUpload(event) {
+        this.bool = true;
         const file = event.target.files[0]
         var reader = new FileReader()
         reader.onload = () => {
@@ -826,7 +1142,7 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
             this.fileData = {
                 'filename': file.name,
                 'base64': base64,
-                'recordId': this.evId_ForFile
+                'recordId': ''
             }
             this.fileId = this.fileData.recordId;
             console.log('File Id ===> ',this.fileId);
@@ -835,6 +1151,7 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
         reader.readAsDataURL(file)
     }
     openfileUploadForUpdate(event) { 
+        this.bool1 = true;
         const file = event.target.files[0]
         var reader = new FileReader()
         reader.onload = () => {
@@ -842,7 +1159,7 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
             this.fileData = {
                 'filename': file.name,
                 'base64': base64,
-                'recordId': this.recordId
+                'recordId': ''
             }
             this.fileId = this.fileData.recordId;
             console.log('File ===> ',this.fileId);
@@ -853,11 +1170,11 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
     handleDeleteFile(){
         console.log('recordId 1---> ', this.recordId);
         console.log('recordId 2---> ', this.contentDocId);
-        // deleteFile({recId: this.recordId, docId:this.contentDocId})
-        // .then(result=>{
-        //     this.showToast('success', 'success !!', 'File Delete Successfully!!');
-        //     window.location.reload();
-        // })
+        deleteFile({recId: this.recordId, docId:this.contentDocId})
+        .then(result=>{
+            this.showToast('success', 'success !!', 'File Delete Successfully!!');
+            window.location.reload();
+        })
     }
     handleClick(){
         const {base64, filename, recordId} = this.fileData
@@ -866,6 +1183,21 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
             this.fileData = null;
             this.isFile = true;
         })
+        // this.showToast('success', 'success !!', 'File Upload Successfully!!');
+    }
+    SaveFile(){
+        const {base64, filename, recordId} = this.fileData
+        uploadFile({ base64, filename, recordId })
+        .then(result=>{
+            this.fileData = null;
+            this.isFile = true;
+            this.doSaveSucces(isSave);
+
+        })
+        .catch( e =>{
+            console.error(e);
+        })
+        // this.showToast('success', 'success !!', 'File Upload Successfully!!');
     }
     toast(title){
         const toastEvent = new ShowToastEvent({
@@ -966,7 +1298,13 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
         this.showAttachement = false;
         this.showComponentDetails = true;
     }
-
+    handleCancelUpdate(){
+        this.showAttachement = false;
+        this.showComponentEdit = true;
+    }
+    handlepredeleteEvent(){
+        this.showModalDelete=true;
+    }
     //handle spinner
     startSpinner(b){
         let spinner=this.template.querySelector('c-rh_spinner');

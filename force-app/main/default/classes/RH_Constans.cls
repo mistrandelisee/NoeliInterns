@@ -1,15 +1,21 @@
 public  class RH_Constans {
     public static final String RH_CONTACT_RT =Schema.SObjectType.Contact.getRecordTypeInfosByDeveloperName().get('RH_USER').getRecordTypeId();
+    public static final String RH_CLIENT_ACCOUNT_RT =Schema.SObjectType.Account.getRecordTypeInfosByDeveloperName().get('RH_CLIENT').getRecordTypeId();
+    public static final String RH_ACCOUNT_RT =Schema.SObjectType.Account.getRecordTypeInfosByDeveloperName().get('RH').getRecordTypeId();
+    public static final String RH_PROJECT_RT =Schema.SObjectType.Project__c.getRecordTypeInfosByDeveloperName().get('Real_Project').getRecordTypeId();
     public static final String RH_PROFILE_NAME ='Custom Identity User';
     public static final String ORG_NAME ='rh-dev';
     public static final String ACTIVATED_WORKGROUP_STATUS ='Activated';
     public static final String ACTIVATED_CONTACT_STATUS ='Active';
     public static final String ACTIVATED_PROJECT_STATUS ='Active';
+    public static final String CLOSED_PROJECT_STATUS ='Closed';
     public static final String RH_OPEN ='Open';
     public static final String CONTACT_ROLE_CEO ='CEO';
     public static final String CONTACT_ROLE_TL ='Team Leader';
     public static final String CONTACT_ROLE_BU ='Base User';
     public static final String CONTACT_ROLE_RH ='Ressource Manager';
+
+    public static final String RH_VACCATION_RT_NAME ='RH_FREE';
     public static final String test ='test Manager';
     public RH_Constans() {
 

@@ -24,22 +24,52 @@ public class RH_ContactTriggerHandler {
         }
     }
     public static void AfterUpdateContacts(List<Contact> RHContacts) {
-        List<Contact> RHContactsValid = new List<Contact>();
+        List<Contact> RHContactsValid = new List<Contact>();//valid contacts for user genaration
+        List<Contact> RHContactsRole = new List<Contact>();// valid contacts for which the userrole may change
         for (Contact con : RHContacts){
             Contact oldCon=(Contact) Trigger.oldMap.get(con.Id);
-            if ( ! oldCon?.RH_Create_User__c && con.RH_Create_User__c) {//switch create user
+            if ( ! oldCon?.RH_Create_User__c && con.RH_Create_User__c && String.isBlank(con.RH_User__c)) {//switch create user and user not created yet
                 RHContactsValid.add(con);
+            }else {
+                System.debug('### AfterUpdateContacts oldCon?.RH_Role__c ' + oldCon?.RH_Role__c);
+                System.debug('### AfterUpdateContacts con.RH_Role__c ' + con.RH_Role__c);
+                System.debug('### AfterUpdateContacts con.RH_User__c ' + con.RH_User__c);
+                if ( oldCon?.RH_Role__c != con.RH_Role__c && String.isNotBlank(con.RH_User__c) ){//switch role 
+                    RHContactsRole.add(con);
+                }
             }
         }
         if (!RHContactsValid.isEmpty()) {
             Id ProfileId = [SELECT ID FROM Profile WHERE Name =:RH_Constans.RH_PROFILE_NAME].Id;
             ID manageJobID = System.enqueueJob(new UserManager(RHContactsValid,ProfileId));
         }
+        if (!RHContactsRole.isEmpty()) {
+            
+            List<UserRole> ListRole = [select Id, Name from UserRole WHERE Name IN :RH_Constans.RH_Map_RoleName.values()];
+            ID manageJobID = System.enqueueJob(new RoleManager(RHContactsRole,ListRole));
+        }
     }
     public static void createIdentyUser(List<Contact> RHContacts) {
         Id ProfileId = [SELECT ID FROM Profile WHERE Name =:RH_Constans.RH_PROFILE_NAME].Id;
         ID manageJobID = System.enqueueJob(new UserManager(RHContacts,ProfileId));
     }
+    public static void roleUpdater(List<Contact> RHContacts, List<UserRole> ListRole ) {
+        Map<String, UserRole> RH_Map_Role= new Map<String, UserRole>(); 
+        List<User> RHUsers = new List<User>();
+        for(UserRole role : ListRole){
+            RH_Map_Role.put(role.Name, role);
+       }
+       for (Contact con : RHContacts){ 
+            if (String.isNotBlank(con.RH_User__c)) {
+                User u = new User(Id=con.RH_User__c);
+                u.UserRoleId = (RH_Map_Role.get(RH_Constans.RH_Map_RoleName.get(con.RH_Role__c))).Id;
+                RHUsers.add(u);
+            }
+            
+        }
+        Database.SaveResult[] srList = Database.update(RHUsers, true);
+    }
+
     public static void ExecuteLogic(List<Contact> RHContacts,Id ProfileId) {
         List<User> RHUsers = new List<User>();
         List<List<Database.Error>> listError = new List<List<Database.Error>>();
@@ -151,6 +181,31 @@ public class RH_ContactTriggerHandler {
                 
                 savepoint = Database.setSavepoint();
                 ExecuteLogic(AllcontactList,ProfileId);
+            }
+            catch(Exception e) {
+                if (savepoint!=null) {
+                    Database.rollback(savepoint);
+                }
+                System.debug('e  error ' + e);
+                System.debug(e.getMessage());
+            }
+        
+        }
+    }
+    public  class RoleManager implements Queueable {
+        public List<Contact> contactList;
+        public List<UserRole> roleList;
+        public RoleManager(List<Contact> contacts,List<UserRole> roles){
+            contactList=contacts;
+            roleList =roles;
+        } 
+        public void execute(QueueableContext context) { 
+            System.debug('### RoleManager  =>execute  contactList size  : '+contactList.size());
+            System.Savepoint savepoint =null;
+            try {
+                
+                savepoint = Database.setSavepoint();
+                roleUpdater(contactList,roleList);
             }
             catch(Exception e) {
                 if (savepoint!=null) {

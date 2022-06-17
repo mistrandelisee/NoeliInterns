@@ -1,0 +1,6 @@
+.ico{
+    --sds-c-icon-color-foreground-default: var(--primaryColor,#001639);
+    --lwc-squareIconMediumContentAlt: 1.5rem;
+    --lwc-colorTextIconDefault: var(---secondaryColor,#9735e1);
+
+}

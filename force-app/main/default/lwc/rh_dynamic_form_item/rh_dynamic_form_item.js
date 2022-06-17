@@ -22,8 +22,15 @@ export default class Rh_dynamic_form_item extends LightningElement {
         return this.item?.type=='file';
     }
     get isBase(){
-        return ! (this.isTextarea || this.picklist || this.isFile);
+        return ! (this.isTextarea || this.picklist || this.isFile || this.isLookup);
     }
+    get isDefault(){
+        return !(this.isLookup);
+    }
+    get isLookup(){
+        return this.item?.type=='lookup';
+    }
+    get filter(){ return this.item?.filter || ''}
     get picklist(){ return this.item?.picklist;};
     get toggleActiveText(){ return this.item?.toggleActiveText || 'Active'};
     get toggleInactiveText(){ return this.item?.toggleInactiveText || 'Inactive'};
@@ -41,6 +48,18 @@ export default class Rh_dynamic_form_item extends LightningElement {
         }, delay);//2000
        
     }
+    handleLookupSelection(event){
+        const info = event.detail;
+        this.publishChangedEvt({info: {...info} , event:event});
+        this.timer=setTimeout(() => {
+            
+        }, delay);//2000
+    }
+    handleLookupCreation(event){
+        const info = event.detail;
+        const createEvent = new CustomEvent('createlookup', {detail: info});
+               this.dispatchEvent(createEvent);
+    }
     publishChangedEvt(evt){
         console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$4 Publish evt ' ,evt);
         
@@ -49,6 +68,37 @@ export default class Rh_dynamic_form_item extends LightningElement {
         
     }
     @api saveField(){
+       if(this.isDefault){
+       return this.saveDefaultField()
+       }else{
+            if (this.isLookup) {
+              return  this.saveLookupField()
+            }
+       }
+    }
+    saveLookupField(){
+        const isvalid =this.validateLookupField(); 
+        const item=this.item;
+        console.log('######### SAVE LOOKUP >> '+item.name );
+        let output={};
+        let outputs=[];
+        let outputsItems=[];
+        if (isvalid) {
+            const key=item.name;
+            let lookupCmp=this.template.querySelector(`c-rh_custom_lookup_adv[data-id="${key}"]`);
+            if (lookupCmp) {
+                const retunrObj=lookupCmp.saveField();
+                console.log(retunrObj);
+                output[key]=retunrObj.value || null;
+                outputs.push({label:item.label,name:key,value:retunrObj.value});
+                outputsItems.push({...item,value:retunrObj.value,...retunrObj});
+            }
+            
+        }
+
+        return {isvalid,outputs,obj:output,outputsItems};
+    }
+     saveDefaultField(){
         const isvalid =this.validateField(); 
         const item=this.item;
         let output={};
@@ -96,16 +146,54 @@ export default class Rh_dynamic_form_item extends LightningElement {
         // console.log('OUTPUT FIELD VALUES ALL : ',{isvalid,outputs,obj:output,outputsItems});
         return {isvalid,outputs,obj:output,outputsItems};
     }
-    @api validateField() {
+     validateDefaultField() {
         const item=this.item;
-        // console.log('start verification');   
+         
         let isvalid = true;
         let key=item.name;
         let fieldInput=this.template.querySelector(`[data-id="${key}"]`);
         if (fieldInput) {
             isvalid = isvalid && fieldInput.reportValidity('');
         }
+        console.log('######### VALIDATION >> '+item.name +' IS VALIDATION >>'+isvalid); 
     //    console.log('@@@@@@@@@@ isvalid '+isvalid);
        return isvalid;
    }
+   validateLookupField(){
+        const item=this.item;
+            
+        let isvalid = true;
+        let key=item.name;
+        let lookupCmp=this.template.querySelector(`c-rh_custom_lookup_adv[data-id="${key}"]`);
+        if (lookupCmp) {
+            isvalid = isvalid && lookupCmp.validateField();
+        }
+        console.log('######### LOOKUP VALIDATION >> '+item.name +' IS VALIDATION >>'+isvalid);
+        return isvalid;
+    }
+   @api validateField() {
+        if(this.isDefault){
+        return  this.validateDefaultField()
+        }else{
+            if (this.isLookup) {
+                return this.validateLookupField()
+            }
+        }
+    }
+
+    @api updateField(updates,type='default') {
+        if(type=='lookup'){
+            return this.updateLookupField(updates);
+        }else{
+            return  this.updateDefaultField(updates);
+        }
+    }
+    updateLookupField(updates){
+        this.item={...this.item,...updates};
+        return true;
+    }
+    updateDefaultField(updates){
+        this.item={...this.item,...updates};
+        return true;
+    }
 }
