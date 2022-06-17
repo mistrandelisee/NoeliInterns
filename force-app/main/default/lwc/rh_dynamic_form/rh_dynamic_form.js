@@ -61,7 +61,7 @@ export default class Rh_dynamic_form extends LightningElement {
     //     this.inputsItems=[]
     //     console.log(`@@@@@@@@@@@@@@@@@@@@@@@@@@@in Timeout`);
     //   }, 10e3);
-    this.items=[...this.inputsItems];
+    // this.items=[...this.inputsItems];
         
     }
     renderedCallback(){
