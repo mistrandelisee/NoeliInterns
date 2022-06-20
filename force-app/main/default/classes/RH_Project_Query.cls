@@ -55,4 +55,9 @@ public without sharing class RH_Project_Query {
     public List<Project__c> checkFreeProject(String IdProject){
         return [SELECT Id, Name, Description__c,End_Date__c,Link__c,Status__c,Start_Date__c,recordType.developerName FROM Project__c WHERE Id =:IdProject  AND recordType.developerName=:RH_Constans.RH_VACCATION_RT_NAME ];
     }
+    //EM 18-06-2022 9:51 getProjectsByAccount
+    public List<Project__c> getProjectsByAccount(String AccountId){//for invoice
+        return [SELECT Id, Name, Description__c,End_Date__c,Link__c,Status__c,Start_Date__c,recordType.developerName FROM Project__c 
+        WHERE RH_Account_ID__c =:AccountId ];
+    }
 }

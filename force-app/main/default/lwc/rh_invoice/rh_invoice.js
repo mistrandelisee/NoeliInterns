@@ -2,9 +2,9 @@ import { LightningElement,track,wire } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
 
 import { labels } from 'c/rh_label';
+import getInvoices from '@salesforce/apex/RH_Invoice_Controller.getInvoices';
 
-import initConfig from '@salesforce/apex/RH_Timesheet_Controller.InitFilter';
-import getTimeSheets from '@salesforce/apex/RH_Timesheet_Controller.getTimeSheets';
+import initConfig from '@salesforce/apex/RH_Invoice_Controller.InitFilter';
 import timeSheetCreation from '@salesforce/apex/RH_Timesheet_Controller.timeSheetCreation';
 import { CurrentPageReference } from 'lightning/navigation';
 import { registerListener, unregisterAllListeners,fireEvent } from 'c/pubsub';
@@ -44,6 +44,7 @@ export default class Rh_invoice extends NavigationMixin(LightningElement) {
 
     @track groups=[];
     @track timeSheets = [];
+    @track Invoices = [];
     recordId;
     userId;
     title;
@@ -52,23 +53,21 @@ export default class Rh_invoice extends NavigationMixin(LightningElement) {
 
     keysFields={TimeSheetNumber:'ok'};
     keysLabels={
-        TimeSheetNumber:'Name', TotalDurationInHours:'Total Duration In Hours',
-        StartDate:'StartDate',EndDate:'EndDate',
-        TotalDurationInMinutes:'Total Duration In Minutes',StatusLabel:'Status',TimeSheetEntryCount:'Entries'
+        account:'Invoice To', RH_Po__c:'Po',
+        RH_InvoiceDate__c:'StartDate',RH_DueDate__c:'EndDate',
     };
     fieldsToShow={
-        StartDate:'ok',EndDate:'ok',StatusLabel:'',
-        TimeSheetEntryCount:'',
+        
+        account:'',RH_Po__c:'',
+        RH_InvoiceDate__c:'ok',RH_DueDate__c:'ok',
          /*TotalDurationInHours:'',
        
         TotalDurationInMinutes:''*/
     };
 
     filter={
-        status:null,
         startDate:null,
         endDate:null,
-        isActive:null,
         orderBy:null,
         orderOn:null,
     };
@@ -136,7 +135,7 @@ export default class Rh_invoice extends NavigationMixin(LightningElement) {
     get filterReady(){ return this.filterInputs?.length >0}
     get isAdmin() { return this.currUser?.isCEO || this.currUser?.isTLeader}
     get isApprover() { return this.isAdmin || this.currUser?.isApprover}
-    get hasTimeSheets(){ return this.timeSheets.length >0; }
+    get hasInvoices(){ return this.Invoices?.length >0; }
     get hasrecordid(){ return this.recordId?true:false; }
     
     connectedCallback(){
@@ -147,7 +146,7 @@ export default class Rh_invoice extends NavigationMixin(LightningElement) {
         }else{
             this.userId = this.getUrlParamValue(window.location.href, 'uId');
             this.initFilter();
-            this.getTimesheets(this.filter, this.userId);
+            this.getInvoices(this.filter);
         }
     }
     
@@ -158,12 +157,12 @@ export default class Rh_invoice extends NavigationMixin(LightningElement) {
             console.log('Result INIT FILTER ');
             console.log(result);
             if (!result.error && result.Ok) {
-                this.Status = result.Picklists?.Status;
+                // this.Status = result.Picklists?.Status;
                 // this.roles = result.Picklists?.RH_Role__c;
                 this.OrderBys = result.OrderBys;
-                this.Status.unshift({
-                    label:this.l.selectPlc,value:''
-                });
+                // this.Status.unshift({
+                //     label:this.l.selectPlc,value:''
+                // });
                 this.buildFilter();
             }else{
                 this.showToast(WARNING_VARIANT,'ERROR Initialising', result.msg);
@@ -182,14 +181,15 @@ export default class Rh_invoice extends NavigationMixin(LightningElement) {
         const record=event.detail;
         this.filter={... this.filter ,...record ,
                     orderOn: record.orderOn ? 'DESC' : 'ASC'};
-        this.getTimesheets();
+        this.getInvoices();
     }
 
-    getTimesheets(){
-        this.timeSheets=[];
+
+    getInvoices(){
+        this.Invoices=[];
         this.startSpinner(true);
-        getTimeSheets({filterTxt:JSON.stringify(this.filter), userId:this.userId}).then(result =>{
-            console.log('result @@@ + ' +(result));
+        getInvoices({filterTxt:JSON.stringify(this.filter)}).then(result =>{
+            console.log('result @@@ ');
             console.log(result);
             const self=this;
             if (!result.error && result.Ok) {
@@ -203,39 +203,18 @@ export default class Rh_invoice extends NavigationMixin(LightningElement) {
                                 isApprover:result.isApprover,
                 }
                 const isAD=this.isAdmin;
-                this.timeSheets = result.TimeSheets.map(function (e ){
+                this.Invoices = result.Invoices.map(function (e ){
                     let item={...e};
-                    item.title=e.RH_Name__c;
+                    item.title=e.RH_Name__c || e.Name;
                     item.id=e.Id;
                     item.icon="standard:people";
                     item.class=e.Status;
-                    
+                    item.account=e.RH_Account_Id__r.Name;
                     item.keysFields=self.keysFields;
                     item.keysLabels=self.keysLabels;
                     item.fieldsToShow=self.fieldsToShow;
 
                     let Actions=[];
-                    //add status actions
-                    /*
-                    if (self.isMine) {
-                        Actions=Actions.concat(self.buildUserStatusActions(e.Status));
-                        Actions=Actions.concat(self.buildUserRoleActions(e.RHRolec));
-                    }*/
-                    if (ACTIVE_ACTION.toLowerCase() == e.Status?.toLowerCase()) {//if already submitted
-                        if (self.isApprover) {
-                            //add approve action 
-                            Actions.push(self.createAction("base",self.l.Approve,APPROVE_ACTION,self.l.Approve,"utility:edit",'active-item'));
-                        }
-                    }
-                    if (DRAFT_STATUS.toLowerCase() == e.Status?.toLowerCase()) {//if draft
-                        if (self.isMine) {//is mine
-                            //add SUBMIT_ACTION ,DELETE_ACTION  
-                            if (e.TimeSheetEntryCount > 0) { //submit action avalaible only if has sheets
-                                Actions.push(self.createAction("base",self.l.Submit,SUBMIT_ACTION,self.l.Submit,"utility:edit",'active-item'));
-                            }
-                            Actions.push(self.createAction("base",self.l.Delete,DELETE_ACTION,self.l.Delete,"utility:close",'active-item'));
-                        }
-                    }
                     
 
                     item.actions=Actions;
@@ -243,7 +222,7 @@ export default class Rh_invoice extends NavigationMixin(LightningElement) {
                     console.log(item);
                     return item;
                 });
-                this.setviewsList(this.timeSheets)
+                this.setviewsList(this.Invoices)
             }else{
                 this.showToast(WARNING_VARIANT,'ERROR in getting results', result.msg);
             }
@@ -255,16 +234,6 @@ export default class Rh_invoice extends NavigationMixin(LightningElement) {
             this.startSpinner(false);
         })
     }
-
-    // handleDetailsActions(event){
-    //     console.log('handleDetailsActions :', event.detail.action);
-    //     if (event.detail.action==NEW_ACTION) {
-    //         //call create new Timesheet then redirect to the timesheet
-    //         console.log('call create new Timesheet then redirect to the timesheet');
-    //         this.createTimesheetApex()
-    //     }
-    //      //   this.handleUserAction(record, FROM_PARENT);
-    // }
     handleActionNew(event){
         const data=event.detail;
         console.log('data >>',data,' \n action ',data?.action);
@@ -272,7 +241,7 @@ export default class Rh_invoice extends NavigationMixin(LightningElement) {
         switch (data?.action) {
             case SAVE_ACTION:
                 //refresh List
-                this.getTimesheets();
+                this.getInvoices();
                 break;
             default:
                 break;
@@ -280,27 +249,7 @@ export default class Rh_invoice extends NavigationMixin(LightningElement) {
             
         
     }
-    // createTimesheetApex(){
-    //     this.startSpinner(true);
-    //     timeSheetCreation()
-    //       .then(result => {
-    //         console.log('Result timeSheetCreation');
-    //         console.log( result);
-
-    //         if (!result.error && result.Ok) {
-    //             this.goToTimeSheetDetail(result.Timesheet.Id);
-    //         }else{
-    //             this.showToast(WARNING_VARIANT,'ERROR', result.msg);
-    //         }
-    //       })
-    //       .catch(e => {
-    //         this.showToast(ERROR_VARIANT,'ERROR', e.message);
-    //         console.error(e);
-    //     })
-    //     .finally(() => {
-    //         this.startSpinner(false);
-    //     });
-    // }
+    
     setviewsList(items){
         let cardsView=this.template.querySelector('c-rh_cards_view');
         cardsView?.setDatas(items);
@@ -309,44 +258,21 @@ export default class Rh_invoice extends NavigationMixin(LightningElement) {
         console.log('event parent ' +JSON.stringify(event.detail));
         const info=event.detail;
         if (info?.extra?.isTitle) {
-            this.goToTimeSheetDetail(info?.data?.id);
+            this.goToInvoiceDetail(info?.data?.id);
         }
         if (info?.action==CARD_ACTION) {//user clicks on the dropdown actions
-            const record={Id:info?.data?.id, action:info?.extra?.item};
-            this.handleUserAction(record, FROM_CHILD);
+            // const record={Id:info?.data?.id, action:info?.extra?.item};
+            // this.handleUserAction(record, FROM_CHILD);
         }
     }
-    handleUserAction(record,from=''){ 
-        switch (record.action) {
-            case DISABLE_ACTION:
-                record.Status=this.constants.LWC_DISABLE_CONTACT_STATUS;
-                //this.doUpdateStatus(record,from)
-                break;
-            case ACTIVE_ACTION:
-                record.Status=this.constants.LWC_ACTIVE_CONTACT_STATUS;
-                //this.doUpdateStatus(record,from)
-                break;
-            case FREEZE_ACTION:
-                record.Status=this.constants.LWC_FREEZE_CONTACT_STATUS;
-                //this.doUpdateStatus(record,from)
-                break;
-            case PROMOTE_ACTION:
-                record.Role=this.constants.LWC_CONTACT_ROLE_TL;
-                //this.doUpdateRole(record,from)
-                break;
-        
-            default:
-                break;
-        }
-
-    }
+    
 
     getUrlParamValue(url, key) {
         return new URL(url).searchParams.get(key);
     }
 
-    goToTimeSheetDetail(recordid) {
-        var pagenname ='rhtimesheet'; //request page nam
+    goToInvoiceDetail(recordid) {
+        var pagenname ='rh-invoices'; //request page nam
         let states={'recordId': recordid}; //event.currentTarget.dataset.id , is the recordId of the request
         
         this[NavigationMixin.Navigate]({
@@ -372,17 +298,17 @@ export default class Rh_invoice extends NavigationMixin(LightningElement) {
         
             
             this.filterInputs =[
-            {
-                label:this.l.Status,
-                name:'status',
+            // {
+            //     label:this.l.Status,
+            //     name:'status',
             
-                picklist: true,
-                options: this.Status,
-                value: '',
-                ly_md:'3',
-                ly_xs:'12',  
-                ly_lg:'3'
-            },
+            //     picklist: true,
+            //     options: this.Status,
+            //     value: '',
+            //     ly_md:'3',
+            //     ly_xs:'12',  
+            //     ly_lg:'3'
+            // },
             {
                 label:this.l.From,
                 placeholder:this.l.From,

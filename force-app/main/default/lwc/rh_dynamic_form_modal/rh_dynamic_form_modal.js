@@ -7,7 +7,7 @@ operation;
 record;
 @api title;
 @api backcolor;
-
+@api modalCss;
 @api
 btnOkLabel = 'Create';
 l={...labels}

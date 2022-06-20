@@ -190,7 +190,12 @@ export default class Rh_dynamic_form_item extends LightningElement {
     }
     updateLookupField(updates){
         this.item={...this.item,...updates};
-        return true;
+        let key=this.item?.name;
+        let lookupCmp=this.template.querySelector(`c-rh_custom_lookup_adv[data-id="${key}"]`);
+        if (lookupCmp) {
+            return  lookupCmp.updateField(this.item);
+        }
+        return false;
     }
     updateDefaultField(updates){
         this.item={...this.item,...updates};

@@ -1,0 +1,10 @@
+.textColor{
+    color:var(--secondaryColor);
+}
+.ico{
+    cursor: pointer;
+    --lwc-colorTextIconDefault: var(--secondaryColor);
+    --slds-c-icon-color-foreground:var(--secondaryColor);/* fill color if ico*/
+    --sds-c-icon-color-foreground:var(--secondaryColor);/* fill color if ico*/
+    --lwc-colorTextIconInverse:var(--secondaryColor);/* fill color if ico*/
+}

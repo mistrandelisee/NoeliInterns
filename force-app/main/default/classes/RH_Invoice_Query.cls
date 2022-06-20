@@ -38,30 +38,32 @@ public without sharing class RH_Invoice_Query {
         return [SELECT Id,RH_Name__c,TimeSheetNumber,TotalDurationInHours,TotalDurationInMinutes,TimeSheetEntryCount, EndDate, StartDate,toLabel(Status) StatusLabel,Status,OwnerId,Owner.Name FROM TimeSheet 
         WHERE StartDate = THIS_MONTH];
     }
-    
-    public  Map<Id,TimeSheet> getFilteredTimesheets(RH_Invoice_Controller.TimeSheetFilterWrapper filter,String UserId){
+    public List<RH_Invoice__c> getInvoice(String invoiceId) {
+        return [SELECT Id,Name,RH_Name__c,RH_DueDate__c,RH_InvoiceDate__c,RH_Po__c, OwnerId,  
+                        RH_Account_Id__r.Name,RH_Account_Id__r.Phone,RH_Account_Id__r.Type,RH_Account_Id__r.Website, 
+                (SELECT Id,RH_StartDate__c,RH_EndDate__c, Name, RH_Quantity__c,RH_Rate__c,RH_Holiday__c,RH_Currency_Code__c, toLabel(RH_Currency_Code__c) currency,RH_InvoiceId__c,
+                RH_ProjectId__r.Name, RH_ProjectId__r.Is_Effective__c, RH_ProjectId__r.RH_Account_ID__c,
+                RH_Ressource__r.Name,RH_Ressource__r.RH_User__c FROM RH_Invoices_Items__r) 
+                FROM 	RH_Invoice__c WHERE Id =:invoiceId];
+    }
+    public  Map<Id,RH_Invoice__c> getFilteredInvoices(RH_Invoice_Controller.InvoiceFilterWrapper filter){
         
-        String status=filter.status;
         Date startdate=filter.startdate;
         Date enddate=filter.enddate;
         String ordBy=String.isNotBlank(filter.orderBy)?filter.orderBy: ' CreatedDate ' ;
         String ordOn= String.isNotBlank(filter.orderOn)?filter.orderOn: ' DESC ';
 
-        String query = 'Select ' 
-        +'Id,Status,TimeSheetNumber,TotalDurationInHours,RH_Name__c,'
-        +'TotalDurationInMinutes,TimeSheetEntryCount,toLabel(Status) StatusLabel,'
-        +'StartDate,EndDate,CreatedDate from TimeSheet '; 
+        String query = 'SELECT Id,Name,RH_Name__c,RH_Account_Id__r.Name,RH_DueDate__c,RH_InvoiceDate__c,RH_Po__c,'
+        +'CreatedDate FROM RH_Invoice__c '; 
         
-        String queryWhere = ' Where OwnerId = :userId';
+        String queryWhere = ' Where RH_Account_Id__c != Null ';
         
-        if(String.isNotBlank(status)){
-			queryWHERE = queryWHERE + ' AND (Status =: status) ';
-		}
+        
         if(startdate != null){
-			queryWHERE = queryWHERE + ' AND (StartDate >= : startdate) ';
+			queryWHERE = queryWHERE + ' AND (RH_InvoiceDate__c >= : startdate) ';
 		}
         if(enddate != null){
-			queryWHERE = queryWHERE + ' AND (StartDate <= : enddate) ';
+			queryWHERE = queryWHERE + ' AND (RH_DueDate__c <= : enddate) ';
 		}
         String queryORDER='';
         if(String.isNotBlank(ordBy)){
@@ -71,8 +73,8 @@ public without sharing class RH_Invoice_Query {
         
         query= query+queryWHERE+queryORDER;
 
-        Map<Id, TimeSheet> timesheetMap=new Map<Id, TimeSheet>((List<TimeSheet>) Database.query(query));
+        Map<Id, RH_Invoice__c> invoicesMap=new Map<Id, RH_Invoice__c>((List<RH_Invoice__c>) Database.query(query));
         
-        return timesheetMap;
+        return invoicesMap;
     }
 }

@@ -20,6 +20,7 @@ export default class Rh_dynamic_form extends LightningElement {
             elt.ly_md=  elt.ly_md ?  elt.ly_md: '4';
             elt.ly_lg=  elt.ly_lg ?  elt.ly_lg: '3';
             elt.keyField=  elt.name+ new Date().getTime();
+            console.log({...elt});
 
             return elt;
         });

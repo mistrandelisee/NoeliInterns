@@ -1,14 +1,17 @@
 import { LightningElement,wire,api } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
 import { labels } from 'c/rh_label';
-import initConfig from '@salesforce/apex/RH_Users_controller.InitUserCreation';
+import { icons } from 'c/rh_icons';
+import InitInvoiceCreation from '@salesforce/apex/RH_Invoice_Controller.InitInvoiceCreation';
+import invoiceCreation from '@salesforce/apex/RH_Invoice_Controller.invoiceCreation';
+import accountCreation from '@salesforce/apex/RH_Invoice_Controller.accountCreation';
 import userCreation from '@salesforce/apex/RH_Users_controller.userCreation';
 
 import checkUserCreation from '@salesforce/apex/RH_Users_controller.checkUserCreation';
 import { CurrentPageReference } from 'lightning/navigation';
 import { registerListener, unregisterAllListeners,fireEvent } from 'c/pubsub';
 //Constants
-const ACCOUNT_NAME_FIELD = 'Rh_Account__c';
+const ACCOUNT_NAME_FIELD = 'AccountId';
 const EDIT_ACTION='Edit';
 const NEW_ACCOUNT='NEW_ACCOUNT';
 const NEW_ACTION='New';
@@ -20,11 +23,12 @@ const RESET_ACTION='Reset';
 const SUCCESS_VARIANT='success';
 const WARNING_VARIANT='warning';
 const ERROR_VARIANT='error';
-export default class Rh_invoice_creation extends LightningElement {
-    l={...labels,
-        new_invoice:'New Invoice',
-        new_account:'New Client Account',}
+export default class Rh_invoice_creation extends NavigationMixin(LightningElement) {
+    l={...labels,}
+    
+    icon={...icons}
     @api action='';
+    inizier={};
     get newAccount() { return this.action==NEW_ACCOUNT}
     accountInputs=[];
 
@@ -152,10 +156,41 @@ export default class Rh_invoice_creation extends LightningElement {
                 ly_lg:'6'
             },
         ];
-        this.action=NEW_ACTION;
+        this.action=NEW_ACCOUNT;
+    }
+    handleCreateAccountApexOK(obj){
+        this.showToast(SUCCESS_VARIANT,this.l.successOp, '');
+        this.action=NEW_ACTION;//close modal
+        const accId=obj.Id;
+        const accName=obj.Name;
+        //update account field
+        let updFieldAcc={
+            // filter:this.inizier?.filter,
+            value:accId,
+            selectName:accName,
+            isSelected:true,
+        }
+        this.updateFormField(ACCOUNT_NAME_FIELD,updFieldAcc);
+
     }
     handleCreateAccountApex(record){
-
+        this.startSpinner(true)
+        accountCreation({ accountJson: JSON.stringify(record) })
+          .then(result => {
+            console.log('Result callApexSave:: ');
+            console.log(result);
+            if ( !result.error && result.Ok) {
+                this.handleCreateAccountApexOK(result.account)
+            }else{
+                this.showToast(ERROR_VARIANT,this.l.warningOp, result.msg);
+            }
+            
+          })
+          .catch(error => {
+            console.error('Error:', error);
+        }).finally(() => {
+            this.startSpinner(false)
+        });
     }
     handleCreateAccount(event){
         const info = event.detail;
@@ -166,18 +201,17 @@ export default class Rh_invoice_creation extends LightningElement {
                this.handleCreateAccountApex(record);
             }
         }else{
-            this.action=NEW_ACCOUNT;  
+            this.action=NEW_ACTION;  
         }
     }
     handleNew(){
        this.startSpinner(true)
-        initConfig()
+       InitInvoiceCreation()
           .then(result => {
             console.log('Result INIT CONF');
             console.log(result);
             if (!result.error && result.Ok) {
-                this.groups = result.Groups?.map(function(g) { return {label:g.Name,value:g.Id}});
-                this.roles = result.Picklists?.RH_Role__c;
+                this.inizier=result;
                 this.buildForm();
                 this.action=NEW_ACTION;
                 this.callParent(this.action,{});
@@ -195,12 +229,38 @@ export default class Rh_invoice_creation extends LightningElement {
         this.action='';
         this.callParent(this.action,{});
     }
+    handleSaveInvoiceApexOK(obj){
+        this.showToast(SUCCESS_VARIANT,this.l.successOp, '');
+        this.invoice=obj;
+        this.goToPage('rh-invoices',{'recordId': this.invoice?.Id});
+    }
+    handleSaveInvoiceApex(record){
+        record.Id=this.invoice?.Id || null;
+        this.startSpinner(true)
+        invoiceCreation({ invoiceJson: JSON.stringify(record) })
+          .then(result => {
+            console.log('Result handleSaveInvoiceApex:: ');
+            console.log(result);
+            if ( !result.error && result.Ok) {
+                this.handleSaveInvoiceApexOK(result.invoice)
+            }else{
+                this.showToast(ERROR_VARIANT,this.l.warningOp, result.msg);
+            }
+            
+          })
+          .catch(error => {
+            console.error('Error:', error);
+        }).finally(() => {
+            this.startSpinner(false)
+        });
+    }
     handleSave(evt){
         let record={};
         let result= this.save();
         if (result.isvalid) {
             record={...record,...result.obj};
             console.log(record);
+            this.handleSaveInvoiceApex(record);
             // this.emp[TYPE_FIELD_NAME]=this.empType;
             // this.callApexSave(record);
         }else{
@@ -234,91 +294,48 @@ export default class Rh_invoice_creation extends LightningElement {
                 newLabel:"Nuovo",
                 label:"Invoice To",
                 objectLabel:'Account',
-                filter:'',
+                filter:this.inizier?.filter,
                 // selectName:'',
                 // isSelected:false
                 required:true,
                 enableCreate:true,
-/***
- * obj-name="Account" search-placeholder="Search Accounts" icon-name="standard:account"
-             new-label-prefix="New" field-label="Account" object-label="Invoice To"
-            show-add-new is-required
- */
                 type:'lookup',
                 value: '',
                 ly_md:'6', 
                 ly_lg:'6'
             },
-            
             {
-                label:'Last Name',
-                placeholder:'Enter your Last Name',
-                name:'LastName',
+                label:this.l.po,
+                placeholder:this.l.po,
+                name:'po',
                 value: '',
                 required:true,
+                ly_xs:'12', 
                 ly_md:'6', 
                 ly_lg:'6'
             },
             {
-                label:'First Name',
-                placeholder:'Enter your First Name',
-                name:'FirstName',
-                value: '',
-                required:false,
-                ly_md:'6', 
-                ly_lg:'6'
-            },
-            /*{
-                label:'Email',
-                name:'Email',
-                required:true,
-                value: '',
-                placeholder:'Email',
-                maxlength:100,
-                type:'email',
-                ly_md:'6', 
-                ly_lg:'6'
-            },
-            {
-                label:'Role',
-                name:'Role',
-                required:true,
-                picklist: true,
-                options: this.roles,
-                value: 'Base User',
-                maxlength:100,
-                ly_md:'6', 
-                ly_lg:'6'
-            },*/
-            {
-                label:'Group',
-                name:'wGroup',
-                picklist: true,
-                options: this.groups,
-                value: '',
-                maxlength:100,
-                ly_md:'6', 
-                ly_lg:'6'
-            },
-            {
-                label:'Activate ?',
-                name:'Activated',
-                checked:true,
-                type:'toggle',
-                ly_md:'6', 
-                ly_lg:'6'
-            },
-            /*{
                 label:this.l.StartDate,
                 placeholder:this.l.StartDate,
-                name:'StartDate',
+                name:'startDate',
                 required:true,
                 value: '',
                 type:'Date',
-                ly_md:'12', 
-                ly_lg:'12',
-                isText:true,//for avoid render blank field
-            }*/
+                ly_xs:'12', 
+                ly_md:'6', 
+                ly_lg:'6'
+            },
+            {
+                label:this.l.EndDate,
+                placeholder:this.l.EndDate,
+                name:'endDate',
+                required:true,
+                value: '',
+                type:'Date',
+                ly_xs:'12', 
+                ly_md:'6', 
+                ly_lg:'6'
+            }
          
         
         ]

@@ -1,0 +1,101 @@
+<template>
+    
+    <template if:true={hasInvoiceInfo}>
+        <c-rh_export_excel hide-btn mode="CUSTOM" file-name={fileName}>
+        </c-rh_export_excel>
+        <lightning-layout multiple-rows>
+            <lightning-layout-item size="12" padding="around-smallx" small-device-size="12" medium-device-size="12" large-device-size="12" >
+                <div class="custom-box">
+                    <template if:true={hasDetailsActions} >
+                            
+                        <lightning-layout-item size="12" padding="around-smallx" small-device-size="12" medium-device-size="12" large-device-size="12">
+                            <div class="custom-box">
+                               <c-rh_actions  onaction={handleDetailsActions} action-available={detailsActions} >  </c-rh_actions>
+                           </div>
+                        </lightning-layout-item>
+                    </template>
+                </div>
+            </lightning-layout-item>
+            <lightning-layout-item size="12" padding="around-small" small-device-size="12" medium-device-size="12" large-device-size="12" >
+                <div class="custom-box">
+                    <lightning-layout vertical-align="center" class="box slds-m-top_mediumx" multiple-rows
+                        >
+                        <lightning-layout-item class="pointer slds-p-vertical_small" size="12" small-device-size="10" medium-device-size="10" large-device-size="11"  onclick={toggleView}>
+                            <span  class="slds-p-left_small  textColor" style="font-size: 20px;">{title}</span>
+                        </lightning-layout-item>
+                        <lightning-layout-item size="12" class="pointer" small-device-size="2" medium-device-size="2" large-device-size="1" onclick={toggleView}>
+                            
+                            <div class="slds-clearfix">
+                                <div class="slds-float_right slds-p-right_small">
+                                    <lightning-icon icon-name={iconName} alternative-text="success"  class="sm-icon default-color ico"></lightning-icon>
+                                </div>
+                            </div>
+                            
+                        </lightning-layout-item>
+
+                        <template if:true={sectionExpanded}>
+                            <lightning-layout-item alignment-bump="right" size="12"  small-device-size="12" medium-device-size="12" large-device-size="12">
+                                <div class="slds-p-around_mediumx profile_user_info">
+                                    
+                                    <!-- title="Sheet Informations"
+                                    iconsrc="utility:people" -->
+                                    <c-rh_display_fields 
+                                    column="3"
+                                    output-fields={invoiceFields}
+                                    onaction={handleGoToLink}
+                                    ></c-rh_display_fields>
+                                </div>
+                                
+                            </lightning-layout-item>
+                            <lightning-layout-item alignment-bump="right" size="12"  small-device-size="12" medium-device-size="12" large-device-size="12">
+                                <div class="slds-p-around_mediumx profile_user_info">
+                                   <!--TODO:EVARISTE ADD YOU CMP  -->
+                                   <!-- 
+                                    <c-rh_invoice_info invoice={record}> </c-rh_invoice_info>
+                                   check rh_profile_user_info 
+                                    -->
+                                </div>
+                                
+                            </lightning-layout-item>
+                        </template>
+                    </lightning-layout>
+                
+                    
+            </div>
+            </lightning-layout-item>
+
+            <template if:false={newLineMode}>
+                <lightning-layout-item size="12" padding="around-smallx" small-device-size="12" medium-device-size="12" large-device-size="12">
+                    <div class="custom-box">
+                        <!-- <c-rh_datatable_component 
+                            columns={columns} 
+                            items={invoicesEntries}
+                            page-size="20"
+                            statut-row-number
+                            resize-column
+                            onrowselected={handleDataTableAction}>
+                         </c-rh_datatable_component> -->
+                    </div>
+                </lightning-layout-item>
+            </template>
+        </lightning-layout>
+    </template>
+    <template if:true={sheetNotFounded}>
+        <c-rh_success_operation title="Error" information="Mising rec" recordid={recordId}></c-rh_success_operation>
+    </template>
+
+    <template if:true={newLineMode}>
+        <c-rh_invoice_item_creation invoice={record}
+        invoice-item={invoiceItem} >
+            
+        </c-rh_invoice_item_creation>
+    </template>
+
+    <!-- APPROVAL MODAL -->
+    <template if:true={approval}>
+        <c-rh_dynamic_form_modal title={l.approvalTitle} form-modal-inputs={approvalInputs} onbuttonclicked={handleNote} btn-create={approvalLbl}>
+
+        </c-rh_dynamic_form_modal>
+    </template>
+
+</template>

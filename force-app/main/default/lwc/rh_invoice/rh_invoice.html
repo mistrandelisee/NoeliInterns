@@ -3,18 +3,10 @@
         <template if:false={hasrecordid}>
 
             <template if:true={showNew}>
-                <!-- <template if:true={hasDetailsActions} >
-                    <lightning-layout-item size="12" padding="around-smallx" small-device-size="12" medium-device-size="12" large-device-size="12">
-                        <div class="custom-box">
-                        
-                        <c-rh_actions  onaction={handleDetailsActions} action-available={detailsActions} >  </c-rh_actions>
-                    </div>
-                    </lightning-layout-item>
-                </template> -->
-                <lightning-layout-item size="12" padding="around-smallx" small-device-size="12" medium-device-size="12" large-device-size="12">
+                <lightning-layout-item size="12" padding="around-small" small-device-size="12" medium-device-size="12" large-device-size="12">
                     
                     <div class="custom-box">
-                        <c-rh_invoice_creation groups={groups} onaction={handleActionNew}></c-rh_invoice_creation>
+                        <c-rh_invoice_creation  onaction={handleActionNew}></c-rh_invoice_creation>
                     </div>
                 </lightning-layout-item>
                 <template if:true={hideView}>
@@ -28,7 +20,7 @@
                     </template>
 
                     <lightning-layout-item size="12" class="slds-p-left_small" small-device-size="12" medium-device-size="12" large-device-size="12" >
-                        <c-rh_cards_view page-size="20" items={timeSheets} onrowselected={handleCardAction}
+                        <c-rh_cards_view page-size="20" items={Invoices} onrowselected={handleCardAction}
                             ly_xs = "12"
                             ly_md = "6"
                             ly_lg = "4"
@@ -59,8 +51,8 @@
         <template if:true={hasrecordid}>
             <lightning-layout-item size="12" padding="around-smallx" small-device-size="12" medium-device-size="12" large-device-size="12">
                     
-                <div class="custom-box">
-                    <c-rh_timesheet_details  record-id={recordId}></c-rh_timesheet_details>
+                <div class="custom-box">{recordId}
+                    <c-rh_invoice_details  record-id={recordId}></c-rh_invoice_details>
                 </div>
             </lightning-layout-item>
 

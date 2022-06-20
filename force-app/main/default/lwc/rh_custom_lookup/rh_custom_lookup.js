@@ -32,7 +32,7 @@ export default class Rh_custom_lookup_adv extends LightningElement {
         } else if (error) {
             this.error = error;
             console.error(error);
-            this.records = undefined;
+            this.records = [];
         }
     }
     handleClick() {

@@ -51,7 +51,7 @@ public with sharing class RH_Invoice_Controller {
             List<RH_Utility.PickOption> OrderBys = new List<RH_Utility.PickOption>();
             OrderBys.add(new RH_Utility.PickOption('None', ''));
             OrderBys.add(new RH_Utility.PickOption('Created Date', 'CreatedDate'));
-            OrderBys.add(new RH_Utility.PickOption('Number', 'TimeSheetNumber'));
+            // OrderBys.add(new RH_Utility.PickOption('Number', 'TimeSheetNumber'));
             // OrderBys.add(new RH_Utility.PickOption('Groups', 'RH_WorkGroup__c'));
             // OrderBys.add(new RH_Utility.PickOption('Created Date', 'CreatedDate'));
             // List<RH_WorkGroup__c> grps=workGroupQry.getActiveWorkgroups();
@@ -118,24 +118,19 @@ public with sharing class RH_Invoice_Controller {
    
 
     @AuraEnabled
-    public static Map<String,Object> getInvoices(String filterTxt, String userId){
+    public static Map<String,Object> getInvoices(String filterTxt){
 
         Map<String, Object> mapReturn = new Map<String, Object>();
-        // List<Map<String, Object>> listsheets = new List<Map<String, Object>>();
         mapReturn.put('error',false);
 
-       /* try {
-
-            String myUserId=UserInfo.getUserId();
-            userId=String.isBlank(userId) ? myUserId : userId;
-
+        try {
             mapReturn.put('filterTxt',filterTxt); 
             InvoiceFilterWrapper filter = (InvoiceFilterWrapper) JSON.deserialize(filterTxt, InvoiceFilterWrapper.class); 
-            Map<Id, Timesheet> mapTimesheets = invoiceQry.getFilteredTimesheets(filter, UserId);
+            Map<Id, RH_Invoice__c> mapInvoices = invoiceQry.getFilteredInvoices(filter);
             
             mapReturn.put('in',filter); 
-            mapReturn.put('TimeSheets',mapTimesheets.values()); 
-            mapReturn.put('isMine',myUserId.equalsIgnoreCase(userId));
+            mapReturn.put('Invoices',mapInvoices.values()); 
+            mapReturn.put('isMine',true);
             mapReturn.put('Constants',RH_Constans.getAllConstants());  
             mapReturn.putAll(RH_Utility.checkRole()); 
             mapReturn.put('Ok',true); 
@@ -146,24 +141,24 @@ public with sharing class RH_Invoice_Controller {
             mapReturn.put('error',true);
             mapReturn.put('msg',e.getMessage() + ' :  ' + e.getStackTraceString());
             mapReturn.put('e',e);
-        }*/
+        }
 
         return mapReturn;
     }
 
     @AuraEnabled 
-    public static Map<String,Object>  getTimeSheet(String timesheetId){
+    public static Map<String,Object>  getInvoice(String invoiceId){
         Map<String, Object> mapReturn = new Map<String, Object>();
         mapReturn.put('error',false);
         try {
             String myUserId=UserInfo.getUserId();
-            List<TimeSheet> TimeSheets = invoiceQry.getTimeSheet(timesheetId);
-            if (TimeSheets.isEmpty()) {
-                throw new RH_ControllerException('002','No Timsheet founded with this ID'+timesheetId);
+            List<RH_Invoice__c> Invoices = invoiceQry.getInvoice(invoiceId);
+            if (Invoices.isEmpty()) {
+                throw new RH_ControllerException('002','No Timsheet founded with this ID'+invoiceId);
             }
-            TimeSheet theTimeSheet=TimeSheets[0];
-            String userId=theTimeSheet.OwnerId;
-            mapReturn.put('TimeSheet',TimeSheets[0]); 
+            RH_Invoice__c theInvoice=Invoices[0];
+            String userId=theInvoice.OwnerId;
+            mapReturn.put('Invoice',theInvoice); 
             mapReturn.put('isMine',myUserId.equalsIgnoreCase(userId));
             mapReturn.putAll(RH_Utility.checkRole()); 
             // mapReturn.putAll(RH_Utility.checkRole()); 
@@ -204,12 +199,13 @@ public with sharing class RH_Invoice_Controller {
         }  
         return mapReturn;
     }
+    
     @AuraEnabled 
-    public static Map<String,Object>  deleteTimeSheet(String timesheetId){
+    public static Map<String,Object>  deleteInvoice(String invoiceId){
         Map<String, Object> mapReturn = new Map<String, Object>();
         mapReturn.put('error',false);
         try {
-            delete new TimeSheet(Id=TimeSheetId);
+            delete new RH_Invoice__c(Id=invoiceId);
             mapReturn.put('Ok',true); 
         } catch(Exception e) {
             System.debug(e.getMessage());
@@ -309,6 +305,97 @@ public with sharing class RH_Invoice_Controller {
         System.debug('doc Content : '+blb);
         return EncodingUtil.base64Encode(blb);
     }
+    @AuraEnabled 
+    public static Map<String,Object>  invoiceItemCreation(String entryJson){
+        Map<String, Object> mapReturn = new Map<String, Object>();
+        mapReturn.put('error',false);
+        try {
+            
+            mapReturn.put('Input',entryJson);
+            invoiceItemWrapper entryInfo = (invoiceItemWrapper) JSON.deserialize(entryJson, invoiceItemWrapper.class);
+            RH_Invoice_Item__c invoiceItem =entryInfo.getEntry();
+            invoiceItem.RH_Amount__c=entryInfo.calculateAmount();
+            Boolean isInsert= String.isBlank(invoiceItem.Id);
+            upsert invoiceItem;
+            mapReturn.put('invoiceItem',invoiceItem);
+            
+            mapReturn.put('Ok',true); 
+        } catch(Exception e) {
+            System.debug(e.getMessage());
+            mapReturn.put('error',true);
+            mapReturn.put('msg',e.getMessage());
+            mapReturn.put('e',e);
+        }  
+        return mapReturn;
+    }
+    @AuraEnabled 
+    public static Map<String,Object>  InitInvoiceItemCreation(String infoJson){
+        Map<String, Object> mapReturn = new Map<String, Object>();
+        Map<String, Object> mapInputs = new Map<String, Object>();
+        mapReturn.put('error',false);
+        try {
+            mapInputs = (Map<String, Object>) JSON.deserializeUntyped(infoJson);
+            String accountId=mapInputs.get('accountId') != Null ? String.valueOf(mapInputs.get('accountId')) : 'unknown';
+            //get projects of this account
+            List<Project__c> Projects = projectQry.getProjectsByAccount(accountId);
+            
+            mapReturn.put('Projects',Projects); 
+            mapReturn.put('Ok',true); 
+        } catch(Exception e) {
+            System.debug(e.getMessage());
+            mapReturn.put('error',true);
+            mapReturn.put('msg',e.getMessage()+' '+e.getStackTraceString());
+            mapReturn.put('e',e);
+        }  
+        return mapReturn;
+    }
+
+    public class invoiceItemWrapper  {
+        @AuraEnabled public String projectId;
+        @AuraEnabled public String invoiceId;
+        @AuraEnabled public String ressourceId;
+        @AuraEnabled public Decimal quantity ;
+        @AuraEnabled public Decimal rate ;
+        @AuraEnabled public String currencyCode ;
+        @AuraEnabled public Decimal holiday;
+        @AuraEnabled public String Id;
+        @AuraEnabled public Date startDate;
+        @AuraEnabled public Date endDate;
+        public RH_Invoice_Item__c getEntry() {
+            return new RH_Invoice_Item__c(
+                RH_ProjectId__c=this.projectId,
+                RH_InvoiceId__c=this.invoiceId,
+                RH_Ressource__c=this.ressourceId,
+                RH_Quantity__c=this.quantity,
+                RH_Rate__c=this.rate,
+                RH_Currency_Code__c=this.currencyCode,
+                RH_Holiday__c=this.holiday,
+                Id=this.Id,
+                RH_StartDate__c=this.startDate,
+                RH_EndDate__c=this.endDate
+                );
+        }
+        public Decimal calculateAmount(){
+            return this.quantity*this.rate;
+        }
+    }
+
+    @AuraEnabled 
+    public static Map<String,Object>  InitInvoiceCreation(){
+        Map<String, Object> mapReturn = new Map<String, Object>();
+        mapReturn.put('error',false);
+        try {
+            String filter=' recordTypeId= \''+RH_Constans.RH_CLIENT_ACCOUNT_RT + '\' ';
+            mapReturn.put('filter', filter); 
+            mapReturn.put('Ok',true); 
+        } catch(Exception e) {
+            System.debug(e.getMessage());
+            mapReturn.put('error',true);
+            mapReturn.put('msg',e.getMessage()+' '+e.getStackTraceString());
+            mapReturn.put('e',e);
+        }  
+        return mapReturn;
+    }
 
     @AuraEnabled 
     public static Map<String,Object>  invoiceCreation(String invoiceJson){
@@ -374,6 +461,26 @@ public with sharing class RH_Invoice_Controller {
         }  
         return mapReturn;
     }
+    @AuraEnabled 
+    public static Map<String,Object>  ressourceCreation(String ressourceJson){
+        Map<String, Object> mapReturn = new Map<String, Object>();
+        mapReturn.put('error',false);
+        try {
+            
+            mapReturn.put('Input',ressourceJson);
+            ressourceWrapper resInfo = (ressourceWrapper) JSON.deserialize(ressourceJson, ressourceWrapper.class);
+            RH_Project_controller.addParticipants(new List<String>{resInfo.ContactId} , resInfo.ProjectId);
+            
+            mapReturn.put('Ok',true); 
+            mapReturn.put('contact',contactQry.getContactById(resInfo.ContactId)[0]);//will always return a record 
+        } catch(Exception e) {
+            System.debug(e.getMessage());
+            mapReturn.put('error',true);
+            mapReturn.put('msg',e.getMessage()+' '+e.getStackTraceString());
+            mapReturn.put('e',e);
+        }  
+        return mapReturn;
+    }
     public class accountWrapper  {
         @AuraEnabled public String Name;
         @AuraEnabled public String Phone;
@@ -386,12 +493,14 @@ public with sharing class RH_Invoice_Controller {
                 );
         }
     } 
+    public class ressourceWrapper  {
+        @AuraEnabled public String ProjectId;
+        @AuraEnabled public String ContactId;
+    } 
 
     public class InvoiceFilterWrapper {
-        @AuraEnabled public String status{get;set;}
         @AuraEnabled public Date startDate{get;set;}
         @AuraEnabled public Date endDate{get;set;}
-        @AuraEnabled public Boolean isActive{get;set;}
         @AuraEnabled public String orderBy{get;set;}
         @AuraEnabled public String orderOn{get;set;}
     }

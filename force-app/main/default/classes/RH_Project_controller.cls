@@ -4,6 +4,7 @@ public without sharing class RH_Project_controller {
     private static RH_Project_Query projectQry1 = RH_Project_Query.getInstance();
     private static RH_Contact_Query contactQry = RH_Contact_Query.getInstance();
     private static RH_User_Query userQry = RH_User_Query.getInstance();
+    private static RH_Task_Query taskQry = RH_Task_Query.getInstance();
 
     public class ReturnClass {
         @AuraEnabled
@@ -23,6 +24,8 @@ public without sharing class RH_Project_controller {
         public Project__c project{get;set;}
          @AuraEnabled
         public List<RH_Participation__c> projectMembers{get;set;}
+        @AuraEnabled
+        public List<Task> taskList{get;set;}
     }
 
     public class ProjectTo {
@@ -40,6 +43,15 @@ public without sharing class RH_Project_controller {
         public Date Startdate{get;set;}
         @AuraEnabled
         public String Enddate{get;set;}
+    }
+
+    public class TaskTo {
+        @AuraEnabled
+        public String Priority{get;set;}
+        @AuraEnabled
+        public String Description{get;set;}
+        @AuraEnabled
+        public String AssignTo{get;set;}
     }
 
     public class ReturnClass12 {
@@ -79,9 +91,11 @@ public without sharing class RH_Project_controller {
 
         ReturnClass11 returnList = new ReturnClass11();
         List<Project__c> proj=projectQry.getProjectById(ProjectId);
+        List<Task> lstTask = taskQry.getTaskByIdProject(ProjectId);
         List<RH_Participation__c> proMem=projectQry.getMembers(ProjectId);
         returnList.project = proj[0];
         returnList.projectMembers = proMem;
+        returnList.taskList = lstTask;
         return returnList;
     }
 
@@ -98,7 +112,28 @@ public without sharing class RH_Project_controller {
         return returnList;
     }
 
-   
+    @AuraEnabled
+    public static Project__c ActiveProject(String ProjectId ,Boolean Isactivate) {
+        List<Project__c> proj=projectQry.getProjectById(ProjectId);
+        for(Project__c pro :proj){
+            if(Isactivate){
+                pro.Status__c = RH_Constans.ACTIVATED_PROJECT_STATUS;
+            }
+            else {
+                pro.Status__c = RH_Constans.CLOSED_PROJECT_STATUS;
+            }
+        }
+        update proj;
+        if(Isactivate){
+            List<RH_Participation__c> proMem=projectQry.getMembers(ProjectId);
+            List<String> participation = new List<String>();
+            for(RH_Participation__c part :proMem){
+                participation.add(part.RH_Contact__c);
+            }
+            SendEmail(participation, ProjectId);
+        }
+        return proj[0];
+    }
 
     @AuraEnabled 
     public static Project__c insertProjectMethod(ProjectTo project,List<String> participation, Boolean Isactivate ){
@@ -112,6 +147,7 @@ public without sharing class RH_Project_controller {
             Project__c ProjectObj = new Project__c();
             ProjectObj.RH_Account_ID__c = acc[0].AccountId;
             ProjectObj.Name = project.Name;
+            ProjectObj.recordTypeId = RH_Constans.RH_PROJECT_RT;
             if (String.isNotBlank(project.Description)) {
                 ProjectObj.Description__c = project.Description;
             }
@@ -121,9 +157,10 @@ public without sharing class RH_Project_controller {
             ProjectObj.Start_Date__c = project.Startdate;
             ProjectObj.Project_Manager__c = project.Manager;
             if(Isactivate){
-                ProjectObj.Status__c = 'Active';
+                ProjectObj.Status__c = RH_Constans.ACTIVATED_PROJECT_STATUS;
             }
             insert ProjectObj;
+            //TO DO: use addParticipants
             for (String Idpartici : participation) {
                 RH_Participation__c part = new RH_Participation__c();
                 part.RH_Project__c = ProjectObj.id;
@@ -131,7 +168,7 @@ public without sharing class RH_Project_controller {
                 listParti.add(part);
             }
             insert listParti;
-
+            //TO DO: use addParticipants
 
             if(Isactivate){
                 SendEmail(participation, ProjectObj.ID);
@@ -143,6 +180,20 @@ public without sharing class RH_Project_controller {
             system.debug('exception'+exp.getMessage());
             throw new AuraHandledException(exp.getMessage());
         }
+    }
+    public static List<RH_Participation__c> addParticipants(List<String> participantIds, String ProjectId ){
+        List<RH_Participation__c> Participations = new List<RH_Participation__c>();
+        for(String contactId: participantIds){
+
+            RH_Participation__c participant= new RH_Participation__c();
+            participant.RH_Project__c = ProjectId;
+            participant.RH_Contact__c = contactId;
+            participant.RH_ExternalId__c = ProjectId+''+contactId;
+
+            Participations.add(participant);
+        }
+        upsert Participations RH_ExternalId__c;
+        return Participations;
     }
 
     @AuraEnabled
@@ -173,7 +224,7 @@ public without sharing class RH_Project_controller {
             }
             update proj;
 
-            if (project.Status == 'Active' && stat != 'Active') {
+            if (project.Status == RH_Constans.ACTIVATED_PROJECT_STATUS && stat != RH_Constans.ACTIVATED_PROJECT_STATUS) {
                 List<RH_Participation__c> proMem=projectQry.getMembers(IDProject);
                 List<String> participation = new List<String>();
                 for(RH_Participation__c part: proMem){
@@ -206,7 +257,7 @@ public without sharing class RH_Project_controller {
             }
             if(parti.size()>0){
                 insert parti;
-                if (proj[0].Status__c == 'Active') {
+                if (proj[0].Status__c == RH_Constans.ACTIVATED_PROJECT_STATUS) {
                     SendEmail(AddMembers,IDProject);
                 }
             }
@@ -296,16 +347,6 @@ public without sharing class RH_Project_controller {
             // mail.setTemplateId(et.id);
             // Messaging.sendEmail(new Messaging.MassEmailMessage[] { mail });
 
-            // Messaging.SingleEmailMessage email = new Messaging.SingleEmailMessage();
-
-            // // Sets the paramaters of the email
-            // // email.setSubject( subject );
-            // email.setToAddresses( address);
-            // email.setTargetObjectId(lstids);
-            // // email.setPlainTextBody( body );
-            // email.setTemplateId(et.id);
-            // // Sends the email
-            // Messaging.SendEmailResult [] r = Messaging.sendEmail(new Messaging.SingleEmailMessage[] {email});
 
             String sfdcBaseURL = URL.getSalesforceBaseUrl().toExternalForm() +'/NoeliInterns/s/rhproject?recordId='+IDProject;
             System.debug('Base URL: ' + sfdcBaseURL );
@@ -315,17 +356,54 @@ public without sharing class RH_Project_controller {
 
             Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
             // mail.setToAddresses(address); 
+
+
+
             if(address.size() > 0){
-                mail.toAddresses= address; 
-            mail.setSubject('Email Subject');
-            mail.setBccSender(false);
-            mail.setPlainTextBody('You are new Project Member');
-            mail.setHtmlBody('Hello <br/>'+ 
-                            'You are new Project Member <br/>'+
-                            'click the follow link to view project details <br/>'+
-                            'Your Link <a href='+sfdcBaseURL+'>   click here.</a>');
-            Messaging.sendEmail(new Messaging.SingleEmailMessage[] { mail });
+            //     mail.toAddresses= address; 
+            // mail.setSubject('Email Subject');
+            // mail.setBccSender(false);
+            // mail.setPlainTextBody('You are new Project Member');
+            // mail.setHtmlBody('Hello <br/>'+ 
+            //                 'You are new Project Member <br/>'+
+            //                 'click the follow link to view project details <br/>'+
+            //                 'Your Link <a href='+sfdcBaseURL+'>   click here.</a>');
+            // Messaging.sendEmail(new Messaging.SingleEmailMessage[] { mail });
+
+
+
+            String emailSubject ='New Project Member';
+            String body ='You are new Project Member';
+            String useHTML ='Hello <br/>'+ 
+            'You are new Project Member <br/>'+
+            'click the follow link to view project details <br/>'+
+            'Your Link <a href='+sfdcBaseURL+'>   click here.</a>';
+            RH_Emails_Utility.sendMailMethod(address, emailSubject, body, useHTML, null);
             }
            
+    }
+
+    @AuraEnabled
+    public static Task insertTask(TaskTo taskto,String IDProject){
+        Task mytask = new Task();
+        mytask.WhatId = IDProject;
+        mytask.WhoId = taskto.AssignTo;
+        mytask.Description = taskto.Description;
+        mytask.Status = 'Not Started';
+        mytask.Priority = taskto.Priority;
+
+        insert mytask;
+        return mytask;
+    }
+
+    @AuraEnabled
+    public static List<String> getPriorityTaskPickListValues(){
+        List<String> pickListValuesList= new List<String>();
+        Schema.DescribeFieldResult fieldResult = Task.Priority.getDescribe();
+        List<Schema.PicklistEntry> ple = fieldResult.getPicklistValues();
+        for( Schema.PicklistEntry pickListVal : ple){
+            pickListValuesList.add(pickListVal.getLabel());
+        }     
+        return pickListValuesList;
     }
 }
