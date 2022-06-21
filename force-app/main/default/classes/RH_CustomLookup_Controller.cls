@@ -44,7 +44,7 @@ public without sharing class RH_CustomLookup_Controller {
             }
             
             if (Filter != null) {
-                sQuery += ' AND (' + Filter + ')';
+                sQuery += ' AND ' + Filter + '';
             }
             
             if(string.isNotBlank(SortColumn) && string.isNotBlank(SortOrder)) {

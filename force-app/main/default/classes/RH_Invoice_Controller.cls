@@ -216,11 +216,11 @@ public with sharing class RH_Invoice_Controller {
         return mapReturn;
     }
     @AuraEnabled 
-    public static Map<String,Object>  deleteTimeSheetEntry(String timesheetEntryId){
+    public static Map<String,Object>  deleteInvoiceEntry(String invoiceEntryId){
         Map<String, Object> mapReturn = new Map<String, Object>();
         mapReturn.put('error',false);
         try {
-            delete new TimeSheetEntry(Id=timesheetEntryId);
+            delete new RH_Invoice_Item__c(Id=invoiceEntryId);
             mapReturn.put('Ok',true); 
         } catch(Exception e) {
             System.debug(e.getMessage());
@@ -338,8 +338,10 @@ public with sharing class RH_Invoice_Controller {
             String accountId=mapInputs.get('accountId') != Null ? String.valueOf(mapInputs.get('accountId')) : 'unknown';
             //get projects of this account
             List<Project__c> Projects = projectQry.getProjectsByAccount(accountId);
-            
+            String filter='recordTypeId=\''+RH_Constans.RH_CONTACT_RT+'\'';
             mapReturn.put('Projects',Projects); 
+            mapReturn.put('ressourceFilter',filter); 
+
             mapReturn.put('Ok',true); 
         } catch(Exception e) {
             System.debug(e.getMessage());
