@@ -1,0 +1,63 @@
+<template>
+
+
+    <template if:true={sectionExpanded}>
+        <lightning-layout-item alignment-bump="right" size="12" small-device-size="12" medium-device-size="12"
+            large-device-size="12">
+            <div class="slds-p-around_mediumx profile_user_info">
+    
+                <!-- title="Sheet Informations"
+                                        iconsrc="utility:people" -->
+                <c-rh_display_fields column="3" 
+                    output-fields={invoiceFields} 
+                    onaction={handleAction}
+                    action-available={actionAvailable}
+                    has-action
+                    >
+
+                </c-rh_display_fields>
+            </div>
+        </lightning-layout-item>
+    </template>
+
+    <!-- <c-rh_display_fields column="3" output-fields={fieldOutputs} onaction={handleGoToLink}></c-rh_display_fields> -->
+
+    <!-- <template if:false={editMode}>
+        <c-rh_display_fields 
+        output-fields={fieldOutputs} 
+        onaction={handleAction} 
+        action-available={actionAvailable} 
+        has-action>
+        </c-rh_display_fields>
+    </template> -->
+    <template if:true={editMode}>
+        <!-- <lightning-card class="custom-card">
+            <div slot="actions">
+                <c-rh_helper_info help-text={editHelpText}></c-rh_helper_info>
+            </div>
+            <h3 slot="title">
+                <lightning-icon icon-name={icon.user_info_edit} size="small" class="slds-m-right_small"></lightning-icon>
+                {title}
+            </h3>
+            <c-rh_dynamic_form inputs-items={fieldInputs}></c-rh_dynamic_form>
+            <div class="card-footer" slot="footer">
+                <div class="slds-clearfix">
+                    <div class="slds-float_left">
+                        <lightning-button variant="base" label={l.Cancel} data-action-name="Cancel" title={l.Cancel}
+                            icon-name={icon.close} onclick={handleCancel} class="icon-md slds-m-left_x-small">
+                        </lightning-button>
+                    </div>
+                    <div class="slds-float_right">
+                        <lightning-button variant="base" label={l.Save} data-action-name="Edit" title={l.Save}
+                            icon-name={icon.Save} onclick={handleSave} class="icon-md slds-m-left_medium">
+                        </lightning-button>
+    
+                    </div>
+                </div>
+    
+            </div>
+        </lightning-card> -->
+        <p> I will text it after </p>
+    </template>
+    
+</template>

@@ -50,10 +50,10 @@
                             <lightning-layout-item alignment-bump="right" size="12"  small-device-size="12" medium-device-size="12" large-device-size="12">
                                 <div class="slds-p-around_mediumx profile_user_info">
                                    <!--TODO:EVARISTE ADD YOU CMP  -->
-                                   <!-- 
-                                    <c-rh_invoice_info invoice={record}> </c-rh_invoice_info>
-                                   check rh_profile_user_info 
-                                    -->
+                                   
+                                    <c-rh_invoice_info > </c-rh_invoice_info>
+                                   <!-- check rh_profile_user_info  -->
+                                   
                                 </div>
                                 
                             </lightning-layout-item>
@@ -67,14 +67,14 @@
             <template if:false={newLineMode}>
                 <lightning-layout-item size="12" padding="around-smallx" small-device-size="12" medium-device-size="12" large-device-size="12">
                     <div class="custom-box">
-                        <!-- <c-rh_datatable_component 
+                        <c-rh_datatable_component 
                             columns={columns} 
                             items={invoicesEntries}
                             page-size="20"
                             statut-row-number
                             resize-column
                             onrowselected={handleDataTableAction}>
-                         </c-rh_datatable_component> -->
+                         </c-rh_datatable_component> 
                     </div>
                 </lightning-layout-item>
             </template>
@@ -86,7 +86,7 @@
 
     <template if:true={newLineMode}>
         <c-rh_invoice_item_creation invoice={record}
-        invoice-item={invoiceItem} >
+        invoice-item={invoiceItem} onaction={handleItemCreation}>
             
         </c-rh_invoice_item_creation>
     </template>

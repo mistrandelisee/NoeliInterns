@@ -6,11 +6,8 @@ import { icons } from 'c/rh_icons';
 
 import getInvoice from '@salesforce/apex/RH_Invoice_Controller.getInvoice';
 import initConfig from '@salesforce/apex/RH_Invoice_Controller.InitInvoiceItemCreation';
-import timeSheetEntryCreation from '@salesforce/apex/RH_Timesheet_Controller.timeSheetEntryCreation';
-import submitTimeSheet from '@salesforce/apex/RH_Timesheet_Controller.submitTimeSheet';
-import approvalTimesheet from '@salesforce/apex/RH_Timesheet_Controller.approvalTimesheet';
 import deleteInvoice from '@salesforce/apex/RH_Invoice_Controller.deleteInvoice';
-import deleteTimeSheetEntry from '@salesforce/apex/RH_Timesheet_Controller.deleteTimeSheetEntry';
+import deleteInvoiceEntry from '@salesforce/apex/RH_Invoice_Controller.deleteInvoiceEntry';
 import generatedPDF from '@salesforce/apex/RH_Timesheet_Controller.generatedPDF';
 
 
@@ -37,7 +34,7 @@ const FROM_CHILD='FROM_CHILD';
 const FROM_PARENT='FROM_PARENT';
 //MODAL Actions
 const OK_DELETE_ITEM='OK_DELETE_ITEM';
-const OK_DELETE='OK_DELETE_ITEM';
+const OK_DELETE='OK_DELETE';
 const APPROVE_ACTION='approvato';
 const REJECT_ACTION='Reject';
 const DRAFT_STATUS='nuovo';
@@ -69,6 +66,7 @@ export default class Rh_invoice_details extends NavigationMixin(LightningElement
         noTimesheetItems:'No Timesheet Items found for this timesheet. Use the Add times Action to add items',
         // 
         project: 'Project',
+        rate: 'Rate',
         ressource: 'Ressource',
         quantity: 'Quantity',
         amount: 'Amount',
@@ -81,6 +79,7 @@ export default class Rh_invoice_details extends NavigationMixin(LightningElement
     record;
     invoiceFields=[];
     invoicesEntries=[];
+    actionRecord={};
     sheetNotFounded;
     pdfExport;
     currUser={};
@@ -94,15 +93,16 @@ export default class Rh_invoice_details extends NavigationMixin(LightningElement
     @track columns = [
         { label: 'Name', fieldName: 'title',sortable:true, type: 'button',typeAttributes:{label:{fieldName:'title'},variant:'base'} },
         { label: this.l.project, fieldName: 'Project',sortable:true, type: 'text' },
-        { label: this.l.ressource, fieldName: 'ressource',sortable:true, type: 'text',cellAttributes: { alignment: 'left' }, },
+        { label: this.l.ressource, fieldName: 'Ressource',sortable:true, type: 'text',cellAttributes: { alignment: 'left' }, },
         { label: this.l.amount, fieldName: 'RH_Amount__c',sortable:true, type: 'currency',cellAttributes: { alignment: 'left' }, },
         { label: this.l.quantity, fieldName: 'RH_Quantity__c',sortable:true, type: 'number',cellAttributes: { alignment: 'left' }, },
-        { label: this.l.StartDate, fieldName: 'RH_StartDate__c',sortable:true, type: "date", typeAttributes:{
+        { label: this.l.rate, fieldName: 'RH_Rate__c',sortable:true, type: 'currency',cellAttributes: { alignment: 'left' }, },
+        { label: this.l.StartDate, fieldName: 'RH_StartDate__c',sortable:true, type: "date",wrapText:true, typeAttributes:{
             weekday: "long", year: "numeric",
             month: "long", day: "2-digit",
             hour: "2-digit", minute: "2-digit"
         } },
-        { label: this.l.EndDate, fieldName: 'RH_EndDate__c',sortable:true, type: "date",
+        { label: this.l.EndDate, fieldName: 'RH_EndDate__c',sortable:true, type: "date",wrapText:true,
         typeAttributes:{
             weekday: "long", year: "numeric",
             month: "long", day: "2-digit",
@@ -201,17 +201,16 @@ export default class Rh_invoice_details extends NavigationMixin(LightningElement
     get approval(){ return this.action==APPROVE_ACTION || this.action==REJECT_ACTION}
     get hasInvoiceInfo(){  return this.record?true:false; }
     get isAdmin() { return this.currUser?.isCEO || this.currUser?.isTLeader}
-    get isApprover() { return this.isAdmin || this.currUser?.isApprover}
-    get isApproved(){ return APPROVE_ACTION.toLowerCase() == this.record.Status?.toLowerCase() ; }
+    // get isApprover() { return this.isAdmin || this.currUser?.isApprover}
 
-    get isRejected(){ return REJECT_ACTION.toLowerCase() == this.record.Status?.toLowerCase() ; }
+    // get isRejected(){ return REJECT_ACTION.toLowerCase() == this.record.Status?.toLowerCase() ; }
 
-    get isSubmitted(){ return SUBMITTED_STATUS.toLowerCase() ==this.record.Status?.toLowerCase() ; }
+    // get isSubmitted(){ return SUBMITTED_STATUS.toLowerCase() ==this.record.Status?.toLowerCase() ; }
 
-    get isDraft(){ return DRAFT_STATUS.toLowerCase() ==this.record.Status?.toLowerCase() ; }
+    // get isDraft(){ return DRAFT_STATUS.toLowerCase() ==this.record.Status?.toLowerCase() ; }
 
-    get isEditable(){return this.isDraft || this.isRejected}
-    get isFinal(){return this.isApproved || this.isRejected}
+    get isEditable(){return this.isAdmin }
+    // get isFinal(){return this.isApproved || this.isRejected}
     get isEntryReadOnly(){
         return !(this.isMine && this.isEditable)
     }
@@ -253,14 +252,14 @@ export default class Rh_invoice_details extends NavigationMixin(LightningElement
                 this.record=result.Invoice;
                 if (this.record?.Id) {
                     const invoicesEntries=  this.record?.RH_Invoices_Items__r || [];
-                    if (this.isEditable && this.isMine) {//if draft
+                    if (this.isEditable ) {//
                         this.columns=[...this.columns,
                          { type: 'action', typeAttributes: { rowActions: actions } },]
                     }   
 
                     this.buildInvoiceFields();
                     this.buildActions();
-                    // this.buildEntriesList(invoicesEntries);
+                     this.buildEntriesList(invoicesEntries);
                 }else{
                     this.sheetNotFounded=true;
                 }
@@ -281,18 +280,12 @@ export default class Rh_invoice_details extends NavigationMixin(LightningElement
         const self=this;
         this.invoicesEntries=invoicesEntries.map(function (e ){
             let item={...e};
-            item.title=e.TimeSheetEntryNumber;
+            item.title=e.Name;
             item.id=e.Id;
             item.icon=self.icon.timesheetEntry;
             item.class=e.Status;
-            item.Project=e.RH_Project__r.Name;
-            if (e.StartTime) {
-                item.StartTimeF=new Date(e.StartTime).toLocaleString();// new Date(e.StartTime).toLocaleTimeString() ;
-            }
-            if (e.EndTime) {
-                item.EndTimeF= new Date(e.EndTime).toLocaleString() ;
-            }
-            item.Project=e.RH_Project__r.Name;
+            item.Project=e.RH_ProjectId__r?.Name;
+            item.Ressource=e.RH_Ressource__r?.Name;
             let Actions=[];
             //add status actions
             
@@ -404,23 +397,22 @@ export default class Rh_invoice_details extends NavigationMixin(LightningElement
                 break;
         }
         
-       /* if (event.detail.action==NEW_ACTION) {
-            //call create new Timesheet then redirect to the timesheet
-            console.log('call create new Timesheet then redirect to the timesheet');
-            // this.createTimesheetApex()
-        }*/
-         //   this.handleUserAction(record, FROM_PARENT);
+        
+    }
+    handleItemCreation(event){
+        const action =event.detail?.action;
+        this.action=action;
     }
     doModalAction(event){
         console.log('doModalAction in user view ', JSON.stringify(event.action));
         switch (event.action) {
-            case OK_DELETE://delete timesheet
+            case OK_DELETE://delete Invoice
                 if(this.actionRecord){
                     this.handleDeleteInvoice();
                     this.actionRecord=null;
                 }
                 break;
-            case OK_DELETE_ITEM://delete timesheet item
+            case OK_DELETE_ITEM://delete Invoice item
                 if(this.invoiceItem?.Id){
                     this.handleDeleteInvoiceEntry();
                     this.invoiceItem=null;
@@ -439,48 +431,6 @@ export default class Rh_invoice_details extends NavigationMixin(LightningElement
         
         unregisterListener('ModalAction', this.doModalAction, this);
         //code
-    }
-    actionRecord={};
-    doApporoval(obj){
-        this.startSpinner(true);
-        approvalTimesheet({ SheetJson:  JSON.stringify(obj) })
-          .then(result => {
-            console.log('Result', result);
-            if (!result.error && result.Ok) {
-                this.showToast(SUCCESS_VARIANT,this.l.successOp,'');//, 'Action Done Successfully'
-                this.resetApproval();
-
-                //Refresh Page
-                this.reloadPage();
-            }else{
-                this.showToast(WARNING_VARIANT,this.l.warningOp, result.msg);
-            }
-          })
-          .catch(error => {
-            console.error('Error:', error);
-            this.showToast(ERROR_VARIANT,this.l.warningOp, error);
-        }).finally(() => {
-            this.startSpinner(false)
-        });
-    }
-
-    approvalRecord={}
-    handleNote(event){
-        const info = event.detail;
-        console.log(JSON.stringify(info));
-        if (info.operation=='positive') {
-            if (info.isvalid) {
-                this.approvalRecord={...this.approvalRecord,...info.fields} ;
-               this.doApporoval(this.approvalRecord);
-            }
-        }else{
-            this.resetApproval();
-        }
-    }
-    resetApproval(){
-        this.action='';
-        this.approvalInputs=[];
-        this.approvalRecord={};
     }
     
 
@@ -526,13 +476,13 @@ export default class Rh_invoice_details extends NavigationMixin(LightningElement
     /*Generated PDF Functions */
     handleDeleteInvoice(){
         this.startSpinner(true);
-        deleteInvoice({ invoiceId:  this.recordId })
+        deleteInvoice({ invoiceId: this.recordId })
           .then(result => {
             console.log('Result', result);
             if (!result.error && result.Ok) {
                 //GO BACK TO PARENT
                 this.showToast(SUCCESS_VARIANT,this.l.successOp,  this.l.succesDelete);
-                this.goToPage('rhtimesheet');
+                this.goToPage('rh-invoices');
             }else{
                 this.showToast(WARNING_VARIANT,this.l.warningOp, result.msg);
             }
@@ -559,7 +509,7 @@ export default class Rh_invoice_details extends NavigationMixin(LightningElement
     handleDeleteInvoiceEntry(){
         this.startSpinner(true);
         
-        deleteTimeSheetEntry({ timesheetEntryId:this.invoiceItem?.Id })
+        deleteInvoiceEntry({ invoiceEntryId:this.invoiceItem?.Id })
           .then(result => {
             console.log('Result', result);
             if (!result.error && result.Ok) {
@@ -576,9 +526,6 @@ export default class Rh_invoice_details extends NavigationMixin(LightningElement
         }).finally(() => {
             this.startSpinner(false)
         });
-    }
-    handleUpadateTimeSheetEntry(){
-
     }
     handleEditInvoiceEntry(skip=this.isEntryReadOnly){
         this.action=ADD_LINE_ACTION;
@@ -627,38 +574,9 @@ export default class Rh_invoice_details extends NavigationMixin(LightningElement
             this.startSpinner(false)
         });
     }
-    handleCreateEntryApexFinishOK(result,todo={}){
-        this.showToast(SUCCESS_VARIANT,this.l.successOp,  '');//this.l.succesDelete
-        if (todo.action=='SAVE_NEW') {
-            this.invoiceItem={};
-            this.launchViewEntry();
-        }else{
-
-            this.reloadPage();
-        }
-
-    }
-    handleCreateEntryApex(obj,todo={}){
-        this.startSpinner(true);
-        obj.TimeSheetId=this.recordId;
-        obj.Id=this.invoiceItem?.Id;
-        timeSheetEntryCreation({ entryJson: JSON.stringify(obj) })
-          .then(result => {
-            console.log('Result', result);
-            if (!result.error && result.Ok) {
-                this.handleCreateEntryApexFinishOK(result,todo);
-            }else{
-                this.showToast(WARNING_VARIANT,this.l.warningOp, result.msg);
-            }
-          })
-          .catch(error => {
-            console.error('Error:', error);
-            this.showToast(ERROR_VARIANT,this.l.warningOp, error);
-        }).finally(() => {
-            this.startSpinner(false)
-        });
-    }
-    handleCardAction(event){
+    
+    
+    /*handleCardAction(event){
         console.log('event parent ' +JSON.stringify(event.detail));
         const info=event.detail;
         this.invoiceItem=info.data;
@@ -681,7 +599,7 @@ export default class Rh_invoice_details extends NavigationMixin(LightningElement
                     break;
             }
         }
-    }
+    }*/
     reloadPage(){
         // window.location.reload()
         this.goToPage('rh-invoices',{recordId:this.recordId})

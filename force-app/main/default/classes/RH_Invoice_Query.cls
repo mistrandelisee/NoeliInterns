@@ -39,9 +39,9 @@ public without sharing class RH_Invoice_Query {
         WHERE StartDate = THIS_MONTH];
     }
     public List<RH_Invoice__c> getInvoice(String invoiceId) {
-        return [SELECT Id,Name,RH_Name__c,RH_DueDate__c,RH_InvoiceDate__c,RH_Po__c, OwnerId,  
+        return [SELECT Id,Name,RH_Name__c,RH_DueDate__c,RH_InvoiceDate__c,RH_Po__c, OwnerId, RH_InvoiceItem_Sum__c, 
                         RH_Account_Id__r.Name,RH_Account_Id__r.Phone,RH_Account_Id__r.Type,RH_Account_Id__r.Website, 
-                (SELECT Id,RH_StartDate__c,RH_EndDate__c, Name, RH_Quantity__c,RH_Rate__c,RH_Holiday__c,RH_Currency_Code__c, toLabel(RH_Currency_Code__c) currency,RH_InvoiceId__c,
+                (SELECT Id,RH_StartDate__c,RH_EndDate__c, Name, RH_Quantity__c,RH_Rate__c,RH_Amount__c,RH_Holiday__c,RH_Currency_Code__c, toLabel(RH_Currency_Code__c) currency,RH_InvoiceId__c,
                 RH_ProjectId__r.Name, RH_ProjectId__r.Is_Effective__c, RH_ProjectId__r.RH_Account_ID__c,
                 RH_Ressource__r.Name,RH_Ressource__r.RH_User__c FROM RH_Invoices_Items__r) 
                 FROM 	RH_Invoice__c WHERE Id =:invoiceId];

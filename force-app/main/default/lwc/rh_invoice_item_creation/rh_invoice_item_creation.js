@@ -93,10 +93,11 @@ export default class Rh_invoice_creation extends NavigationMixin(LightningElemen
             console.log('Result INIT CONF');
             console.log(result);
             if (!result.error && result.Ok) {
+                this.inizier.ressourceFilter=result.ressourceFilter || '';
                 this.Projects=[];
                 this.Projects = this.Projects.concat(result.Projects?.map(function(project) { return {label:project.Name,value:project.Id}}));
                 const item={...this.invoiceItem};
-                item.RH_ProjectId__c= (this.invoiceItem?.RH_Project__c) ? this.invoiceItem?.RH_Project__c : 
+                item.RH_ProjectId__c= (this.invoiceItem?.RH_ProjectId__c) ? this.invoiceItem?.RH_ProjectId__c : 
                                                                      (   this.Projects?.length==1 ? this.Projects[0].value : '');
                 this.invoiceItem=item;
                 this.launchViewEntry();
@@ -206,7 +207,7 @@ export default class Rh_invoice_creation extends NavigationMixin(LightningElemen
         }
     }
     doCreateRessource(){
-        const filter=' Id NOT IN ( SELECT RH_Contact__c  FROM RH_Participation__c  WHERE RH_Project__c  = \''+(this.selectedProjectId || this.invoiceItem?.RH_ProjectId__c)+'\') ';
+        const filter=' Id NOT IN ( SELECT RH_Contact__c  FROM RH_Participation__c  WHERE RH_Project__c  = \''+(this.selectedProjectId || this.invoiceItem?.RH_ProjectId__c)+'\') '+' AND '+this.inizier.ressourceFilter;
         this.ressourceInputs=[
             {
                 name:'ContactId',
@@ -221,8 +222,8 @@ export default class Rh_invoice_creation extends NavigationMixin(LightningElemen
                 limit:1000,//get all 
                 type:'lookup',
                 value: '',
-                ly_md:'6', 
-                ly_lg:'6'
+                ly_md:'12', 
+                ly_lg:'12'
             },
         ];
         this.action=NEW_RESSOURCE;
@@ -300,7 +301,11 @@ export default class Rh_invoice_creation extends NavigationMixin(LightningElemen
     }
     handleSaveInvoiceItemApexOK(obj){
         this.showToast(SUCCESS_VARIANT,this.l.successOp, '');
-        this.invoice=obj;
+        this.invoiceItem=obj;
+        this.reloadPage();
+    }
+    reloadPage(){
+
         this.goToPage('rh-invoices',{'recordId': this.invoice?.Id});
     }
     handleSaveInvoiceItemApex(record){
@@ -312,7 +317,7 @@ export default class Rh_invoice_creation extends NavigationMixin(LightningElemen
             console.log('Result handleSaveInvoiceItemApex:: ');
             console.log(result);
             if ( !result.error && result.Ok) {
-                this.handleSaveInvoiceItemApexOK(result.invoice)
+                this.handleSaveInvoiceItemApexOK(result.invoiceItem)
             }else{
                 this.showToast(ERROR_VARIANT,this.l.warningOp, result.msg);
             }
@@ -381,6 +386,9 @@ export default class Rh_invoice_creation extends NavigationMixin(LightningElemen
         this.period[EDATE_NAME_FIELD]=endDate;
         this.period[SDATE_NAME_FIELD]=beginDate;
         const filter='RH_Project__c = \''+(this.selectedProjectId || this.invoiceItem?.RH_ProjectId__c)+'\'';
+        console.log('buildEntryForm');
+        console.log({...this.invoiceItem});
+
         this.formInputs=[
             {
                 name:RESSOURCE_NAME_FIELD,
@@ -391,8 +399,8 @@ export default class Rh_invoice_creation extends NavigationMixin(LightningElemen
                 label:"Ressource",
                 objectLabel:'Ressource',
                 filter,
-                // selectName:'',
-                // isSelected:false
+                selectName:this.invoiceItem?.RH_Ressource__r?.Name,
+                isSelected:this.invoiceItem?.RH_Ressource__r?.Name ? true : false,
                 required:true,
                 disabled:true,//on start disable this field
                 enableCreate:true,
