@@ -34,11 +34,9 @@
                         </lightning-layout-item>
 
                         <template if:true={sectionExpanded}>
-                            <lightning-layout-item alignment-bump="right" size="12"  small-device-size="12" medium-device-size="12" large-device-size="12">
+                            <!-- <lightning-layout-item alignment-bump="right" size="12"  small-device-size="12" medium-device-size="12" large-device-size="12">
                                 <div class="slds-p-around_mediumx profile_user_info">
                                     
-                                    <!-- title="Sheet Informations"
-                                    iconsrc="utility:people" -->
                                     <c-rh_display_fields 
                                     column="3"
                                     output-fields={invoiceFields}
@@ -46,14 +44,14 @@
                                     ></c-rh_display_fields>
                                 </div>
                                 
-                            </lightning-layout-item>
+                            </lightning-layout-item> -->
                             <lightning-layout-item alignment-bump="right" size="12"  small-device-size="12" medium-device-size="12" large-device-size="12">
                                 <div class="slds-p-around_mediumx profile_user_info">
                                    <!--TODO:EVARISTE ADD YOU CMP  -->
-                                   
-                                    <c-rh_invoice_info > </c-rh_invoice_info>
+                                <template if:true={hasInfo}>
+                                    <c-rh_invoice_info invoice={record}> </c-rh_invoice_info>
                                    <!-- check rh_profile_user_info  -->
-                                   
+                                </template>  
                                 </div>
                                 
                             </lightning-layout-item>

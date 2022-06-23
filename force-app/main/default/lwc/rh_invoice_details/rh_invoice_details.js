@@ -8,7 +8,7 @@ import getInvoice from '@salesforce/apex/RH_Invoice_Controller.getInvoice';
 import initConfig from '@salesforce/apex/RH_Invoice_Controller.InitInvoiceItemCreation';
 import deleteInvoice from '@salesforce/apex/RH_Invoice_Controller.deleteInvoice';
 import deleteInvoiceEntry from '@salesforce/apex/RH_Invoice_Controller.deleteInvoiceEntry';
-import generatedPDF from '@salesforce/apex/RH_Timesheet_Controller.generatedPDF';
+import generatedPDF from '@salesforce/apex/RH_Invoice_Controller.generatedPDF';
 
 
 import { CurrentPageReference } from 'lightning/navigation';
@@ -76,8 +76,8 @@ export default class Rh_invoice_details extends NavigationMixin(LightningElement
     ]
     @api
     recordId;
-    record;
-    invoiceFields=[];
+    @track record;
+    // invoiceFields=[];
     invoicesEntries=[];
     actionRecord={};
     sheetNotFounded;
@@ -214,7 +214,8 @@ export default class Rh_invoice_details extends NavigationMixin(LightningElement
     get isEntryReadOnly(){
         return !(this.isMine && this.isEditable)
     }
-    get fileName(){ return this.title }
+    get fileName() { return this.title }
+    get hasInfo() { return this.record?.Id }
 
     get lineIcon(){ return (this.isEntryReadOnly) ?'':this.icon.Edit }
     get lineTitle(){ return (this.isEntryReadOnly) ?'Line details':'Create Line'}
@@ -257,7 +258,7 @@ export default class Rh_invoice_details extends NavigationMixin(LightningElement
                          { type: 'action', typeAttributes: { rowActions: actions } },]
                     }   
 
-                    this.buildInvoiceFields();
+                    // this.buildInvoiceFields();
                     this.buildActions();
                      this.buildEntriesList(invoicesEntries);
                 }else{
@@ -677,39 +678,39 @@ export default class Rh_invoice_details extends NavigationMixin(LightningElement
         return  {isvalid,obj};
     }
 
-    buildInvoiceFields(){
-        this.invoiceFields=[
-            {
-                label:this.l.StartDate,
-                name:'RH_InvoiceDate__c',
-                value:this.record?.RH_InvoiceDate__c
-            },
-            {
-                label:this.l.EndDate,
-                name:'RH_DueDate__c',
-                value:this.record?.RH_DueDate__c
-            },
+    // buildInvoiceFields(){
+    //     this.invoiceFields=[
+    //         {
+    //             label:this.l.StartDate,
+    //             name:'RH_InvoiceDate__c',
+    //             value:this.record?.RH_InvoiceDate__c
+    //         },
+    //         {
+    //             label:this.l.EndDate,
+    //             name:'RH_DueDate__c',
+    //             value:this.record?.RH_DueDate__c
+    //         },
             
-            {
-                label:this.l.po,
-                name:'RH_Po__c',
-                value:this.record?.RH_Po__c
-            },
+    //         {
+    //             label:this.l.po,
+    //             name:'RH_Po__c',
+    //             value:this.record?.RH_Po__c
+    //         },
             
-            {
-                label:this.l.invoice_to,
-                name:'Account',
-                value:this.record?.RH_Account_Id__r.Name
-            },
+    //         {
+    //             label:this.l.invoice_to,
+    //             name:'Account',
+    //             value:this.record?.RH_Account_Id__r.Name
+    //         },
             
-            {
-                label:this.l.amount,
-                name:'Amount',
-                value:this.record?.RH_InvoiceItem_Sum__c
-            },
+    //         {
+    //             label:this.l.amount,
+    //             name:'Amount',
+    //             value:this.record?.RH_InvoiceItem_Sum__c
+    //         },
             
-        ];
-    }
+    //     ];
+    // }
     buildEntryForm(){
         this.formEntry=[];
         const {beginDate, endDate}=this.dateInterval();
