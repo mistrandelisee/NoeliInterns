@@ -209,5 +209,14 @@ const labels = {
     po:'Po',
     invoice_to:"Invoice To",
 
+    //timesheet
+    Entries:'Entries',
+    Number: 'Number',
+    From: 'From',
+    To: 'To',
+    OrderBy:'sort By',
+    selectPlc:'Select an option',
+    OrderOn:'As',
+    noTimesheet:'No timesheet founded',
 };
 export { labels }
