@@ -156,5 +156,9 @@ public  class RH_Contact_Query {
         Contact currentContact = RH_Utility.getCurentContact();
         return [SELECT Id,Name,RH_WorkGroup__c FROM Contact  WHERE RH_Role__c=:RH_Constans.CONTACT_ROLE_BU AND recordTypeId=:RH_Constans.RH_CONTACT_RT AND RH_Status__c=:RH_Constans.ACTIVATED_CONTACT_STATUS AND AccountId=:currentContact.AccountId];
     }
+    public  List<Contact> getBaseUsers(){
+        Contact currentContact = RH_Utility.getCurentContact();
+        return [SELECT Id,Name,Email,RH_Role__c,RH_Status__c FROM Contact  WHERE RH_Role__c=:RH_Constans.CONTACT_ROLE_BU AND recordTypeId=:RH_Constans.RH_CONTACT_RT AND RH_Status__c=:RH_Constans.ACTIVATED_CONTACT_STATUS AND AccountId=:currentContact.AccountId];
+    }
 
 }

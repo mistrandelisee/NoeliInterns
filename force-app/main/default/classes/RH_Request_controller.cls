@@ -4,26 +4,55 @@ public without sharing class RH_Request_controller {
     private static RH_Request_Query requestQry = RH_Request_Query.getInstance();
     
     
+     /* Kbrel Add */ 
+     @AuraEnabled
+     public static List<RH_Request__c> getLastrequest(Integer edLimit) {
+         return requestQry.getLastrequest(edLimit);        
+     }
+ 
+     
+     public static List<RH_Request__c> getAllMyRequestByYear(Integer year, String contactId) {
+         return requestQry.getAllMyRequestByYear(year,contactId);        
+     }
+     /*end*/
+    // public static List<RH_Request__c> getAllMyRequestByYear(Integer year) {
+	// 	return requestQry.getAllMyRequestByYear(year);        
+    // }
+
     @AuraEnabled
-    public static List<RH_Request__c> getLastrequest(Integer edLimit) {
-		return requestQry.getLastrequest(edLimit);        
-    }
+    public static Map<String,Object> initRequestCreation(String reqType) {
+        Map<String, Object> mapReturn = new Map<String, Object>();
+        mapReturn.put('error', false);
+        try {
+            mapReturn.put('AddressTo', getAdressedTo());//holiday . permission
+            mapReturn.put('ConplainOn', contactQry.getBaseUsers());//complain
+            mapReturn.put('AddressCC', false);//complain
+        } catch(Exception e) {
+            System.debug(e.getMessage());
+        }
+
+    }   
     
     @AuraEnabled
     public static List<RH_Request__c> getrequest() {
-        return [SELECT id,Name,RH_Description__c,Rh_Status__c,RH_Addressed_To__r.Name,RecordType.Name ,CreatedDate,RH_RequestTypeName__c FROM RH_Request__c WHERE ownerId =: UserInfo.getUserId() ORDER BY CreatedDate desc];
+        return [SELECT id,Name,RH_Description__c,Rh_Status__c,RH_Addressed_To__r.Name,RH_Note__c,RecordType.Name ,CreatedDate,RH_RequestTypeName__c FROM RH_Request__c WHERE ownerId =: UserInfo.getUserId() ORDER BY CreatedDate desc];
     }
     @AuraEnabled
     public static List<RH_Request__c> getRequestToManage() {
         String userName = UserInfo.getName();
-        return [SELECT id,Name,RH_Description__c,Rh_Status__c,CreatedBy.Name,RH_Addressed_Cc__c, RH_Addressed_To__r.Name,RecordType.Name ,CreatedDate,RH_RequestTypeName__c 
+        return [SELECT id,Name,RH_Description__c,Rh_Status__c,RH_Note__c,CreatedBy.Name,RH_Addressed_Cc__c, RH_Addressed_To__r.Name,RecordType.Name ,CreatedDate,RH_RequestTypeName__c 
                         FROM RH_Request__c 
-                        WHERE (RH_Addressed_To__r.Name =: userName or RH_Addressed_Cc__c =: userName) and Rh_Status__c != 'Draft'];
+                        WHERE (RH_Addressed_To__r.Name =: userName or RH_Addressed_Cc__c =: userName) and Rh_Status__c != 'Draft' ORDER BY CreatedDate desc];
     }
-    // @AuraEnabled(cacheable=true)
-    // public static List<Contact> getAdressedTo() {
-    //     return [SELECT id, Name FROM Contact];
-    // }
+    @AuraEnabled(cacheable=true)
+    public static List<Contact> getAdressedCC() {
+        return contactQry.getBaseUsers();
+    }
+
+    @AuraEnabled(cacheable=true)
+    public static List<Contact> getAdressedCCByListId(List<Id> ids) {
+        return [SELECT id, Name FROM Contact WHERE Id IN :ids];
+    }
 
     @AuraEnabled
     public static List<Contact> getAdressedTo(){
@@ -53,7 +82,7 @@ public without sharing class RH_Request_controller {
     @AuraEnabled
     public static RH_Request__c retreiveRequest(String requestId){
         return [SELECT id, Name, RH_Description__c , CreatedBy.Name,RH_Addressed_To__r.Name, Rh_Status__c, RH_Start_date__c, 
-        RH_End_date__c, RH_Parent_request_id__c, RH_Addressed_Cc__c, RH_Complain_On__c,RecordTypeId,RecordType.Name  FROM RH_Request__c WHERE id =: requestId ];
+        RH_End_date__c, RH_Parent_request_id__c, RH_Addressed_Cc__c, RH_Complain_On__r.Id,RH_Complain_On__r.Name, RH_Note__c,RecordTypeId,RecordType.Name  FROM RH_Request__c WHERE id =: requestId ];
     }
 
     @AuraEnabled
@@ -84,15 +113,26 @@ public without sharing class RH_Request_controller {
             }else {
                 insert RequestUser;
             }
-            if (RequestUser.RH_Status__c == 'Open') {
+            if (RequestUser.RH_Status__c == 'Submited') {
+                String val = String.isNotBlank(RequestUser.RH_Addressed_Cc__c)? RequestUser.RH_Addressed_Cc__c:'';
+                List<String> addCc= val?.split(',');
+                Map<Id,User> mapUser = new map<Id,User> ([SELECT id,RH_ContactId__c    FROM User WHERE RH_ContactId__c IN : addCc]);
+                List<String> valuep = new List<String>();
+                valuep.addAll(new List<id>(mapUser.keySet()));
+                
+                mapReturn.put('valuep',valuep);
+                mapReturn.put('addCc',addCc);
+                mapReturn.put('mapUser',mapUser);
                 List<RH_Request__c> req = [SELECT id, RH_Addressed_To__r.RH_User__c, RH_Addressed_To__c    FROM RH_Request__c WHERE RH_Addressed_To__c  =: RequestUser.RH_Addressed_To__c limit 1];
-                sendNotifications(RequestUser.RH_Description__c,UserInfo.getUserId(),RequestUser.id,'request-management',RequestUser.Rh_Status__c,new List<String> {req[0]. RH_Addressed_To__r.RH_User__c});
+                valuep.add(req[0].RH_Addressed_To__r.RH_User__c);
+                sendNotifications(RequestUser.RH_Description__c,UserInfo.getUserId(),RequestUser.id,'request-management',RequestUser.Rh_Status__c,valuep /*new List<String> {req[0]. RH_Addressed_To__r.RH_User__c}*/);
             }
             
         } catch(Exception e) {
             System.debug(e.getMessage());
             mapReturn.put('error',true);
             mapReturn.put('msg',e.getMessage());
+            mapReturn.put('msgx',e.getStackTraceString());
             mapReturn.put('e',e);
         }
        
@@ -101,8 +141,8 @@ public without sharing class RH_Request_controller {
 
     @AuraEnabled
     public static string updateRequest(String requestId){
-        List<RH_Request__c> req = [SELECT Id, Rh_Status__c from RH_Request__c WHERE Id =: requestId limit 1];
-        req[0].Rh_Status__c = 'Open';
+        List<RH_Request__c> req = [SELECT Id,RH_Description__c, Rh_Status__c,RH_Addressed_To__r.RH_User__c FROM RH_Request__c WHERE Id =: requestId limit 1];
+        req[0].Rh_Status__c = 'Submited';
         Database.SaveResult[] results = Database.update(req, false);
         String pop = '';
         for (Database.SaveResult drList : results) {
@@ -116,6 +156,9 @@ public without sharing class RH_Request_controller {
             }else {
                 pop = 'OK';
             }
+        }
+        if(pop=='OK'){
+            sendNotifications(req[0].RH_Description__c,UserInfo.getUserId(),req[0].id,'request-management',req[0].Rh_Status__c,new List<String> {req[0].RH_Addressed_To__r.RH_User__c});
         }
         return pop;
     }
@@ -141,10 +184,11 @@ public without sharing class RH_Request_controller {
         Map<String, Object> mapReturn = new Map<String, Object>();
         mapReturn.put('error',false);
         try {
-            List<RH_Request__c> updRejet = [SELECT Id,RH_Description__c, Rh_Status__c,RH_Reason__c,CreatedById   FROM RH_Request__c WHERE Id =: RecordT limit 1];
+            List<RH_Request__c> updRejet = [SELECT Id,RH_Description__c, Rh_Status__c,RH_Note__c,RH_Reason__c,CreatedById   FROM RH_Request__c WHERE Id =: RecordT limit 1];
             updRejet[0].RH_Status__c = StatusRejeted;
             if (string.isNotBlank(Reason)) {
                 updRejet[0].RH_Reason__c = Reason;
+                updRejet[0].RH_Note__c = Reason;
             }
             update updRejet;
 
@@ -164,10 +208,11 @@ public without sharing class RH_Request_controller {
         Map<String, Object> mapReturn = new Map<String, Object>();
         mapReturn.put('error',false);
         try {
-            List<RH_Request__c> updApprove = [SELECT Id,RH_Description__c, Rh_Status__c,RH_Reason__c,CreatedById   FROM RH_Request__c WHERE Id =: RecordT limit 1];
+            List<RH_Request__c> updApprove = [SELECT Id,RH_Description__c, Rh_Status__c,RH_Note__c,RH_Reason__c,CreatedById   FROM RH_Request__c WHERE Id =: RecordT limit 1];
             updApprove[0].RH_Status__c = StatusApprove;
             if (string.isNotBlank(Reason)) {
                 updApprove[0].RH_Reason__c = Reason;
+                updApprove[0].RH_Note__c = Reason;
             }
             update updApprove;
 
@@ -180,6 +225,47 @@ public without sharing class RH_Request_controller {
             mapReturn.put('e',e);
         }
         return mapReturn;
+    }
+
+    @AuraEnabled
+    public static List<RH_Request__c> filterRequest(String requestType, String status, DateTime createdDate){
+
+        String query= 'SELECT Id,Name,RH_Description__c,Rh_Status__c,RH_Addressed_To__r.Name,RH_Note__c,RecordType.Name ,CreatedDate,RH_RequestTypeName__c FROM RH_Request__c ';
+        Boolean check = false;
+        String currentUser = UserInfo.getUserId();
+        if(String.isNotBlank(requestType)){
+            if(check){
+                query+= 'AND RecordTypeId =:requestType ';
+            }else{
+                query+= 'WHERE OwnerId =:currentUser AND RecordTypeId =:requestType ';
+                check = true;
+            }
+        }
+        if(String.isNotBlank(status)){
+            if(check){
+                query+= 'AND Rh_Status__c =:status ';
+            }else{
+                query+= 'WHERE OwnerId =:currentUser AND Rh_Status__c =:status ';
+                check = true;
+            }
+        }
+        if(createdDate != null){
+            Integer day = createdDate.day();
+            Integer month = createdDate.month();
+            Integer year = createdDate.year();
+            if(check){
+                query+= 'AND CALENDAR_MONTH(CreatedDate) =:month AND CALENDAR_YEAR(CreatedDate) =:year AND DAY_IN_MONTH(CreatedDate) =:day ';
+            }else{
+                query+= 'WHERE OwnerId =:currentUser AND CALENDAR_MONTH(CreatedDate) =:month AND CALENDAR_YEAR(CreatedDate) =:year AND DAY_IN_MONTH(CreatedDate) =:day ';
+                check = true;
+            }
+        }
+        if(check){
+            query+= 'ORDER BY CreatedDate DESC';
+            system.debug(query);
+            return Database.query(query);
+        }
+        return null;
     }
 
     @AuraEnabled(cacheable=true)
@@ -224,6 +310,7 @@ public without sharing class RH_Request_controller {
         @AuraEnabled public String ComplainOn;
         @AuraEnabled public String StatusRequest;
         @AuraEnabled public String RecordT;
+        @AuraEnabled public String ACC;
         @AuraEnabled public String IdRequest;
         @AuraEnabled public Datetime RH_StartDate;
         @AuraEnabled public Datetime RH_EndDate;
@@ -239,7 +326,7 @@ public without sharing class RH_Request_controller {
                 RH_Start_date__c=this.RH_StartDate, 
                 RH_End_date__c=this.RH_EndDate,
                 RH_Addressed_To__c=this.RH_AddressedTo,
-                RH_Addressed_Cc__c=this.RH_AddressedCc,
+                RH_Addressed_Cc__c=this.ACC,
                 RH_Description__c=this.RH_Description);
         }
     }

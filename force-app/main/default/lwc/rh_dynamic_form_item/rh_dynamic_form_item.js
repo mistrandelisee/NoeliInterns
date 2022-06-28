@@ -182,6 +182,7 @@ export default class Rh_dynamic_form_item extends LightningElement {
     }
 
     @api updateField(updates,type='default') {
+        type=(type=='default') ? this.item.type : type;
         if(type=='lookup'){
             return this.updateLookupField(updates);
         }else{

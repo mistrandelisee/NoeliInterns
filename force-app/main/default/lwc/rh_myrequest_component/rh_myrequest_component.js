@@ -10,6 +10,8 @@ import getAdressedTo from '@salesforce/apex/RH_Request_controller.getAdressedTo'
 import deleteRequest from '@salesforce/apex/RH_Request_controller.deleteRequest';
 import updateRequest from '@salesforce/apex/RH_Request_controller.updateRequest';
 import getAdressedCC from '@salesforce/apex/RH_Request_controller.getAdressedCC';
+import getAdressByIdList from '@salesforce/apex/RH_Request_controller.getAdressedCCByListId';
+import filterRequest from '@salesforce/apex/RH_Request_controller.filterRequest';
 
 const columns = [
     { label: 'Name', fieldName: 'Name' },
@@ -52,7 +54,7 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
     @track Start_date;
     @track isNew = false;
     @track isAllFields = false;
-    @track optionsRecord = [];
+    optionsRecord = [];
     @track optionsRecordList = [];
     @track firstFieldInputs = [];
     @track lastFieldInputsComplain = [];
@@ -77,9 +79,12 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
     @track statusDetail;
     @track showSpinner = false;
     @track requestType;
-     allContact=[];
+    allContact=[];
+    activeContact=[];
+    @track inputFormFilter=[];
     @track isOpenDualBox=false;
     @track listConts=[];
+    @track listContsValue=[];
 
     keysFields = { AddressedTo: 'ok' };//non used now
     keysLabels = {
@@ -96,18 +101,109 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
         Type: 'Type',
         AddressedTo: 'Addressed To'
     };
+    
+    statusOptions = [
+        {
+            label: 'Approved',
+            value: 'Approved'
+        },
+        {
+            label: 'Draft',
+            value: 'Draft'
+        },
+        {
+            label: 'Rejected',
+            value: 'Rejected'
+        },
+        {
+            label: 'Submited',
+            value: 'Submited'
+        }
+    ];
 
     get hasRecordId() {
         return this.recordId ? true : false;
+    }
+    get enableForm() {
+        return this.inputFormFilter?.length>0 ? true : false;
+    }
+
+    buildFormFilter(optRecType){
+        this.inputFormFilter=[
+            {
+                label: this.l.RequestTypeName,
+                placeholder: this.l.RequestTypeName,
+                name:'RequestType',
+                picklist: true,
+                options: optRecType,
+                required:false,
+                ly_md:'6', 
+                ly_lg:'6'
+            },
+            {
+                label:this.l.Status,
+                placeholder: this.l.Status,
+                name:'status',
+                picklist: true,
+                options: this.statusOptions,
+                ly_md:'6', 
+                ly_lg:'6'
+            },
+            {
+                label:this.l.CreatedDate,
+                placeholder:this.l.CreatedDate,
+                name:'CreatedDate',
+                required:false,
+                type: 'Date',
+                ly_md: '6',
+                ly_lg: '6',
+            }];
     }
 
     // @wire(getrequest) 
     //     getReq({data,errr}){
     //         console.log('@@@@@objectReturn');
+    filterRequest(event){
+        this.showSpinner = true;
+        let reqType= event.detail.RequestType;
+        let status= event.detail.status;
+        let createdDate= event.detail.CreatedDate;
+        filterRequest({requestType: reqType, status: status, createdDate: createdDate})
+            .then(result => {
+                this.tabReq = [];
+                const self = this;
+                result.forEach(elt => {
+                    let objetRep = {};
+                    objetRep = {
+                        "Request": elt?.RH_Description__c,
+                        "Statut": elt?.Rh_Status__c,
+                        "CreatedDate": (new Date(elt.CreatedDate)).toLocaleString(),
+                        "AddressedTo": elt.RH_Addressed_To__r?.Name,
+                        "Type": elt.RecordType.Name,
+                        "id": elt.Id,
+                        icon: "standard:people",
+
+                        title: elt?.Name,
+                        keysFields: self.keysFields,
+                        keysLabels: self.keysLabels,
+                        fieldsToShow: self.fieldsToShow,
+                    }
+
+                    console.log('@@@@@objectReturn' + objetRep);
+                    this.tabReq.push(objetRep);
+                });
+                // this.refreshTable(this.tabReq); 
+                this.setviewsList(this.tabReq)
+                this.showSpinner = false;
+            })
+    }
+
     getRequest() {
         this.showSpinner = true;
         getrequest()
             .then(result => {
+                this.tabReq = [];
+                this.buildFormFilter(this.optionsRecord);
                 const self = this;
                 result.forEach(elt => {
                     let objetRep = {};
@@ -160,10 +256,14 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
                         label: plValue.Name,
                         value: plValue.Id
                     };
-                    console.log(picklistVal);
+                    // console.log(picklistVal);
                     this.allContact.push(picklistVal);
+                    if(plValue.RH_Status__c == 'Active'){
+                        this.activeContact.push(picklistVal);
+                    }
                 });
                 console.log(this.allContact);
+                console.log(this.activeContact);
             }).catch(error => {
                 console.error('Error:', error);
             });
@@ -184,7 +284,7 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
         cardsView?.setDatas(items);
     }
 
-    buildformDetail(profileinformation) {
+    buildformDetail(profileinformation, addrName) {
         let objNte =   {
             label: this.l.Note,
             placeholder: this.l.Note,
@@ -215,7 +315,7 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
                     placeholder: this.l.AddressedCc,
                     name: 'RH_AddressedCc',
                     required: true,
-                    value: profileinformation?.RH_Addressed_Cc__r?.Name,
+                    value: addrName,
                     ly_md: '6',
                     ly_lg: '6'
                 },
@@ -435,21 +535,12 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
                     ly_lg: '6'
                 },
                 {
-                    label: this.l.AddressedCc,
-                    placeholder: this.l.AddressedCc,
-                    name: 'RH_AddressedCc',
-                    required: true,
-                    value: profileinformation?.RH_Addressed_Cc__c,
-                    ly_md: '6',
-                    ly_lg: '6'
-                },
-                {
                     label: this.l.ComplainOn,
                     placeholder: this.l.ComplainOn,
                     name: 'ComplainOn',
                     picklist: true,
                     options: this.allContact,
-                    value: profileinformation?.RH_Complain_On__r?.Name,
+                    value: profileinformation?.RH_Complain_On__r?.Id,
                     required: false,
                     ly_md: '6',
                     ly_lg: '6'
@@ -653,8 +744,7 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
 
     }
 
-    handleChangeValue() {
-        this.isNew = true;
+    getRecordType(){
         getRecordType()
             .then(result => {
                 this.optionsRecord = result.map(plValue => {
@@ -663,10 +753,15 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
                         value: plValue.Id
                     };
                 });
-                this.buildform();
+                console.log('recordtype',result);
                 this.optionsRecordList = result;
             })
+    }
 
+    handleChangeValue() {
+        this.isNew = true;
+        this.buildform();
+        this.showSpinner = false;
     }
     handleCancel() {
         this.isNew = false;
@@ -704,6 +799,7 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
     }
 
     handleEditValue() {
+        this.editMode = true;
         getAdressedTo()
             .then(result => {
                 this.addressedRecord = result.map(plValue => {
@@ -714,7 +810,6 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
                 });
                 this.buildformClone(this.resultRecord);
                 this.requestType = this.resultRecord?.RecordType?.Name;
-                this.editMode = true;
             }).catch(error => {
                 console.error('Error:', error);
             });
@@ -792,9 +887,22 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
                 this.resultRecord = result;
                 this.typeId = result.RecordTypeId;
                 this.statusDetail = result.Rh_Status__c;
-                this.buildformDetail(result);
+                if(result.RecordType.Name == 'Complain'){
+                    this.isComplain = true;
+                }
+                if(result.RH_Addressed_Cc__c){
+                    this.listContsValue = result.RH_Addressed_Cc__c.split(',');
+                }
+                getAdressByIdList({ ids: this.listContsValue })
+                .then(res => {
+                    let tabName = res.map(elt => elt.Name);
+                    let NameAdressed = tabName.join(',');
+                    this.buildformDetail(this.resultRecord, NameAdressed);
+                    console.log('name', NameAdressed);
+                }).catch(error => {
+                    console.error(error);
+                });
                 this.requestType = result?.RecordType?.Name;
-
                 if (result.Rh_Status__c == 'Draft') {
                     this.isDraft = true;
                 } else {
@@ -814,6 +922,7 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
         if (this.recordId) {
             this.detailPage(this.recordId);
         } else {
+            this.getRecordType();
             this.getRequest();
         }
     }
@@ -900,6 +1009,7 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
     }
 
     handleCloneValue() {
+        this.cloneMode = true;
         getAdressedTo()
             .then(result => {
                 this.addressedRecord = result.map(plValue => {
@@ -911,7 +1021,6 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
                 this.buildformClone(this.resultRecord);
                 // this.requestType = result?.RecordType?.Name;
                 this.requestType = this.resultRecord.RecordType?.Name;
-                this.cloneMode = true;
             }).catch(error => {
                 console.error('Error:', error);
             });
@@ -975,6 +1084,7 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
             this.emp = { ...this.emp, ...result.obj };
             this.emp.IdRequest = this.recordId;
             this.emp.StatusRequest = this.l.Submited;
+            this.emp.ACC = this.listConts.join(',');
             // this.emp.StatusRequest = this.statusDetail;
             // this.emp[TYPE_FIELD_NAME]=this.empType;
             var dateVar = new Date();
@@ -1001,6 +1111,7 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
             this.emp = { ...this.emp, ...result.obj };
             this.emp.IdRequest = this.recordId;
             this.emp.StatusRequest = 'Draft';
+            this.emp.ACC = this.listConts.join(',');
             // this.emp.StatusRequest = this.statusDetail;
             // this.emp[TYPE_FIELD_NAME]=this.empType;
             var dateVar = new Date();
@@ -1143,6 +1254,7 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
 
 
     buildform() {
+        this.showSpinner = true;
         this.firstFieldInputs = [
             {
                 label: 'Type of Request',

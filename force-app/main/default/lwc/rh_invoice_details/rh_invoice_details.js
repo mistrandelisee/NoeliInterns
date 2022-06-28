@@ -13,37 +13,20 @@ import generatedPDF from '@salesforce/apex/RH_Invoice_Controller.generatedPDF';
 
 import { CurrentPageReference } from 'lightning/navigation';
 import { registerListener,unregisterListener, unregisterAllListeners,fireEvent } from 'c/pubsub';
-const NEW_ACTION='New';
 const EDIT_ACTION='Edit';
 const SUCCESS_VARIANT='success';
 const WARNING_VARIANT='warning';
 
 
 const ERROR_VARIANT='error';
-const FROMRESETPWD='ResetPWD';
-const RESET_ACTION='Reset';
-const SAVE_ACTION='Save';
 
-const ACTIVE_ACTION='active';
-const DISABLE_ACTION='banned';
-const FREEZE_ACTION='frozen';
-const PROMOTE_ACTION='PromoteBaseUser';
-const CARD_ACTION='stateAction';
-
-const FROM_CHILD='FROM_CHILD';
-const FROM_PARENT='FROM_PARENT';
 //MODAL Actions
 const OK_DELETE_ITEM='OK_DELETE_ITEM';
 const OK_DELETE='OK_DELETE';
-const APPROVE_ACTION='approvato';
-const REJECT_ACTION='Reject';
-const DRAFT_STATUS='nuovo';
-const SUBMITTED_STATUS='inviato';
 const DELETE_ACTION='Delete';
 const ADD_LINE_ACTION='ADD_LINE_ACTION';
 const EXPORT_ACTION_PDF='EXPORT_ACTION_PDF';
-const EXPORT_ACTION_XLS='EXPORT_ACTION_XLS';
-const SUBMIT_ACTION='inviato';
+// const EXPORT_ACTION_XLS='EXPORT_ACTION_XLS';
 const actions = [
     { label: 'Show details', name: EDIT_ACTION,iconPosition: 'left', iconName: icons.Edit, },
     { label: 'Delete', name: DELETE_ACTION ,iconPosition: 'left',iconName: icons.Delete}
@@ -70,6 +53,8 @@ export default class Rh_invoice_details extends NavigationMixin(LightningElement
         ressource: 'Ressource',
         quantity: 'Quantity',
         amount: 'Amount',
+        delete_invoice_confirm:'Are you sure you want to delete this invoice',
+        delete_invoiceItem_confirm:'Are you sure you want to delete this invoice Items', 
     }
     icon={...icons}
     detailsActions=[
@@ -193,12 +178,12 @@ export default class Rh_invoice_details extends NavigationMixin(LightningElement
         }
     ]
     
-    approvalInputs=[];
-    approvalLbl;
+    // approvalInputs=[];
+    // approvalLbl;
     @wire(CurrentPageReference) pageRef;
     get hasDetailsActions(){ return this.detailsActions?.length >0}
     get newLineMode(){ return this.action==ADD_LINE_ACTION}
-    get approval(){ return this.action==APPROVE_ACTION || this.action==REJECT_ACTION}
+    // get approval(){ return this.action==APPROVE_ACTION || this.action==REJECT_ACTION}
     get hasInvoiceInfo(){  return this.record?true:false; }
     get isAdmin() { return this.currUser?.isCEO || this.currUser?.isTLeader}
     // get isApprover() { return this.isAdmin || this.currUser?.isApprover}
@@ -260,7 +245,7 @@ export default class Rh_invoice_details extends NavigationMixin(LightningElement
 
                     // this.buildInvoiceFields();
                     this.buildActions();
-                     this.buildEntriesList(invoicesEntries);
+                    this.buildEntriesList(invoicesEntries);
                 }else{
                     this.sheetNotFounded=true;
                 }
@@ -283,20 +268,20 @@ export default class Rh_invoice_details extends NavigationMixin(LightningElement
             let item={...e};
             item.title=e.Name;
             item.id=e.Id;
-            item.icon=self.icon.timesheetEntry;
+            // item.icon=self.icon.timesheetEntry;
             item.class=e.Status;
             item.Project=e.RH_ProjectId__r?.Name;
             item.Ressource=e.RH_Ressource__r?.Name;
             let Actions=[];
             //add status actions
             
-            if (self.isEditable) {//if draft
-                if (self.isMine) {//is mine
-                    //add DELETE_ACTION  
-                    Actions.push(self.createAction("base",self.l.Edit,EDIT_ACTION,self.l.Edit,self.icon.Edit,'active-item'));
-                    Actions.push(self.createAction("base",self.l.Delete,DELETE_ACTION,self.l.Delete,self.icon.Delete,'active-item'));
-                }
-            }
+            // if (self.isEditable) {//if draft
+            //     if (self.isMine) {//is mine
+            //         //add DELETE_ACTION  
+            //         Actions.push(self.createAction("base",self.l.Edit,EDIT_ACTION,self.l.Edit,self.icon.Edit,'active-item'));
+            //         Actions.push(self.createAction("base",self.l.Delete,DELETE_ACTION,self.l.Delete,self.icon.Delete,'active-item'));
+            //     }
+            // }
             
 
             item.actions=Actions;
@@ -327,7 +312,7 @@ export default class Rh_invoice_details extends NavigationMixin(LightningElement
                     extra.title=this.l.action_confirm;
                     extra.style+='--lwc-colorBorder: var(--bannedColor);';
                     // Actions.push(this.createAction("brand-outline",this.l.Cancel,'KO',this.l.Cancel,"utility:close",'slds-m-left_x-small'));
-                    Actions.push(this.createAction("brand-outline",this.l.ok_confirm,OK_DELETE_ITEM,this.l.ok_confirm,this.icon.check,'slds-m-left_x-small'));
+                    Actions.push(this.createAction("brand-outline",this.l.ok_confirm,OK_DELETE_ITEM,this.l.ok_confirm,this.icon.approve,'slds-m-left_x-small'));
                     this.ShowModal(true,text,Actions,extra);
                    
                     // this.handleDeleteInvoiceEntry(); //launch confirmation modal
@@ -349,7 +334,7 @@ export default class Rh_invoice_details extends NavigationMixin(LightningElement
         let Actions=[];
         Actions.push(this.createAction("brand-outline",this.l.Delete,DELETE_ACTION,this.l.Delete,this.icon.Delete,'slds-m-left_x-small'));
         Actions.push(this.createAction("brand-outline",this.l.ExportPDF,EXPORT_ACTION_PDF,this.l.ExportPDF,this.icon.exportPdf,'slds-m-left_x-small'));
-        Actions.push(this.createAction("brand-outline",this.l.ExportXLS,EXPORT_ACTION_XLS,this.l.ExportXLS,this.icon.exportXls,'slds-m-left_x-small'));
+        // Actions.push(this.createAction("brand-outline",this.l.ExportXLS,EXPORT_ACTION_XLS,this.l.ExportXLS,this.icon.exportXls,'slds-m-left_x-small'));
         Actions.push(this.createAction("brand-outline",this.l.AddLines,ADD_LINE_ACTION,this.l.AddLines,this.icon.Add,'slds-m-left_x-small'));
         
         console.log('Actions');
@@ -375,11 +360,11 @@ export default class Rh_invoice_details extends NavigationMixin(LightningElement
                 let text='';
                 const Actions=[]
                 const extra={style:'width:20vw;'};//
-                text=this.l.delete_sheet_confirm;
+                text=this.l.delete_invoice_confirm;
                 extra.title=this.l.action_confirm;
                 extra.style+='--lwc-colorBorder: var(--bannedColor);';
                 // Actions.push(this.createAction("brand-outline",this.l.Cancel,'KO',this.l.Cancel,"utility:close",'slds-m-left_x-small'));
-                Actions.push(this.createAction("brand-outline",this.l.ok_confirm,OK_DELETE,this.l.ok_confirm,this.icon.check,'slds-m-left_x-small'));
+                Actions.push(this.createAction("brand-outline",this.l.ok_confirm,OK_DELETE,this.l.ok_confirm,this.icon.approve,'slds-m-left_x-small'));
                 this.ShowModal(true,text,Actions,extra);
                 break;
             case ADD_LINE_ACTION:
@@ -390,9 +375,9 @@ export default class Rh_invoice_details extends NavigationMixin(LightningElement
             case EXPORT_ACTION_PDF:
                 this.handlePrintInvoice();
                 break;
-            case EXPORT_ACTION_XLS:
-                this.handlePrintInvoiceXLS();
-                break;
+            // case EXPORT_ACTION_XLS:
+            //     this.handlePrintInvoiceXLS();
+            //     break;
             default:
                 console.error('Actions ',action ,' not reconized');
                 break;
@@ -439,19 +424,23 @@ export default class Rh_invoice_details extends NavigationMixin(LightningElement
     handlePrintInvoice(){
         debugger
         this.startSpinner(true);
-        generatedPDF({listId:this.recordId})
+        const param = window.parent.location.search;
+        const listIds = this.recordId;
+        console.log('listId : ',listIds);
+        generatedPDF({listId:listIds})
             .then(result =>{
                 console.log(result)
                 this.saveFile(result);
                 this.startSpinner(false);   
             }).catch(error => {
                 console.error('Error:', error);
+                this.startSpinner(false);
                 this.showToast(ERROR_VARIANT,this.l.warningOp, error);
             })
     }
     /*Generated PDF Functions*/
      handlePrintInvoiceXLS(){
-        const HeaderTemplate=[{value: 'Sheet Informations', wrap: true, fontWeight: 'bold'}];
+       /* const HeaderTemplate=[{value: 'Sheet Informations', wrap: true, fontWeight: 'bold'}];
         const HeaderItemsTemplate=[{value: 'Sheet Items', wrap: true, fontWeight: 'bold'}];
         const divider=[];
         let exporter=this.template.querySelector('c-rh_export_excel');
@@ -463,7 +452,7 @@ export default class Rh_invoice_details extends NavigationMixin(LightningElement
         console.log(allRows);
         console.log(maxCols);
 
-         exporter.setDatas(allRows,maxCols);
+         exporter.setDatas(allRows,maxCols);*/
     }
 
     saveFile(StringBlob) {
@@ -473,6 +462,7 @@ export default class Rh_invoice_details extends NavigationMixin(LightningElement
         link.href = 'data:application/octet-stream;base64,' + StringBlob;
         document.body.appendChild(link);
         link.click();
+        link.remove();
     }
     /*Generated PDF Functions */
     handleDeleteInvoice(){

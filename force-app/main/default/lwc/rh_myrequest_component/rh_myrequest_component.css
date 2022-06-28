@@ -3,3 +3,7 @@
     --primaryColor: #001639;
     --secondaryColor: #9735e1;
 }
+.filterClass {
+    margin-top: 10px;
+    margin-left: 10px;
+}

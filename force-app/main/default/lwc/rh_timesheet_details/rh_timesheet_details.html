@@ -115,7 +115,8 @@
         </lightning-layout>
     </template>
     <template if:true={sheetNotFounded}>
-        <c-rh_success_operation title="Error" information="Mising rec" recordid={recordId}></c-rh_success_operation>
+        <c-rh_illustration message="" title={recordNotFounded} type="fish"></c-rh_illustration>
+        <!-- <c-rh_success_operation title="Error" information="Mising rec" recordid={recordId}></c-rh_success_operation> -->
     </template>
 
     <template if:true={newLineMode}>

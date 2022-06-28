@@ -1,4 +1,3 @@
-import lookUp from '@salesforce/apex/RH_CustomLookup_Controller.search';
 import SearchRecords from '@salesforce/apex/RH_CustomLookup_Controller.SearchRecords';
 import { api, LightningElement, track, wire } from 'lwc';
 
@@ -123,7 +122,7 @@ export default class Rh_custom_lookup extends LightningElement {
             this.error = error;
             console.error(error);
             this.records = [];
-            this.errorMessage=error;
+            this.errorMessage=error?.body?.message || error;
         })
         .finally(() => {
             this.isSearching=false;
@@ -159,6 +158,7 @@ export default class Rh_custom_lookup extends LightningElement {
     }
 
     onBlur() {
+        
         this.blurTimeout = setTimeout(() => { this.boxClass = 'slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click slds-has-focus' }, 300);
     }
 
@@ -230,6 +230,7 @@ export default class Rh_custom_lookup extends LightningElement {
         return value
     }
     @api updateField(item){
+        this.errorMessage='';
         console.log(`%%%%%%%%%%%% updateField `,{...item} );
         this.objName=item.objName ;
         this.searchPlaceholder=item.placeholder;

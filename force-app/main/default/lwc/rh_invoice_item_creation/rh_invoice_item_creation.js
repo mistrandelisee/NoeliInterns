@@ -99,6 +99,7 @@ export default class Rh_invoice_creation extends NavigationMixin(LightningElemen
                 const item={...this.invoiceItem};
                 item.RH_ProjectId__c= (this.invoiceItem?.RH_ProjectId__c) ? this.invoiceItem?.RH_ProjectId__c : 
                                                                      (   this.Projects?.length==1 ? this.Projects[0].value : '');
+                this.selectedProjectId=item.RH_ProjectId__c;
                 this.invoiceItem=item;
                 this.launchViewEntry();
                 // this.callParent(this.action,{});
@@ -240,7 +241,7 @@ export default class Rh_invoice_creation extends NavigationMixin(LightningElemen
             selectName:conName,
             isSelected:true,
         }
-        this.updateFormField(RESSOURCE_NAME_FIELD,updFieldAcc);
+        this.updateFormField(RESSOURCE_NAME_FIELD,updFieldAcc,'lookup');
 
     }
     handleCreateRessourceApex(record){
@@ -275,32 +276,11 @@ export default class Rh_invoice_creation extends NavigationMixin(LightningElemen
             this.action=OPEN_FORM;  
         }
     }
-    handleNew(){
-       this.startSpinner(true)
-       InitInvoiceCreation()
-          .then(result => {
-            console.log('Result INIT CONF');
-            console.log(result);
-            if (!result.error && result.Ok) {
-                this.inizier=result;
-                this.action=NEW_ACTION;
-                this.callParent(this.action,{});
-            }else{
-                this.showToast(WARNING_VARIANT,'ERROR', result.msg);
-            }
-          })
-          .catch(error => {
-            console.error('Error:', error);
-        }).finally(() => {
-            this.startSpinner(false)
-        });
-    }
     handleCancel(){
         this.action='';
-        this.callParent(this.action,{});
+        this.reloadPage();
     }
     handleSaveInvoiceItemApexOK(obj){
-        this.showToast(SUCCESS_VARIANT,this.l.successOp, '');
         this.invoiceItem=obj;
         this.reloadPage();
     }
@@ -308,7 +288,12 @@ export default class Rh_invoice_creation extends NavigationMixin(LightningElemen
 
         this.goToPage('rh-invoices',{'recordId': this.invoice?.Id});
     }
-    handleSaveInvoiceItemApex(record){
+    initializeFrom(){
+        this.invoiceItem={};
+        this.formInputs=[];
+        this.handleEditInvoiceEntry();
+    }
+    handleSaveInvoiceItemApex(record,from=''){
         record.Id=this.invoiceItem?.Id || null;
         record.invoiceId=this.invoice?.Id || null;
         this.startSpinner(true)
@@ -317,7 +302,13 @@ export default class Rh_invoice_creation extends NavigationMixin(LightningElemen
             console.log('Result handleSaveInvoiceItemApex:: ');
             console.log(result);
             if ( !result.error && result.Ok) {
-                this.handleSaveInvoiceItemApexOK(result.invoiceItem)
+                this.action='';
+                this.showToast(SUCCESS_VARIANT,this.l.successOp, '');
+                if(from ==='SAVENEW'){
+                    this.initializeFrom();
+                }else{
+                    this.handleSaveInvoiceItemApexOK(result.invoiceItem)
+                }
             }else{
                 this.showToast(ERROR_VARIANT,this.l.warningOp, result.msg);
             }
@@ -329,13 +320,16 @@ export default class Rh_invoice_creation extends NavigationMixin(LightningElemen
             this.startSpinner(false)
         });
     }
+    handleSaveNew(evt){
+        this.handleSave('SAVENEW')
+    }
     handleSave(evt){
         let record={};
         let result= this.save();
         if (result.isvalid) {
             record={...record,...result.obj};
             console.log(record);
-            this.handleSaveInvoiceItemApex(record);
+            this.handleSaveInvoiceItemApex(record,evt);
             // this.emp[TYPE_FIELD_NAME]=this.empType;
             // this.callApexSave(record);
         }else{
@@ -402,7 +396,7 @@ export default class Rh_invoice_creation extends NavigationMixin(LightningElemen
                 selectName:this.invoiceItem?.RH_Ressource__r?.Name,
                 isSelected:this.invoiceItem?.RH_Ressource__r?.Name ? true : false,
                 required:true,
-                disabled:true,//on start disable this field
+                disabled: (this.selectedProjectId || this.invoiceItem?.RH_ProjectId__c) ? false:true,//disable is no project selected
                 enableCreate:true,
                 returnFields:this.returnFields,
                 queryFields:this.queryFields,
@@ -419,7 +413,7 @@ export default class Rh_invoice_creation extends NavigationMixin(LightningElemen
                 placeholder:this.l.StartDate,
                 name:SDATE_NAME_FIELD,
                 required:true,
-                value:this.formatDateValue(this.invoiceItem?.RH_StartDate__c),
+                value:this.formatDateValue(this.invoiceItem?.RH_StartDate__c,this.invoice?.RH_InvoiceDate__c),
                 type:'Date',
                 min: beginDate,
                 max: endDate,
@@ -435,8 +429,9 @@ export default class Rh_invoice_creation extends NavigationMixin(LightningElemen
                 required:true,
                 min: beginDate,
                 max: endDate,
-                value:this.formatDateValue(this.invoiceItem?.RH_EndDate__c),
+                value:this.formatDateValue(this.invoiceItem?.RH_EndDate__c,this.invoice?.RH_DueDate__c),
                 type:'Date',
+                helpText:'the end date must be less today',
                 readOnly:this.isEntryReadOnly,
                 ly_xs:'12', 
                 ly_md:'6', 
@@ -460,6 +455,7 @@ export default class Rh_invoice_creation extends NavigationMixin(LightningElemen
                 placeholder:this.l.Rate,
                 name:'rate',
                 required:true,
+                min:1,
                 value:this.invoiceItem?.RH_Rate__c || 0,
                 type:'number',
                 readOnly:this.isEntryReadOnly,
@@ -530,9 +526,9 @@ export default class Rh_invoice_creation extends NavigationMixin(LightningElemen
         return d.toISOString();
     }*/
     dateInterval(){
-        let beginDate =this.invoice?.RH_InvoiceDate__c ? new Date(this.invoice?.RH_InvoiceDate__c) : new Date().toISOString();
-        // let endDate =this.record?.EndDate ? new Date(this.record?.EndDate) : new Date();
-        let endDate = new Date();// last date must e today
+        let beginDate =this.invoice?.RH_InvoiceDate__c ? new Date(this.invoice?.RH_InvoiceDate__c) : new Date();
+        let endDate =this.invoice?.RH_DueDate__c ? new Date(this.invoice?.RH_DueDate__c) : new Date();
+        // let endDate = new Date();// last date must e today
         console.log('***** dateInterval ');
         beginDate=beginDate.toISOString().split('T')[0];
         endDate=endDate.toISOString().split('T')[0];
@@ -554,8 +550,8 @@ export default class Rh_invoice_creation extends NavigationMixin(LightningElemen
 
         return {beginTime, endTime};
     }*/
-    formatDateValue(dateIso){
-        const d =dateIso ? new Date(dateIso) : (this.invoice?.RH_InvoiceDate__c ? new Date(this.invoice?.RH_InvoiceDate__c) : new Date());
+    formatDateValue(dateIso,dateIso2){
+        const d =dateIso ? new Date(dateIso) : (dateIso2 ? new Date(dateIso2) : new Date());
         console.log('Date formatDateValue new  ',d);
         console.log('Date START_OF_DAY GMT ',d.toISOString());
         return d.toISOString().split('T')[0];

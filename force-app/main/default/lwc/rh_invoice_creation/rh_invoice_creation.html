@@ -2,11 +2,11 @@
     <template if:true={noneMode}>
         <div class="slds-clearfix">
             <div class="slds-float_right">
-                <lightning-button variant="brand-outline" label={l.new_invoice} icon-name="utility:add" title="Primary action with lighter look" onclick={handleNew} class="slds-m-left_x-small"></lightning-button>
+                <lightning-button variant="brand-outline" label={l.new_invoice} icon-name="utility:add" title="Primary action with lighter look" onclick={handleNewClik} class="slds-m-left_x-small"></lightning-button>
             </div>
         </div>
     </template>
-    <template if:true={newMode}>
+    <template if:true={formMode}>
         <lightning-card class="custom-card">
             <h3 slot="title">
                 <lightning-icon icon-name="utility:add" size="small" class="slds-p-right_small"></lightning-icon>
