@@ -33,7 +33,7 @@ const icons = {
     user_info_edit: 'standard:employee_job_position',
     more_info: 'action:contact_list',
     ban:'utility:resource_absence',
-    promote:'utility:level_up'
+    promote:'utility:level_up',
 
 };
 export { icons }
