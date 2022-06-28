@@ -12,8 +12,8 @@
                     <div id="box" class={boxClass} aria-expanded="true" aria-haspopup="listbox" role="combobox">
                         <div class="slds-combobox__form-element slds-input-has-icon slds-input-has-icon_right" role="none">
                             <template if:true={isValueSelected}>
-                                <div id="lookup-pill" class="slds-pill-container" style="width: 300px;">
-                                    <lightning-pill class="pillSize" label={selectedName} name={selectedName} onremove={handleRemovePill} style="width: 300px;" href={href}>
+                                <div id="lookup-pill" class="slds-pill-container">
+                                    <lightning-pill class="full-wd pill" label={selectedName} name={selectedName} onremove={handleRemovePill}  href={href}>
                                         <lightning-icon icon-name={iconName} alternative-text="acc" ></lightning-icon>
                                     </lightning-pill>
                                 </div>

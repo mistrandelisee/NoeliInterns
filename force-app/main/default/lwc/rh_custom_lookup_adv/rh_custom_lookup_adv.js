@@ -199,6 +199,7 @@ export default class Rh_custom_lookup extends LightningElement {
         
     }
     createNewRecord(evt){
+        this.boxClass = 'slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click slds-has-focus';
         const createLookupEvent = new CustomEvent('createlookup', { detail:{name:this.fieldName }  });
         this.dispatchEvent(createLookupEvent);
         console.log('CREATE RECORD');

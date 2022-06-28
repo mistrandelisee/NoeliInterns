@@ -21,3 +21,6 @@ lightning-radio-group .slds-radio_faux {
     /* oogle */
     --lwc-brandAccessible: var(--secondaryColor);
 }
+.pill{
+    --sds-c-pill-color-background:var(--pillbgcolor,#f0e8f1) ;
+}
