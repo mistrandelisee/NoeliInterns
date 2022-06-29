@@ -53,10 +53,12 @@ export default class Rh_group_member extends LightningElement {
           .catch(error => {
             console.error('Error:', error);
         });
-        console.log('contactMembers ==>', this.contactMembers);
+        console.log('contactMembers: contact deja dans un groupe ==>', this.contactMembers);
         this.listId = this.updateId(this.contactMembers || []) ;
+        this.listConts = this.listId;
         console.log('Id contactMembers dans group member ==>', this.listId);
 
+        console.log('list id for insert =>:', this.listConts);
         console.log('statusGroup dans group Member ==>', this.statusGroup);
         if(this.statusGroup==='Activated'){
             this.statusBoutom = false;
@@ -138,7 +140,7 @@ export default class Rh_group_member extends LightningElement {
             if(statut==='true'){
                 this.hactiveGroupe(id);
             }
-            this.dispatchEvent(new CustomEvent('gotodetailgroup'));
+            this.dispatchEvent(new CustomEvent('gotodetailgroup', {detail:id}));
           })
           .catch(error => {
             console.error('Error:', error);

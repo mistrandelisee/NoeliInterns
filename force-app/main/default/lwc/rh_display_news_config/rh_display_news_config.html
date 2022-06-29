@@ -9,10 +9,17 @@
             </template>
         </template>
         <template if:true={hideView}>
-            <div class="form-section ">
-                <c-rh_filter title={label.FilterTitle} field-details={inputFilter} onsubmit={filterNews} onreset={getNews}></c-rh_filter>
-            </div>
-            <c-rh_cards_view  page-size="6" items={allNews} onrowselected={handleCardAction}></c-rh_cards_view>  
+            <template if:true={isfilterBuild}>
+                <div class="form-section ">
+                    <c-rh_filter title={label.FilterTitle} field-details={inputFilter} onsubmit={filterNews} onreset={getNews}></c-rh_filter>
+                </div>
+            </template>
+            <template if:true={enableList}>
+                <div class="form-section ">
+                    <c-rh_cards_view  page-size="6" items={allNews} onrowselected={handleCardAction}></c-rh_cards_view>
+                </div>
+            </template>
+             
         </template>
     </template>
     <template if:true={hasrecordid} >
@@ -26,6 +33,26 @@
                 output-fields={newsInputDetails}
                 onaction={handlePreview}
                 ></c-rh_display_fields>
+                <template if:false={isBaseUser}> 
+                    <div class="slds-m-top_medium"  >
+                        <lightning-card > 
+                            <lightning-layout >
+                                <lightning-layout-item padding="around-small">
+                                    {label.AlreadyTranslate}
+                                </lightning-layout-item>
+                                <lightning-layout-item padding="around-small">
+                                    <lightning-input type="checkbox" label={label.Italian} name="input2" checked={enableIt} disabled></lightning-input>
+                                </lightning-layout-item>
+                                <lightning-layout-item padding="around-small">
+                                    <lightning-input type="checkbox" label={label.French} name="input2" checked={enableFr} disabled ></lightning-input>
+                                </lightning-layout-item>
+                                <lightning-layout-item padding="around-small">
+                                    <lightning-input type="checkbox" label={label.English} name="input2" checked={enableEn} disabled></lightning-input>
+                                </lightning-layout-item>
+                            </lightning-layout>
+                        </lightning-card>
+                    </div>
+                </template>           
             </div>
             <template if:true={previewFile}>
                 <c-rh_preview inputs-items={newsFileDetails} onaction={handlePreview}></c-rh_preview>
@@ -34,6 +61,13 @@
         <template if:true={editNews}>
             <div class="slds-p-around_medium ">
                 <c-rh_dynamic_form inputs-items={newsEditDetails} file-data={newFileData} oninputchanged={handleEditchange} ></c-rh_dynamic_form>
+                <c-rh_actions  onaction={handleDetailsActions} action-available={detailsEditActions}></c-rh_actions>
+            </div>
+        </template>
+
+        <template if:true={isTranslate}>
+            <div class="slds-p-around_medium ">
+                <c-rh_dynamic_form inputs-items={newsTranslate} oninputchanged={handleEditchange} ></c-rh_dynamic_form>
                 <c-rh_actions  onaction={handleDetailsActions} action-available={detailsEditActions}></c-rh_actions>
             </div>
         </template>

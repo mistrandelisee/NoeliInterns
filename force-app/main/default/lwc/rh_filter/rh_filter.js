@@ -1,16 +1,13 @@
 import {api, LightningElement, track } from 'lwc';
 import { icons } from 'c/rh_icons';
-
-const labels= {
-    Submit: 'Submit',
-    Reset: 'Reset'
-}
+import { labels } from 'c/rh_label';
 
 export default class Rh_filter extends LightningElement {
 
     inputChanged={};
     displayFields=false;
     icon={...icons};
+    label={...labels};
     pillList=[];
     form;
 
@@ -23,7 +20,7 @@ export default class Rh_filter extends LightningElement {
             label:'Title',
             placeholder:'Enter Title',
             name:'Name',
-            value:"Kbrel",
+            value:"",
             required:false,
             ly_md:'6', 
             ly_lg:'6'
@@ -65,14 +62,14 @@ export default class Rh_filter extends LightningElement {
     @api filterAction= [ 
         {
             name: 'Submit',
-            title : labels.Submit,
-            label: labels.Submit,
+            title : this.label.Submit,
+            label: this.label.Submit,
             class: 'slds-float_right'
         },
         {
             name: 'Reset',
-            title : labels.Reset,
-            label: labels.Reset,
+            title : this.label.Reset,
+            label: this.label.Reset,
             class: 'slds-float_right'
         }
     ];

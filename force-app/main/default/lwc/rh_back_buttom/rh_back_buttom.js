@@ -9,6 +9,7 @@ export default class Rh_back_buttom extends LightningElement {
 
     handleClick(event){      
         const x=2;
+        event.preventDefault();
         fireEvent(this.pageRef, 'backbuttom', {x});
     }
 }

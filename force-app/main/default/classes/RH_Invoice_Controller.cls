@@ -296,11 +296,11 @@ public with sharing class RH_Invoice_Controller {
 
 
     // retrieve the content of the Pdf File
-    public static String createPDF(String listId){
-        Pagereference pg =Page.RH_PDF_Timesheet;
-        System.debug(pg);
-        pg.getParameters().put('recordId',listId);
-        // Blob blb = Test.isRunningTest() ? blob.valueOf('Test') : pg.getContentAsPDF();
+    public static String createPDF(String recordId){
+        Pagereference pg =Page.RH_PDF_Invoice;
+        System.debug('@@@@@@@@@@@@@ pg'+pg);
+        pg.getParameters().put('key',recordId);
+        //Blob blb = Test.isRunningTest() ? blob.valueOf('Test') : pg.getContentAsPDF();
         Blob blb = Test.isRunningTest() ? blob.valueOf('Test') : pg.getContent();
         System.debug('doc Content : '+blb);
         return EncodingUtil.base64Encode(blb);
@@ -486,10 +486,20 @@ public with sharing class RH_Invoice_Controller {
     public class accountWrapper  {
         @AuraEnabled public String Name;
         @AuraEnabled public String Phone;
+        @AuraEnabled public String Cap;
+        @AuraEnabled public String City;
+        @AuraEnabled public String Sdi;
+        @AuraEnabled public String Email;
+        @AuraEnabled public Double Civico;
         public Account getAccount() {
             return new Account(
                 Name=this.Name, 
                 Phone=this.Phone, 
+                RH_Cap__c=this.Cap,
+                RH_Citta__c=this.City,
+                RH_SDI__c=this.Sdi,
+                RH_Email__c=this.Email,
+                RH_NumeroCivico__c=this.Civico,
                 
                 recordTypeId=RH_Constans.RH_CLIENT_ACCOUNT_RT
                 );

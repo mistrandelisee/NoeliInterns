@@ -8,6 +8,7 @@ public  class RH_Constans {
     public static final String ACTIVATED_WORKGROUP_STATUS ='Activated';
     public static final String ACTIVATED_CONTACT_STATUS ='Active';
     public static final String ACTIVATED_PROJECT_STATUS ='Active';
+    public static final String DRAFT_PROJECT_STATUS ='Draft';
     public static final String CLOSED_PROJECT_STATUS ='Closed';
     public static final String RH_OPEN ='Open';
     public static final String CONTACT_ROLE_CEO ='CEO';

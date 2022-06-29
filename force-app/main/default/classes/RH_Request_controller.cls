@@ -19,24 +19,13 @@ public without sharing class RH_Request_controller {
 	// 	return requestQry.getAllMyRequestByYear(year);        
     // }
 
-    @AuraEnabled
-    public static Map<String,Object> initRequestCreation(String reqType) {
-        Map<String, Object> mapReturn = new Map<String, Object>();
-        mapReturn.put('error', false);
-        try {
-            mapReturn.put('AddressTo', getAdressedTo());//holiday . permission
-            mapReturn.put('ConplainOn', contactQry.getBaseUsers());//complain
-            mapReturn.put('AddressCC', false);//complain
-        } catch(Exception e) {
-            System.debug(e.getMessage());
-        }
 
-    }   
     
     @AuraEnabled
     public static List<RH_Request__c> getrequest() {
-        return [SELECT id,Name,RH_Description__c,Rh_Status__c,RH_Addressed_To__r.Name,RH_Note__c,RecordType.Name ,CreatedDate,RH_RequestTypeName__c FROM RH_Request__c WHERE ownerId =: UserInfo.getUserId() ORDER BY CreatedDate desc];
+        return requestQry.getRequest();
     }
+
     @AuraEnabled
     public static List<RH_Request__c> getRequestToManage() {
         String userName = UserInfo.getName();
@@ -44,9 +33,13 @@ public without sharing class RH_Request_controller {
                         FROM RH_Request__c 
                         WHERE (RH_Addressed_To__r.Name =: userName or RH_Addressed_Cc__c =: userName) and Rh_Status__c != 'Draft' ORDER BY CreatedDate desc];
     }
+
     @AuraEnabled(cacheable=true)
-    public static List<Contact> getAdressedCC() {
-        return contactQry.getBaseUsers();
+    public static Map<String,Object> getContacts(){
+        Map<String,Object> mapContacts = new Map<String,Object>();
+        mapContacts.put('adressedTo',contactQry.getEligibleAddressedTo());
+        mapContacts.put('complainOn',contactQry.getBaseUsers());
+        return mapContacts;
     }
 
     @AuraEnabled(cacheable=true)
@@ -55,43 +48,13 @@ public without sharing class RH_Request_controller {
     }
 
     @AuraEnabled
-    public static List<Contact> getAdressedTo(){
-        List<Contact> seCon = new List<Contact>();
-        List<Contact> Tleader = new List<Contact>();
-
-        List<string> TL_roles = new List<string>{
-            'CEO','Ressource Manager'
-        };
-
-        List<Contact> allCon =contactQry.getEligibleAddressedTo();
-        List<User> currentU = userQry.getUserById(UserInfo.getUserId());
-        if (currentU.size() > 0) {
-            seCon = contactQry.getContactById(currentU[0].RH_ContactId__c);
-            if (! seCon.isEmpty()) {
-                if (seCon[0].RH_WorkGroup__r?.RH_Team_Leader__c != null) {
-                    Tleader.add(seCon[0].RH_WorkGroup__r?.RH_Team_Leader__r);
-                }
-            }
-        }else {
-            throw new RH_ControllerException('002','No RH Contact Founded');
-        }
-        allCon.addAll(Tleader);
-        return allCon;
-    }
-
-    @AuraEnabled
     public static RH_Request__c retreiveRequest(String requestId){
-        return [SELECT id, Name, RH_Description__c , CreatedBy.Name,RH_Addressed_To__r.Name, Rh_Status__c, RH_Start_date__c, 
-        RH_End_date__c, RH_Parent_request_id__c, RH_Addressed_Cc__c, RH_Complain_On__r.Id,RH_Complain_On__r.Name, RH_Note__c,RecordTypeId,RecordType.Name  FROM RH_Request__c WHERE id =: requestId ];
+        return requestQry.retreiveRequest(requestId);
     }
 
     @AuraEnabled
     public static List<RecordType> getRecordType(){
-        // Map<String,String> RecordT = new Map<String,String>();
-        // for (RecordType var : [select Id,Name from RecordType where sObjectType='RH_Request__c']) {
-        //     RecordT.put(var.Name, var.Id);
-        // }
-        return [select Id,Name from RecordType where sObjectType='RH_Request__c' AND Name != 'Explanation'];
+        return requestQry.getRecordType();
     }
 
 

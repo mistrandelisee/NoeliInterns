@@ -1,21 +1,36 @@
 public class RH_SeriesCharts_controller {
+    private static RH_User_Query userQuery = RH_User_Query.getInstance();
     Integer currentYear= System.today().year();
     Integer currentMonth= System.today().month();
     String stringCurrentMonth=(new DataChart()).getMonth(currentMonth).get('currentMonth');
     List<DataChart> datas = new List<DataChart>();
-    List<Integer> numberRejectedByMonth = new List<Integer> {8,4,2,7,7,9,9,3,10,2,6,50};
-    List<Integer> numberApprouvedByMonth  = new List<Integer> {5,0,2,5,0,0,0,0,0,0,0,6};
-    List<Integer> numberPendingByMonth  = new List<Integer> {1,0,3,1,0,0,7,8,0,6,0,0};
+    List<Integer> numberRejectedByMonth = new List<Integer> {0,0,0,0,0,0,0,0,0,0,0,0};
+    List<Integer> numberApprouvedByMonth  = new List<Integer> {0,0,0,0,0,0,0,0,0,0,0,0};
+    List<Integer> numberPendingByMonth  = new List<Integer> {0,0,0,0,0,0,0,0,0,0,0,0};
+    List<Integer> numberDraftByMonth  = new List<Integer> {0,0,0,0,0,0,0,0,0,0,0,0};
     boolean approved=true;
     boolean reject=true;
+    public List<DataChart> Opportunities{get;set;}
+    public boolean renderDetail{get;set;}
+    public boolean renderChart{get;set;}
+    public boolean noData{get;set;}
     
-    boolean renderDetail=false;
-    boolean renderChart=true;
+
     
     public PageReference submit() {
         System.debug('approuve :' + approved);
         return null;
     }
+
+    public RH_SeriesCharts_controller(){
+        this.renderDetail=false;
+        this.renderChart=false;
+        this.noData=false;
+        Opportunities = new List<DataChart> ();
+        Opportunities=getRequests();
+
+    }
+    
     
     public boolean getRenderChart() {
         return renderChart;
@@ -23,13 +38,13 @@ public class RH_SeriesCharts_controller {
     public void setRenderChart(boolean chart) {
         renderChart = chart;
     }
-    
+    /*
     public boolean getRenderDetail() {
         return renderDetail;
     }
     public void setRenderDetail(boolean detail) {
         renderDetail = detail;
-    }
+    }*/
     
     public String getStringCurrentMonth() {
         return stringCurrentMonth;
@@ -72,33 +87,47 @@ public class RH_SeriesCharts_controller {
         System.debug('currentPosition >>>>> ' + go);
         System.debug('currentPosition sdffsdf >>>>> ' + this.currentMonth);
     }
-
-    public List<RH_Request__c> getOpportunitiesQuery(Integer year) {
-       return [SELECT name, Rh_Status__c  FROM RH_Request__c WHERE CreatedById=:Userinfo.getUserId() AND CALENDAR_YEAR(CreatedDate) =: year AND (Rh_Status__c = 'Completed' OR Rh_Status__c  = 'In progress' OR  Rh_Status__c  = 'Yet to begin')];
-    }
     
-    public List<DataChart> getOpportunities() {
+    public List<DataChart> getRequests() {
        integer sumAllData=0;
-       List<RH_Request__c> oppList= getOpportunitiesQuery(this.currentYear);
-       for(RH_Request__c opp: oppList){
-           Integer month= opp.CreatedDate.month();
-           if(opp.Rh_Status__c  == 'In progress'){
+       integer allDataMonth=0;
+       User u = userQuery.getUserInfoId();
+       String conId = u.RH_ContactId__c;
+       List<RH_Request__c> reqList= RH_Request_controller.getAllMyRequestByYear(this.currentYear,conId);
+       for(RH_Request__c req: reqList){
+           Integer month= req.CreatedDate.month();
+           if(req.Rh_Status__c  == 'Rejected'){
           	   this.numberRejectedByMonth[month-1]=  this.numberRejectedByMonth[month-1] + 1;
-           }else if(opp.Rh_Status__c == 'Yet to begin'){
+           }else if(req.Rh_Status__c == 'Approved'){
           	   this.numberApprouvedByMonth[month-1]=  this.numberApprouvedByMonth[month-1] + 1;
-           }else if(opp.Rh_Status__c == 'Completed'){
+           }else if(req.Rh_Status__c == 'Submited'){
           	   this.numberPendingByMonth[month-1]=  this.numberPendingByMonth[month-1] + 1;
-           } 
+           } else if(req.Rh_Status__c == 'Draft'){
+            this.numberDraftByMonth[month-1]=  this.numberDraftByMonth[month-1] + 1;
+           }  
        }
-       
+      
         for(Integer i=0; i<this.numberRejectedByMonth.size(); i++){
-          sumAllData= sumAllData + this.numberApprouvedByMonth[i]+ this.numberRejectedByMonth[i] + this.numberPendingByMonth[i];
+          sumAllData= sumAllData + this.numberApprouvedByMonth[i]+ this.numberRejectedByMonth[i] + this.numberPendingByMonth[i] + this.numberDraftByMonth[i];
        }  
+      
            
        for(Integer i=0; i<this.numberRejectedByMonth.size(); i++){
-          this.datas.add(new DataChart(i+1,sumAllData, this.numberApprouvedByMonth[i], this.numberRejectedByMonth[i],this.numberPendingByMonth[i],this.numberApprouvedByMonth[i]+ this.numberRejectedByMonth[i] + this.numberPendingByMonth[i]));
+          allDataMonth=this.numberApprouvedByMonth[i]+ this.numberRejectedByMonth[i] + this.numberPendingByMonth[i]+this.numberDraftByMonth[i];
+          this.datas.add(new DataChart(i+1,sumAllData, this.numberApprouvedByMonth[i], this.numberRejectedByMonth[i],this.numberPendingByMonth[i],this.numberDraftByMonth[i],allDataMonth));
+          
+          if(this.currentMonth-1==i && allDataMonth!=0)
+          this.renderDetail= true;
+          
        } 
  		system.debug('@@@@@@@@ datas'+ this.datas);
+       
+        // enable the first chart
+        if(sumAllData!=0)
+        this.renderChart=true;
+        else
+         this.noData=true;   
+        
        return this.datas;
     }
     
@@ -107,10 +136,11 @@ public class RH_SeriesCharts_controller {
          if(this.datas!= null){
              for(Integer i=0; i<this.datas.size(); i++){
                  if(this.currentMonth-1==i){
-                     Integer allDataDetail= this.datas[i].dataAccepted+ this.datas[i].dataRejected+this.datas[i].dataPending;
+                     Integer allDataDetail= this.datas[i].dataAccepted+ this.datas[i].dataRejected+this.datas[i].dataPending+this.datas[i].dataDraft;
                      datas.add(new DetailChart(allDataDetail,this.datas[i].dataAccepted));
                      datas.add(new DetailChart(allDataDetail,this.datas[i].dataRejected));
                      datas.add(new DetailChart(allDataDetail,this.datas[i].dataPending));
+                     datas.add(new DetailChart(allDataDetail,this.datas[i].dataDraft));
                  }	
        		} 
          } else {
@@ -143,6 +173,7 @@ public class RH_SeriesCharts_controller {
         public Integer dataAccepted { get; set; }
         public Integer dataRejected { get; set; }
         public Integer dataPending { get; set; }
+        public Integer dataDraft { get; set; }
         public Integer allData { get; set; }
         public String percent { get; set; }
         
@@ -150,10 +181,11 @@ public class RH_SeriesCharts_controller {
             
         }
 
-        public DataChart(integer month,Integer sumAllData, Integer data, Integer data2, Integer data3, Integer allData){
+        public DataChart(integer month,Integer sumAllData, Integer data, Integer data2, Integer data3,Integer data4, Integer allData){
             this.dataAccepted= data;
             this.dataRejected= data2;
             this.dataPending= data3;
+            this.dataDraft= data4;
             this.allData= allData;
             this.monthAbbr= this.getMonth(month).get('monthAbbreviation');
             this.month= this.getMonth(month).get('currentMonth');

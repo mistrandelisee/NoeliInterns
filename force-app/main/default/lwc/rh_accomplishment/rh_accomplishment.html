@@ -3,8 +3,11 @@
         <template if:false={hasRecordId}>
             <div class="slds-clearfix">
                 <div class="slds-float_right">
-                    <lightning-button variant="brand-outline" label="New Accomplishment" icon-name={icon.Add} title="Primary action with lighter look" onclick={handleChangeValue} class="slds-m-left_x-small addClass"></lightning-button>
+                    <lightning-button variant="brand-outline" label="New Accomplishment" icon-name={icon.Add} title="Primary action with lighter look" onclick={handleChangeValue} class="slds-m-left_x-small"></lightning-button>
                 </div>
+            </div>
+            <div class="filterClass">
+                <c-rh_filter title={l.FilterAccomplishment} field-details={inputFormFilter} onsubmit={filterAccomplishment} onreset={getAccomplish}></c-rh_filter>
             </div>
             <c-rh_cards_view page-size="6"  items={itemCard} onrowselected={handleCardAction}></c-rh_cards_view>
         </template>
@@ -16,23 +19,22 @@
                             <lightning-button variant="brand-outline" label={l.Edit} icon-name={icon.Edit} title="Primary action with lighter look" onclick={handleEditValue} class="slds-m-left_x-small"></lightning-button>
                         </template>
                         <template if:true={isCurrent}>
-                            <lightning-button variant="brand-outline" label={l.Delete} icon-name={icon.Delete} title="Primary action with lighter look" onclick={handleDeleteValue} class="slds-m-left_x-small"></lightning-button>
+                            <lightning-button variant="brand-outline" label={l.Delete} icon-name={icon.Delete} title="Primary action with lighter look" onclick={showModalDelete} class="slds-m-left_x-small"></lightning-button>
                         </template>
                     </div>
                 </div>
                 <div class="slds-p-around_medium profile_user_info">
                     <c-rh_display_fields 
                     title="Accomplishment Details"
-                    iconsrc="utility:people"
+                    iconsrc="utility:education"
                     column="2"
                     output-fields={accomInputDetails}
+                    onaction={handlePreview}
                     ></c-rh_display_fields>
                 </div>
-                <div class="slds-clearfix" style="margin-left: 15px;">
-                    <div class="slds-float_left">
-                        <lightning-button variant="neutral" label={l.Back} icon-name={icon.Back} class="slds-m-right_medium" onclick={handleCancelDetail}></lightning-button>
-                    </div>
-                </div>
+                <template if:true={previewFile}>
+                    <c-rh_preview inputs-items={newsFileDetails} onaction={handlePreview}></c-rh_preview>
+                </template>
             </template>
             <template if:true={editMode}>
                 <lightning-card class="custom-card">
@@ -51,6 +53,7 @@
                     </div>
                 </lightning-card>
             </template>
+            <c-rh_back_buttom title="Back To Accomplishment"></c-rh_back_buttom>
         </template>
     </template>
     <template if:true={newForm}>

@@ -14,3 +14,12 @@ lightning-button{
     --lwc-borderWidthThin: 1px;
     font-weight: 700;
  }
+
+ :host{
+    color:#626575;
+    --primaryColor: #001639;
+    --secondaryColor: #9735e1;
+    --warningColor: #c1a60e;
+    --bannedColor:#e41d0b;
+    --frozenColor:#dbe133fe;
+}

@@ -3,7 +3,6 @@ import { NavigationMixin } from 'lightning/navigation';
 import getOrgConfig from '@salesforce/apex/RH_News_controller.getOrgConfig';
 import setOrgConfig from '@salesforce/apex/RH_News_controller.setOrgConfig';
 import getAllNews from '@salesforce/apex/RH_News_controller.getAllNews';
-import getActiveNews from '@salesforce/apex/RH_News_controller.getActiveNews';
 import getNewsDetails from '@salesforce/apex/RH_News_controller.getNewsDetails';
 import updateNewsVisibility from '@salesforce/apex/RH_News_controller.updateNewsVisibility';
 import updateNews from '@salesforce/apex/RH_News_controller.updateNews';
@@ -12,6 +11,8 @@ import filterNews from '@salesforce/apex/RH_News_controller.filterNews';
 import deleteNews from '@salesforce/apex/RH_News_controller.deleteNews';
 import getFileInfos from '@salesforce/apex/RH_FileUploader.getFileInfos';
 import checkRole from '@salesforce/apex/RH_Utility.checkRole';
+import getUserLanguage from '@salesforce/apex/RH_Users_controller.getUserLanguage';
+
 import { CurrentPageReference } from 'lightning/navigation';
 import { registerListener, unregisterAllListeners,fireEvent } from 'c/pubsub';
 
@@ -54,15 +55,21 @@ export default class Rh_display_news_config extends NavigationMixin(LightningEle
     @track newsInputDetails=[];
     @track newsEditDetails=[];
     @track newsFileDetails=[];
+    @track newsTranslate= [];
     recordId;
 
     bannerTitle;
     displayFields=false;
-    inputFilter;
+    inputFilter=[];
     isModalOpen = false;
+
+    enableIt ; 
+    enableFr ;
+    enableEn;
 
     dataId;
     isBaseUser=true;
+    isTranslate=false;
 
     keysFields={Name:'ok'};
     keysLabels={
@@ -76,24 +83,21 @@ export default class Rh_display_news_config extends NavigationMixin(LightningEle
     
     bannerConfigAction= [];
 
-    
-/*
-    bannerConfigAction= [ 
-        {
-            name: 'Save',
-            title : slabel.Save,
-            label: slabel.Save,
-            class: 'slds-float_right'
-        }
-    ];
-*/
+
     @wire(CurrentPageReference) pageRef;
 
     get hasNews(){
-        return this.newsRecord && !this.editNews?true:false;
+        return this.newsRecord && (!this.editNews?true:false ) && (!this.isTranslate?true:false);
     }
     get hasrecordid(){
         return this.recordId?true:false;
+    }
+    get isfilterBuild(){
+        return  this.inputFilter?.length>0;
+    }
+
+    get enableList(){
+        return  this.allNews?.length>0;
     }
 
      connectedCallback(){
@@ -101,9 +105,17 @@ export default class Rh_display_news_config extends NavigationMixin(LightningEle
         registerListener('backbuttom', this.staticBack, this);
         this.recordId = this.getUrlParamValue(window.location.href, 'recordId');
         this.checkUserRole();
+        if (this.recordId) {
+            //this.startSpinner(true);
+            this.displayNewsInfo(this.recordId);
+        }else{
+            //this.getConfig();
+            this.getNews();
+
+        }
     }
 
-    buildfFormConfig(){
+    buildFormConfig(){
         this.inputBannerConfig=[
             {
                 label: this.label.Interval,
@@ -155,23 +167,17 @@ export default class Rh_display_news_config extends NavigationMixin(LightningEle
                     type:'toggle',
                     ly_md:'6', 
                     ly_lg:'6'
-                });  
+                });
             }
     }
+
 
 
     checkUserRole(){
         checkRole({ })
           .then(result => {
             if(result.isCEO||result.isRHUser) this.isBaseUser = false;
-
-            if (this.recordId) {
-                //this.startSpinner(true);
-                this.displayNewsInfo(this.recordId);
-            }else{
-                //this.getConfig();
-                this.getNews();
-            }
+            this.buildFormConfig();
           })
           .catch(error => {
             console.error('Error:', error);
@@ -185,17 +191,28 @@ export default class Rh_display_news_config extends NavigationMixin(LightningEle
         }).then(result =>{
             console.log('display news ' +JSON.stringify(result))
             if (result) {
-                this.newsRecord = result;
-                this.handleFileInfo(this.recordId);
+                this.newsRecord = result?.News;
+                this.newsRecord.lang = result?.Lang;
+                this.activeLang(this.newsRecord);
+                this.handleFileInfo(this.recordId);       
                /* this.buildform(this.newsRecord);
                 this.buildAction(this.newsRecord);*/
             }
         }).catch(e =>{
-            this.showToast(ERROR_VARIANT,'ERROR', e.message);
+            this.showToast(ERROR_VARIANT,'ERROR', e?.body?.message);
             console.error(e)
         }).finally(() => {
-            //this.startSpinner(false);
+            this.startSpinner(false);
         })
+      }
+
+      activeLang(record){
+        if(record?.TitleIt__c?.length>0)
+            this.enableIt=true;
+        if(record?.TitleFr__c?.length>0)
+            this.enableFr=true;
+        if(record?.TitleEn__c?.length>0)
+            this.enableEn=true;
       }
 
       handleFileInfo(recordid){
@@ -224,13 +241,29 @@ export default class Rh_display_news_config extends NavigationMixin(LightningEle
         return new URL(url).searchParams.get(key);
       }
 
+      
       buildform(newsInfo){
+
+        let title;
+        let descrip;
+
+        switch (newsInfo?.lang){
+            case 'it':  title= newsInfo?.TitleIt__c;
+                        descrip= newsInfo?.DescriptionIt__c; 
+                         break;
+            case 'fr':  title= newsInfo?.TitleFr__c;
+                        descrip= newsInfo?.DescriptionFr__c;
+                         break;
+            case 'en_US': title= newsInfo?.TitleEn__c ;
+                          descrip= newsInfo?.DescriptionEn__c;                       
+                         break;
+        }
         this.newsInputDetails=[
             {
                 label: this.label.Title,
                 placeholder: this.label.TitlePlc,
                 name:'Name',
-                value:newsInfo?.Name,
+                value:title,
                 required:true,
                 ly_md:'6', 
                 ly_lg:'6'
@@ -247,7 +280,7 @@ export default class Rh_display_news_config extends NavigationMixin(LightningEle
             {
                 label: this.label.Description,
                 name:'Description__c',
-                value:newsInfo?.Description__c,
+                value:descrip,
                 placeholder: this.label.DescriptionPlc,
                 className:'textarea',
                 maxlength:25000,
@@ -294,13 +327,6 @@ export default class Rh_display_news_config extends NavigationMixin(LightningEle
     buildAction(newsInfo){
         if(this.isBaseUser==false){
             this.detailsActions= [
-                /*{
-                    name: 'Back',
-                    title :  'Back',
-                    label: 'Back',
-                    class: 'slds-float_left'
-                },*/
-    
                 {
                     name: 'Edit',
                     title :  this.label.Edit,
@@ -320,6 +346,13 @@ export default class Rh_display_news_config extends NavigationMixin(LightningEle
                     title : newsInfo.IsActive__c? 'Deactivated':'Activated',
                     label:  newsInfo.IsActive__c? 'Deactivated':'Activated',
                     class: 'slds-float_right slds-m-left_x-small'
+                },
+                {
+                    name: 'Translate',
+                    title :  this.label.Translate,
+                    label: this.label.Translate,
+                    iconName: this.icon.Add,
+                    class: 'slds-float_right slds-m-left_x-small' 
                 }
             ];
 
@@ -337,18 +370,70 @@ export default class Rh_display_news_config extends NavigationMixin(LightningEle
                 }
             ];
         }
-        
+    }
 
-        
-        
+    buildTranslate(inputNews){
+        let lang = [
+            { label: this.label.Italian , value: 'it' },
+            { label: this.label.French , value: 'fr' },
+            { label: this.label.English , value: 'en_US'}
+        ];
 
+        let title;
+        let descrip;
+        
+        switch (inputNews?.lang){
+            case 'it':  title= inputNews?.TitleIt__c;
+                        descrip= inputNews?.DescriptionIt__c; 
+                         break;
+            case 'fr':  title= inputNews?.TitleFr__c;
+                        descrip= inputNews?.DescriptionFr__c;
+                         break;
+            case 'en_US': title= inputNews?.TitleEn__c ;
+                          descrip= inputNews?.DescriptionEn__c;                       
+                         break;
+        }
+        
+        this.newsTranslate = [
+            {
+                label: this.label.SelectLang,
+                name:'Translate',
+                picklist: true,
+                options: lang,
+                value:inputNews?.lang,
+                maxlength:100,
+                ly_md:'6', 
+                ly_lg:'6'
+            },{
+                label: this.label.Title,
+                placeholder: this.label.TitlePlc,
+                name:'Name',
+                value: title,
+                required:true,
+                ly_md:'6', 
+                ly_lg:'6'
+            },
+            {
+                label: this.label.Description,
+                name:'Description__c',
+                value: descrip,
+                placeholder: this.label.DescriptionPlc,
+                className:'textarea',
+                maxlength:25000,
+                type:'textarea',
+                ly_md:'12', 
+                ly_lg:'12'
+            },
+        ];
+        
+        
     }
 
     handleDetailsActions(event){
         const action= event.detail.action;
         switch (action){
             case 'Edit': this.editNews=true; 
-                         this.hasNews= false;
+                         this.isTranslate= false;
                          break;
             case 'Back': this.goToHome();
                          break;
@@ -366,6 +451,12 @@ export default class Rh_display_news_config extends NavigationMixin(LightningEle
             case 'Delete': 
                         this.confirmDelete();
                          break;
+            case 'Translate': 
+                        this.isTranslate=true;
+                        this.editNews=false; 
+                        this.buildTranslate(this.newsRecord);
+                        break;
+                         
             
 
         }
@@ -388,6 +479,13 @@ export default class Rh_display_news_config extends NavigationMixin(LightningEle
         switch(fieldname) {
             case 'uploadFile':
                 this.newFileData = event.detail.info.file; 
+                break;
+            case 'Translate':
+                let rec = this.newsRecord;
+                rec.lang= event.detail.info.value;
+                this.buildTranslate(rec);
+               /* this.startSpinner(true);
+                this.newFileData = event.detail.info.file; */
                 break;
             default:
                 break;
@@ -418,39 +516,20 @@ export default class Rh_display_news_config extends NavigationMixin(LightningEle
 
     getNews(){
         this.startSpinner(true);
-        this.buildfFormConfig();
-        
-        if(this.isBaseUser){
-            getActiveNews()
-            .then(result => {
-                const self=this;
-                this.allNews = result.map(function (e){
-                    let item={...e};
-                    item.title=e.Name?.length>27? e.Name.slice(0, 27) +'...': e.Name ;
-                    item.icon="standard:news";
-                    item.class='banned card';
-                    item.id= e.Id;
-                    item.summaryTitle= e.Name?.length>27? e.Name.slice(0, 27) +'...': e.Name ;
-                    item.summaryDescription= e.Description__c?.length>27? e.Description__c.slice(0, 27) +'...': e.Description__c ;
-                    item.keysFields=self.keysFields;
-                    item.keysLabels=self.keysLabels;
-                    item.fieldsToShow=self.fieldsToShow;
-                    item.actions=[];
-
-                    console.log(`item Base User` +item);
-
-                    return item;    
-                })
-                this.setviewsList(this.allNews);
-                this.getConfig();
-            })
-            .catch(error => {
+        filterNews({name: null ,description: null , isactive: null })
+        .then(result => {
+              if(result){
+                this.builAllNews(result);
+              }     
                 this.startSpinner(false);
-                this.showToast(ERROR_VARIANT,ERROR_VARIANT, error.message);
-                console.log('@@@@@@@@@  getAllNews: ' + error );
-            });
-        }else{
-            getAllNews()
+        })
+        .catch(error => {
+            console.log('getNews errors: ' + error);
+            this.startSpinner(false);
+            this.showToast(ERROR_VARIANT,ERROR_VARIANT, error.message);
+        });
+/*
+        getAllNews()
             .then(result => {
                 const self=this;
                 this.allNews = result.map(function (e){
@@ -497,6 +576,7 @@ export default class Rh_display_news_config extends NavigationMixin(LightningEle
                     return item;
                     
                 })
+                
                 this.setviewsList(this.allNews);
                 this.getConfig();
             })
@@ -504,9 +584,7 @@ export default class Rh_display_news_config extends NavigationMixin(LightningEle
                 this.startSpinner(false);
                 this.showToast(ERROR_VARIANT,ERROR_VARIANT, error.message);
                 console.log('@@@@@@@@@  getAllNews: ' + error );
-            });
-        }
-        
+            });*/
     }
 
 
@@ -526,7 +604,7 @@ export default class Rh_display_news_config extends NavigationMixin(LightningEle
                 this.startSpinner(false);
         })
         .catch(error => {
-            
+            console.log('filterNews errors: ' + error);
             this.startSpinner(false);
             this.showToast(ERROR_VARIANT,ERROR_VARIANT, error.message);
         });
@@ -536,33 +614,35 @@ export default class Rh_display_news_config extends NavigationMixin(LightningEle
 
     builAllNews(result){
         const self=this;
-        
         this.allNews = result.map(function (e){
             let item={...e};
-            item.title=e.Name?.length>27? e.Name.slice(0, 27) +'...': e.Name ;
+            item.title=e.name?.length>27? e.name.slice(0, 27) +'...': e.name ;
             item.icon= self.icon.NewsStd;
-            item.class=e.IsActive__c?'banned card':'active card';
-            item.id= e.Id;
-            item.summaryTitle= e.Name?.length>27? e.Name.slice(0, 27) +'...': e.Name ;
-            item.summaryDescription= e.Description__c?.length>27? e.Description__c.slice(0, 27) +'...': e.Description__c ;
+            item.class=e.isActive?'banned card':'active card';
+            item.id= e.id;
+            item.summaryTitle= e.name?.length>27? e.name.slice(0, 27) +'...': e.name ;
+            item.summaryDescription= e.description?.length>27? e.description.slice(0, 27) +'...': e.description ;
             item.keysFields=self.keysFields;
             item.keysLabels=self.keysLabels;
             item.fieldsToShow=self.fieldsToShow;
             
-            let Actions=[
-                {
-                    name:e.IsActive__c?'Disabled':'Enabled',
-                    label:e.IsActive__c? self.label.Disable : self.label.Activate,
-                    iconName: e.IsActive__c? 'utility:preview':'action:preview'
-                   // class
-                }
+            if(self.isBaseUser==false){
+                let Actions=[
+                    {
+                        name:e.isActive?'Disabled':'Enabled',
+                        label:e.isActive? self.label.Disable : self.label.Activate,
+                        iconName: e.isActive? 'utility:preview':'action:preview'
+                    },
+                    {
+                        name:'Delete',
+                        label: self.label.Delete,
+                        iconName: self.icon.Delete
+                    }
 
-            ];
+                ];
 
-
-            //add status actions
-            //Actions=Actions.concat(self.buildUserStatusActions(e.Status));
-            item.actions=Actions;
+                item.actions=Actions;
+            }
             
             console.log(`item`);
             console.log(item);
@@ -571,6 +651,7 @@ export default class Rh_display_news_config extends NavigationMixin(LightningEle
             
         })
         this.setviewsList(this.allNews);
+        this.getConfig();
     }
 
 
@@ -657,8 +738,11 @@ export default class Rh_display_news_config extends NavigationMixin(LightningEle
         updateNewsVisibility({recordId: recordId , enabled: visibility })
         .then(result => {
             if(result){
-                this.displayNewsInfo(this.recordId);
-                this.getNews();
+                if(this.recordId){
+                    this.displayNewsInfo(this.recordId);
+                }else{
+                    this.getNews();
+                }  
                 this.showToast(SUCCESS_VARIANT,SUCCESS_VARIANT,  result.IsActive__c?  this.label.NewsActivated : this.label.NewsDeactivated); 
             }
         })
@@ -727,7 +811,11 @@ export default class Rh_display_news_config extends NavigationMixin(LightningEle
     
 
     handleUpdateNews(input){
-        updateNews({ recordId: this.recordId, newsJson: JSON.stringify(input) })
+        let lang;
+        if(input?.Translate){
+            lang= input?.Translate;
+        }
+        updateNews({ recordId: this.recordId, newsJson: JSON.stringify(input), currentLang: lang })
           .then(result => {
             this.updateFile();
           })

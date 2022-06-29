@@ -6,10 +6,9 @@ import getrequest from '@salesforce/apex/RH_Request_controller.getrequest';
 import retreiveRequest from '@salesforce/apex/RH_Request_controller.retreiveRequest';
 import getRecordType from '@salesforce/apex/RH_Request_controller.getRecordType';
 import newRequest from '@salesforce/apex/RH_Request_controller.newRequest';
-import getAdressedTo from '@salesforce/apex/RH_Request_controller.getAdressedTo';
 import deleteRequest from '@salesforce/apex/RH_Request_controller.deleteRequest';
 import updateRequest from '@salesforce/apex/RH_Request_controller.updateRequest';
-import getAdressedCC from '@salesforce/apex/RH_Request_controller.getAdressedCC';
+import getContacts from '@salesforce/apex/RH_Request_controller.getContacts';
 import getAdressByIdList from '@salesforce/apex/RH_Request_controller.getAdressedCCByListId';
 import filterRequest from '@salesforce/apex/RH_Request_controller.filterRequest';
 
@@ -85,6 +84,7 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
     @track isOpenDualBox=false;
     @track listConts=[];
     @track listContsValue=[];
+    todo;
 
     keysFields = { AddressedTo: 'ok' };//non used now
     keysLabels = {
@@ -230,7 +230,7 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
                 this.showSpinner = false;
             })
     }
-    getAdressCC() {
+    /*getAdressCC() {
         getAdressedCC()
             .then(result => {
                 if (result) {
@@ -245,8 +245,8 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
                     });
                 }
             })
-    }
-    getAllContact() {
+    }*/
+    /*getAllContact() {
         getAdressedCC()
             .then(result => {
                 console.log('contact', result);
@@ -256,7 +256,7 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
                         label: plValue.Name,
                         value: plValue.Id
                     };
-                    // console.log(picklistVal);
+                    console.log(picklistVal);
                     this.allContact.push(picklistVal);
                     if(plValue.RH_Status__c == 'Active'){
                         this.activeContact.push(picklistVal);
@@ -267,7 +267,7 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
             }).catch(error => {
                 console.error('Error:', error);
             });
-    }
+    }*/
 
 
     handleCardAction(event) {
@@ -477,7 +477,6 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
                     ly_md: '6',
                     ly_lg: '6'
                 },
-
                 {
                     label: this.l.Description,
                     placeholder: this.l.Description,
@@ -671,7 +670,6 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
                     ly_md: '6',
                     ly_lg: '6'
                 },
-
                 {
                     label: this.l.Description,
                     placeholder: this.l.Description,
@@ -719,19 +717,24 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
 
     openDualBox(){
         console.log('@@@@@isOpenDualBox');
-         this.isOpenDualBox = !this.isOpenDualBox;
+        this.isOpenDualBox = !this.isOpenDualBox;
     }
 
     handlechge(event) {
         const item = event.detail.info;
         this.typeId = item.value;
 
-
         console.log('OUTPUT xxxx: item ', item);
 
-        getAdressedTo()
+        getContacts()
             .then(result => {
-                this.addressedRecord = result.map(plValue => {
+                this.addressedRecord = result.adressedTo.map(plValue => {
+                    return {
+                        label: plValue.Name,
+                        value: plValue.Id
+                    };
+                });
+                this.allContact = result.complainOn.map(plValue => {
                     return {
                         label: plValue.Name,
                         value: plValue.Id
@@ -741,7 +744,6 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
             }).catch(error => {
                 console.error('Error:', error);
             });
-
     }
 
     getRecordType(){
@@ -761,16 +763,18 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
     handleChangeValue() {
         this.isNew = true;
         this.buildform();
-        this.showSpinner = false;
     }
+
     handleCancel() {
         this.isNew = false;
         // window.location.reload();
     }
+
     handleNext() {
         this.isAllFields = true;
         this.openNext();
     }
+
     handleCancelDetail() {
         var pagenname = 'my-request'; //request page nam
         // let states={'recordId': recordid}; //event.currentTarget.dataset.id , is the recordId of the request
@@ -783,6 +787,7 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
             // state: states
         });
     }
+
     handleDeleteValue() {
         deleteRequest({ requestId: this.recordId })
             .then(result => {
@@ -800,14 +805,22 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
 
     handleEditValue() {
         this.editMode = true;
-        getAdressedTo()
+        getContacts()
             .then(result => {
-                this.addressedRecord = result.map(plValue => {
+                this.addressedRecord = result.adressedTo.map(plValue => {
                     return {
                         label: plValue.Name,
                         value: plValue.Id
                     };
                 });
+                if(this.resultRecord.RecordType.Name == 'Complain'){
+                    this.allContact = result.complainOn.map(plValue => {
+                        return {
+                            label: plValue.Name,
+                            value: plValue.Id
+                        };
+                    });
+                }
                 this.buildformClone(this.resultRecord);
                 this.requestType = this.resultRecord?.RecordType?.Name;
             }).catch(error => {
@@ -833,12 +846,13 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
     handleCancelEdit() {
         this.editMode = false;
     }
+
     dovalueMember(event){
         this.listConts = event.tab;
         console.log('list id for insert =>:', this.listConts);
-   }
+    }
 
-     openNext() {
+    openNext() {
         this.optionsRecordList.forEach(op => {
             console.log('@@@@@objectMap' + op);
             if (op.Id == this.typeId && op.Name == 'Complain') {
@@ -846,7 +860,7 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
                 this.isExplanation = false;
                 this.isPermHoli = false;
                 this.requestType = 'Complain';
-                this.getAllContact();
+               // this.getAllContact();
                
                 this.buildformComplain();
             }
@@ -873,11 +887,11 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
             }
         })
     }
+
     handleCancelLast() {
         this.isAllFields = false;
         this.isNew = false;
     }
-
 
     detailPage() {
         // this.recordId = this.getUrlParamValue(window.location.href, 'recordId');
@@ -914,7 +928,7 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
     }
 
     connectedCallback() {
-        this.getAllContact();
+       // this.getAllContact();
         registerListener('backbuttom', this.dobackbuttom, this);
         registerListener('ModalAction', this.doModalAction, this);
         registerListener('valueMember', this.dovalueMember, this);    
@@ -926,7 +940,7 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
             this.getRequest();
         }
     }
-    todo;
+    
     handleCardActionPop(event) {
         this.todo = OK_DISABLE;
         let text = '';
@@ -1010,17 +1024,24 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
 
     handleCloneValue() {
         this.cloneMode = true;
-        getAdressedTo()
+        getContacts()
             .then(result => {
-                this.addressedRecord = result.map(plValue => {
+                this.addressedRecord = result.adressedTo.map(plValue => {
                     return {
                         label: plValue.Name,
                         value: plValue.Id
                     };
                 });
+                if(this.resultRecord.RecordType.Name == 'Complain'){
+                    this.allContact = result.complainOn.map(plValue => {
+                        return {
+                            label: plValue.Name,
+                            value: plValue.Id
+                        };
+                    });
+                }
                 this.buildformClone(this.resultRecord);
-                // this.requestType = result?.RecordType?.Name;
-                this.requestType = this.resultRecord.RecordType?.Name;
+                this.requestType = this.resultRecord?.RecordType?.Name;
             }).catch(error => {
                 console.error('Error:', error);
             });
@@ -1254,7 +1275,6 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
 
 
     buildform() {
-        this.showSpinner = true;
         this.firstFieldInputs = [
             {
                 label: 'Type of Request',

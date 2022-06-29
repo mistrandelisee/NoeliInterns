@@ -1,50 +1,67 @@
 <template>
     <c-rh_toast auto-close-time="6000"></c-rh_toast>
     <template if:true={showComponentBase}>
+        <!--  -->
+        <template if:true={filterReady}>
+            <div  style="margin-top: 25px;margin-left: 29px;margin-right: 15px;">
+                <c-rh_filter onsubmit={handleSubmitFilter} field-details={filterInputs} onreset={handleResetFilter}></c-rh_filter>
+            </div>
+        </template>
+        <!-- -->
         <div class="slds-p-around_medium">
             <c-rh_cards_view page-size="5"  items={datas} onrowselected={callBlockAction}></c-rh_cards_view>
         </div>
     </template>
-    <!--  -->
+
     <template if:true={showComponentDetails}>
         <div class="slds-p-around_medium">
         <div class="slds-clearfix" style="margin-right: -16px;">
             <div class="slds-float_right slds-m-right_none" style="margin-top: 0px;">
                 <template if:true={displayButton}>
-                    <lightning-button variant="neutral" label="Rejected" icon-name="utility:close" class="slds-m-left_x-small"   onclick={handleprerejectEvent} style="margin-right: 16px;"></lightning-button>
-                    <lightning-button variant="neutral" label="Share" icon-name="utility:share" class="slds-m-right_none"  onclick={sendNotification}></lightning-button>
+                    <lightning-button variant="brand-outline" label="Rejected" icon-name={icon.close} class="slds-m-left_x-small buttons"   onclick={handleprerejectEvent} style="margin-right: 16px;"></lightning-button>
+                    <lightning-button variant="brand-outline" label="Share" icon-name={icon.Share} class="slds-m-right_none buttons"  onclick={sendNotification}></lightning-button>
                 </template>
             </div>
         </div>
         </div>
         <div class="slds-box slds-p-around_none slds-m-top_x-small slds-m-bottom_medium slds-m-horizontal_none" style="margin-top: 0px;">
             <div class="slds-var-m-vertical_medium" style="margin-top: -1px;">
-                <c-rh_display_fields output-fields={eventDetails} iconsrc="standard:event" title="Event Details"></c-rh_display_fields>
+                <c-rh_display_fields output-fields={eventDetails} iconsrc={icon.Event} title={label.EventDetails}></c-rh_display_fields>
                 <!--  -->
                 <template for:each={filesList} for:item="file">
                     <div key={file.value} class="slds-box">
                         <div class="slds-col slds-large-size_4-of-12 slds-medium-size_4-of-12 slds-size_12-of-12">
-                            <p><strong>FileName - </strong>{file.label} || <strong><a href={file.url} download={file.fname}>Download</a></strong></p>
+                            <p><strong>FileName - </strong>{file.label} || <strong><a href={file.url} download={file.fname}>{label.Download}</a></strong></p>
                         </div>
                     </div>
                 </template>
                 <!--  -->
             </div>
+            <lightning-card>
+                <div class="slds-var-m-vertical_medium">
+                    <lightning-datatable
+                        key-field="Id"
+                        data={filesLists}
+                        columns={columns}
+                        onrowaction={handleRowAction}>
+                    </lightning-datatable>
+                </div>
+            </lightning-card>
         </div>
         <div class="slds-p-around_medium" style="margin-left: -16px;">
-            <lightning-button variant="neutral" label="Back" icon-name="utility:back" class="slds-float_left" onclick={closeComponentDetails}></lightning-button>
+            <lightning-button variant="brand-outline" label="Back" icon-name={icon.Back} class="slds-float_left" onclick={closeComponentDetails}></lightning-button>
         </div>
     </template>
 
     <template if:true={showComponentDetailsForBaseUser}>
         <div class="slds-box slds-p-around_none slds-m-top_x-small slds-m-bottom_medium slds-m-horizontal_none">
             <div class="slds-var-m-vertical_medium" style="margin-top: -1px;">
-                <c-rh_display_fields output-fields={eventDetails} iconsrc="standard:event" title="Event Details"></c-rh_display_fields>
+                <c-rh_display_fields output-fields={eventDetails} iconsrc={icon.Event} title="Event Details"></c-rh_display_fields>
                 <!--  -->
                 <template for:each={filesList} for:item="file">
                     <div key={file.value} class="slds-box">
                         <div class="slds-col slds-large-size_4-of-12 slds-medium-size_4-of-12 slds-size_12-of-12">
-                            <p><strong>FileName - </strong>{file.label} || <strong><a href={file.url} download={file.fname}>Download</a></strong></p>
+                            <p><strong>FileName - </strong>{file.label} || <strong><a href={file.url} download={file.fname}>{label.Download}</a></strong></p>
                         </div>
                     </div>
                 </template>
@@ -52,11 +69,21 @@
                 <div class="slds-p-around_medium">
                     <div class="slds-clearfix">
                         <div class="slds-float_right" style="margin-bottom: -25px; margin-top: -8px;">
-                            <lightning-button variant="neutral" label="Back" icon-name="utility:back" class="slds-m-right_medium" onclick={closeComponentDetails}></lightning-button>
+                            <lightning-button variant="brand-outline" label="Back" icon-name={icon.Back} class="slds-m-right_medium" onclick={closeComponentDetails}></lightning-button>
                         </div>
                       </div>
                 </div>
             </div>
+            <lightning-card>
+                <div class="slds-var-m-vertical_medium">
+                    <lightning-datatable
+                        key-field="Id"
+                        data={filesLists}
+                        columns={columns}
+                        onrowaction={handleRowAction}>
+                    </lightning-datatable>
+                </div>
+            </lightning-card>
         </div>
     </template>
     <!--  -->
@@ -64,23 +91,26 @@
         <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
                 <div class="slds-modal__container">
                     <header class="slds-modal__header">
-                        <h2 id="modal-heading-02" class="slds-text-heading_medium slds-hyphenate" style="color:orange;">Warning</h2>
+                        <h2 id="modal-heading-02" class="slds-text-heading_medium slds-hyphenate" style="color:orange;">{label.warningOp}</h2>
                     </header>
                     <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-2">
                         <template if:true={visible}>
-                            <h1>Are you sure to want to delete it ?</h1>
+                            <div class="slds-align_absolute-center" style="margin-top:-20px;margin-bottom: 15px;">
+                                <p style="font-size:18px;">{label.PermissionDelete}</p>
+                            </div>
                         </template>
                         <template if:false={visible}>
-                            <h1>Are you sure to want to reject it ?</h1>
+                            <div class="slds-align_absolute-center" style="margin-top:-20px;margin-bottom: 15px;">
+                                <p style="font-size:18px;">{label.PermissionRejected}</p>
+                            </div>
+                        </template>
+                        <template if:false={visible}>
+                            <div class="slds-float_left">
+                                <lightning-button variant="brand-outline" icon-name={icon.approve} style="margin-left:40px" label="Ok" title="Primary action" onclick={handleRejectEvent} class="slds-m-left_x-small"></lightning-button>
+                            </div>
                         </template>
                         <div class="slds-float_right">
-                            <template if:true={visible}>
-                                <lightning-button-icon icon-name="utility:check" style="margin-right: 10px;" alternative-text="check" title="check" onclick={handledeleteEvent}></lightning-button-icon>
-                            </template>
-                            <template if:false={visible}>
-                                <lightning-button-icon icon-name="utility:check" style="margin-right: 10px;" alternative-text="check" title="check" onclick={handleRejectEvent}></lightning-button-icon>
-                            </template>
-                            <lightning-button-icon icon-name="utility:close" style="margin-right: 5px;" class="slds-m-right_xx-small"  alternative-text="close" title="close"  onclick={closeModalDelete}></lightning-button-icon>
+                            <lightning-button variant="brand-outline" icon-name={icon.close} style="margin-right:40px" label="Cancel" title="Primary action" onclick={closeModalDelete} class="slds-m-left_x-small"></lightning-button>
                         </div>
                     </div>
                 </div>

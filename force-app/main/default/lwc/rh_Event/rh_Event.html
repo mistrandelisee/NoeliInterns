@@ -13,13 +13,13 @@
                 <b style="font-size:20px;">+</b><b style="font-size:15px;">New Event</b>
             </button>
         </div>  -->
-        <!-- <template if:true={filterReady}> -->
-            <lightning-layout-item size="12" class="slds-p-left_small" small-device-size="12" medium-device-size="12" large-device-size="12" >
-                <div class="custom-box">
-                    <c-rh_filter onsubmit={handleSubmitFilter} field-details={filterInputs}></c-rh_filter>
-                </div>
-            </lightning-layout-item>
-        <!-- </template> -->
+        <!--  -->
+        <template if:true={filterReady}>
+            <div  style="margin-top: 25px;margin-left: 29px;margin-right: 15px;">
+                <c-rh_filter onsubmit={handleSubmitFilter} field-details={filterInputs} onreset={handleResetFilter}></c-rh_filter>
+            </div>
+        </template>
+        <!-- -->
         <div class="slds-p-around_medium">
             <c-rh_cards_view page-size="5"  items={datas} onrowselected={callBlockAction}></c-rh_cards_view>
         </div>
@@ -29,14 +29,14 @@
             <br/>
             <div style="float:right;margin-top: -25px;margin-right: -64px;">
                 <template if:false={isUpdate}>
-                    <lightning-button variant="brand-outline" label="Save" icon-name="utility:save" class="slds-m-right_medium" onclick={handleSaveEvent} ></lightning-button>
-                    <lightning-button variant="brand-outline" label="Save And Send" icon-name="utility:save" class="slds-m-right_medium" onclick={handleSaveAndSendEvent} ></lightning-button>
-                    <!-- <lightning-button variant="brand-outline" label="Next" icon-name="utility:arrow_right" class="slds-m-right_medium" onclick={handleBeforeSave}></lightning-button> -->
+                    <lightning-button variant="brand-outline" label={label.Save} icon-name={icon.Save} class="slds-m-right_medium" onclick={handleSaveEvent} ></lightning-button>
+                    <lightning-button variant="brand-outline" label={label.SaveAndSend} icon-name={icon.Save} class="slds-m-right_medium" onclick={handleSaveAndSendEvent} ></lightning-button>
+                    <!-- <lightning-button variant="brand-outline" label="Next" icon-name=icon.arrow_right" class="slds-m-right_medium" onclick={handleBeforeSave}></lightning-button> -->
                 </template>
                 <template if:true={isUpdate}>
-                    <lightning-button variant="brand-outline" label="Update" icon-name="utility:save" class="slds-m-right_medium" onclick={handleUpdateEvent}></lightning-button>
-                    <lightning-button variant="brand-outline" label="Update and Send" icon-name="utility:save" onclick={handleUpdateAndSendEvent}></lightning-button>
-                    <!-- <lightning-button variant="brand-outline" label="Next" icon-name="utility:arrow_right" class="slds-m-right_medium" onclick={handleBeforeUpdate}></lightning-button> -->
+                    <lightning-button variant="brand-outline" label={label.Update} icon-name={icon.save} class="slds-m-right_medium" onclick={handleUpdateEvent}></lightning-button>
+                    <lightning-button variant="brand-outline" label={label.UpdateAndSend} icon-name={icon.Save} onclick={handleUpdateAndSendEvent}></lightning-button>
+                    <!-- <lightning-button variant="brand-outline" label="Next" icon-name=icon.arrow_right" class="slds-m-right_medium" onclick={handleBeforeUpdate}></lightning-button> -->
                 </template>
             </div>
         </div>
@@ -48,12 +48,12 @@
                         <h2 id="heading-02" class="slds-text-heading_medium slds-hyphenate" style="margin-top:10px; margin-bottom:-25px;">
                             <template if:false={isUpdate}>
                                 <div class="slds-text-align_center">
-                                    <b>Add New Event</b>
+                                    <b>{label.AddNewEvent}</b>
                                 </div>
                             </template>
                             <template if:true={isUpdate}>
                                 <div class="slds-text-align_center">
-                                    <b>Update Event</b>
+                                    <b>{label.UpdateEvent}</b>
                                 </div>
                             </template>
                         </h2>
@@ -88,10 +88,10 @@
             </div>
         </section>
         <template if:false={isUpdate}>
-            <lightning-button variant="brand-outline" label="Back" icon-name="utility:back" class="slds-m-right_medium" onclick={closeComponentEdit}></lightning-button>
+            <lightning-button variant="brand-outline" label={label.Back} icon-name={icon.Back} class="slds-m-right_medium" onclick={closeComponentEdit}></lightning-button>
         </template>
         <template if:true={isUpdate}>
-            <lightning-button variant="brand-outline" label="Back" icon-name="utility:back" class="slds-m-right_medium" onclick={closeComponentUpdate}></lightning-button>
+            <lightning-button variant="brand-outline" label={label.Back} icon-name={icon.Back} class="slds-m-right_medium" onclick={closeComponentUpdate}></lightning-button>
         </template>
     </template>
     <template if:true={showComponentDetails} >
@@ -99,20 +99,20 @@
             <div class="slds-clearfix" style="margin-right: -32px;">
                 <div class="slds-float_right" style=" margin-top: 0px;">
                     <template if:true={displayButton}>
-                        <lightning-button variant="brand-outline" label="Delete" icon-name="utility:delete" class="slds-m-right_medium"  onclick={handlepredeleteEvent}></lightning-button>
+                        <lightning-button variant="brand-outline" label={label.Delete} icon-name={icon.Delete} class="slds-m-right_medium"  onclick={handlepredeleteEvent}></lightning-button>
                     </template>
                     <template if:true={hidenButton}>   
-                        <lightning-button variant="brand-outline" label="Edit" icon-name="utility:edit" class="slds-m-right_medium" onclick={handleEdit}></lightning-button>
+                        <lightning-button variant="brand-outline" label={label.Edit} icon-name={icon.Edit} class="slds-m-right_medium" onclick={handleEdit}></lightning-button>
                     </template>
                     <template if:true={hidenButton}>
-                        <lightning-button variant="brand-outline" label="Send" icon-name="utility:send" class="slds-m-right_medium" onclick={handleSendEvent}></lightning-button>
+                        <lightning-button variant="brand-outline" label={label.Send} icon-name={icon.submit} class="slds-m-right_medium" onclick={handleSendEvent}></lightning-button>
                     </template>
                 </div>
             </div>
         </div>        
         <div class="slds-box slds-p-around_none slds-m-top_x-small slds-m-bottom_medium slds-m-horizontal_none">
             <div class="slds-var-m-vertical_medium" style="margin-top:0px;">
-                <c-rh_display_fields output-fields={eventDetails} iconsrc="standard:event" title="Event Details"></c-rh_display_fields>
+                <c-rh_display_fields output-fields={eventDetails} iconsrc={icon.Event} title={label.EventDetails}></c-rh_display_fields>
             </div>
             <lightning-card>
                 <div class="slds-var-m-vertical_medium">
@@ -126,29 +126,30 @@
             </lightning-card>
         </div>
         <div class="slds-p-around_medium" style="margin-left: -16px;">
-            <lightning-button variant="brand-outline" label="Back" icon-name="utility:back" class="slds-m-right_medium" onclick={closeComponentDetails}></lightning-button>
+            <lightning-button variant="brand-outline" label={label.Back} icon-name={icon.Back} class="slds-m-right_medium" onclick={closeComponentDetails}></lightning-button>
         </div>
     </template>
     <template if:true={showModalDelete}>
         <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
                 <div class="slds-modal__container">
                     <header class="slds-modal__header">
-                        <h2 id="modal-heading-02" class="slds-text-heading_medium slds-hyphenate" style="color:orange;">Warning</h2>
+                        <h2 id="modal-heading-02" class="slds-text-heading_medium slds-hyphenate" style="color:orange;">{label.warningOp}</h2>
                     </header>
                     <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-2">
-                        <h1>Are you sure to want to delete it ?</h1>
-                        <div class="slds-float_right">
-                            <lightning-button-icon icon-name="utility:check" style="margin-right: 10px;" alternative-text="check" title="check" onclick={handledeleteEvent}></lightning-button-icon>
-                            <lightning-button-icon icon-name="utility:close" style="margin-right: 5px;" class="slds-m-right_xx-small"  alternative-text="close" title="close"  onclick={closeModalDelete}></lightning-button-icon>
+                        <div class="slds-clearfix">
+                            <div class="slds-align_absolute-center" style="margin-top:-20px;margin-bottom: 15px;">
+                                <p style="font-size:18px;">{label.PermissionDelete}</p>
+                            </div>
+                        </div>
+                        <div class="slds-clearfix">
+                            <div class="slds-float_left">
+                                <lightning-button variant="brand-outline" icon-name={icon.approve} style="margin-left:40px" label={label.ok_confirm} title="Primary action" onclick={handledeleteEvent} class="slds-m-left_x-small"></lightning-button>
+                            </div>
+                            <div class="slds-float_right">
+                                <lightning-button variant="brand-outline" icon-name={icon.close} style="margin-right:40px" label={label.Cancel} title="Primary action" onclick={closeModalDelete} class="slds-m-left_x-small"></lightning-button>
+                            </div>
                         </div>
                     </div>
-                    <!-- <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-2">
-                        <h1>Are you sure to want to delete it ?</h1>
-                        <div class="slds-float_right">
-                            <lightning-button variant="neutral" label="Ok" icon-name="utility:check" style="margin-right: 10px;" alternative-text="check" title="check" onclick={handledeleteEvent}></lightning-button>
-                            <lightning-button variant="neutral" label="Cancel" icon-name="utility:close" style="margin-right: 5px;" class="slds-m-right_xx-small"  alternative-text="close" title="close"  onclick={closeModalDelete}></lightning-button>
-                        </div>
-                    </div> -->
                 </div>
             </section>
             <div class="slds-backdrop slds-backdrop_open"></div>

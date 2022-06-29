@@ -3,6 +3,7 @@ import { NavigationMixin } from 'lightning/navigation';
 import getActiveNews from '@salesforce/apex/RH_News_controller.getActiveNews';
 import getOrgConfig from '@salesforce/apex/RH_News_controller.getOrgConfig';
 import CommunityBackground1jpg from '@salesforce/contentAssetUrl/CommunityBackground1jpg';
+import getUserLanguage from '@salesforce/apex/RH_Users_controller.getUserLanguage';
 
 
 
@@ -26,40 +27,47 @@ export default class Rh_display_news extends NavigationMixin(LightningElement) {
     disconnectedCallback(){
        window.clearInterval(this.interval);
     }
+
+    
+
+
+
     
     getNews(){
         getActiveNews()
             .then(result => {
                 this.news = result;
-                this.bannerNews= this.news.map((e,Index) => { 
-                    return Index==0?{
-                        Id: e.Id,
-                        Title: e.Name.length>70? e.Name.slice(0, 67) +'...': e.Name,
-                        Description: e.Description__c.length>230? e.Description__c.slice(0, 230) +'...': e.Description__c ,
-                        Image:  e.Image__c? e.Image__c: CommunityBackground1jpg,
-                        Index:Index+1,
-                        Visibility: 'slds-show'
-                    }:{
-                        Id: e.Id,
-                        Title: e.Name.length>70? e.Name.slice(0, 67) +'...': e.Name,
-                        Description: e.Description__c.length>230? e.Description__c.slice(0, 230) +'...': e.Description__c,
-                        Image:  e.Image__c? e.Image__c: CommunityBackground1jpg,
-                        Index:Index+1,
-                        Visibility:'slds-hide'
-                    }
-                });
-
-                this.bannerStyle=`color: white; background-image: url(${this.bannerNews[0].Image});
-                                height:200px;background-position:center;background-color: rgba(0, 0, 0, 0.7);
-                                background-blend-mode: multiply;text-align: center;font-size:  larger;
-                `;
-                this.interval= window.setInterval(() => {
-                    this.next();
-                  }, this.config.interval);
-
+                if(this.news.length> 0){
+                    this.bannerNews= this.news.map((e,Index) => { 
+                        return Index==0?{
+                            Id: e.id,
+                            Title: e.name?.length>70? e.name.slice(0, 67) +'...': e.name,
+                            Description: e.description?.length>230? e.description.slice(0, 230) +'...': e.description ,
+                            Image:  e.image? e.image: CommunityBackground1jpg,
+                            Index:Index+1,
+                            Visibility: 'slds-show'
+                        }:{
+                            Id: e.id,
+                            Title: e.name?.length>70? e.name.slice(0, 67) +'...': e.name,
+                            Description: e.description?.length>230? e.description.slice(0, 230) +'...': e.description,
+                            Image:  e.image? e.image: CommunityBackground1jpg,
+                            Index:Index+1,
+                            Visibility:'slds-hide'
+                        }
+                    });
+    
+                    this.bannerStyle=`color: white; background-image: url(${this.bannerNews[0].Image});
+                                    height:200px;background-position:center;background-color: rgba(0, 0, 0, 0.7);
+                                    background-blend-mode: multiply;text-align: center;font-size:  larger;
+                    `;
+                    this.interval= window.setInterval(() => {
+                        this.next();
+                      }, this.config.interval);
+    
+                }
+                
             })
             .catch(error => {
-                alert('KB ' + error);
                 console.log(' error@@@@@@@@@@@@@@@@@@' + error );
             });
     }

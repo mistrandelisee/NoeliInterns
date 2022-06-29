@@ -1,13 +1,7 @@
-.btn_back{
-    bottom: 130px;
-    position: fixed;
-    z-index: 999;
-}
-
 lightning-button{
     --lwc-brandAccessible: var(--primaryColor);
     --lwc-brandAccessibleActive: var(--primaryColor);;
     --lwc-buttonBorderRadius: 15px;
     --lwc-borderWidthThin: 1px;
     font-weight: 700;
- }
+}

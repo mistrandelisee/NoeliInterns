@@ -15,8 +15,11 @@ const ACCOUNT_NAME_FIELD = 'AccountId';
 const EDIT_ACTION='Edit';
 const NEW_ACCOUNT='NEW_ACCOUNT';
 const NEW_ACTION='New';
+const VIEW_ACTION='View';
+const SAVE_ACTION='Save';
 
 
+const RESET_ACTION='Reset';
 const SUCCESS_VARIANT='success';
 const WARNING_VARIANT='warning';
 const ERROR_VARIANT='error';
@@ -118,6 +121,18 @@ export default class Rh_invoice_creation extends NavigationMixin(LightningElemen
     }
     handleAccountChanged(accId){
         console.log('SELECTED ACCOUNT ID '+accId);
+        
+        let newGrpField={
+            label:'Groups',
+            name:'wGroup',
+            picklist: true,
+            options: this.groups,
+            value: '',
+            maxlength:100,
+            ly_md:'6', 
+            ly_lg:'6'
+        }
+        this.updateFormField('wGroup',newGrpField);
     }
     handleLookupCreation(event){
         const objReturned = event.detail;
@@ -130,8 +145,8 @@ export default class Rh_invoice_creation extends NavigationMixin(LightningElemen
     doCreateAccount(){
         this.accountInputs=[
             {
-                label:this.l.accountName,
-                placeholder:this.l.accountNamePlc,
+                label:'Name',
+                placeholder:'Name',
                 name:'Name',
                 value: '',
                 required:true,
@@ -140,8 +155,8 @@ export default class Rh_invoice_creation extends NavigationMixin(LightningElemen
                 ly_lg:'6'
             },
             {
-                label:this.l.Phone,
-                placeholder:this.l.PhonePlc,
+                label:'Phone',
+                placeholder:'Phone',
                 name:'Phone',
                 value: '',
                 required:false,
@@ -150,8 +165,8 @@ export default class Rh_invoice_creation extends NavigationMixin(LightningElemen
                 ly_lg:'6'
             },
             {
-                label:this.l.Cap,
-                placeholder:this.l.CapPlc'Cap Number',
+                label:'Cap',
+                placeholder:'Cap Number',
                 name:'Cap',
                 value: '',
                 required:false,
@@ -160,8 +175,8 @@ export default class Rh_invoice_creation extends NavigationMixin(LightningElemen
                 ly_lg:'6'
             },
             {
-                label:this.l.City'Citta',
-                placeholder:this.l.CityPlc'City',
+                label:'Citta',
+                placeholder:'City',
                 name:'City',
                 value: '',
                 required:false,
@@ -170,8 +185,8 @@ export default class Rh_invoice_creation extends NavigationMixin(LightningElemen
                 ly_lg:'6'
             },
             {
-                label:this.l.sdi'SDI',
-                placeholder:this.l.sdiPlc'sdi',
+                label:'SDI',
+                placeholder:'sdi',
                 name:'Sdi',
                 value: '',
                 required:false,
@@ -180,8 +195,8 @@ export default class Rh_invoice_creation extends NavigationMixin(LightningElemen
                 ly_lg:'6'
             },
             {
-                label:this.l.Email,
-                placeholder:this.l.EmailPlc,
+                label:'Email',
+                placeholder:'email',
                 name:'Email',
                 value: '',
                 required:false,
@@ -190,8 +205,8 @@ export default class Rh_invoice_creation extends NavigationMixin(LightningElemen
                 ly_lg:'6'
             },
             {
-                label:this.l.Civico,
-                placeholder:this.l.CivicoPlc'Numero',
+                label:'Civico',
+                placeholder:'Numero',
                 name:'Civico',
                 value: '',
                 required:true,
@@ -309,12 +324,7 @@ export default class Rh_invoice_creation extends NavigationMixin(LightningElemen
         if (result.isvalid) {
             record={...record,...result.obj};
             console.log(record);
-            if (record.startDate<record.endDate) {
-                this.handleSaveInvoiceApex(record);
-            }else{
-                console.warn('Start date must before end date');
-                this.showToast(WARNING_VARIANT,this.l.warningO,this.l.warn_period_confict );
-            }
+            this.handleSaveInvoiceApex(record);
             // this.emp[TYPE_FIELD_NAME]=this.empType;
             // this.callApexSave(record);
         }else{

@@ -1,4 +1,6 @@
 public class RH_FileUploader {
+    private static RH_News_Query newsQry = RH_News_Query.getInstance();
+
     @AuraEnabled
     public static Attachment attachFile(String base64,String filename, String recordId) {
         Blob fileBlob = EncodingUtil.base64Decode(base64);
@@ -78,18 +80,21 @@ public class RH_FileUploader {
         for (ContentVersion version : ctVer) {
             ctVerId.add(version.Id);
         }
-        
+
+        List<ContentDocument> ContntDocmnt = [SELECT Id, Title, FileType FROM ContentDocument WHERE Id IN : ctDocId];
+
         List<ContentDistribution> ctDistrib = [ SELECT Id,Name,ContentDownloadUrl,ContentVersionId,ContentDocumentId FROM ContentDistribution WHERE ContentVersionId IN :ctVerId ];
         
-        Map<String, Object> fileData = new Map<String, Object>{
-            'data'=> ctDistrib
+        Map<String, Object> fileData = new Map<String,Object>{
+            'data'=> ctDistrib,
+            'data2' => ContntDocmnt
         };
        
        return  fileData;
     }
     
     
-    public static Map<String,Object> updateFile(String base64, String filename, String ContentVersionId) {
+    public static Map<String,Object> updateFiles(String base64, String filename, String ContentVersionId) {
         ContentVersion ctVer = updateContentVersion(base64, filename,ContentVersionId);
         ContentDistribution ctDistribution = updateContentDistribution(filename,ContentVersionId);
         return  new Map<String,Object>{
@@ -97,6 +102,43 @@ public class RH_FileUploader {
             'ContentDistribution'=> ctDistribution
         };
     }
+
+
+    public static String updateFile(String base64, String filename, String recordId) {
+        Savepoint savept = Database.setSavepoint();
+ 
+
+          try{
+            boolean isDelete= deleteFiles(recordId);
+            system.debug(' record is delete value: '+ isDelete);
+            if(isDelete==true){
+              String linkFile= uploadFile(base64 ,filename ,recordId); 
+
+              if(String.isNotBlank(linkFile) ){
+                News__c record= newsQry.getNewsById(recordId);
+                system.debug(' record before update : '+ record);
+                record.Image__c=linkFile;
+                update record;
+                system.debug(' record after  update : '+ record);
+              }
+
+              system.debug(' link of file:  '+ linkFile);
+              return linkFile;
+            }
+
+            return null;
+           }
+ 
+
+          catch( Exception e ){
+             Database.rollback( savept );
+             system.debug(' error  file exception:  '+ e);
+             return null;
+           }
+    }
+
+
+
     
     private static ContentVersion updateContentVersion(String base64, String filename,String ContentVersionId) {
         ContentVersion ctVer = [ SELECT Id,Title,VersionData FROM ContentVersion WHERE Id =: ContentVersionId ];
@@ -111,6 +153,30 @@ public class RH_FileUploader {
         ctDistribution.Name = filename;
         update ctDistribution;
         return ctDistribution;
+    }
+
+
+    @AuraEnabled
+    public static Boolean deleteFiles(String recordId){
+        try{
+            Map<String,Object>  fileDetail = getFileInfos(recordId);
+            List<ContentDistribution> ctDistrib = (List<ContentDistribution>) fileDetail.get('data');
+            List<ContentDocument> ctDoc = (List<ContentDocument>)fileDetail.get('data2');
+    
+            if(!ctDistrib.isEmpty() && ctDistrib != null) {
+                Database.delete(ctDistrib, false);
+            }
+    
+            if(!ctDoc.isEmpty() && ctDoc != null) {
+                Database.delete(ctDoc, false);
+            }
+    
+            return true;
+        }catch(Exception e) {
+            System.debug('echec Delete File : ' + e.getMessage());
+            return null;
+        }  
+      
     }
 
     @AuraEnabled

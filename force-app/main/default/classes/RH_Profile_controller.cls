@@ -1,6 +1,6 @@
 public  class RH_Profile_controller {
-    public RH_Profile_controller() {
-    }
+
+    //public RH_Profile_controller() {}
     // RH_Profile_controller.getMyProfile();
     // System.debug(RH_Contact_Query.getInstance().getContactById('0037Q000007I2h0QAC'));
     private static RH_User_Query userQry = RH_User_Query.getInstance();
@@ -8,12 +8,21 @@ public  class RH_Profile_controller {
 
     @AuraEnabled
     public static Map<string,object> getMyProfile() {
+
         Map<string,object> mapReturn = new Map<String, Object>();
         mapReturn.put('error', false);
+        
         try {
+            System.debug('get user'+Userinfo.getUserId());
             List<User> users=userQry.getUserById(Userinfo.getUserId());
+
+            system.debug('These are users '+users);
+
             if (users.isEmpty()) throw new RH_ControllerException('001','Missing User');
             User u=users[0];
+
+            System.debug('uder id '+u.RH_ContactId__c);
+
             if (String.isBlank(u.RH_ContactId__c)) {
                 throw new RH_ControllerException('002','This user is not a link to any RH Contact');
             }
@@ -44,7 +53,9 @@ public  class RH_Profile_controller {
         
         return mapReturn;
     }
-    private static void getContactDetails(User u, Map<String, Object> mapReturn){//to delete! don/t test
+
+    //to delete! don/t test
+    /*private static void getContactDetails(User u, Map<String, Object> mapReturn){
         List<Contact> userContacts=contactQry.getContactById(u.RH_ContactId__c);
         if (userContacts.isEmpty()) throw new RH_ControllerException('002','No RH Contact Founded');
 
@@ -54,7 +65,8 @@ public  class RH_Profile_controller {
         mapReturn.put('account', userContact.Account);
         mapReturn.put('myGroup', userContact.RH_WorkGroup__r);
         mapReturn.put('myLeadedGroups', userContact.WorkGroups_Leader__r);
-    }
+    }*/
+
     @AuraEnabled
     public static Map<String,Object> UpdateInfo(String recordId,String contactjson){
         Map<String, Object> mapReturn = new Map<String, Object>();
@@ -74,7 +86,7 @@ public  class RH_Profile_controller {
             updateUser(recordId,contactjson);
             //mapReturn.put('out_user',u);  
             //mapReturn.put('out_contact',conctactUser);  
-            mapReturn.putAll(getMyProfile()); 
+            mapReturn.putAll(getMyProfile());
            //getContactDetails(u,mapReturn);
         } catch(Exception e) {
             System.debug(e.getMessage());
@@ -85,6 +97,7 @@ public  class RH_Profile_controller {
        
         return mapReturn;
     }
+    
     @future
     public static void updateUser(String recordId,String contactjson) {
         contactdetailswrapper contactinfo = (contactdetailswrapper) JSON.deserialize(contactjson, contactdetailswrapper.class);
@@ -115,7 +128,8 @@ public  class RH_Profile_controller {
 
 
     @AuraEnabled
-    public static Map<String,Object> newUser(String contactjson){//don\t test
+    //don\t test
+    public static Map<String,Object> newUser(String contactjson){
         Map<String, Object> mapReturn = new Map<String, Object>();
         mapReturn.put('error',false);
         try {

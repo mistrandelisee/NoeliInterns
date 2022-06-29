@@ -262,7 +262,7 @@ export default class Rh_group_detail  extends NavigationMixin(LightningElement) 
      handleRowAction( event ) {
         console.log('dans le handlerow');
         // const actionName = event.detail.action.name;
-        const row = event.detail.row.Id;
+        const row = event.detail.row.RH_User__c;
         console.log('row--> ' , row);
         this.goToUserDetail(row);
     }

@@ -4,6 +4,8 @@ import { NavigationMixin } from 'lightning/navigation';
 import getRequestToManage from '@salesforce/apex/RH_Request_controller.getRequestToManage';
 import retreiveRequest from '@salesforce/apex/RH_Request_controller.retreiveRequest';
 import updateRequestForRejet from '@salesforce/apex/RH_Request_controller.updateRequestForRejet';
+import getAdressByIdList from '@salesforce/apex/RH_Request_controller.getAdressedCCByListId';
+import getAdressedCC from '@salesforce/apex/RH_Request_controller.getAdressedCC';
 
 
 export default class Rh_request_management_component extends NavigationMixin(LightningElement) {
@@ -26,6 +28,7 @@ export default class Rh_request_management_component extends NavigationMixin(Lig
     @track lastFieldInputsPermHoli = [];
     @track lastFieldInputsExplanation = [];
     @track isComplain = false;
+    @track isApprove = false;
     @track isPermHoli = false;
     @track isExplanation = false;
     @track editMode = false;
@@ -34,6 +37,7 @@ export default class Rh_request_management_component extends NavigationMixin(Lig
     @track cloneMode = false;
     @track isApprovedRejeted = false;
     @track isRejetedOrApproved = false;
+    @track isDetails = true;
     @track RejetedOrApproved ;
     @track typeId ;
     @track addressedRecord =[];
@@ -44,6 +48,9 @@ export default class Rh_request_management_component extends NavigationMixin(Lig
     @track resultRecord;
     @track statusDetail;
     @track appOrRej;
+    inputExplanForm = [];
+    @track allContact = [];
+    activeContact = [];
 
 
     keysFields={AddressedTo:'ok'};//non used now
@@ -100,6 +107,7 @@ export default class Rh_request_management_component extends NavigationMixin(Lig
     }
 
     handleRejetRequest(){
+        this.isDetails = false;
         this.isApprovedRejeted = true;
         this.RejetedOrApproved = 'Rejeted';
         this.appOrRej ='Rejet request';
@@ -107,6 +115,7 @@ export default class Rh_request_management_component extends NavigationMixin(Lig
 
     }
     handleApproveRequest(){
+        this.isDetails = false;
         this.isApprovedRejeted = true;
         this.RejetedOrApproved = 'Approved';
         this.appOrRej ='Approve request';
@@ -143,25 +152,79 @@ export default class Rh_request_management_component extends NavigationMixin(Lig
 
     handleCancelRejet(){
         this.isApprovedRejeted = false;
+        this.isDetails = true;
     }
 
     setviewsList(items){
         let cardsView=this.template.querySelector('c-rh_cards_view');
         cardsView?.setDatas(items);
     }
+    
+    handleExplanation(){
+        this.isDetails = false;
+        this.isExplanation = true;
+        this.buildFormExplanation();
+    }
+
+    handleCancelExplanation(){
+        this.isExplanation = false;
+        this.isDetails = true;
+    }
+
+    handleSendExplanation(){
+       
+    }
+
+    getAllContact() {
+        getAdressedCC()
+            .then(result => {
+                console.log('contact', result);
+                 result.forEach(plValue => {
+                    let picklistVal = {};
+                    picklistVal = {
+                        label: plValue.Name,
+                        value: plValue.Id
+                    };
+                    console.log(picklistVal);
+                    this.allContact.push(picklistVal);
+                    if(plValue.RH_Status__c == 'Active'){
+                        this.activeContact.push(picklistVal);
+                    }
+                });
+                console.log(this.allContact);
+                console.log(this.activeContact);
+            }).catch(error => {
+                console.error('Error:', error);
+            });
+    }
 
     detailPage(){
         // this.recordId = this.getUrlParamValue(window.location.href, 'recordId');
         retreiveRequest({requestId : this.recordId})
         .then(result =>{
+            let listContsValue = [];
             console.log('@@@@result '+result);
             this.resultRecord = result;
             this.typeId = result.RecordTypeId;
             this.statusDetail = result.Rh_Status__c;
-            this.buildformDetail(result);
             if(result.RecordType.Name == 'Complain'){
                 this.isComplain = true;
+            }else{
+                this.isApprove = true;
             }
+            
+            if(result.RH_Addressed_Cc__c){
+                listContsValue = result.RH_Addressed_Cc__c.split(',');
+            }
+            getAdressByIdList({ ids: listContsValue })
+            .then(res => {
+                let tabName = res.map(elt => elt.Name);
+                let NameAdressed = tabName.join(',');
+                this.buildformDetail(this.resultRecord, NameAdressed);
+                console.log('name', NameAdressed);
+            }).catch(error => {
+                console.error(error);
+            });
             if (result.Rh_Status__c == 'Rejeted' || result.Rh_Status__c == 'Approved') {
                 this.isRejetedOrApproved = true;
             }
@@ -177,6 +240,7 @@ export default class Rh_request_management_component extends NavigationMixin(Lig
     }
 
     connectedCallback(){
+        this.getAllContact();
         this.recordId = this.getUrlParamValue(window.location.href, 'recordId');
         if(this.recordId){
              this.detailPage(this.recordId);
@@ -189,8 +253,7 @@ export default class Rh_request_management_component extends NavigationMixin(Lig
 		return new URL(url).searchParams.get(key);
     }
     
-    
-    
+
     handleCardAction(event){
         console.log('event parent ' +JSON.stringify(event.detail));
         const info=event.detail;
@@ -320,7 +383,7 @@ export default class Rh_request_management_component extends NavigationMixin(Lig
         return  {isvalid,obj};
     }
 
-    buildformDetail(profileinformation){
+    buildformDetail(profileinformation, adrrName){
 
         console.log('@@@@@RecordType.Name' + profileinformation?.RecordType.Name);
         if(profileinformation?.RecordType.Name == 'Complain'){
@@ -351,7 +414,7 @@ export default class Rh_request_management_component extends NavigationMixin(Lig
                             placeholder:this.l.AddressedCc,
                             name:'RH_AddressedCc',
                             required:true,
-                            value:profileinformation?.RH_Addressed_Cc__c,
+                            value:adrrName,
                             ly_md:'6', 
                             ly_lg:'6'
                         },
@@ -525,10 +588,25 @@ export default class Rh_request_management_component extends NavigationMixin(Lig
                     ly_md:'6', 
                     ly_lg:'6',
                     isDatetime:true
-                }
-                    ];
+                }];
         }
         
+    }
+
+    buildFormExplanation(){ 
+        
+        this.inputExplanForm = [
+            {
+                label:this.l.AddressedTo,
+                placeholder:this.l.AddressedTo,
+                name:'addressedTo',
+                picklist: true,
+                options: this.allContact,
+                value: '',
+                ly_md:'6', 
+                ly_lg:'6'
+            }
+        ]
     }
 
     buildRejetForm(){

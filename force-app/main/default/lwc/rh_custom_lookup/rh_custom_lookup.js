@@ -2,7 +2,7 @@ import lookUp from '@salesforce/apex/RH_CustomLookup_Controller.search';
 import { api, LightningElement, track, wire } from 'lwc';
 
 
-export default class Rh_custom_lookup_adv extends LightningElement {
+export default class Rh_custom_lookup extends LightningElement {
 
     @api objName;
     @api fieldLabel;
@@ -32,7 +32,7 @@ export default class Rh_custom_lookup_adv extends LightningElement {
         } else if (error) {
             this.error = error;
             console.error(error);
-            this.records = [];
+            this.records = undefined;
         }
     }
     handleClick() {

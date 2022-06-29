@@ -8,11 +8,13 @@ import accomplishmentDetail from '@salesforce/apex/RH_Accomplishment_Controller.
 import checkCurrentContact from '@salesforce/apex/RH_Accomplishment_Controller.checkCurrentContact';
 import deleteAccomplishment from '@salesforce/apex/RH_Accomplishment_Controller.deleteAccomplishment';
 import activateAccomplishment from '@salesforce/apex/RH_Accomplishment_Controller.activateAccomplishment';
+import filterAccomplishment from '@salesforce/apex/RH_Accomplishment_Controller.filterAccomplishment';
 import uploadFile from '@salesforce/apex/RH_News_controller.uploadFile';
 import updateFile from '@salesforce/apex/RH_News_controller.updateFile';
 import getFileInfos from '@salesforce/apex/RH_FileUploader.getFileInfos';
+import deleteFiles from '@salesforce/apex/RH_FileUploader.deleteFiles';
 import { CurrentPageReference } from 'lightning/navigation';
-import { fireEvent } from 'c/pubsub';
+import { fireEvent, registerListener, unregisterListener } from 'c/pubsub';
 
 export default class Rh_accomplishment extends NavigationMixin(LightningElement) {
 
@@ -24,17 +26,19 @@ export default class Rh_accomplishment extends NavigationMixin(LightningElement)
     @track showEdit;
     @track editMode = false;
     @track newFileData={};
+    @track previewFile=false;
     isUpdate=false;
     l = {...labels};
     icon = {...icons};
+    inputFormFilter = [];
     accomInputDetails = [];
     formEditInputs = [];
+    newsFileDetails = [];
     @wire(CurrentPageReference) pageRef;
     status = 'Draft';
     formInputs=[];
 
     keysLabels={
-        Name: 'Name',
         Statut: 'Statut',
         Title: 'Title',
         Description: 'Description',
@@ -42,11 +46,21 @@ export default class Rh_accomplishment extends NavigationMixin(LightningElement)
         Submiter: 'Submit by'
     };
     fieldsToShow={
-        Name: 'Name',
         Statut: 'Statut',
         date: 'Date',
         Submiter: 'Submit by'
     };
+
+    statusOptions = [
+        {
+            label: 'Draft',
+            value: 'Draft'
+        },
+        {
+            label: 'Active',
+            value: 'Active'
+        }
+    ];
 
     buildForm(){
         this.formInputs=[
@@ -55,7 +69,7 @@ export default class Rh_accomplishment extends NavigationMixin(LightningElement)
                 placeholder: this.l.TitlePlc,
                 name:'title',
                 value: '',
-                required:false,
+                required:true,
                 ly_md:'6', 
                 ly_lg:'6'
             },
@@ -69,7 +83,7 @@ export default class Rh_accomplishment extends NavigationMixin(LightningElement)
                 ly_lg:'6'
             },
             {
-                label:'Upload File',
+                label:this.l.UploadFile,
                 name:'uploadFile',
                 fileName: '',
                 type:'file',
@@ -98,7 +112,37 @@ export default class Rh_accomplishment extends NavigationMixin(LightningElement)
         ]
     }
 
+    buildFormFilter(){
+        this.inputFormFilter=[
+            {
+                label: this.l.Title,
+                placeholder: this.l.TitlePlc,
+                name:'title',
+                required:false,
+                ly_md:'6', 
+                ly_lg:'6'
+            },
+            {
+                label:this.l.Status,
+                placeholder: this.l.StatusPlc,
+                name:'status',
+                picklist: true,
+                options: this.statusOptions,
+                ly_md:'6', 
+                ly_lg:'6'
+            },
+            {
+                label:this.l.Description,
+                placeholder:this.l.DescriptionPlc,
+                name:'Description',
+                required:false,
+                ly_md:'6', 
+                ly_lg:'6'
+            }];
+    }
+
     connectedCallback(){
+        registerListener('backbuttom', this.dobackbuttom, this);
         this.recordId = this.getUrlParamValue(window.location.href, 'recordId');
         if(this.recordId){
             this.accomplishDetails(this.recordId); 
@@ -112,37 +156,107 @@ export default class Rh_accomplishment extends NavigationMixin(LightningElement)
     }
 
     getAccomplish(){
+        this.buildFormFilter();
+        this.startSpinner(true);
         getAccomplishment().then(result =>{
+            this.itemCard = [];
             const self=this;
             result.forEach(elt => { 
             let objetRep = {};
             objetRep = {
-                "Name": elt?.Name,
                 "Statut": elt?.RH_Status__c,
                 "Description": elt?.RH_Description__c,
                 "date": elt?.RH_Date__c,
-                "Submiter": elt.RH_Submiter__r?.Name,
+                "Submiter":  elt.RH_Submiter__r?.Name.length>25? elt.RH_Submiter__r?.Name.slice(0, 25) +'...': elt.RH_Submiter__r?.Name,
                 "id" : elt.Id,
-                icon:"standard:people",
+                icon:"utility:education",
                 
-                title: elt?.RH_Title__c,
+                title: elt?.RH_Title__c.length>30? elt?.RH_Title__c.slice(0, 30) +'...': elt?.RH_Title__c,
                 keysFields:self.keysFields,
                 keysLabels:self.keysLabels,
                 fieldsToShow:self.fieldsToShow,
             }
+            let Actions=[
+                {
+                    name:'Delete',
+                    label:'Delete',
+                    iconName:'action:delete'
+                }
+            ];
             if(elt?.RH_Status__c == 'Draft'){
-                let Actions=[
-                    {
-                        name:'Enabled',
-                        label:'Enabled',
-                        iconName:'action:preview'
-                    }];
-                objetRep.actions = Actions;
+                Actions.push( {
+                    name:'Enabled',
+                    label:'Enabled',
+                    iconName:'action:preview'
+                });   
             }
+            objetRep.actions = Actions;
             this.itemCard.push(objetRep);
             }); 
             this.setviewsList( this.itemCard)
+        }).catch(error => {
+            console.error('Error:', error);
+        }).finally(() => {
+            this.startSpinner(false)
+        });
+    }
+
+    filterAccomplishment(event){
+        this.startSpinner(true);
+        let title= event.detail.title;
+        let description= event.detail.description;
+        let status= event.detail.status;
+
+        filterAccomplishment({title: title ,description: description , status: status })
+        .then(result => {
+            console.log('result', result);
+            if(result){
+                this.itemCard = [];
+                const self=this;
+                result.forEach(elt => { 
+                    let objetRep = {};
+                    objetRep = {
+                        "Statut": elt?.RH_Status__c,
+                        "Description": elt?.RH_Description__c,
+                        "date": elt?.RH_Date__c,
+                        "Submiter": elt.RH_Submiter__r?.Name.length>25? elt.RH_Submiter__r?.Name.slice(0, 25) +'...': elt.RH_Submiter__r?.Name,
+                        "id" : elt.Id,
+                        icon:"utility:education",
+                        
+                        title: elt?.RH_Title__c.length>30? elt?.RH_Title__c.slice(0, 30) +'...': elt?.RH_Title__c,
+                        keysFields:self.keysFields,
+                        keysLabels:self.keysLabels,
+                        fieldsToShow:self.fieldsToShow,
+                    }
+                    let Actions=[
+                        {
+                            name:'Delete',
+                            label:'Delete',
+                            iconName:'action:delete'
+                        }
+                    ];
+                    if(elt?.RH_Status__c == 'Draft'){
+                        Actions.push( {
+                            name:'Enabled',
+                            label:'Enabled',
+                            iconName:'action:preview'
+                        });   
+                    }
+                    objetRep.actions = Actions;
+                    console.log(objetRep);
+                    this.itemCard.push(objetRep);
+                }); 
+                this.setviewsList( this.itemCard)
+                console.log(this.itemCard);
+            }
         })
+        .catch(error => {
+            this.startSpinner(false);
+            this.showToast('error', 'Error', error.body);
+            console.log('error', error);
+        }).finally(() => {
+            this.startSpinner(false)
+        });
     }
 
     setviewsList(items){
@@ -183,21 +297,28 @@ export default class Rh_accomplishment extends NavigationMixin(LightningElement)
     }
 
     uploadFile(idRec, redirect=false){
-        this.getBase64(this.newFileData)
-            .then(data => {
-                let base64= data.split(',')[1];
-                uploadFile({ base64: base64, filename: this.newFileData.name, recordId: idRec })
-                    .then(result=>{
-                        console.log('file upload --->', result);
-                        // if(redirect){this.goToRequestDetail(this.recordId)}
-                    }).catch(error => {
-                        console.error('Error:', error);
-                    })
-                });
+        if(this.newFileData?.size){
+            this.getBase64(this.newFileData)
+                .then(data => {
+                    let base64= data.split(',')[1];
+                    uploadFile({ base64: base64, filename: this.newFileData.name, recordId: idRec })
+                        .then(result=>{
+                            console.log('file upload --->', result);
+                            if(redirect){
+                            this.goToRequestDetail(this.recordId);
+                            }
+                        }).catch(error => {
+                            console.error('Error:', error);
+                        })
+                    });
+        }else{
+            this.goToRequestDetail(this.recordId);
+        }
     }
 
     updateFile(idRecUp, redirect=false){
-        this.getBase64(this.newFileData)
+        if(this.newFileData?.size){
+            this.getBase64(this.newFileData)
             .then(data => {
                 let base64= data.split(',')[1];
                 updateFile({ base64: base64, filename: this.newFileData.name, ContentVersionId: idRecUp })
@@ -208,6 +329,9 @@ export default class Rh_accomplishment extends NavigationMixin(LightningElement)
                         console.error('Error:', error);
                     })
                 });
+        }else{
+            this.goToRequestDetail(this.recordId); 
+        }
     }
 
     saveAccomplishment(input){
@@ -390,7 +514,7 @@ export default class Rh_accomplishment extends NavigationMixin(LightningElement)
                 ly_lg:'6'
             },
             {
-                label:'Upload File',
+                label:this.l.UploadFile,
                 name:'uploadFile',
                 value:detailsFile[0]?.Name,
                 fileName: detailsFile[0]?.Name,
@@ -409,7 +533,7 @@ export default class Rh_accomplishment extends NavigationMixin(LightningElement)
                 name:'title',
                 type:'text',
                 value:currentInfo?.RH_Title__c,
-                required:false,
+                required:true,
                 ly_md:'6', 
                 ly_lg:'6'
             },
@@ -422,7 +546,7 @@ export default class Rh_accomplishment extends NavigationMixin(LightningElement)
                 ly_lg:'6'
             },
             {
-                label:'Upload File',
+                label:this.l.UploadFile,
                 name:'uploadFile',
                 value:currentFile[0]?.Name,
                 fileName: currentFile[0]?.Name,
@@ -448,6 +572,15 @@ export default class Rh_accomplishment extends NavigationMixin(LightningElement)
                 ly_lg:'12'
             }
         ];
+        this.newsFileDetails=[
+            {
+                label:this.l.UploadFile,
+                name:'image',
+                fileName: currentFile[0]?.Name,
+                type:'image',
+                source: currentFile[0]?.ContentDownloadUrl
+            }
+        ];
     }
 
     handleCancel(){
@@ -469,12 +602,40 @@ export default class Rh_accomplishment extends NavigationMixin(LightningElement)
     }
 
     activateAccom(idAcc){
+        this.startSpinner(true);
         this.status = 'Active';
         activateAccomplishment({accomId: idAcc, status:this.status})
         .then(result =>{
             console.log('accomplishment --> ' , result);
-            this.goToRequestDetail(this.recordId);
+            this.handleCancelDetail();
             this.showToast('success', 'Success', 'Accomplishment have been successfuly activated');
+        }).catch(error =>{
+            console.error('error',error)
+            this.showToast('error', 'Error', error);
+        }).finally(() => {
+            this.startSpinner(false)
+        });
+    }
+
+    deleteFiles(idRec, redirect=false){
+        deleteFiles({recordId: idRec})
+        .then(result =>{
+            console.log('delete file --> ' , result);
+            if(redirect){this.handleCancelDetail();}
+        }).catch(error =>{
+            console.error('error',error)
+        }).finally(() => {
+            this.startSpinner(false)
+        });
+    }
+
+    deleteAccomplishment(idAccom){
+        this.startSpinner(true);
+        deleteAccomplishment({accId: idAccom})
+        .then(result =>{
+            console.log('delete accomplishment --> ' , result);
+            this.deleteFiles(idAccom, true);
+            this.showToast('success', 'Success', 'Accomplishment have been successfuly deleded');
         }).catch(error =>{
             console.error('error',error)
             this.showToast('error', 'Error', error);
@@ -482,15 +643,7 @@ export default class Rh_accomplishment extends NavigationMixin(LightningElement)
     }
 
     handleDeleteValue(){
-        deleteAccomplishment({accId: this.recordId})
-        .then(result =>{
-            console.log('accomplishment --> ' , result);
-            this.handleCancelDetail();
-            this.showToast('success', 'Success', 'Accomplishment have been successfuly deleded');
-        }).catch(error =>{
-            console.error('error',error)
-            this.showToast('error', 'Error', error);
-        })
+        this.deleteAccomplishment(this.recordId);
     }
 
     handleCancelEdit(){
@@ -510,6 +663,33 @@ export default class Rh_accomplishment extends NavigationMixin(LightningElement)
         console.log(`record `, record);
     }
 
+    handlePreview(event){
+        const action= event.detail.action;
+        switch (action){
+            case 'goToLink': this.previewFile=true; 
+                         break;
+            case 'closeModal': this.previewFile=false;
+                         break;
+        }
+    }
+
+    createAction(variant,label,name,title,iconName,className){ 
+        return {
+            variant, label, name, title, iconName,  class:className
+        };
+    }
+    
+    showModalDelete(){
+        let Actions=[];
+        let text='';
+        const extra={style:'width:20vw;'};
+        text='Are you sure you want to delete this Accomplishment?';
+        extra.title='Confirm Deletion';
+        extra.style+='--lwc-colorBorder: var(--bannedColor);';
+        Actions.push(this.createAction("brand-outline","Yes","OK_DELETE","Yes",this.icon.check,'slds-m-left_x-small'));
+        this.ShowModal(true,text,Actions,extra);
+    }
+
     getBase64(file) {
         return new Promise((resolve, reject) => {
           const reader = new FileReader();
@@ -517,6 +697,15 @@ export default class Rh_accomplishment extends NavigationMixin(LightningElement)
           reader.onload = () => resolve(reader.result);
           reader.onerror = error => reject(error);
         });
+    }
+
+    dobackbuttom(event) {
+        unregisterListener('backbuttom', this.dobackbuttom, this);
+        this.handleCancelDetail();
+    }
+
+    ShowModal(show,text,actions,extra={}){
+        fireEvent(this.pageRef, 'Modal', {show,text,actions,extra});
     }
 
     showToast(variant, title, message){
@@ -533,7 +722,11 @@ export default class Rh_accomplishment extends NavigationMixin(LightningElement)
         if(info.extra.item=='Enabled'){
             this.activateAccom(info?.data?.id);
         }else{
-            this.goToRequestDetail(info?.data?.id);
+            if(info.extra.item=='Delete'){
+                this.deleteAccomplishment(info?.data?.id);
+            }else{
+               this.goToRequestDetail(info?.data?.id);
+            } 
         }
     }
 }

@@ -120,6 +120,7 @@ export default class Rh_display_fields extends NavigationMixin(LightningElement)
         */];
     }
     connectedCallback(){
+        console.log(`############################ connectedCallback dsp`);
        this.initDefault();
        this.initDefaultAction();
     }

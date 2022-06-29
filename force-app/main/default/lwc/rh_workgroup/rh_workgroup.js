@@ -1,12 +1,16 @@
 import { LightningElement, wire } from 'lwc';
 import { registerListener,unregisterListener, unregisterAllListeners,fireEvent } from 'c/pubsub';
 import { CurrentPageReference,NavigationMixin } from 'lightning/navigation';
+import checkRole from '@salesforce/apex/RH_Utility.checkRole';
+
 export default class Rh_workgroup extends NavigationMixin(LightningElement) {
     @wire(CurrentPageReference) pageRef;
     groupeId;
     idGroupe;
     objGroupe;
     backSource;
+    UserRole;
+    createBouton;
     contactMembers=[];
     statusGroup;
     isVisible = true;
@@ -42,6 +46,16 @@ export default class Rh_workgroup extends NavigationMixin(LightningElement) {
         this.isVisibleGroupmember = false;
         this.isVisibleDetailgroup = true;*/
     }
+    roleManage(){
+        checkRole({ })
+          .then(result => {
+            console.log('Result role --->', result);
+            if(result.isCEO||result.isRHUser) this.createBouton = true;
+          })
+          .catch(error => {
+            console.error('Error:', error);
+        });
+    }
     connectedCallback(){
         console.log('in the parent component');
         registerListener('backbuttom', this.dobackbuttom, this);
@@ -54,6 +68,7 @@ export default class Rh_workgroup extends NavigationMixin(LightningElement) {
         }else{
             this.isVisible = true;
         }
+        this.roleManage();
     }
     getUrlParamValue(url, key) {
         return new URL(url).searchParams.get(key);
@@ -115,10 +130,12 @@ export default class Rh_workgroup extends NavigationMixin(LightningElement) {
         this.isVisibleDetailgroup = false;
         this.handleCreategroup();
     }
-    handlegotodetailgroup(){
-        this.isVisible = false;
+    handlegotodetailgroup(event){
+        this.groupeId = event.detail;
+        this.goToPage('rhgroup',{'recordId': this.groupeId});
+        /*this.isVisible = false;
         this.isVisiblecreate = false;
         this.isVisibleGroupmember = false;
-        this.isVisibleDetailgroup = true;
+        this.isVisibleDetailgroup = true;*/
     }
 }

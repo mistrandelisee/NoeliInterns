@@ -12,8 +12,22 @@ import deleteEvent from '@salesforce/apex/RH_EventController.deleteEvent';
 import getIdUser from '@salesforce/apex/RH_EventController.getIdUser';
 import getEvent from '@salesforce/apex/RH_EventController.getEvent';
 import { NavigationMixin } from 'lightning/navigation';
+import { icons } from 'c/rh_icons';
+import { labels } from 'c/rh_label';
 
 export default class rh_Event_Management extends  NavigationMixin(LightningElement) {
+    l={...labels,
+        //searchText:null,
+        Name: 'Name',
+        srchNamePlc: 'Search by name',
+        From:'From',
+        To:'To',
+        OrderBy:'sort By',
+        selectPlc:'Select an option',
+        };
+    icon={...icons};
+    label={...labels};
+
     showComponentBase = true;
     showComponentDetailsForBaseUser = false;
     showComponentDetails = false;
@@ -22,6 +36,7 @@ export default class rh_Event_Management extends  NavigationMixin(LightningEleme
     displayButtonCEO = false;
     showModalDelete = false;
     isApproved = false;
+    @track filterInputs=[];
     @track visibleDatas = [];
     idUser;
     contactid;
@@ -35,14 +50,30 @@ export default class rh_Event_Management extends  NavigationMixin(LightningEleme
     @api recordId;
     @api eventId;
     filesList =[];
+    filesLists = [];
     @track datas = [];
+
+    columns = [
+        { label: this.label.FileName, fieldName: 'FileName', type: 'text', sortable: true },
+        {
+            label: this.label.DownloadAttachment,
+            type: 'button-icon',
+            typeAttributes: {
+                name: 'Download',
+                iconName: this.icon.Download,
+                title: 'Download',
+                variant: 'border-filled',
+                alternativeText: 'Download'
+            }
+        },
+    ];
 
     /**Start Display Icons */
     @api title;
     @api iconsrc;
     initDefault(){
         this.title=this.title || 'User Informations';
-        this.iconsrc= this.iconsrc || 'utility:people';
+        this.iconsrc= this.iconsrc || this.icon.user;
     }
     /**End Display Icons*/
 
@@ -55,12 +86,12 @@ export default class rh_Event_Management extends  NavigationMixin(LightningEleme
         Status:'Status'
     };
     keysLabels={
-        EventName:'Event Name', 
-        ContactName: 'Contact Name',
-        Description: 'Description',
-        StartDate: 'Start Date',
-        EndDate: 'End Date',
-        Status:'Status'
+        EventName: this.label.Name, 
+        ContactName: this.label.ContactName,
+        Description: this.label.Description,
+        StartDate: this.label.StartDate,
+        EndDate: this.label.EndDate,
+        Status: this.label.Status
     };
     fieldsToShow={ 
         // EventName:'Event Name',
@@ -68,9 +99,9 @@ export default class rh_Event_Management extends  NavigationMixin(LightningEleme
         Description: 'Description',
         StartDate: 'Start Date',
         EndDate: 'End Date',
-        Status:'Status'
+        // Status:'Status'
     };
-
+    get filterReady(){ return this.filterInputs?.length >0}
     getEventManager(){
         this.datas=[];
         getMyEventManager()
@@ -85,12 +116,12 @@ export default class rh_Event_Management extends  NavigationMixin(LightningEleme
                 "id" : elt.Id,
                 "EventName": elt.Name,
                 "ContactName": elt.Contact_Id__r?.Name,
-                "StartDate" : elt.Start_Date__c,
-                "EndDate" : elt.End_Date__c,
+                "StartDate" : elt.Start_Dates__c?.split('T')[0],
+                "EndDate" : elt.End_Dates__c?.split('T')[0],
                 "Status" : elt.Status__c,
                 "Description" :  str,
 
-                icon:"standard:people", 
+                icon:this.icon.user, 
                 title: elt.Name,
                 class: elt.Status__c=='Approved'? 'frozen': 'active',
                 keysFields:self.keysFields,
@@ -147,28 +178,81 @@ export default class rh_Event_Management extends  NavigationMixin(LightningEleme
         this.getInfoUser();
         this.getInfoBaseUser();
     }
+    handleSubmitFilter(event) {
+        const record=event.detail;
+        console.log(`handleSubmitFilter record `, JSON.stringify(record) );
+        console.log(`this.datas `, this.datas);
+        record.searchText ? this.datas = this.datas.filter(element =>((element.EventName).toUpperCase()) == (record.searchText.toUpperCase())) : this.datas;
+        record.startDate ? this.datas = this.datas.filter(element =>element.StartDate ==  record.startDate) : this.datas;
+        record.status ? this.datas = this.datas.filter(element =>element.Status ==  record.status) : this.datas;
+        record.EndDate ? this.datas = this.datas.filter(element =>element.EndDate ==  record.EndDate) : this.datas;   
+    }
+    handleResetFilter(event) {
+        this.getEventManager();
+    }
     optionsStatus() {
         getPicklistStatus()
             .then(result => {
-                let option = [];
-                for(let i=0; i<result.length; i++) {
-                    option.push(result[i].value);
-               }
-               let tab = option.pop();
-               let tab1 = option.pop();
-               console.log('tab-->', tab);
-               console.log('tab1-->', tab1);
-               console.log('option-->', option);
-               this.StatusList = option.map(elt =>({ label:elt ,value:elt}));
-               this.StatusList;
-               console.log('StatusList-->', tab);
+                console.log('@@@ result-->', result);
+                this.StatusList = result;
+                console.log('StatusList-->', this.StatusList);
+                this.buildFilter();
             })
-            .catch(error => {
-                // TODO Error handling
+            .catch(err => {
+                console.error('error',err);
             });
-        return this.StatusList;
     }
-
+    buildFilter(){
+        console.log('### StatusList-->', this.StatusList);
+        this.filterInputs=[
+            {
+                label:this.label.Name,
+                placeholder:this.l.srchNamePlc,
+                name:'searchText',
+                value: '',
+                ly_md:'3', 
+                ly_xs:'6', 
+                ly_lg:'3'
+            }];
+            
+            this.filterInputs =[...this.filterInputs,
+            {
+                label:this.label.Status,
+                name:'status',
+            
+                picklist: true,
+                options: this.StatusList,
+                value: '',
+                ly_md:'3',
+                ly_xs:'6',  
+                ly_lg:'3'
+            },
+            {
+                label:this.l.From,
+                placeholder:this.l.From,
+                name:'startDate',
+               
+                value: '',
+                type:'Date',
+                ly_md:'3', 
+                ly_xs:'6', 
+                ly_lg:'3',
+            },
+            {
+                label:this.l.To,
+                placeholder:this.l.To,
+                name:'EndDate',
+               
+                value: '',
+                type:'Date',
+                ly_md:'3', 
+                ly_xs:'6', 
+                ly_lg:'3',
+            },
+         
+        
+        ];
+    }
     getEventDetails(eventId) {debugger
         getEvent({evId:eventId})
         .then(result =>{
@@ -192,8 +276,8 @@ export default class rh_Event_Management extends  NavigationMixin(LightningEleme
                         newobj.EventName=obj.Name;
                         newobj.ContactName=obj.Contact_Id__r.Name;
                         newobj.Description=obj.Description__c;
-                        newobj.StartDate=obj.Start_Date__c;
-                        newobj.EndDate=obj.End_Date__c;
+                        newobj.StartDate= obj.Start_Dates__c.split('T')[0]+'  à '+ obj.Start_Dates__c.split('T')[1].substring(0,5); 
+                        newobj.EndDate= obj.End_Dates__c.split('T')[0]+'  à '+obj.End_Dates__c.split('T')[1].substring(0,5);
                         newobj.Status=obj.Status__c;
                     return newobj;
                 });
@@ -202,7 +286,7 @@ export default class rh_Event_Management extends  NavigationMixin(LightningEleme
                 this.optionsStatus();
                 this.eventDetails =[
                     {
-                        label:'Event Name',
+                        label: this.label.Name,
                         name:'Name',
                         type:'text',
                         value:this.eventinformationEdite[0].EventName,
@@ -211,7 +295,7 @@ export default class rh_Event_Management extends  NavigationMixin(LightningEleme
                         ly_lg:'12'
                     },
                     {
-                        label:'Start date',
+                        label: this.label.StartDate,
                         name:'StartDate',
                         type:'date',
                         value:this.eventinformationEdite[0].StartDate,
@@ -220,7 +304,7 @@ export default class rh_Event_Management extends  NavigationMixin(LightningEleme
                         ly_lg:'12'
                     },
                     {
-                        label:'Status',
+                        label: this.label.Status,
                         name:'Status',
                         picklist: true,
                         value:this.eventinformationEdite[0].Status,
@@ -229,7 +313,7 @@ export default class rh_Event_Management extends  NavigationMixin(LightningEleme
                         ly_lg:'12'
                     },
                     {
-                        label:'End date',
+                        label: this.label.EndDate,
                         name:'EndDate',
                         type:'date',
                         value:this.eventinformationEdite[0].EndDate,
@@ -237,7 +321,7 @@ export default class rh_Event_Management extends  NavigationMixin(LightningEleme
                         ly_lg:'12'
                     },
                     {
-                        label:'Description',
+                        label: this.label.Description,
                         name:'Description',
                         type:'textarea',
                         value:this.eventinformationEdite[0].Description,
@@ -247,21 +331,48 @@ export default class rh_Event_Management extends  NavigationMixin(LightningEleme
                 ];
                 getRelatedFilesByRecordId({recordId: eventId})
                 .then(result=>{
-                    console.log('result-->',result);
-                    this.filesList = Object.keys(result).map(id=>({
-                    "label":result[id].obj.Title,
-                    "value": result[id].obj.Title,
-                    "fname": result[id].obj.Title,
-
-                    "url":`data:application/octet-stream;base64,${result[id].link}`
-                    }))
-                    console.log('@@@ ===> ',this.filesList);
+                    console.log('@@@ @@@ @@@ 1 result-->', result);
+                    let data_t =[];
+                    for(let key2 in result['data2']) {   
+                        for(let key in result['data']) {
+                            if(result['data'][key].ContentDocumentId== result['data2'][key2].Id){
+                                data_t.push({Id:result['data2'][key2].Id, FileName: result['data2'][key2].Title, url: result['data'][key].ContentDownloadUrl});
+                            }
+                        }
+                    }
+                    this.filesLists = data_t;
+                    console.log('-->',this.filesLists);
                 });
             }
         }).catch(err =>{
             console.error('error',err)
         })
-    }    
+    }
+    handleRowAction( event ) {
+        const actionName = event.detail.action.name;
+        const rowId = event.detail.row.Id;
+        console.log('rowId--> ' , rowId);
+        console.log('actionName--> ' , actionName);
+        switch (actionName) {
+            case 'Download':
+                for(let key in this.filesLists){
+                    if(this.filesLists[key].Id == rowId){
+                        this.handleNavigate(this.filesLists[key].url);
+                    }
+                }
+                break;
+            default:
+        }
+    }
+    handleNavigate(url) {
+        const config = {
+            type: 'standard__webPage',
+            attributes: {
+                url: url
+            }
+        };
+        this[NavigationMixin.Navigate](config);
+      }
     getInfoUser(){
         getInfUser({}).then(result =>{
             if (result.error) {
@@ -294,7 +405,7 @@ export default class rh_Event_Management extends  NavigationMixin(LightningEleme
     }
     handleRejectEvent(){
         this.changeEventStatus(this.eventId);
-        this.closeModalDelete();
+        this.closeModalRejected();
     }
     handledeleteEvent(){debugger
         let _id = this.eventId;
@@ -307,13 +418,13 @@ export default class rh_Event_Management extends  NavigationMixin(LightningEleme
                 console.log('Message----->', result[0].Message__c);
                 if(result[0].Status__c=='Submitted' && (result[0].Message__c=='Event do not send')){
                             this.closeModalDelete();
-                            this.showToast('info', 'Toast Info', 'You should sent event before delete');
+                            this.showToast('info', 'Toast Info', this.label.SendEvent);
                 }else if(result[0].Status__c=='Submitted' && (result[0].Message__c=='Right no allowed')){
                     this.closeModalDelete();
-                    this.showToast('info', 'Toast Info', 'You don\'t have right to deletion !!');
+                    this.showToast('info', 'Toast Info', this.label.RightDeletion);
                 }else{
                     this.closeModalDelete();
-                    this.showToast('success', 'Success!!', 'Event Delete Successfully!!');
+                    this.showToast('success', 'Success!!', this.label.EvenDeletionS);
                 }
             })
             .catch(error => {
@@ -333,10 +444,16 @@ export default class rh_Event_Management extends  NavigationMixin(LightningEleme
         this.visible = false;
         this.showModalDelete = true;
     }
+    closeModalRejected(){
+        this.showModalDelete = false;
+        setTimeout(()=>{
+            window.location.reload();
+        },500);
+    }
     closeModalDelete(){
         this.showModalDelete = false;
     }
-    changeEventStatus(evId){
+    changeEventStatus(evId){debugger
         console.log('evId -- >' + evId);
         changeEventStatus({infoId:evId})
         .then(result =>{
@@ -346,9 +463,9 @@ export default class rh_Event_Management extends  NavigationMixin(LightningEleme
                 console.log('@@@ Event --> ' , result);
                 this.ContactId = result[0].Contact_Id__c;
                 let desc = result[0].Description__c;
-                let status = result[0].Status__c;
+                let name = result[0].Name;
                 if(result[0].Message__c=='Already approved'){
-                    this.showToast('info', 'Toast Info', 'You cannot rejected an event already approved');
+                    this.showToast('info', 'Toast Info', this.label.RejectFail);
                 }else if(this.ContactId){
                     console.log('@@@EventContact--> ' , this.ContactId);
                     getIdUser({idU: this.ContactId})
@@ -356,14 +473,14 @@ export default class rh_Event_Management extends  NavigationMixin(LightningEleme
                         console.log('@@User data --> ' , result);
                         for(let i=0; i<result.length; i++){
                             if(result[i].UserRole.Name=='Base User'){
-                                console.log('@@@ IDUSER --> ' , result[i].Id);
-                                sendNotif({strBody:desc, pgRefId:evId, strTargetId:result[i].Id, strTitle:status, setUserIds:result[i].Id})
+                                sendNotif({strBody:desc, pgRefId:evId, strTargetId:result[i].Id, strTitle:name, setUserIds:result[i].Id})
                                     .then(result =>{
                                         if (result?.error) {
                                             console.error(result?.msg);
                                         }else{
+                                            console.log('@@@ IDUSER --> ' , result[i].Id);
                                             console.log('event--> ' , result);
-                                            this.showToast('Success', 'Success', 'Event Submitted Successfully');
+                                            this.showToast('Success', 'Success', this.label.EventSubS);
                                         }
                                     }).catch(err =>{
                                         console.error('error',err)
@@ -390,8 +507,9 @@ export default class rh_Event_Management extends  NavigationMixin(LightningEleme
             console.error('error',err);
         })
     }
-    getEventInformation(evId){debugger
+    getEventInformation(evId){
         console.log('evId -- >' + evId);
+        // this.startSpinner(true);
         getEventInfo({infoId:evId})
         .then(result =>{
             if (result.error) {
@@ -407,7 +525,7 @@ export default class rh_Event_Management extends  NavigationMixin(LightningEleme
                 console.log('setUserIds --> ' ,setUserIds);
                 console.log('userinfo--> ' , this.idUser);
                 if(result[0].Message__c && result[0].Message__c=='Already approved'){
-                    this.showToast('info', 'Toast Info', 'This event has been already shared !');
+                    this.showToast('info', 'Toast Info', this.label.EventA);
                 }else{
                     console.log('++++++event++++-->  notification');
                     sendNotif({strBody:result[0].Description__c, pgRefId:evId, strTargetId:this.idUser, strTitle:result[0].Name, setUserIds:setUserIds})
@@ -416,7 +534,7 @@ export default class rh_Event_Management extends  NavigationMixin(LightningEleme
                             console.error(result?.msg);
                         }else{
                             console.log('event--> ' , result);
-                            this.showToast('Success', 'Success', 'Event Submitted Successfully');
+                            this.showToast('Success', 'Success', this.label.EventSubS);
                             this.getEventManager()//refresh list
                         }
                     }).catch(err =>{
@@ -428,7 +546,7 @@ export default class rh_Event_Management extends  NavigationMixin(LightningEleme
         }).catch(err =>{
             console.error('error',err);
         })
-        // return this.EventInfo;
+        window.location.reload();
     }
     showToast(variant, title, message){
         let toast=this.template.querySelector('c-rh_toast');

@@ -11,24 +11,56 @@ import insertProjectupdated from '@salesforce/apex/RH_Project_controller.insertP
 import getFileInfos from '@salesforce/apex/RH_FileUploader.getFileInfos';
 import getRelatedFilesByRecordId from '@salesforce/apex/RH_Project_controller.getRelatedFilesByRecordId';
 import getPickListValuesIntoList from '@salesforce/apex/RH_Project_controller.getPickListValuesIntoList';
+import insertTask from '@salesforce/apex/RH_Project_controller.insertTask';
+import getPriorityTaskPickListValues from '@salesforce/apex/RH_Project_controller.getPriorityTaskPickListValues';
+import InitInvoiceCreation from '@salesforce/apex/RH_Invoice_Controller.InitInvoiceCreation';
+import accountCreation from '@salesforce/apex/RH_Invoice_Controller.accountCreation';
+import ActiveProject from '@salesforce/apex/RH_Project_controller.ActiveProject';
 import {NavigationMixin} from 'lightning/navigation';
+import checkRole from '@salesforce/apex/RH_Utility.checkRole';
+import { labels } from 'c/rh_label';
 
 
 import {ShowToastEvent} from 'lightning/platformShowToastEvent';
 import { CurrentPageReference } from 'lightning/navigation';
 import { registerListener, unregisterAllListeners,fireEvent } from 'c/pubsub';
+import { icons } from 'c/rh_icons';
+
+const ACCOUNT_NAME_FIELD = 'AccountId';
+const NEW_ACCOUNT='NEW_ACCOUNT';
+const NEW_ACTION='New';
+const SUCCESS_VARIANT='success';
+const WARNING_VARIANT='warning';
+const ERROR_VARIANT='error';
 
 export default class Rh_Projects extends NavigationMixin(LightningElement) {
+    
+    inizier={};
+    l={...labels,
+        Name: 'Name',
+        srchNamePlc: 'Search by name',
+        From:'Start Date',
+        To:'End Date',
+        OrderBy:'sort By',
+        selectPlc:'Select an option',
+        }
+    icon ={...icons}
     @track initial =[];
      memberProjects = []; 
+     ProjectsTask = [];
+     memberPicklist = [];
+     filterInputs=[];
     @track notmemberProjects = [];   
     @track addParticipate = [];
     @track listConts=[];
     @track filesList =[]; 
     optionpick =[]; 
+    priorityPicklist =[];
+    accountInputs=[];
     visibleProjects; 
     curentProject;
     curentDetails;
+    TaskTab;
     curentDetailsToUpdate;
     fileData;
     initermediate = [];
@@ -39,20 +71,48 @@ export default class Rh_Projects extends NavigationMixin(LightningElement) {
     showManage = false;
     showInsertform = false;
     showAddMembers= false;
+    showEditMembersBout= false;
+    createTask= false;
+    isVisible = false;
+    isActivate = false;
+    isClosed = false;
+    newAccount = false;
+    action;
+    sfieldId;
      statusPicklist =[];
-    @track error;
+     Status =[];
+     error;
+     stack;
     @track returnList =[];
     @track val =[];
     @track tabReq =[];
+    @track tabReqfilter =[];
     @track memberSelected = [];
     @track memberNotSelected = [];
     @track inputsItems = [];
     @track allInitialContacts = [];
-    @track columns = [{label: 'Name',fieldName: 'Name',type: 'text'},{label: 'Email adress',fieldName: 'Email',type: 'text'}];
-    @track columnsAttach = [{label: 'File Name',fieldName: 'File Name',type: 'text'},
-                            {label: 'Download',fieldName: 'Download',
-                            type: 'url',typeAttributes: { tooltip: { fieldName: 'Download' } },
-                            }];
+    @track columns = [{label: 'Name',fieldName: 'Name',type: 'button',typeAttributes:{label:{fieldName:'Name'},variant:'base'}},{label: 'Email adress',fieldName: 'Email',type: 'text'}];
+    @track columnsTask = [
+        {label: this.l.AssignTo,fieldName: 'AssignTo',type: 'text'},
+        {label: this.l.Description,fieldName: 'Description',type: 'text'},
+        {label: this.l.Priority,fieldName: 'Priority',type: 'text'},
+        {label: this.l.Status,fieldName: 'Status',type: 'text'},
+    ];
+    
+    @track columnsAttach = [
+        { label: 'File Name', fieldName: 'FileName', type: 'text', sortable: true },
+        {
+            label: 'Download',
+            type: 'button-icon',
+            typeAttributes: {
+                name: 'Download',
+                iconName: 'action:download',
+                title: 'Download',
+                variant: 'border-filled',
+                alternativeText: 'Download'
+            }
+        },
+    ];
      inputs= {};
      @api
      title;
@@ -63,20 +123,20 @@ export default class Rh_Projects extends NavigationMixin(LightningElement) {
         this.iconsrc= this.iconsrc || 'utility:people';
     }
     keysFields={
-    StartdDate:'Start date',
-    Statut:'Statut',
+    StartdDate:this.l.StartDate,
+    Status:this.l.Status,
 
-    Name:'Name',
+    Name:this.l.Name,
     };
     keysLabels={
-    StartdDate:'Start date',
-    Statut:'Statut',
+    StartdDate:this.l.StartDate,
+    Status:this.l.Status,
 
-    Name:'Name',
+    Name:this.l.Name,
     };
     fieldsToShow={
-        StartdDate:'Start date',
-        Statut:'Statut',
+        StartdDate:this.l.StartDate,
+        Status:this.l.Status,
     };
 
     
@@ -86,67 +146,161 @@ export default class Rh_Projects extends NavigationMixin(LightningElement) {
         getPickListValuesIntoList()
         .then(result => {
             console.log('piclist',result);
-            // this.statusPicklist =[];
+            let tab =[];
                 for(let key in result) {
-                    this.statusPicklist.push({label: result[key] , value: result[key]});
+                    // this.statusPicklist.push({label: result[key] , value: result[key]});
+                    tab.push({label: result[key] , value: result[key]});
+                    // console.log('statusPicklistIntern:', this.statusPicklist);
                 }
-                // this.statusPicklist = tab;
+                
+                this.statusPicklist = tab;
+                this.statusPicklist = this.statusPicklist.filter(element => element.label != 'Draft');
+                console.log('statusPicklistExter:', this.statusPicklist);
         })
      }
+
+     getPriorityTaskPickList(){
+        getPriorityTaskPickListValues()
+        .then(result => {
+            console.log('piclistTask',result);
+            
+                for(let key in result) {
+                    this.priorityPicklist.push({label: result[key] , value: result[key]});
+                }
+                console.log('priorityPicklist:', this.priorityPicklist);
+        })
+        .catch(error => {
+            console.log('Error:', error);
+        });
+     }
      
+     roleManage(){
+        checkRole({ })
+          .then(result => {
+            console.log('Result role --->', result);
+            if(result.isCEO||result.isTLeader) this.isVisible = true;
+          })
+          .catch(error => {
+            console.log('Error:', error);
+        });
+    }
 
     @wire(CurrentPageReference) pageRef;
     connectedCallback(){
         registerListener('valueMember', this.dovalueMember, this);
         this.curentProject = this.getUrlParamValue(window.location.href, 'recordId');
+        this.handleNew();
+        this.getPicklistValues();
+        this.buildFilter();
+        this.initDefault();
+        this.roleManage();
         if (this.curentProject) {
             this.getdetailsProject(this.curentProject);
         }else{
             this.getAllprojects();
         }
-        this.initDefault();
+        
+        
+        
     }
 
     startSpinner(b){
         fireEvent(this.pageRef, 'Spinner', {start:b});
      }
 
+    //  startSpinner(b){
+    //     let spinner=this.template.querySelector('c-rh_spinner');
+    //     if (b) {    spinner?.start(); }
+    //         else{   spinner?.stop();}
+    // }
+
      showToast(variant, title, message){
         let toast=this.template.querySelector('c-rh_toast');
         toast?.showToast(variant, title, message);
     }
      
+    // errorCallback(error,stack){
+    //     this.error=error;
+    //     this.stack=stack;
+    // }
  getAllprojects(){
-    getProjectList()
-    .then(result => {
-        console.log('result',result);
-        const self=this;
-        let tabReq111 = [];
-        for(let key in result) {
-            let objetRep = {};
-            objetRep = {
-            "Statut": result[key]?.Status__c,
-            "StartdDate":  result[key].Start_Date__c,
-            "Name": result[key].RH_Addressed_To__r?.Name,
-            "id" : result[key].Id,
-            icon:"standard:people",
+    // let isTrue = false;
+    // getProjectList()
+    // .then(result => {
+    //     console.log('result',result);
+    //     const self=this;
+    //     let tabReq111 = [];
+    //     for(let key in result) {
+    //         let objetRep = {};
+    //         objetRep = {
+    //         "Status": result[key]?.Status__c,
+    //         "StartdDate":  result[key].Start_Date__c,
+    //         "EndDate":  result[key].End_Date__c,
+    //         "Name": result[key].Name,
+    //         "id" : result[key].Id,
+    //         // icon:"standard:people",
+    //         icon:this.icon.project,
             
-            title: result[key]?.Name,
-            keysFields:self.keysFields,
-            keysLabels:self.keysLabels,
-            fieldsToShow:self.fieldsToShow,
-            }
+    //         title: result[key]?.Name,
+    //         keysFields:self.keysFields,
+    //         keysLabels:self.keysLabels,
+    //         fieldsToShow:self.fieldsToShow,
+    //         }
     
-            console.log('@@@@@objectReturn' + objetRep);
-            tabReq111.push(objetRep);
-        }
-        this.tabReq = tabReq111;
-        this.setviewsList( this.tabReq)
-    })
-    .catch(error => {
-        console.log('error',error);
-        this.error = error;
-        this.returnList = undefined;
+    //         console.log('@@@@@objectReturn' + objetRep);
+    //         tabReq111.push(objetRep);
+    //     }
+    //     this.tabReq = tabReq111;
+    //     this.tabReqfilter = tabReq111;
+    //     isTrue = true;
+    //     console.log('isTrue',isTrue);
+    //     this.setviewsList( this.tabReq)
+        
+    // })
+    // .catch(error => {
+    //     console.log('error',error);
+    //     // this.error = error;
+    //     this.returnList = undefined;
+    // });
+    return new Promise((resolve, reject) => {
+        getProjectList()
+        .then(result => {
+            console.log('result',result);
+            const self=this;
+            let tabReq111 = [];
+            for(let key in result) {
+                let objetRep = {};
+                objetRep = {
+                "Status": result[key]?.Status__c,
+                "StartdDate":  result[key].Start_Date__c,
+                "EndDate":  result[key].End_Date__c,
+                "Name": result[key].Name,
+                "id" : result[key].Id,
+                // icon:"standard:people",
+                icon:this.icon.project,
+                
+                title: result[key]?.Name,
+                keysFields:self.keysFields,
+                keysLabels:self.keysLabels,
+                fieldsToShow:self.fieldsToShow,
+                }
+        
+                console.log('@@@@@objectReturn' + objetRep);
+                tabReq111.push(objetRep);
+            }
+            this.tabReq = tabReq111;
+            this.tabReqfilter = tabReq111;
+            
+            this.setviewsList( this.tabReq)
+            resolve("Promise resolved");
+        })
+        .catch(error => {
+            console.log('error',error);
+            // this.error = error;
+            reject("Promise rejected");
+            this.returnList = undefined;
+        });
+     
     });
  }
 
@@ -191,28 +345,89 @@ setviewsList(items){
           return this.curentProject?true:false;
       }
 
+    initTaskForm(){
+        let tabelement=[];
+        this.getPriorityTaskPickList();
+        for (let key in this.memberProjects) {
+             tabelement.push({label:this.memberProjects[key].Name, value: this.memberProjects[key].ContId});
+            
+        }
+        this.memberPicklist =tabelement;
+
+        this.TaskTab =[
+            {
+                label:this.l.Priority,
+                placeholder:this.l.TaskPh,
+                name:'Priority',
+                picklist: true,
+                options:this.priorityPicklist,
+                required:true,
+                ly_md:'12', 
+                ly_lg:'6'
+            },
+            
+            {
+                label:this.l.AssignTo,
+                placeholder:this.l.AssignToPh,
+                name:'AssignTo',
+                picklist: true,
+                options:this.memberPicklist,
+                required:true,
+                ly_md:'12', 
+                ly_lg:'6'
+            },
+            
+            {
+                label:this.l.Description,
+                placeholder:this.l.TaskDescr,
+                name:'Description',
+                type:'textarea',
+                ly_md:'12', 
+                ly_lg:'12'
+            },
+        ];
+    }
+
+
     getdetailsProject(projectIds){
         getProject({ProjectId :projectIds})
         .then(result => {
-            this.getPicklistValues();
+            
+            
+            console.log('this.inizier?.filter',this.inizier?.filter);
             console.log('result',result);
             let bat =[];
                 for(let key in result['projectMembers']) {
-                    bat.push({Name: result['projectMembers'][key].RH_Contact__r.Name, Email: result['projectMembers'][key].RH_Contact__r.Email});
+                    bat.push({Name: result['projectMembers'][key].RH_Contact__r.Name, Email: result['projectMembers'][key].RH_Contact__r.Email,Id: result['projectMembers'][key].RH_Contact__r.RH_User__c,ContId: result['projectMembers'][key].RH_Contact__r.Id});
                 }
             this.memberProjects = bat;
             // this.memberProjects = result['projectMembers'];
             console.log(this.memberProjects);
-            let index;
 
+            let bate =[];
+                for(let key in result['taskList']) {
+                    bate.push({AssignTo: result['taskList'][key].Who.Name, Description: result['taskList'][key].Description,Priority: result['taskList'][key].Priority,Status: result['taskList'][key].Status});
+                }
+            this.ProjectsTask = bate;
+            console.log(this.ProjectsTask);
+           
+            if(result.project.Status__c == 'Closed'){
+                this.isClosed = true;
+                this.isActivate = true;
+            }
+            if(result.project.Status__c == 'Active'){
+                this.isActivate = true;
+                this.isClosed = false;
+            }
+           this.initTaskForm();
            
 
             getTeamMemberList()
-            .then(result => {
+            .then(result12 => {
                
                 // let option= [];
-                for(let key in result) {
-                    this.optionpick.push({label: result[key]['Name'] , value: result[key]['Id'] });
+                for(let key in result12) {
+                    this.optionpick.push({label: result12[key]['Name'] , value: result12[key]['Id'] });
                     
                            }
                 // this.optionpick = option;
@@ -220,35 +435,36 @@ setviewsList(items){
                 })
                 .catch(error => {
                     console.log('error',error);
-                    this.error = error;
+                    // this.error = error;
                 });
                 console.log('this.optionpick',this.optionpick);
                 console.log('this.statusPicklist',this.statusPicklist);
                 
             this.curentDetails =[
                 {
-                    label:'Name',
+                    label:this.l.Name,
                     name:'Name',
                     type:'text',
                     value: result.project.Name,
                     required:true,
                     ly_md:'12', 
-                    ly_lg:'12'
+                    ly_lg:'6'
 
                 },
                 {
-                    label:'Manager',
-                    name:'Manager',
+                    label:this.l.Manager,
+                    name:result.project.Project_Manager__r.RH_User__c,
                     value: result.project.Project_Manager__r.Name,
                     required:true,
-                    picklist: true,
+                    // isLink: true,
+                    type:'Link',
                     // options: this.optionpick,
                     ly_md:'12', 
-                    ly_lg:'12'
+                    ly_lg:'6'
                 },
                
                 {
-                    label:'Status',
+                    label:this.l.Status,
                     name:'Status',
                     value: result.project.Status__c,
                     required:false,
@@ -256,38 +472,47 @@ setviewsList(items){
                     // options: tab,
                     // options: this.statusPicklist,
                     ly_md:'12', 
-                    ly_lg:'12'
+                    ly_lg:'6'
                 },
                 {
-                    label:'Link',
-                    name:'Link',
-                    type:'text',
-                    value: result.project.Link__c,
-                    required:false,
+                    label:this.l.Account,
+                    name:'Account',
+                    value: result.project.RH_Account_ID__r.Name,
+                    // required:true,
+                    // picklist: true,
                     ly_md:'12', 
-                    ly_lg:'12'
+                    ly_lg:'6'
                 },
                 {
-                    label:'Start date',
+                    label:this.l.StartDate,
                     name:'Startdate',
                     value: result.project.Start_Date__c,
                     required:true,
                     type:'date',
                     ly_md:'12', 
-                    ly_lg:'12'
+                    ly_lg:'6'
                 },
                 
                 {
-                    label:'End date',
+                    label:this.l.EndDate,
                     name:'Enddate',
                     value: result.project.End_Date__c,
                     required:false,
                     type:'date',
                     ly_md:'12', 
-                    ly_lg:'12'
+                    ly_lg:'6'
                 },
                 {
-                    label:'Description',
+                    label:this.l.Link,
+                    name:'Link',
+                    type:'text',
+                    value: result.project.Link__c,
+                    required:false,
+                    ly_md:'12', 
+                    ly_lg:'6'
+                },
+                {
+                    label:this.l.Description,
                     name:'Description',
                     type:'textarea',
                     value: result.project.Description__c,
@@ -296,10 +521,11 @@ setviewsList(items){
                     ly_lg:'12'
                 },
             ];
+            
 
             this.curentDetailsToUpdate =[
                 {
-                    label:'Name',
+                    label:this.l.Name,
                     placeholder:'',
                     name:'Name',
                     value: result.project.Name,
@@ -308,11 +534,11 @@ setviewsList(items){
                     ly_lg:'6'
 
                 },
+
                 {
-                    label:'Manager',
+                    label:this.l.Manager,
                     // placeholder:result.project.Project_Manager__r.Name,
                     name:'Manager',
-                    // value: str,
                     value: result.project.Project_Manager__r.Id,
                     required:true,
                     picklist: true,
@@ -320,7 +546,24 @@ setviewsList(items){
                     ly_md:'12', 
                     ly_lg:'6'
                 },
-               
+                 {
+                            name:ACCOUNT_NAME_FIELD,
+                            objName:"Account",
+                            placeholder:'Select Account',
+                            iconName:"standard:account",
+                            newLabel:"Nuovo",
+                            label:"Account",
+                            objectLabel:'Account',
+                            filter:this.inizier?.filter,
+                            value: result.project.RH_Account_ID__c,
+                            selectName:result.project.RH_Account_ID__r.Name,
+                            isSelected:true,
+                            required:true,
+                            enableCreate:true,
+                            type:'lookup',
+                            ly_md:'12', 
+                            ly_lg:'6'
+                        },
                 {
                     label:'Status',
                     placeholder:'',
@@ -333,17 +576,9 @@ setviewsList(items){
                     ly_md:'12', 
                     ly_lg:'6'
                 },
+              
                 {
-                    label:'Link',
-                    placeholder:'',
-                    name:'Link',
-                    value: result.project.Link__c,
-                    required:false,
-                    ly_md:'12', 
-                    ly_lg:'6'
-                },
-                {
-                    label:'Start date',
+                    label:this.l.StartDate,
                     placeholder:'',
                     name:'Startdate',
                     value: result.project.Start_Date__c,
@@ -354,7 +589,7 @@ setviewsList(items){
                 },
                 
                 {
-                    label:'End date',
+                    label:this.l.EndDate,
                     placeholder:'',
                     name:'Enddate',
                     value: result.project.End_Date__c,
@@ -364,7 +599,16 @@ setviewsList(items){
                     ly_lg:'6'
                 },
                 {
-                    label:'Description',
+                    label:this.l.Link,
+                    placeholder:'',
+                    name:'Link',
+                    value: result.project.Link__c,
+                    required:false,
+                    ly_md:'12', 
+                    ly_lg:'6'
+                },
+                {
+                    label:this.l.Description,
                     placeholder:'',
                     name:'Description',
                     type:'textarea',
@@ -381,16 +625,16 @@ setviewsList(items){
                 this.filesList = (result11.data).map(element=>({
                 "label":element.Name,
                  "value": element.Name,
-                 "File Name": element.Name,
+                 "FileName": element.Name,
 
-                 "Download":  element.ContentDownloadUrl  
+                 "url":  element.ContentDownloadUrl  
                 //  "Download":  `<a href=${element.ContentDownloadUrl} download=${element.Name}>Download</a>`  
                 }))
                 console.log(this.filesList);
             })
             .catch(error => {
                 console.log('error',error);
-                this.error = error;
+                // this.error = error;
             });
             // .then(result11=>{
             //     console.log('file111',result11)
@@ -416,7 +660,7 @@ setviewsList(items){
         })
         .catch(error => {
             console.log('error',error);
-            this.error = error;
+            // this.error = error;
             this.returnList = undefined;
         });
     }
@@ -442,14 +686,16 @@ setviewsList(items){
                 let taber = bat.filter(word => word.value != this.inputs['Manager']);
                 this.allInitialContacts = taber;
 
-                let d1 = new Date();
+                let d1 = new Date(new Date().getTime() - 24*60*60*1000);
                 let d2 = this.process(this.inputs['Startdate']);
                 let d3 = this.process(this.inputs['Enddate']);
-                if(this.inputs['Name'] == null || this.inputs['Startdate'] == null || this.inputs['Manager'] == null || d1.getTime() > d2.getTime() || d2.getTime() > d3.getTime()){
+                if(this.inputs['Name'] == null || this.inputs['Startdate'] == null || this.inputs['Manager'] == null || d1 > d2 || d2 > d3){
+                    // if(this.inputs['Name'] == null || this.inputs['Startdate'] == null || this.inputs['Manager'] == null || d1.getTime() > d2.getTime() || d2.getTime() > d3.getTime()){
                     
                     this.showInsertform = true;
                     this.showAddMembers= false;
-                    if(d1.getTime() > d2.getTime()){
+                    this.sfieldId ='create';
+                    if(d1 > d2){
                         this.showToast('error', 'Error', 'Start date must be grater than today');
                     }
                     if(d2.getTime() > d3.getTime()){
@@ -466,13 +712,14 @@ setviewsList(items){
             })
             .catch(error => {
                 console.log('error',error);
-                this.error = error;
+                // this.error = error;
                 this.returnList = undefined;
             });
         
      
     }
     handleSaveEditMember(e){
+        this.startSpinner(true);
         let initParticipate = [];
         let moveParticipate = [];
         // let returnlist = this.template.querySelector('c-rh_add_and_remove').getResult();
@@ -489,14 +736,18 @@ setviewsList(items){
             this.showManage= false;
         })
         .catch(error=>{
-            this.error=error.message;
+            // this.error=error.message;
             this.showToast('error', 'Error', 'Update failed');
             window.console.log('error',this.error);
+        })
+        .finally(() => {
+            this.startSpinner(false)
         });
     }
 
 
     handleSave(e){
+        this.startSpinner(true);
         let tempCopy=e.currentTarget.getAttribute("data-id");
         console.log('tempCopy',tempCopy);
         let actif = false;
@@ -513,9 +764,12 @@ setviewsList(items){
             this.showAddMembers= false;
         })
         .catch(error=>{
-            this.error=error.message;
+            // this.error=error.message;
             window.console.log('error',this.error);
             this.showToast('error', 'Error', 'insert failed');
+        })
+        .finally(() => {
+            this.startSpinner(false)
         });
 
     }
@@ -526,6 +780,7 @@ setviewsList(items){
 
 
     handleSaveEdit(e){
+        this.startSpinner(true);
         window.console.log('this.curentProject ',this.curentProject);
             let inputs= {};
              
@@ -551,9 +806,12 @@ setviewsList(items){
                     this.showEdit= false;
                 })
                 .catch(error=>{
-                    this.error=error.message;
+                    // this.error=error.message;
                     this.showToast('error', 'Error', 'Update failed');
                     window.console.log('error',this.error);
+                })
+                .finally(() => {
+                    this.startSpinner(false)
                 });
     }
 
@@ -586,9 +844,10 @@ setviewsList(items){
         this.showInsertform = false;
         this.showAddMembers= false;
         this.addAttach = false;
+        this.sfieldId ='edit';
     }
     handleManage(e){
-
+        this.startSpinner(true);
         getEditMemberList({ProjectId :this.curentProject})
             .then(result => {
                 console.log('result',result);
@@ -615,11 +874,15 @@ setviewsList(items){
             })
             .catch(error => {
                 console.log('error',error);
-                this.error = error;
+                // this.error = error;
                 this.returnList = undefined;
+            })
+            .finally(() => {
+                this.startSpinner(false)
             });
     }
     handlecreate(e){
+        this.handleNew();
         getTeamMemberList()
     .then(result => {
        
@@ -631,7 +894,7 @@ setviewsList(items){
         console.log('option',option);
         this.inputsItems = [
                         {
-                            label:'Name',
+                            label:this.l.Name,
                             placeholder:'Enter your Project Name',
                             name:'Name',
                             type:'text',
@@ -639,9 +902,45 @@ setviewsList(items){
                             ly_md:'12', 
                             ly_lg:'6'
                         },
+                        {
+                            name:ACCOUNT_NAME_FIELD,
+                            objName:"Account",
+                            placeholder:'Select Account',
+                            iconName:"standard:account",
+                            newLabel:"Nuovo",
+                            label:"Account",
+                            objectLabel:'Account',
+                            filter:this.inizier?.filter,
+                            // selectName:'',
+                            // isSelected:false
+                            required:true,
+                            enableCreate:true,
+                            type:'lookup',
+                            value: '',
+                            ly_md:'12', 
+                            ly_lg:'6'
+                        },
+                        
                         
                         {
-                            label:'Manager',
+                            label:this.l.StartDate,
+                            placeholder:'Enter Start date',
+                            name:'Startdate',
+                            type:'date',
+                            required:true,
+                            ly_md:'12', 
+                            ly_lg:'6'
+                        },
+                        {
+                            label:this.l.EndDate,
+                            placeholder:'Enter End date',
+                            name:'Enddate',
+                            type:'date',
+                            ly_md:'12', 
+                            ly_lg:'6'
+                        },
+                        {
+                            label:this.l.Manager,
                             placeholder:'select Project Manager',
                             name:'Manager',
                             picklist: true,
@@ -651,24 +950,7 @@ setviewsList(items){
                             ly_lg:'6'
                         },
                         {
-                            label:'Start date',
-                            placeholder:'Enter Start date',
-                            name:'Startdate',
-                            type:'date',
-                            required:true,
-                            ly_md:'12', 
-                            ly_lg:'6'
-                        },
-                        {
-                            label:'End date',
-                            placeholder:'Enter End date',
-                            name:'Enddate',
-                            type:'date',
-                            ly_md:'12', 
-                            ly_lg:'6'
-                        },
-                        {
-                            label:'Description',
+                            label:this.l.Description,
                             placeholder:'Enter your Project Description',
                             name:'Description',
                             type:'textarea',
@@ -683,10 +965,11 @@ setviewsList(items){
         this.showInsertform = true;
         this.showAddMembers= false;
         this.addAttach = false;
+        this.sfieldId = 'create';
     })
     .catch(error => {
         console.log('error',error);
-        this.error = error;
+        // this.error = error;
         this.returnList = undefined;
     });
         
@@ -730,6 +1013,7 @@ setviewsList(items){
     }
 
     handleClick(){
+        this.startSpinner(true);
         const {base64, filename, recordId} = this.fileData
         uploadFile({ base64, filename, recordId }).then(result=>{
             this.fileData = null
@@ -745,6 +1029,12 @@ setviewsList(items){
             this.showAddMembers= false;
             this.addAttach = false;
         })
+        .catch(error => {
+            console.log('error',error);
+        })
+        .finally(() => {
+            this.startSpinner(false)
+        });
     }
 
     toast(title){
@@ -771,11 +1061,391 @@ setviewsList(items){
 
     dovalueMember(event){
         this.listConts = event.tab;
+        this.showEditMembersBout = true;
         console.log('list id for insert =>:', this.listConts);
     }
 
     process(date){
         var parts = date.split("-");
+        console.log('parts[0] =>:', parts[0]);
+        console.log('parts[1] =>:', parts[1]);
+        console.log('parts[2] =>:', parts[2]);
+        console.log('new[2] =>:', new Date(parts[0], parts[1] - 1, parts[2]));
+        console.log('new[0] =>:', new Date());
         return new Date(parts[0], parts[1] - 1, parts[2]);
+        
+    }
+
+    goToLink(event){
+        const action = event.detail.action;
+        if(action == 'goToLink'){
+            this.goToUserDetail(event.detail.eltName);
+        }
+        // this.selectedContact = this.contacts.data.find(contact => contact.Id === contactId);
+    }
+
+
+    handleRowAction( event ) {
+        // const actionName = event.detail.action.name;
+        const row = event.detail.row.Id;
+        console.log('row--> ' , row);
+        this.goToUserDetail(row);
+    }
+
+
+    goToUserDetail(recordid) {
+        var pagenname ='rhusers'; //request page nam
+        let states={'recordId': recordid}; //event.currentTarget.dataset.id , is the recordId of the request
+        
+        this[NavigationMixin.Navigate]({
+            type : 'comm__namedPage',
+            attributes : {
+                pageName : pagenname
+            },
+            state: states
+        });
+    }
+
+    handleRowAction11( event ) {
+        // const actionName = event.detail.action.name;
+        const rowUrl = event.detail.row.url;
+        console.log('rowUrl--> ' , rowUrl);
+        // console.log('actionName--> ' , actionName); 
+        this.handleNavigate(rowUrl);
+                   
+    }
+    handleNavigate(url) {
+        const config = {
+            type: 'standard__webPage',
+            attributes: {
+                url: url
+            }
+        };
+        this[NavigationMixin.Navigate](config);
+    }
+
+    buildFilter(){
+        // this.getPicklistValues();
+        this.filterInputs=[
+            {
+                label:this.l.Name,
+                placeholder:this.l.srchNamePlc,
+                name:'searchText',
+                value: '',
+                ly_md:'3', 
+                ly_xs:'6', 
+                ly_lg:'3'
+            }];
+            
+            // console.log(`this.statusPicklist`, this.statusPicklist);
+            this.filterInputs =[...this.filterInputs,
+            // {
+            //     label:this.l.Status,
+            //     name:'status',
+                
+            //     picklist: true,
+            //     options: this.statusPicklist,
+            //     value: '',
+            //     ly_md:'3',
+            //     ly_xs:'6',  
+            //     ly_lg:'3'
+            // },
+            {
+                label:this.l.From,
+                placeholder:this.l.From,
+                name:'startDate',
+               
+                value: '',
+                type:'Date',
+                ly_md:'3', 
+                ly_xs:'6', 
+                ly_lg:'3',
+            },
+           
+            {
+                label:this.l.To,
+                placeholder:this.l.To,
+                name:'EndDate',
+               
+                value: '',
+                type:'Date',
+                ly_md:'3', 
+                ly_xs:'6', 
+                ly_lg:'3',
+            },
+        
+        ];
+    }
+
+    handleSubmitFilter(event) {
+        this.getAllprojects().then((res)=>{
+        const record=event.detail;
+        
+        this.tabReq = this.tabReqfilter;
+        console.log(`handleSubmitFilter record `, JSON.stringify(record) );
+        console.log(`this.tabReq `, this.tabReq);
+        record.searchText ? this.tabReq = this.tabReq.filter(element =>((element.Name).toUpperCase()).includes(record.searchText.toUpperCase())) : this.tabReq;
+        record.startDate ? this.tabReq = this.tabReq.filter(element =>element.StartdDate ==  record.startDate) : this.tabReq;
+        record.status ? this.tabReq = this.tabReq.filter(element =>element.Status ==  record.status) : this.tabReq;
+        record.EndDate ? this.tabReq = this.tabReq.filter(element =>element.EndDate ==  record.EndDate) : this.tabReq;
+        }).catch((error)=>{
+            console.log(`Handling error as we received ${error}`);
+        });
+        
+    }
+
+    handleResetFilter(event) {
+        this.getAllprojects();
+    }
+
+    handleActive(e){
+        let tempCopy=e.currentTarget.getAttribute("data-id");
+        console.log('tempCopy',tempCopy);
+        let actif = false;
+        if(tempCopy == 'Active'){
+            actif = true;
+        }
+        
+            
+        ActiveProject({ProjectId :this.curentProject,Isactivate:actif})
+        .then(result => {
+            window.console.log('after Activate');
+            this.getdetailsProject(this.curentProject);
+            this.showToast('success', 'success !!', 'Project created Successfully!!');
+            this.goToRequestDetail(result.Id);
+            // this.showAddMembers= false;
+        })
+        .catch(error => {
+            console.log('error',error);
+        });
+    }
+
+    handleTask(){
+        this.createTask= true;
+        this.showDetails=false;
+    }
+    handleFromTask(){
+        this.createTask= false;
+        this.showDetails=true;
+    }
+    handleCreateTask(){
+        window.console.log('this.curentProject ',this.curentProject);
+        let inputs= {};
+         
+        let ret1;
+            let ret = this.template.querySelector('c-rh_dynamic_form').save();
+            ret1 = ret['outputsItems'];
+            // ret11 = ret.obj;
+            window.console.log('ret.obj' , ret.obj);
+            for(let key in ret1) {
+                 inputs[ret1[key]['name']] = ret1[key]['value'];
+            }
+
+            
+            window.console.log('ret1' , ret['outputsItems']);
+            window.console.log('inputs' , inputs);
+            insertTask({taskto:inputs,IDProject:this.curentProject})
+            .then(result=>{
+                window.console.log('after update');
+                window.console.log('result' , result);
+                this.getdetailsProject(this.curentProject);
+                this.showToast('success', 'success !!', 'Task Created Successfully!!');
+                this.createTask= false;
+                this.showDetails=true;
+            })
+            .catch(error=>{
+                // this.error=error.message;
+                this.showToast('error', 'Error', 'Created Task failed');
+                window.console.log('error',this.error);
+            });
+    }
+
+    handleLookupCreation(event){
+        const objReturned = event.detail;
+        console.log('handleLookupCreation');
+        console.log(JSON.stringify(objReturned));
+        if (ACCOUNT_NAME_FIELD==objReturned?.name) {
+            console.log('handleLookupCreation11');
+            this.doCreateAccount();
+            console.log('handleLookupCreation22');
+        }
+    }
+    doCreateAccount(){
+        this.accountInputs=[
+            {
+                label:'Name',
+                placeholder:'Name',
+                name:'Name',
+                value: '',
+                required:true,
+                ly_xs:'12', 
+                ly_md:'6', 
+                ly_lg:'6'
+            },
+            {
+                label:'Phone',
+                placeholder:'Phone',
+                name:'Phone',
+                value: '',
+                required:false,
+                ly_md:'6', 
+                ly_xs:'12', 
+                ly_lg:'6'
+            },
+            {
+                label:'Cap',
+                placeholder:'Cap Number',
+                name:'Cap',
+                value: '',
+                required:false,
+                ly_md:'6', 
+                ly_xs:'12', 
+                ly_lg:'6'
+            },
+            {
+                label:'Citta',
+                placeholder:'City',
+                name:'City',
+                value: '',
+                required:false,
+                ly_md:'6', 
+                ly_xs:'12', 
+                ly_lg:'6'
+            },
+            {
+                label:'SDI',
+                placeholder:'sdi',
+                name:'Sdi',
+                value: '',
+                required:false,
+                ly_md:'6', 
+                ly_xs:'12', 
+                ly_lg:'6'
+            },
+            {
+                label:'Email',
+                placeholder:'email',
+                name:'Email',
+                value: '',
+                required:false,
+                ly_md:'6', 
+                ly_xs:'12', 
+                ly_lg:'6'
+            },
+            {
+                label:'Civico',
+                placeholder:'Numero',
+                name:'Civico',
+                value: '',
+                required:true,
+                ly_md:'6', 
+                ly_xs:'12', 
+                ly_lg:'6'
+            },
+        ];
+        this.newAccount = true;
+    }
+    handleChanged(event){
+        const objReturned = event.detail;
+        console.log('handleChanged');
+        console.log(JSON.stringify(objReturned));
+        if (ACCOUNT_NAME_FIELD==objReturned?.info?.name) {
+            this.handleAccountChanged(objReturned?.info?.value)
+        }
+        
+    }
+
+    updateFormField(fieldName,updates,type='default'){
+        // let form=this.template.querySelector('c-rh_dynamic_form');
+        let form=this.template.querySelector(`[data-id="${this.sfieldId}"]`)
+        if (form) {
+            const returned=form.updateField(fieldName,updates,type);
+            console.log('updateFormField  returned '+returned);
+        }
+    }
+    handleAccountChanged(accId){
+        console.log('SELECTED ACCOUNT ID '+accId);
+        
+        let newGrpField={
+            label:'Groups',
+            name:'wGroup',
+            picklist: true,
+            options: this.groups,
+            value: '',
+            maxlength:100,
+            ly_md:'6', 
+            ly_lg:'6'
+        }
+        this.updateFormField('wGroup',newGrpField);
+    }
+
+    handleNew(){
+        this.startSpinner(true)
+        InitInvoiceCreation()
+           .then(result => {
+             console.log('Result INIT CONF');
+             console.log(result);
+             if (!result.error && result.Ok) {
+                 this.inizier=result;
+                 this.action=NEW_ACTION;
+                 console.log('this.inizier',this.inizier);
+             }else{
+                 this.showToast(WARNING_VARIANT,'ERROR', result.msg);
+             }
+           })
+           .catch(error => {
+             console.error('Error:', error);
+         }).finally(() => {
+             this.startSpinner(false)
+         });
      }
+
+
+     handleCreateAccount(event){
+        const info = event.detail;
+        console.log(JSON.stringify(info));
+        if (info.operation=='positive') {
+            if (info.isvalid) {
+               const record ={...info.fields} ;
+               this.handleCreateAccountApex(record);
+            }
+        }else{
+            this.newAccount=false;  
+        }
+    }
+
+    handleCreateAccountApexOK(obj){
+        this.showToast(SUCCESS_VARIANT,this.l.successOp, '');
+        this.newAccount=false;//close modal
+        const accId=obj.Id;
+        const accName=obj.Name;
+        //update account field
+        let updFieldAcc={
+            // filter:this.inizier?.filter,
+            value:accId,
+            selectName:accName,
+            isSelected:true,
+        }
+        this.updateFormField(ACCOUNT_NAME_FIELD,updFieldAcc);
+
+    }
+    handleCreateAccountApex(record){
+        this.startSpinner(true)
+        accountCreation({ accountJson: JSON.stringify(record) })
+          .then(result => {
+            console.log('Result callApexSave:: ');
+            console.log(result);
+            if ( !result.error && result.Ok) {
+                this.handleCreateAccountApexOK(result.account)
+            }else{
+                this.showToast(ERROR_VARIANT,this.l.warningOp, result.msg);
+            }
+            
+          })
+          .catch(error => {
+            console.error('Error:', error);
+        }).finally(() => {
+            this.startSpinner(false)
+        });
+    }
 }

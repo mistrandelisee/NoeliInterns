@@ -29,9 +29,9 @@
             <lightning-card>
 
                 <h3 slot="title">
-                    <lightning-icon icon-name="action:new_note" alternative-text="New note" size="small">
+                    <lightning-icon icon-name="utility:add" alternative-text="New note" size="small">
                     </lightning-icon>
-                    {requestType} Detail
+                     New {requestType}
                 </h3>
                 <!-- <template if:true={isComplain}> -->
                 <c-rh_dynamic_form inputs-items={lastFieldInputsAll}></c-rh_dynamic_form>
@@ -53,7 +53,7 @@
                             <div if:true={isOpenDualBox}>
                                 <!-- <template if:true={isOpenDualBox}>  -->
                                 <c-rh_dual_box source-label="Avaible Members" selected-label="Selected Members"
-                                    field-level="Select members to add to the group" options={activeContact} values="">
+                                    field-level="Select members to add to the group" options={addressedRecord} values="">
                                 </c-rh_dual_box>
                             </div>
                             <!-- </template> -->
@@ -177,7 +177,7 @@
                                 <div if:true={isOpenDualBox}>
                                     <!-- <template if:true={isOpenDualBox}>  -->
                                     <c-rh_dual_box source-label="Avaible Members" selected-label="Selected Members"
-                                        field-level="Select members to add to the group" options={activeContact} values={listContsValue}>
+                                        field-level="Select members to add to the group" options={addressedRecord} values={listContsValue}>
                                     </c-rh_dual_box>
                                 </div>
                                 <div class="slds-float_right">
@@ -222,7 +222,7 @@
                             <div if:true={isOpenDualBox}>
                                 <!-- <template if:true={isOpenDualBox}>  -->
                                 <c-rh_dual_box source-label="Avaible Members" selected-label="Selected Members"
-                                    field-level="Select members to add to the group" options={activeContact} values={listContsValue}>
+                                    field-level="Select members to add to the group" options={addressedRecord} values={listContsValue}>
                                 </c-rh_dual_box>
                             </div>
                             <div class="slds-float_right">

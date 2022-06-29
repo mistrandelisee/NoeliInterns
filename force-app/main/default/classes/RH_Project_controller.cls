@@ -43,6 +43,8 @@ public without sharing class RH_Project_controller {
         public Date Startdate{get;set;}
         @AuraEnabled
         public String Enddate{get;set;}
+        @AuraEnabled
+        public String AccountId{get;set;}
     }
 
     public class TaskTo {
@@ -145,7 +147,8 @@ public without sharing class RH_Project_controller {
             system.debug('Contact' +acc);
             List<RH_Participation__c> listParti = new List<RH_Participation__c>();
             Project__c ProjectObj = new Project__c();
-            ProjectObj.RH_Account_ID__c = acc[0].AccountId;
+            ProjectObj.RH_Account_ID__c = project.AccountId;
+            // ProjectObj.RH_Account_ID__c = acc[0].AccountId;
             ProjectObj.Name = project.Name;
             ProjectObj.recordTypeId = RH_Constans.RH_PROJECT_RT;
             if (String.isNotBlank(project.Description)) {
@@ -158,6 +161,9 @@ public without sharing class RH_Project_controller {
             ProjectObj.Project_Manager__c = project.Manager;
             if(Isactivate){
                 ProjectObj.Status__c = RH_Constans.ACTIVATED_PROJECT_STATUS;
+            } 
+            if(!Isactivate){
+                ProjectObj.Status__c = RH_Constans.DRAFT_PROJECT_STATUS;
             }
             insert ProjectObj;
             //TO DO: use addParticipants
@@ -221,6 +227,7 @@ public without sharing class RH_Project_controller {
                 if (String.isNotBlank(project.Description)) {
                 pro.Description__c = project.Description;
                 }
+                pro.RH_Account_ID__c = project.AccountId;
             }
             update proj;
 

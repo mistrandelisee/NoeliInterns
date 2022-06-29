@@ -9,9 +9,11 @@
     </template>
 
     <template if:true={isVisible}>
-        <c-rh_group_createbutton 
-            oncreategroup={handleCreategroup}> 
-        </c-rh_group_createbutton>
+        <template if:true={createBouton}>
+            <c-rh_group_createbutton 
+                oncreategroup={handleCreategroup}> 
+            </c-rh_group_createbutton>
+        </template>
         <c-rh_group_list
          ondetailgroupe={handleDetailGroup} > </c-rh_group_list> 
     </template>

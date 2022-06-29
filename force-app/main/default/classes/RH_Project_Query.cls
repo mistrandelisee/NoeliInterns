@@ -15,11 +15,11 @@ public without sharing class RH_Project_Query {
     }
 
     public List<Project__c> getProject(){
-        return [SELECT id, Name, Description__c,End_Date__c,Link__c,Status__c,Start_Date__c,Project_Manager__r.Name,Project_Manager__c FROM Project__c WHERE recordTypeId=:RH_Constans.RH_PROJECT_RT];
+        return [SELECT id, Name, Description__c,End_Date__c,Link__c,Status__c,Start_Date__c,Project_Manager__r.Name,RH_Account_Id__c,Project_Manager__c,RH_Account_Id__r.Name FROM Project__c WHERE recordTypeId=:RH_Constans.RH_PROJECT_RT];
     }
 
     public List<Project__c> getProjectById(String IdProject){
-        return [SELECT id, Name, Description__c,End_Date__c,Link__c,Status__c,Start_Date__c,Project_Manager__r.Name,Project_Manager__c,Project_Manager__r.RH_User__c  FROM Project__c WHERE Id =:IdProject and recordTypeId=:RH_Constans.RH_PROJECT_RT];
+        return [SELECT id, Name, Description__c,End_Date__c,Link__c,Status__c,Start_Date__c,Project_Manager__r.Name,Project_Manager__c,Project_Manager__r.RH_User__c,RH_Account_Id__r.Name,RH_Account_Id__c  FROM Project__c WHERE Id =:IdProject and recordTypeId=:RH_Constans.RH_PROJECT_RT];
     }
 
     public List<RH_Participation__c> getMembers(String IdProject){//NON NON le type de retour doit essentiellement etre Project__c puisque c'est la classe query de project

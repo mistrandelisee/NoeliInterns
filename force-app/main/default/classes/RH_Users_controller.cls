@@ -11,12 +11,33 @@ public without sharing class RH_Users_controller {
      */
     @AuraEnabled
     public static User changeLanguage(String lang) {
-        // User userInfo = userQry.getUserInfoId();
-        User userInfo = new User(Id =UserInfo.getUserId());
+        User userInfo = userQry.getUserInfoId();
         userInfo.LanguageLocaleKey = lang;
         update userInfo;
         return userInfo;
     }
+
+    @AuraEnabled
+    public static Map<String,Object> getUserLanguage() {
+        User userInfo =userQry.getUserInfoId();
+        Map<String,String> picklistLang= new Map<String,String>();
+
+        // Take a value of pickList from org
+        /* 
+        List<Schema.PicklistEntry> picklistValues = User.LanguageLocaleKey.getDescribe().getPicklistValues();
+        for (Schema.PicklistEntry picklistEntry : picklistValues) {
+            System.debug('picklistEntry : ' + picklistEntry);
+            if(picklistEntry.isActive()==true){
+                picklistLang.put(picklistEntry.getLabel(), picklistEntry.getValue());
+            }    
+        }
+        */
+        return new Map<String,Object>{
+            'lang'=> picklistLang,
+            'userInfo' => userInfo
+        } ;
+    }
+
 
     @AuraEnabled 
     public static Map<String,Object>  checkUserCreation(String conID){
