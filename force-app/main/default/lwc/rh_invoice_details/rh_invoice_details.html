@@ -83,7 +83,7 @@
     </template>
 
     <template if:true={newLineMode}>
-        <c-rh_invoice_item_creation invoice={record}
+        <c-rh_invoice_item_creation invoice={record} mode={lineMode}
         invoice-item={invoiceItem} onaction={handleItemCreation}>
             
         </c-rh_invoice_item_creation>

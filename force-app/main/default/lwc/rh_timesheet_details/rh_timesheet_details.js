@@ -947,6 +947,7 @@ export default class Rh_timesheet_details extends NavigationMixin(LightningEleme
                 ly_lg:'12',
                 ly_xs:'12',
                 isTextarea:true,
+                required:true,
                 readOnly:this.isEntryReadOnly
             }
          

@@ -14,6 +14,7 @@ const icons = {
     timesheetEntry: 'standard:timesheetEntry',
     Search: 'utility:search',
     News: 'utility:news',
+    NewsStd: 'standard:news',
 
     submit: 'utility:send',
     exportPdf: 'utility:pdf_ext',
@@ -34,6 +35,15 @@ const icons = {
     more_info: 'action:contact_list',
     ban:'utility:resource_absence',
     promote:'utility:level_up',
+
+    ///Event Icon
+    Download: 'utility:download',
+    Event: 'standard:event',
+    Share: 'utility:share',
+    DeleteFile: 'utility:delete',
+
+    
+    resource:'standard:service_resource',
 
 };
 export { icons }

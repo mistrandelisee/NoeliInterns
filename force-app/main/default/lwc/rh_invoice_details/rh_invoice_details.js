@@ -28,39 +28,15 @@ const ADD_LINE_ACTION='ADD_LINE_ACTION';
 const EXPORT_ACTION_PDF='EXPORT_ACTION_PDF';
 // const EXPORT_ACTION_XLS='EXPORT_ACTION_XLS';
 const actions = [
-    { label: 'Show details', name: EDIT_ACTION,iconPosition: 'left', iconName: icons.Edit, },
-    { label: 'Delete', name: DELETE_ACTION ,iconPosition: 'left',iconName: icons.Delete}
+    { label: labels.showDetails, name: EDIT_ACTION,iconPosition: 'left', iconName: icons.Edit, },
+    { label: labels.Delete, name: DELETE_ACTION ,iconPosition: 'left',iconName: icons.Delete}
 ];
 export default class Rh_invoice_details extends NavigationMixin(LightningElement)  {
-    END_OF_DAY=20;//GMT
-    START_OF_DAY=8;//GMT
-    l={...labels,
-        SaveNew:'Save & New',
-        Submit:'Submit',
-        Delete:'Delete',
-        Approve:'Approve',
-        AddLines:'Add Items',
-        ExportPDF:'Export PDF',
-        ExportXLS:'Export XLSX',
-        approvalTitle:'APPROVAL ACTION',
-        Date:'Date',
-        startTime:'Start Time',
-        endTime:'End Time',
-        noTimesheetItems:'No Timesheet Items found for this timesheet. Use the Add times Action to add items',
-        // 
-        project: 'Project',
-        rate: 'Rate',
-        ressource: 'Ressource',
-        quantity: 'Quantity',
-        amount: 'Amount',
-        delete_invoice_confirm:'Are you sure you want to delete this invoice',
-        delete_invoiceItem_confirm:'Are you sure you want to delete this invoice Items', 
-    }
+    l={...labels,}
     icon={...icons}
-    detailsActions=[
-    ]
-    @api
-    recordId;
+    lineMode='';
+    detailsActions=[]
+    @api recordId;
     @track record;
     // invoiceFields=[];
     invoicesEntries=[];
@@ -76,7 +52,7 @@ export default class Rh_invoice_details extends NavigationMixin(LightningElement
     sectionExpanded=true;
 
     @track columns = [
-        { label: 'Name', fieldName: 'title',sortable:true, type: 'button',typeAttributes:{label:{fieldName:'title'},variant:'base'} },
+        { label: this.l.Name, fieldName: 'title',sortable:true, type: 'button',typeAttributes:{label:{fieldName:'title'},variant:'base'} },
         { label: this.l.project, fieldName: 'Project',sortable:true, type: 'text' },
         { label: this.l.ressource, fieldName: 'Ressource',sortable:true, type: 'text',cellAttributes: { alignment: 'left' }, },
         { label: this.l.amount, fieldName: 'RH_Amount__c',sortable:true, type: 'currency',cellAttributes: { alignment: 'left' }, },
@@ -202,20 +178,16 @@ export default class Rh_invoice_details extends NavigationMixin(LightningElement
     get fileName() { return this.title }
     get hasInfo() { return this.record?.Id }
 
-    get lineIcon(){ return (this.isEntryReadOnly) ?'':this.icon.Edit }
-    get lineTitle(){ return (this.isEntryReadOnly) ?'Line details':'Create Line'}
     get iconName(){
         return (!this.sectionExpanded)? this.icon.chevrondown  : this.icon.chevronup 
     }
-    toggleView(){
-        this.sectionExpanded=!this.sectionExpanded;
-    }
+    get title(){ return this.record?.RH_Name__c || this.record?.Name}
     connectedCallback(){
         registerListener('ModalAction', this.doModalAction, this);
         console.log('RECORDID connectedCallback ',this.recordId);
-       this.getInvoiceApex();
+        this.getInvoiceApex();
     }
-    get title(){ return this.record?.RH_Name__c || this.record?.Name}
+    toggleView(){this.sectionExpanded=!this.sectionExpanded;}
     getInvoiceApex(){
         this.record={};
         this.startSpinner(true);
@@ -297,11 +269,13 @@ export default class Rh_invoice_details extends NavigationMixin(LightningElement
         this.invoiceItem=info.row;
         if (info?.action?.label?.fieldName=='title') {
             this.handleEditInvoiceEntry();
+            this.lineMode=EDIT_ACTION;
         }
         if (info?.action?.name) {//user clicks on the dropdown actions
             const record={Id:this.invoiceItem?.Id, action:info?.action?.name};
             switch (record.action) {
                 case EDIT_ACTION:
+                    this.lineMode=EDIT_ACTION;
                     this.handleEditInvoiceEntry();
                     break;
                 case DELETE_ACTION:
@@ -345,11 +319,11 @@ export default class Rh_invoice_details extends NavigationMixin(LightningElement
     handleGoToLink(event){
         const data=event.detail;
         console.log(`data ?? `, JSON.stringify(data));
-        if (data?.action=='goToLink') {
+        /*if (data?.action=='goToLink') {
             if (data?.eltName=='Owner' || data?.eltName=='Approver') {
                 this.goToPage('rhusers',{recordId:data?.info?.dataId})
             }
-        }
+        }*/
     }
     handleDetailsActions(event){
         console.log('handleDetailsActions :', event.detail.action);
@@ -368,6 +342,7 @@ export default class Rh_invoice_details extends NavigationMixin(LightningElement
                 this.ShowModal(true,text,Actions,extra);
                 break;
             case ADD_LINE_ACTION:
+                this.lineMode='';
                 this.invoiceItem={};
                 this.action=ADD_LINE_ACTION;
                 // this.initEntryAction();

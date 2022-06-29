@@ -10,7 +10,7 @@ public  class RH_PDF_Timesheet_Controller {
         List<TimeSheet> TimeSheets = timesheetQry.getTimeSheet(listId);
         System.debug('@@@@@@@@@@@@@@@@@@@TimeSheets ' + TimeSheets);
         if (TimeSheets.isEmpty()) {
-            throw new RH_ControllerException('002','No Timsheet founded with this ID'+listId);
+            throw new RH_ControllerException('002','No Timsheet founded with this ID'+listId); 
         }
         timeSheetList=TimeSheets[0];
         sheet=buildObj(TimeSheets[0]);

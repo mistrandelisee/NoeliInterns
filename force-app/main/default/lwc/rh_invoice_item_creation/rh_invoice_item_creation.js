@@ -20,6 +20,7 @@ const QTITY_NAME_FIELD = 'quantity';
 const OPEN_FORM='OPEN_FORM';
 const NEW_RESSOURCE='NEW_RESSOURCE';
 const NEW_ACTION='New';
+const EDIT_ACTION='Edit';
 const VIEW_ACTION='View';
 const SAVE_ACTION='Save';
 
@@ -29,11 +30,7 @@ const SUCCESS_VARIANT='success';
 const WARNING_VARIANT='warning';
 const ERROR_VARIANT='error';
 export default class Rh_invoice_creation extends NavigationMixin(LightningElement) {
-    l={...labels,
-    Quantity:'Quantity',
-    Rate:'Rate',
-    SaveNew:'Save New',
-    Project:'Project',}
+    l={...labels,}
     
     icon={...icons}
     @api isEntryReadOnly;
@@ -41,6 +38,7 @@ export default class Rh_invoice_creation extends NavigationMixin(LightningElemen
 
 
     @api action='';
+    @api mode='';
     inizier={};
     get openModal(){
         return this.action==OPEN_FORM || this.action==NEW_RESSOURCE;
@@ -56,6 +54,10 @@ export default class Rh_invoice_creation extends NavigationMixin(LightningElemen
     selectedProjectId;
     record;
     period={};
+    get lineTitle(){
+        return this.mode==EDIT_ACTION ? this.l.edit_inv_item : this.l.create_inv_item;
+    }
+    get lineIcon(){ return (this.isEntryReadOnly) ?'':this.icon.Edit }
     @wire(CurrentPageReference) pageRef;
     connectedCallback(){
         console.log('Rh_invoice_creation connectedCallback');
@@ -136,17 +138,20 @@ export default class Rh_invoice_creation extends NavigationMixin(LightningElemen
         const objReturned = event.detail;
         console.log('handleChanged');
         console.log(JSON.stringify(objReturned));
+        let qtity=0;
         const key=objReturned?.info?.name;
         if (PROJECT_NAME_FIELD==key) {
             this.handleProjectChanged(objReturned?.info?.value)
         }
         if (SDATE_NAME_FIELD==key) {
             this.period[SDATE_NAME_FIELD]=objReturned?.info?.value;
-            this.handleCalculateQtity();
+            qtity=this.handleCalculateQtity();
+            qtity ? this.updatedQtityField(qtity) : '';
         }
         if (EDATE_NAME_FIELD==key) {
             this.period[EDATE_NAME_FIELD]=objReturned?.info?.value;
-            this.handleCalculateQtity();
+            qtity=this.handleCalculateQtity();
+            qtity ? this.updatedQtityField(qtity) : '';        
         }
         // "info":{"value":"0017Q00000DdLLPQA3","name":"Rh_Account__c"}
     }
@@ -155,14 +160,17 @@ export default class Rh_invoice_creation extends NavigationMixin(LightningElemen
             const stDate=new Date(this.period[SDATE_NAME_FIELD]);
             const eDate=new Date(this.period[EDATE_NAME_FIELD]);
             const qtity=this.daysBetween(stDate,eDate);
-            let qtityField={
-                value:qtity,
-                name:QTITY_NAME_FIELD,
-            };
-            this.updateFormField(QTITY_NAME_FIELD,qtityField);
+            return qtity;
         } catch (error) {
-            
+            return 0;
         }
+    }
+    updatedQtityField(qtity){
+        let qtityField={
+            value:qtity,
+            name:QTITY_NAME_FIELD,
+        };
+        this.updateFormField(QTITY_NAME_FIELD,qtityField);
     }
     daysBetween(stDate,eDate){
 
@@ -213,11 +221,11 @@ export default class Rh_invoice_creation extends NavigationMixin(LightningElemen
             {
                 name:'ContactId',
                 objName:"Contact",
-                placeholder:'Select an employee',
-                iconName:"standard:account",
-                newLabel:"New",
-                label:"Employee",
-                objectLabel:'Ressource',
+                placeholder:this.l.employeePlc,
+                iconName:this.icon.user,
+                newLabel:this.l.New,
+                label:this.l.employee,
+                objectLabel:this.l.ressource,
                 filter,
                 required:true,
                 limit:1000,//get all 
@@ -382,16 +390,16 @@ export default class Rh_invoice_creation extends NavigationMixin(LightningElemen
         const filter='RH_Project__c = \''+(this.selectedProjectId || this.invoiceItem?.RH_ProjectId__c)+'\'';
         console.log('buildEntryForm');
         console.log({...this.invoiceItem});
-
+        const qtity=this.invoiceItem?.RH_Quantity__c || this.handleCalculateQtity();
         this.formInputs=[
             {
                 name:RESSOURCE_NAME_FIELD,
                 objName:"RH_Participation__c",
-                placeholder:'Select Ressource',
-                iconName:"standard:account",
-                newLabel:"New",
-                label:"Ressource",
-                objectLabel:'Ressource',
+                placeholder:this.l.ressourcePlc,
+                iconName:this.icon.resource,
+                newLabel:this.l.New,
+                label:this.l.ressource,
+                objectLabel:this.l.ressource,
                 filter,
                 selectName:this.invoiceItem?.RH_Ressource__r?.Name,
                 isSelected:this.invoiceItem?.RH_Ressource__r?.Name ? true : false,
@@ -406,7 +414,8 @@ export default class Rh_invoice_creation extends NavigationMixin(LightningElemen
                 value: this.invoiceItem?.RH_Ressource__c,
                 ly_md:'12', 
                 readOnly:this.isEntryReadOnly,
-                ly_lg:'12'
+                ly_lg:'12',
+                ly_xs:'12',
             },
             {
                 label:this.l.StartDate,
@@ -431,7 +440,7 @@ export default class Rh_invoice_creation extends NavigationMixin(LightningElemen
                 max: endDate,
                 value:this.formatDateValue(this.invoiceItem?.RH_EndDate__c,this.invoice?.RH_DueDate__c),
                 type:'Date',
-                helpText:'the end date must be less today',
+                // helpText:'the end date must be less today',
                 readOnly:this.isEntryReadOnly,
                 ly_xs:'12', 
                 ly_md:'6', 
@@ -443,7 +452,7 @@ export default class Rh_invoice_creation extends NavigationMixin(LightningElemen
                 name:QTITY_NAME_FIELD,
                 required:true,
                 min:1,
-                value:this.invoiceItem?.RH_Quantity__c || 0,
+                value: qtity,
                 type:'number',
                 readOnly:this.isEntryReadOnly,
                 ly_xs:'12', 

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>RH_Total_Free_Duration_Minutes__c</fullName>
+    <externalId>false</externalId>
+    <label>Total Free Duration (Minutes)</label>
+    <summarizedField>TimeSheetEntry.DurationInMinutes</summarizedField>
+    <summaryFilterItems>
+        <field>TimeSheetEntry.Type</field>
+        <operation>equals</operation>
+        <value>Optional</value>
+    </summaryFilterItems>
+    <summaryForeignKey>TimeSheetEntry.TimeSheetId</summaryForeignKey>
+    <summaryOperation>sum</summaryOperation>
+    <trackHistory>false</trackHistory>
+    <type>Summary</type>
+</CustomField>
