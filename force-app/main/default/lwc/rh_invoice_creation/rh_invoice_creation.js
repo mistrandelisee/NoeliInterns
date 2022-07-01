@@ -24,7 +24,8 @@ const SUCCESS_VARIANT='success';
 const WARNING_VARIANT='warning';
 const ERROR_VARIANT='error';
 export default class Rh_invoice_creation extends NavigationMixin(LightningElement) {
-    l={...labels,}
+    l={...labels,
+        currency:'Currency'}
     
     icon={...icons}
     @api action='';
@@ -360,6 +361,7 @@ export default class Rh_invoice_creation extends NavigationMixin(LightningElemen
                 objectLabel:'Account',
                 filter:this.inizier?.filter,
                 selectName: this.invoice?.RH_Account_Id__r?.Name,
+                value: this.invoice?.RH_Account_Id__c,
                 isSelected:this.editMode,
                 required:true,
                 enableCreate:true,
@@ -374,6 +376,20 @@ export default class Rh_invoice_creation extends NavigationMixin(LightningElemen
                 name:'po',
                 value: this.invoice?.RH_Po__c,
                 required:true,
+                ly_xs:'12', 
+                ly_md:'6', 
+                ly_lg:'6'
+            },
+            {
+                label:this.l.currency,
+                name:'currencyCode',
+                type:'radio',
+                value: this.invoice?.RH_Currency_Code__c || 'EUR',
+                required:true,
+                options : [
+                    { label: 'EUR', value: 'EUR' },
+                    { label: 'FCFA', value: 'FCFA' },
+                ],
                 ly_xs:'12', 
                 ly_md:'6', 
                 ly_lg:'6'
