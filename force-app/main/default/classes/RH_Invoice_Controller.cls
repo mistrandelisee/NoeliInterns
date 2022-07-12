@@ -389,6 +389,8 @@ public with sharing class RH_Invoice_Controller {
         try {
             String filter=' recordTypeId= \''+RH_Constans.RH_CLIENT_ACCOUNT_RT + '\' ';
             mapReturn.put('filter', filter); 
+            mapReturn.put('DEFAULT_CURRENCY', RH_Constans.DEFAULT_CURRENCY); 
+            mapReturn.put('picklists', RH_Utility.getPickListOptions(new List<String> {'RH_Currency_Code__c'},'RH_Invoice__c')); 
             mapReturn.put('Ok',true); 
         } catch(Exception e) {
             System.debug(e.getMessage());

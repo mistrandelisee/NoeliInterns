@@ -70,6 +70,22 @@
             ></lightning-combobox>
         <!-- message-when-value-missing={item.valueMissing}  -->
         </template>
+        <template if:true={isRadio}>
+            <lightning-radio-group
+                    type={radioType}
+                    data-id={item.name}
+                    name={item.name}
+                    label={item.label}
+                    value={item.value}
+                    options={item.options}
+                    onchange={handleChanged} 
+                    disabled={item.readOnly}
+                    variant={item.variant}
+                    required={item.required}
+                    
+            ></lightning-radio-group>
+        <!-- message-when-value-missing={item.valueMissing}  -->
+        </template>
         <template if:true={isLookup}>
             <c-rh_custom_lookup_adv 
                 data-id={item.name}

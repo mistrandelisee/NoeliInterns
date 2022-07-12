@@ -15,20 +15,24 @@ const ACCOUNT_NAME_FIELD = 'AccountId';
 const EDIT_ACTION='Edit';
 const NEW_ACCOUNT='NEW_ACCOUNT';
 const NEW_ACTION='New';
-const VIEW_ACTION='View';
-const SAVE_ACTION='Save';
 
 
-const RESET_ACTION='Reset';
 const SUCCESS_VARIANT='success';
 const WARNING_VARIANT='warning';
 const ERROR_VARIANT='error';
 export default class Rh_invoice_creation extends NavigationMixin(LightningElement) {
     l={...labels,}
-    
+    DEFAULT_CURRENCY='EUR';
+    curriencies=[
+        { label: 'EUR', value: 'EUR' },
+        { label: 'FCFA', value: 'FCFA' },
+    ];
     icon={...icons}
     @api action='';
     inizier={};
+    
+    @api 
+    disabledfields;
     get newAccount() { return this.action==NEW_ACCOUNT}
     accountInputs=[];
 
@@ -121,18 +125,6 @@ export default class Rh_invoice_creation extends NavigationMixin(LightningElemen
     }
     handleAccountChanged(accId){
         console.log('SELECTED ACCOUNT ID '+accId);
-        
-        let newGrpField={
-            label:'Groups',
-            name:'wGroup',
-            picklist: true,
-            options: this.groups,
-            value: '',
-            maxlength:100,
-            ly_md:'6', 
-            ly_lg:'6'
-        }
-        this.updateFormField('wGroup',newGrpField);
     }
     handleLookupCreation(event){
         const objReturned = event.detail;
@@ -145,8 +137,8 @@ export default class Rh_invoice_creation extends NavigationMixin(LightningElemen
     doCreateAccount(){
         this.accountInputs=[
             {
-                label:'Name',
-                placeholder:'Name',
+                label:this.l.accountName,
+                placeholder:this.l.accountNamePlc,
                 name:'Name',
                 value: '',
                 required:true,
@@ -155,8 +147,8 @@ export default class Rh_invoice_creation extends NavigationMixin(LightningElemen
                 ly_lg:'6'
             },
             {
-                label:'Phone',
-                placeholder:'Phone',
+                label:this.l.Phone,
+                placeholder:this.l.PhonePlc,
                 name:'Phone',
                 value: '',
                 required:false,
@@ -165,8 +157,8 @@ export default class Rh_invoice_creation extends NavigationMixin(LightningElemen
                 ly_lg:'6'
             },
             {
-                label:'Cap',
-                placeholder:'Cap Number',
+                label:this.l.Cap,
+                placeholder:this.l.CapPlc,
                 name:'Cap',
                 value: '',
                 required:false,
@@ -175,8 +167,8 @@ export default class Rh_invoice_creation extends NavigationMixin(LightningElemen
                 ly_lg:'6'
             },
             {
-                label:'Citta',
-                placeholder:'City',
+                label:this.l.City,
+                placeholder:this.l.CityPlc,
                 name:'City',
                 value: '',
                 required:false,
@@ -185,8 +177,8 @@ export default class Rh_invoice_creation extends NavigationMixin(LightningElemen
                 ly_lg:'6'
             },
             {
-                label:'SDI',
-                placeholder:'sdi',
+                label:this.l.sdi,
+                placeholder:this.l.sdiPlc,
                 name:'Sdi',
                 value: '',
                 required:false,
@@ -195,8 +187,8 @@ export default class Rh_invoice_creation extends NavigationMixin(LightningElemen
                 ly_lg:'6'
             },
             {
-                label:'Email',
-                placeholder:'email',
+                label:this.l.Email,
+                placeholder:this.l.EmailPlc,
                 name:'Email',
                 value: '',
                 required:false,
@@ -205,8 +197,8 @@ export default class Rh_invoice_creation extends NavigationMixin(LightningElemen
                 ly_lg:'6'
             },
             {
-                label:'Civico',
-                placeholder:'Numero',
+                label:this.l.Civico,
+                placeholder:this.l.CivicoPlc,
                 name:'Civico',
                 value: '',
                 required:true,
@@ -274,6 +266,7 @@ export default class Rh_invoice_creation extends NavigationMixin(LightningElemen
             console.log(result);
             if (!result.error && result.Ok) {
                 this.inizier=result;
+
                 this.buildForm();
                 if (isNew) {
                     this.action = NEW_ACTION;
@@ -324,7 +317,12 @@ export default class Rh_invoice_creation extends NavigationMixin(LightningElemen
         if (result.isvalid) {
             record={...record,...result.obj};
             console.log(record);
-            this.handleSaveInvoiceApex(record);
+            if (record.startDate<record.endDate) {
+                this.handleSaveInvoiceApex(record);
+            }else{
+                console.warn('Start date must before end date');
+                this.showToast(WARNING_VARIANT,this.l.warningO,this.l.warn_period_confict );
+            }
             // this.emp[TYPE_FIELD_NAME]=this.empType;
             // this.callApexSave(record);
         }else{
@@ -353,42 +351,44 @@ export default class Rh_invoice_creation extends NavigationMixin(LightningElemen
             {
                 name:ACCOUNT_NAME_FIELD,
                 objName:"Account",
-                placeholder:'Select Account',
-                iconName:"standard:account",
-                newLabel:"Nuovo",
-                label:"Invoice To",
+                placeholder:this.l.invoice_toPlc,
+                iconName:this.icon.client,
+                createNewLabel:this.l.new_account,
+                label:this.l.invoice_to,
                 objectLabel:'Account',
                 filter:this.inizier?.filter,
                 selectName: this.invoice?.RH_Account_Id__r?.Name,
                 value: this.invoice?.RH_Account_Id__c,
                 isSelected:this.editMode,
+                limit:20,
                 required:true,
                 enableCreate:true,
+                readOnly:this.disabledfields?.all || this.disabledfields?.account,
                 type:'lookup',
-                value: '',
-                ly_md:'6', 
-                ly_lg:'6'
+                ly_xs:'12', 
+                ly_md:'12', 
+                ly_lg:'12'
             },
             {
                 label:this.l.po,
                 placeholder:this.l.po,
                 name:'po',
                 value: this.invoice?.RH_Po__c,
+                readOnly:this.disabledfields?.all || this.disabledfields?.po,
                 required:true,
                 ly_xs:'12', 
                 ly_md:'6', 
                 ly_lg:'6'
             },
             {
-                label:this.l.currency,
+                label:this.l.Currency,
                 name:'currencyCode',
                 type:'radio',
-                value: this.invoice?.RH_Currency_Code__c || 'EUR',
+                variant:'label-inline',
+                value: this.invoice?.RH_Currency_Code__c || this.inizier?.DEFAULT_CURRENCY,
                 required:true,
-                options : [
-                    { label: 'EUR', value: 'EUR' },
-                    { label: 'FCFA', value: 'FCFA' },
-                ],
+                options : this.inizier?.picklists.RH_Currency_Code__c || this.curriencies,
+                readOnly:this.disabledfields?.all || this.disabledfields?.currency,
                 ly_xs:'12', 
                 ly_md:'6', 
                 ly_lg:'6'
@@ -399,6 +399,7 @@ export default class Rh_invoice_creation extends NavigationMixin(LightningElemen
                 name:'startDate',
                 required:true,
                 value: this.invoice?.RH_InvoiceDate__c,
+                readOnly:this.disabledfields?.all || this.disabledfields?.start,
                 type:'Date',
                 ly_xs:'12', 
                 ly_md:'6', 
@@ -407,6 +408,7 @@ export default class Rh_invoice_creation extends NavigationMixin(LightningElemen
             {
                 label:this.l.EndDate,
                 placeholder:this.l.EndDate,
+                readOnly:this.disabledfields?.all || this.disabledfields?.end,
                 name:'endDate',
                 required:true,
                 value: this.invoice?.RH_DueDate__c,

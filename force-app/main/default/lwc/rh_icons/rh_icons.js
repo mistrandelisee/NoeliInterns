@@ -1,5 +1,6 @@
 const icons = {
     //ARO_Title
+    Accomplishment: 'utility:education',
     Edit: 'utility:edit',
     Add: 'utility:add',
     Delete:'action:delete',
@@ -41,6 +42,7 @@ const icons = {
     Event: 'standard:event',
     Share: 'utility:share',
     DeleteFile: 'utility:delete',
+    client: 'standard:account',
 
     
     resource:'standard:service_resource',

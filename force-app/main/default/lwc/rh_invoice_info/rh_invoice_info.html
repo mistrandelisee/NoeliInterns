@@ -11,7 +11,7 @@
             </lightning-layout-item>
      </template>
      <template if:true={editMode}>
-        <c-rh_invoice_creation action='Edit' invoice={invoice} onaction={handleActionNew}></c-rh_invoice_creation>
+        <c-rh_invoice_creation action='Edit' disabledfields={disabledfields} invoice={invoice} onaction={handleActionNew}></c-rh_invoice_creation>
     </template>  
     
 </template>

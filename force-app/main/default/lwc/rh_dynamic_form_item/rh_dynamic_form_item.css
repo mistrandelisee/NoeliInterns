@@ -38,3 +38,8 @@ lightning-combobox{
 .backgroundcolor{
     background-color: #639aae;
 }
+lightning-radio-group{
+    --lwc-borderWidthThin: 1px;
+    --lwc-colorBorder: var(--secondaryColor,#9735e1);
+    --lwc-borderRadiusMedium: .95rem;
+}

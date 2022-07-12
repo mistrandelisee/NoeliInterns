@@ -32,23 +32,23 @@ export default class Rh_display_fields extends NavigationMixin(LightningElement)
     }
 
     get getFieldsRows(){
-        let outfields=[];
-        let outrows=[];
+        let allRows=[];
+        let aRow=[];
         let i=1;
         for (let index = 0; index < this.outputFields.length; index++) {
             const field = this.outputFields[index];
-            outrows.push({...field,
+            aRow.push({...field,
                 isLink: field.type=='Link'});
             
             if (i==(+this.column) || index == this.outputFields.length-1) {//if second pair or last elt
-                outfields.push({index,fields:outrows});
-                outrows=[];
+                allRows.push({index,fields:aRow});
+                aRow=[];
                 i=0;
             }
             i=i+1;
         }
-        console.log(`outfields  `, outfields );
-        return outfields;
+        console.log(`allRows  `, allRows );
+        return allRows;
     }
     initDefaultAction(){
         this.actionAvailable= this.actionAvailable || [

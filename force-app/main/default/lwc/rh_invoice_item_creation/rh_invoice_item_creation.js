@@ -304,6 +304,7 @@ export default class Rh_invoice_creation extends NavigationMixin(LightningElemen
     handleSaveInvoiceItemApex(record,from=''){
         record.Id=this.invoiceItem?.Id || null;
         record.invoiceId=this.invoice?.Id || null;
+        record.currencyCode=this.invoice?.RH_Currency_Code__c || null;
         this.startSpinner(true)
         invoiceItemCreation({ entryJson: JSON.stringify(record) })
           .then(result => {

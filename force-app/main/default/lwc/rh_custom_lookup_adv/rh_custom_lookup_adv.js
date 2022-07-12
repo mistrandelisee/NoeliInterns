@@ -63,7 +63,7 @@ export default class Rh_custom_lookup extends LightningElement {
     //css
     @track boxClass = 'slds-combobox slds-dropdown-trigger slds-dropdown-trigger_click slds-has-focus';
     @track inputClass = '';
-    get newLabel(){ return this.newLabelPrefix+' '+ (this.objectLabel || this.fieldLabel || this.objName) }
+    get newLabel(){ return this.optionnal?.createNewLabel || this.newLabelPrefix+' '+ (this.objectLabel || this.fieldLabel || this.objName) }
     get hasLabel(){ return this.fieldLabel}
     get formClass(){ return this.hasError ? 'slds-form-element slds-has-error' : 'slds-form-element '}
     get hasError (){ return this.errorMessage;}

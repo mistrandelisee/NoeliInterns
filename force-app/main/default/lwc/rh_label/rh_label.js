@@ -1,276 +1,532 @@
-//new
 
-//EM
-//import ARO_Title from '@salesforce/label/c.ARO_Title';
-
+import Add from '@salesforce/label/c.rh_Add';
+import Accomplishments from '@salesforce/label/c.rh_Accomplishments';
+import Edit from '@salesforce/label/c.rh_Edit';
+import Save from '@salesforce/label/c.rh_Save';
+import New from '@salesforce/label/c.rh_New';
+import Change from '@salesforce/label/c.rh_Change';
+import Cancel from '@salesforce/label/c.rh_Cancel';
+import ChangePassword from '@salesforce/label/c.rh_ChangePassword';
+import ResetPassword from '@salesforce/label/c.rh_ResetPassword';
+import CurrentPassword from '@salesforce/label/c.rh_CurrentPassword';
+import CurrentPasswordPlc from '@salesforce/label/c.rh_CurrentPasswordPlc';
+import NewPassword from '@salesforce/label/c.rh_NewPassword';
+import NewPasswordPlc from '@salesforce/label/c.rh_NewPasswordPlc';
+import RepeatPassword from '@salesforce/label/c.rh_RepeatPassword';
+import RepeatPasswordPlc from '@salesforce/label/c.rh_RepeatPasswordPlc';
+import UserProfileTitle from '@salesforce/label/c.rh_UserProfileTitle';
+import AccountInfoTitle from '@salesforce/label/c.rh_AccountInfoTitle';
+import ChangePasswordTitle from '@salesforce/label/c.rh_ChangePasswordTitle';
+import FirstName from '@salesforce/label/c.rh_FirstName';
+import LastName from '@salesforce/label/c.rh_LastName';
+import Email from '@salesforce/label/c.rh_Email';
+import Role from '@salesforce/label/c.rh_Role';
+import RolePlc from '@salesforce/label/c.rh_RolePlc';
+import FirstNamePlc from '@salesforce/label/c.rh_FirstNamePlc';
+import LastNamePlc from '@salesforce/label/c.rh_LastNamePlc';
+import EmailPlc from '@salesforce/label/c.rh_EmailPlc';
+import Title from '@salesforce/label/c.rh_Title';
+import TitlePlc from '@salesforce/label/c.rh_TitlePlc';
+import NotePlc from '@salesforce/label/c.rh_NotePlc';
+import Phone from '@salesforce/label/c.rh_Phone';
+import PhonePlc from '@salesforce/label/c.rh_PhonePlc';
+import Username from '@salesforce/label/c.rh_Username';
+import UsernamePlc from '@salesforce/label/c.rh_UsernamePlc';
+import City from '@salesforce/label/c.rh_City';
+import CityPlc from '@salesforce/label/c.rh_CityPlc';
+import Birthday from '@salesforce/label/c.rh_Birthday';
+import BirthdayPlc from '@salesforce/label/c.rh_BirthdayPlc';
+import AboutMe from '@salesforce/label/c.rh_AboutMe';
+import AboutMePlc from '@salesforce/label/c.rh_AboutMePlc';
+import CompanyName from '@salesforce/label/c.rh_CompanyName';
+import NumberOfEmployees from '@salesforce/label/c.rh_NumberOfEmployees';
+import Website from '@salesforce/label/c.rh_Website';
+import About from '@salesforce/label/c.rh_About';
+import YearStarted from '@salesforce/label/c.rh_YearStarted';
+import Industry from '@salesforce/label/c.rh_Industry';
+import Company from '@salesforce/label/c.rh_Company';
+import Description from '@salesforce/label/c.rh_Description';
+import DescriptionPlc from '@salesforce/label/c.rh_DescriptionPlc';
+import AddressedTo from '@salesforce/label/c.rh_AddressedTo';
+import Status from '@salesforce/label/c.rh_Status'; 
+import StartDate from '@salesforce/label/c.rh_StartDate';
+import EndDate from '@salesforce/label/c.rh_EndDate';
+import AddressedCc from '@salesforce/label/c.rh_AddressedCc';
+import ComplainOn from '@salesforce/label/c.rh_ComplainOn';
+import Note from '@salesforce/label/c.rh_Note';
+import RequestTypeName from '@salesforce/label/c.rh_RequestTypeName';
+import Come from '@salesforce/label/c.rh_Come';
+import DateLb from '@salesforce/label/c.rh_DateLb';
+import DatePlc from '@salesforce/label/c.rh_DatePlc';
+import Visibility from '@salesforce/label/c.rh_Visibility';
+import Activate from '@salesforce/label/c.rh_Activate';
+import Freeze from '@salesforce/label/c.rh_Freeze';
+import Disable from '@salesforce/label/c.rh_Disable';
+import Group from '@salesforce/label/c.rh_Group';
+import SaveAndActive from '@salesforce/label/c.rh_SaveAndActive';
+import Back from '@salesforce/label/c.rh_Back';
+import IsPublic from '@salesforce/label/c.rh_IsPublic';
+import Submiter from '@salesforce/label/c.rh_Submiter';
+import StatusPlc from '@salesforce/label/c.rh_StatusPlc';
+import Name from '@salesforce/label/c.rh_Name';
+import GroupeMember from '@salesforce/label/c.rh_GroupeMember';
+import Leader from '@salesforce/label/c.rh_Leader';
+import PromoteBaseUser from '@salesforce/label/c.rh_PromoteBaseUser';
+import Submit from '@salesforce/label/c.rh_Submit';
+import Delete from '@salesforce/label/c.rh_Delete';
+import Approve from '@salesforce/label/c.rh_Approve';
+import Submited from '@salesforce/label/c.rh_Submited';
+import Approved from '@salesforce/label/c.rh_Approved';
+import Draft from '@salesforce/label/c.rh_Draft';
+import Reject from '@salesforce/label/c.rh_Reject';
+import SaveandSubmited from '@salesforce/label/c.rh_SaveandSubmited';
+import Deleterequest from '@salesforce/label/c.rh_Deleterequest';
+import Clonerequest from '@salesforce/label/c.rh_Clonerequest';
+import Editrequest from '@salesforce/label/c.rh_Editrequest';
+import Sendrequest from '@salesforce/label/c.rh_Sendrequest';
+import Createrequest from '@salesforce/label/c.rh_Createrequest';
+import CreatedDate from '@salesforce/label/c.rh_CreatedDate';
+import FilterRequest from '@salesforce/label/c.rh_FilterRequest';
+import FilterTitle from '@salesforce/label/c.rh_FilterTitle';
+import ConfigTitle from '@salesforce/label/c.rh_ConfigTitle';
+import UploadFile from '@salesforce/label/c.rh_UploadFile';
+import FilterAccomplishment from '@salesforce/label/c.rh_FilterAccomplishment';
+import label from '@salesforce/label/c.rh_label';
+import value from '@salesforce/label/c.rh_value';
+import userInfoHlp from '@salesforce/label/c.rh_userInfoHlp';  
+import userEditHlp from '@salesforce/label/c.rh_userEditHlp';  
+import moreInfo from '@salesforce/label/c.rh_moreInfo';
+import userMoreInfoHlp from '@salesforce/label/c.rh_userMoreInfoHlp';  
+import userEditMoreHlp from '@salesforce/label/c.rh_userEditMoreHlp';  
+import successOp from '@salesforce/label/c.rh_successOp';
+import errorOp from '@salesforce/label/c.rh_errorOp';
+import warningOp from '@salesforce/label/c.rh_warningOp';
+import rmvfield from '@salesforce/label/c.rh_rmvfield';
+import addfield from '@salesforce/label/c.rh_addfield';
+import Supervisor from '@salesforce/label/c.rh_Supervisor';
+import myprojects from '@salesforce/label/c.rh_myprojects';
+import mytimesheets from '@salesforce/label/c.rh_mytimesheets';
+import myleadedGroups from '@salesforce/label/c.rh_myleadedGroups';
+import myleadedProjects from '@salesforce/label/c.rh_myleadedProjects';
+import projects from '@salesforce/label/c.rh_projects';
+import timesheets from '@salesforce/label/c.rh_timesheets';
+import leadedGroups from '@salesforce/label/c.rh_leadedGroups';
+import leadedProjects from '@salesforce/label/c.rh_leadedProjects';
+import ok_confirm from '@salesforce/label/c.rh_ok_confirm';
+import disable_confirm from '@salesforce/label/c.rh_disable_confirm';
+import reset_confirm from '@salesforce/label/c.rh_reset_confirm';
+import action_confirm from '@salesforce/label/c.rh_action_confirm';
+import NewProject from '@salesforce/label/c.rh_NewProject';
+import AvaibleMembers from '@salesforce/label/c.rh_AvaibleMembers';
+import SelectedMembers from '@salesforce/label/c.rh_SelectedMembers';
+import AddorRemoveProject from '@salesforce/label/c.rh_AddorRemoveProject';
+import DownloadAttachment from '@salesforce/label/c.rh_DownloadAttachment';
+import EditMembers from '@salesforce/label/c.rh_EditMembers';
+import ProjectDetails from '@salesforce/label/c.rh_ProjectDetails';
+import ADDAttachment from '@salesforce/label/c.rh_ADDAttachment';
+import Close from '@salesforce/label/c.rh_Close';
+import Next from '@salesforce/label/c.rh_Next';
+import Manager from '@salesforce/label/c.rh_Manager';
+import Account from '@salesforce/label/c.rh_Account';
+import Link from '@salesforce/label/c.rh_Link';
+import Task from '@salesforce/label/c.rh_Task';
+import TaskList from '@salesforce/label/c.rh_TaskList';
+import AssignTo from '@salesforce/label/c.rh_AssignTo';
+import AssignToPh from '@salesforce/label/c.rh_AssignToPh';
+import TaskPh from '@salesforce/label/c.rh_TaskPh';
+import TaskDescr from '@salesforce/label/c.rh_TaskDescr';
+import Priority from '@salesforce/label/c.rh_Priority';
+import ProjectMembers from '@salesforce/label/c.rh_ProjectMembers';
+import ManageTask from '@salesforce/label/c.rh_ManageTask';
+import AddNews from '@salesforce/label/c.rh_AddNews';
+import Interval from '@salesforce/label/c.rh_Interval';  
+import IntervalPlc from '@salesforce/label/c.rh_IntervalPlc';  
+import NewsDelete from '@salesforce/label/c.rh_NewsDelete';  
+import NewsDeactivated from '@salesforce/label/c.rh_NewsDeactivated';  
+import NewsActivated from '@salesforce/label/c.rh_NewsActivated';  
+import SaveConfiguration from '@salesforce/label/c.rh_SaveConfiguration';  
+import UpdateNewsError from '@salesforce/label/c.rh_UpdateNewsError';  
+import InvalidField from '@salesforce/label/c.rh_InvalidField';
+import UpdateNews from '@salesforce/label/c.rh_UpdateNews';  
+import FileUpdate from '@salesforce/label/c.rh_FileUpdate';  
+import DeleteNews_Confirm from '@salesforce/label/c.rh_DeleteNews_Confirm';
+import DeleteNews_Title from '@salesforce/label/c.rh_DeleteNews_Title';  
+import Reset from '@salesforce/label/c.rh_Reset';
+import Translate from '@salesforce/label/c.rh_Translate';
+import Italian from '@salesforce/label/c.rh_Italian';
+import French from '@salesforce/label/c.rh_French';
+import English from '@salesforce/label/c.rh_English';
+import SelectLang from '@salesforce/label/c.rh_SelectLang';
+import AlreadyTranslate from '@salesforce/label/c.rh_AlreadyTranslate';
+import Copyright from '@salesforce/label/c.rh_Copyright';
+import Start from '@salesforce/label/c.rh_Start';
+import End from '@salesforce/label/c.rh_End';
+import DeleteFile from '@salesforce/label/c.rh_DeleteFile';  
+import ContactName from '@salesforce/label/c.rh_ContactName';
+import StartDatePlc from '@salesforce/label/c.rh_StartDatePlc';
+import EndDatePlc from '@salesforce/label/c.rh_EndDatePlc';
+import NamePlc from '@salesforce/label/c.rh_NamePlc';
+import SaveAndSend from '@salesforce/label/c.rh_SaveAndSend';
+import Update from '@salesforce/label/c.rh_Update';
+import UpdateAndSend from '@salesforce/label/c.rh_UpdateAndSend';
+import Send from '@salesforce/label/c.rh_Send';
+import AddNewEvent from '@salesforce/label/c.rh_AddNewEvent';
+import UpdateEvent from '@salesforce/label/c.rh_UpdateEvent';
+import PermissionDelete from '@salesforce/label/c.rh_PermissionDelete';
+import PermissionRejected from '@salesforce/label/c.rh_PermissionRejected';
+import EventDetails from '@salesforce/label/c.rh_EventDetails';
+import Download from '@salesforce/label/c.rh_Download';
+import FileName from '@salesforce/label/c.rh_FileName';
+import ToastEvent1 from '@salesforce/label/c.rh_ToastEvent1';
+import ToastInfoEvent2 from '@salesforce/label/c.rh_ToastInfoEvent2';
+import FileDeleteSuccessfully from '@salesforce/label/c.rh_FileDeleteSuccessfully';
+import RightAccess from '@salesforce/label/c.rh_RightAccess';
+import ErrorId from '@salesforce/label/c.rh_ErrorId';
+import SuccessEven from '@salesforce/label/c.rh_SuccessEven';
+import InfoDate from '@salesforce/label/c.rh_InfoDate';
+import SucessEvenS from '@salesforce/label/c.rh_SucessEvenS';
+import EvenSendSuccess from '@salesforce/label/c.rh_EvenSendSuccess';
+import EvenApproved from '@salesforce/label/c.rh_EvenApproved';
+import EvenUpdateS from '@salesforce/label/c.rh_EvenUpdateS';
+import EvenUpdateSS from '@salesforce/label/c.rh_EvenUpdateSS';
+import RightDeletion from '@salesforce/label/c.rh_RightDeletion';
+import EvenDeletionS from '@salesforce/label/c.rh_EvenDeletionS';
+import SendEvent from '@salesforce/label/c.rh_SendEvent';
+import RejectFail from '@salesforce/label/c.rh_RejectFail';
+import EventSubS from '@salesforce/label/c.rh_EventSubS';
+import EventA from '@salesforce/label/c.rh_EventA';
+import new_invoice from '@salesforce/label/c.rh_new_invoice';
+import new_account from '@salesforce/label/c.rh_new_account';
+import po from '@salesforce/label/c.rh_po';
+import invoice_to from '@salesforce/label/c.rh_invoice_to';
+import invoice_toPlc from '@salesforce/label/c.rh_invoice_toPlc';
+import Entries from '@salesforce/label/c.rh_Entries';
+import Number from '@salesforce/label/c.rh_Number';
+import From from '@salesforce/label/c.rh_From';
+import To from '@salesforce/label/c.rh_To';
+import OrderBy from '@salesforce/label/c.rh_OrderBy';
+import selectPlc from '@salesforce/label/c.rh_selectPlc';
+import OrderOn from '@salesforce/label/c.rh_OrderOn';
+import noTimesheet from '@salesforce/label/c.rh_noTimesheet';
+import showDetails from '@salesforce/label/c.rh_showDetails';
+import SaveNew from '@salesforce/label/c.rh_SaveNew';
+import AddLines from '@salesforce/label/c.rh_AddLines';
+import ExportPDF from '@salesforce/label/c.rh_ExportPDF';
+import ExportXLS from '@salesforce/label/c.rh_ExportXLS';
+import approvalTitle from '@salesforce/label/c.rh_approvalTitle';
+import Date from '@salesforce/label/c.rh_Date';
+import startTime from '@salesforce/label/c.rh_startTime';
+import endTime from '@salesforce/label/c.rh_endTime';
+import noTimesheetItems from '@salesforce/label/c.rh_noTimesheetItems';
+import Activity from '@salesforce/label/c.rh_Activity';
+import Duration_mins from '@salesforce/label/c.rh_Duration_mins';
+import total_dur_mins from '@salesforce/label/c.rh_total_dur_mins';
+import total_free_dur_mins from '@salesforce/label/c.rh_total_free_dur_mins';
+import total_work_dur_mins from '@salesforce/label/c.rh_total_work_dur_mins';
+import total_dur_h from '@salesforce/label/c.rh_total_dur_h';
+import total_free_dur_h from '@salesforce/label/c.rh_total_free_dur_h';
+import total_work_dur_h from '@salesforce/label/c.rh_total_work_dur_h';
+import delete_sheet_confirm from '@salesforce/label/c.rh_delete_sheet_confirm';
+import delete_sheetitem_confirm from '@salesforce/label/c.rh_delete_sheetitem_confirm';
+import succesDelete from '@salesforce/label/c.rh_succesDelete';
+import recordNotFounded from '@salesforce/label/c.rh_recordNotFounded';
+import Approver from '@salesforce/label/c.rh_Approver';
+import Owner from '@salesforce/label/c.rh_Owner';
+import timesheetHeaderTitle from '@salesforce/label/c.rh_timesheetHeaderTitle';
+import timesheetItemsHeaderTitle from '@salesforce/label/c.rh_timesheetItemsHeaderTitle';
+import warn_weekend from '@salesforce/label/c.rh_warn_weekend';
+import warn_period_confict from '@salesforce/label/c.rh_warn_period_confict';
+import create_item from '@salesforce/label/c.rh_create_item';    
+import item_deatis from '@salesforce/label/c.rh_item_deatis';  
+import Quantity from '@salesforce/label/c.rh_Quantity';
+import Rate from '@salesforce/label/c.rh_Rate';
+import Project from '@salesforce/label/c.rh_Project';
+import employee from '@salesforce/label/c.rh_employee';
+import employeePc from '@salesforce/label/c.rh_employeePc';
+import ressource from '@salesforce/label/c.rh_ressource';
+import ressourcePlc from '@salesforce/label/c.rh_ressourcePlc';
+import new_ressource from '@salesforce/label/c.rh_new_ressource';
+import create_inv_item from '@salesforce/label/c.rh_create_inv_item';
+import edit_inv_item from '@salesforce/label/c.rh_edit_inv_item';
+import noinvoiceItems from '@salesforce/label/c.rh_noinvoiceItems';
+import amount from '@salesforce/label/c.rh_amount';
+import delete_invoice_confirm from '@salesforce/label/c.rh_delete_invoice_confirm';
+import delete_invoiceItem_confirm from '@salesforce/label/c.rh_delete_invoiceItem_confirm';
+import Cap from '@salesforce/label/c.rh_Cap';
+import CapPlc from '@salesforce/label/c.rh_CapPlc';
+import sdi from '@salesforce/label/c.rh_sdi';
+import sdiPlc from '@salesforce/label/c.rh_sdiPlc';
+import Civico from '@salesforce/label/c.rh_Civico';
+import Currency from '@salesforce/label/c.rh_Currency';
+import CivicoPlc from '@salesforce/label/c.rh_CivicoPlc';
 
 const labels = {
-    Add: 'Add',
-    Accomplishments: 'Accomplishments (#NB)',
-    Edit: 'Edit',
-    Save: 'Save',
-    New: 'New',
-    Change: 'Change',
-    Cancel: 'Cancel',
-    ChangePassword: 'Change Password',
-    ResetPassword: 'Reset Password',
-    CurrentPassword: 'Current Password',
-    CurrentPasswordPlc: 'Enter Current Password',
-    NewPassword: 'New Password',
-    NewPasswordPlc: 'Enter New Password',
-    RepeatPassword: 'Repeat Password',
-    RepeatPasswordPlc: 'Enter Repeat Password',
-    UserProfileTitle: 'User Informations',
-    AccountInfoTitle: 'Company Informations',
-    ChangePasswordTitle: 'Change Password',
-    FirstName: 'First Name',
-    LastName: 'Last Name',
-    Email: 'Email Address',
-    Role: 'Role',
-    RolePlc: 'Select Role',
-    FirstNamePlc: 'Enter First Name',
-    LastNamePlc: 'Enter Last Name',
-    EmailPlc: 'Enter Email Address',
-    Title: 'Title',
-    TitlePlc: 'Enter Your Title',
-    NotePlc: 'Insert a note',
+    Add,
+    Accomplishments,
+    Edit,
+    Save,
+    New,
+    Change,
+    Cancel,
+    ChangePassword,
+    ResetPassword,
+    CurrentPassword,
+    CurrentPasswordPlc,
+    NewPassword,
+    NewPasswordPlc,
+    RepeatPassword,
+    RepeatPasswordPlc,
+    UserProfileTitle,
+    AccountInfoTitle,
+    ChangePasswordTitle,
+    FirstName,
+    LastName,
+    Email,
+    Role,
+    RolePlc,
+    FirstNamePlc,
+    LastNamePlc,
+    EmailPlc,
+    Title,
+    TitlePlc,
+    NotePlc,
 
-    Phone:'Phone',
-    PhonePlc:'Enter Phone Number',
-    Username:'Username',
-    UsernamePlc:'Enter Username',
-    City:'City',
-    CityPlc:'Enter Current City',
-    Birthday:'Birthday',
-    BirthdayPlc:'Enter Birthday',
-    AboutMe:'About Me',
-    AboutMePlc:'Say Something About you! ',
-    CompanyName:'Name',
-    NumberOfEmployees:'Number Of Employees',
-    Website:'Website',
-    Phone:'Phone',
-    About:'About',
-    YearStarted:'Year Started',
-    Industry:'Industry',
-    Role:'Role',
-    Company: 'Company',
-    Description: 'Description',
-    DescriptionPlc: 'Enter Your Description',
-    AddressedTo: 'Addressed To',
-    Status : 'Status',
-    StartDate: 'Start date',
-    EndDate: 'End date',
-    AddressedCc: 'Addressed Cc',
-    ComplainOn: 'Complain On',
-    Note: 'Reason',
-    RequestTypeName: 'Request Type',
-    ComplainOn: 'Complain On',
-    Come: 'Submit by',
-    DateLb: 'Date',
-    DatePlc: 'Enter Your Date',
-    Visibility: 'Public ?',
-    Activate: 'Activate',
-    Freeze: 'Freeze',
-    Disable: 'Disable',
-    Group: 'Group',
-    SaveAndActive: 'Save And Active',
-    Back: 'Back',
-    IsPublic: 'Is Public',
-    Submiter: 'Submit By',
-    StatusPlc: 'Select one status',
-    Name: 'Name',
-    GroupeMember: 'The Groupe Member are',
-    Leader: 'Leader Name',
-    PromoteBaseUser: 'Mark As Team Leader',
-    Submit:'Submit',
-    Delete:'Delete',
-    Approve:'Approve',
-    Submited:'Submited',
-    Approved:'Approved',
-    Draft:'Draft',
-    Reject:'Reject',
-    SaveandSubmited:'Save and Submit',
-    Deleterequest:'Delete request',
-    Clonerequest: 'Clone request',
-    Editrequest: 'Edit request',
-    Sendrequest: 'Send request',
-    Createrequest:'Create request',
-    CreatedDate: 'Created Date',
-    FilterRequest: 'Filter Request',
-    FilterTitle: 'Filter the news',
-    ConfigTitle: 'News configuration',
-    UploadFile: 'Upload File',
-    FilterAccomplishment: 'Filter Accomplishment',
-    label: 'Field Label',
-    value: 'Field Value',
-    userInfoHlp : 'View user details',
-    userEditHlp : 'Edit user details',
-    moreInfo:'More Informations',
-    userMoreInfoHlp : 'More details',
-    userEditMoreHlp : 'Edit additionnal information about you , check each time you edit an information. then save all...',
-    successOp:'Succes operation',
-    errorOp:'Something goes wrong',
-    warningOp:'Warning',
-    rmvfield:'Field removed',
-    addfield:'Field Adjusted',
-    Supervisor:'Supervisor',
-    myprojects:'My Projects (#NB)',
-    mytimesheets:'My Timesheets (#NB)',
-    myleadedGroups:'My Leaded Groups (#NB)',
-    myleadedProjects:'My Leaded Projects (#NB)',
-    About: 'About',
-    projects:'Projects (#NB)',
-    timesheets:'Timesheets (#NB)',
-    leadedGroups:'Leaded Groups (#NB)',
-    leadedProjects:'Leaded Projects (#NB)',
-    ok_confirm:'Yes, I\'m sure',
-    disable_confirm:'Are you sure you want to disable this User?',
-    reset_confirm:'Are you sure you want to reset this user Password?',
-    action_confirm:' Action Confirmation',
-    NewProject:'New Project',
-    AvaibleMembers:'Avaible Members',
-    SelectedMembers:'Selected Members',
-    AddorRemoveProject:'Add or Remove members to the Project',
-    DownloadAttachment:'Download Attachment file',
-    EditMembers:'Edit Members',
-    ProjectDetails:'Project Details',
-    ADDAttachment:'ADD Attachment',
-    Close:'Close',
-    Next:'Next',
-    Name:'Name',
-    Manager:'Manager',
-    Account:'Account',
-    Link:'Link',
-    Task:'Add Task',
-    TaskList:'Task',
-    AssignTo:'Asign To',
-    AssignToPh:'Select member',
-    TaskPh:'Enter your Task Name',
-    TaskDescr:'Enter your Task Description',
-    Priority:'Priority',
-    ProjectMembers:'Project Members',
-    ManageTask:'Manage Task',
-    AddNews: "Add News",
-    Interval : 'Set Interval',
-    IntervalPlc :'Enter Interval',
-    NewsDelete : 'the news has been successfully deleted',
-    NewsDeactivated : 'the news has been successfully deactivated',
-    NewsActivated : 'the news has been successfully activated',
-    SaveConfiguration : 'Your configuration has been successfully saved',
-    UpdateNewsError : 'The record has not been updated ',
-    InvalidField: 'The field Is not valid',
-    UpdateNews : 'the news has been successfully Update ',
-    FileUpdate : 'The file has not been updated',
-    DeleteNews_Confirm: 'Are you sure you want to delete this News?',
-    DeleteNews_Title : 'Confirm Deletion',
-    Reset: 'Reset',
-    Translate: 'Translate',
-    Italian:'Italian', 
-    French:'French',
-    English:'English',
-    SelectLang: 'Select your language',
-    AlreadyTranslate: 'Already translate in  ',
-    Copyright: '© Copyright (#NB) - Noeli.com ',
-    Start:'Start',
-    End: 'End',
-    AddNews: "Add News",
-    DeleteFile : 'Delete File',
-    ContactName: 'Contact Name',
-    StartDatePlc: 'Enter the Start date',
-    EndDatePlc: 'Enter the End date',
-    NamePlc: 'Enter Name',
-    SaveAndSend: 'Save And Send',
-    Update: 'Update',
-    UpdateAndSend: 'Update And Send',
-    Send: 'Send',
-    AddNewEvent: 'Add New Event',
-    UpdateEvent: 'Update Event',
-    PermissionDelete: 'Are you sure to want to delete it ?',
-    PermissionRejected: 'Are you sure to want to reject it ?',
-    EventDetails: 'Event Details',
-    Download: 'Download',
-    FileName: 'File Name',
-    ToastEvent1:'Sorry you no longer have right deleted',
-    ToastInfoEvent2: 'Your end date cannot be less than start date !',
-    FileDeleteSuccessfully: 'File Delete Successfully !!',
-    RightAccess:'You no longer have the right to modify the event !',
-    ErrorId:'Error about Id of userRole',
-    SuccessEven: 'Event Add Successfully but Not send to CEO!!',
-    InfoDate: 'Your end date cannot be less than start date !',
-    SucessEvenS: 'Event Add Successfully And send to CEO !!',
-    EvenSendSuccess: 'Event Send Successfully !!',
-    EvenApproved: 'This event has been already approved !',
-    EvenUpdateS: 'Event Update Successfully !!',
-    EvenUpdateSS: 'Event Update Successfully and send to CEO !!',
-    RightDeletion: 'You don\'t have right to deletion !!',
-    EvenDeletionS: 'Event Delete Successfully!!',
-    SendEvent: 'You should sent event before delete',
-    RejectFail: 'You cannot rejected an event already approved',
-    EventSubS: 'Event Submitted Successfully',
-    EventA: 'This event has been already shared !',
-    new_invoice:'New Invoice',
-    new_account:'New Client Account',
-    po:'Po',
-    invoice_to:"Invoice To",
-    invoice_toPlc:"Search client",
-    Entries:'Entries',
-    Number: 'Number',
-    From: 'From',
-    To: 'To',
-    OrderBy:'sort By',
-    selectPlc:'Select an option',
-    OrderOn:'As',
-    noTimesheet:'No timesheet founded',
-    showDetails:'Show details',
-    SaveNew:'Save & New',
-    AddLines:'Add Items',
-    ExportPDF:'Export PDF',
-    ExportXLS:'Export XLSX',
-    approvalTitle:'APPROVAL ACTION',
-    Date:'Date',
-    startTime:'Start Time',
-    endTime:'End Time',
-    noTimesheetItems:'No Timesheet Items found for this timesheet. Use the Add times Action to add items',
-    Activity:'Activity',
-    Duration_mins:'Duration (Minutes)',
-    total_dur_mins:"Total Duration In Minutes",
-    total_free_dur_mins:"Total Free Duration In Minutes",
-    total_work_dur_mins:"Total Working Duration In Minutes",
-    total_dur_h:"Total Duration In Hours",
-    total_free_dur_h:"Total Free Duration In Hours",
-    total_work_dur_h:"Total Working Duration In Hours",
-    delete_sheet_confirm:'Are you sure you want to delete this sheet?',
-    delete_sheetitem_confirm:'Are you sure you want to delete this sheet entry?',
-    succesDelete:'record Deleted succesfully',
-    recordNotFounded:'record Not Found',
-    Approver:'Approver',
-    Owner:'Owner',
-    timesheetHeaderTitle:'timesheet Header Title',
-    timesheetItemsHeaderTitle:'timesheet Items Header Title',
-    warn_weekend:'Please Select a weekday !!!',
-    warn_period_confict: 'Start date must before end date',
-    create_item  :'Create Line',
-    item_deatis :'Line details',
-    Quantity:'Quantity',
-    Rate:'Rate',
-    Project:'Project',
-    employee: 'Employee',
-    employeePc: 'Select an Employee',
-    ressource:'Ressource',
-    ressourcePlc:'Select a Ressource',
-    new_ressource:'New Ressource',
-    create_inv_item:'Create Invoice Item',
-    edit_inv_item:'Edit Invoice Item',
-    noinvoiceItems:'No Invoice Items found for this Invoice. Use the Add times Action to add items',
-    amount: 'Amount',
-    delete_invoice_confirm:'Are you sure you want to delete this invoice',
-    delete_invoiceItem_confirm:'Are you sure you want to delete this invoice Items', 
-    Cap:'Cap',
-    CapPlc:'Cap Number',
-    sdi:'SDI',
-    sdiPlc:'sdi',
-    Civico:'Civico',
-    Currency:'Currency',
-    CivicoPlc:'Numero',
+    Phone,
+    PhonePlc,
+    Username,
+    UsernamePlc,
+    City,
+    CityPlc,
+    Birthday,
+    BirthdayPlc,
+    AboutMe,
+    AboutMePlc,
+    CompanyName,
+    NumberOfEmployees,
+    Website,
+    Phone,
+    About,
+    YearStarted,
+    Industry,
+    Role,
+    Company,
+    Description,
+    DescriptionPlc,
+    AddressedTo,
+    Status,
+    StartDate,
+    EndDate,
+    AddressedCc,
+    ComplainOn,
+    Note,
+    RequestTypeName,
+    ComplainOn,
+    Come,
+    DateLb,
+    DatePlc,
+    Visibility,
+    Activate,
+    Freeze,
+    Disable,
+    Group,
+    SaveAndActive,
+    Back,
+    IsPublic,
+    Submiter,
+    StatusPlc,
+    Name,
+    GroupeMember,
+    Leader,
+    PromoteBaseUser,
+    Submit,
+    Delete,
+    Approve,
+    Submited,
+    Approved,
+    Draft,
+    Reject,
+    SaveandSubmited,
+    Deleterequest,
+    Clonerequest,
+    Editrequest,
+    Sendrequest,
+    Createrequest,
+    CreatedDate,
+    FilterRequest,
+    FilterTitle,
+    ConfigTitle,
+    UploadFile,
+    FilterAccomplishment,
+    label,
+    value,
+    userInfoHlp,
+    userEditHlp,
+    moreInfo,
+    userMoreInfoHlp,
+    userEditMoreHlp,
+    successOp,
+    errorOp,
+    warningOp,
+    rmvfield,
+    addfield,
+    Supervisor,
+    myprojects,
+    mytimesheets,
+    myleadedGroups,
+    myleadedProjects,
+    About,
+    projects,
+    timesheets,
+    leadedGroups,
+    leadedProjects,
+    ok_confirm,
+    disable_confirm,
+    reset_confirm,
+    action_confirm,
+    NewProject,
+    AvaibleMembers,
+    SelectedMembers,
+    AddorRemoveProject,
+    DownloadAttachment,
+    EditMembers,
+    ProjectDetails,
+    ADDAttachment,
+    Close,
+    Next,
+    Name,
+    Manager,
+    Account,
+    Link,
+    Task,
+    TaskList,
+    AssignTo,
+    AssignToPh,
+    TaskPh,
+    TaskDescr,
+    Priority,
+    ProjectMembers,
+    ManageTask,
+    AddNews,
+    Interval,
+    IntervalPlc,
+    NewsDelete,
+    NewsDeactivated,
+    NewsActivated,
+    SaveConfiguration,
+    UpdateNewsError,
+    InvalidField,
+    UpdateNews,
+    FileUpdate,
+    DeleteNews_Confirm,
+    DeleteNews_Title,
+    Reset,
+    Translate,
+    Italian,
+    French,
+    English,
+    SelectLang,
+    AlreadyTranslate,
+    Copyright,
+    Start,
+    End,
+    AddNews,
+    DeleteFile,
+    ContactName,
+    StartDatePlc,
+    EndDatePlc,
+    NamePlc,
+    SaveAndSend,
+    Update,
+    UpdateAndSend,
+    Send,
+    AddNewEvent,
+    UpdateEvent,
+    PermissionDelete,
+    PermissionRejected,
+    EventDetails,
+    Download,
+    FileName,
+    ToastEvent1,
+    ToastInfoEvent2,
+    FileDeleteSuccessfully,
+    RightAccess,
+    ErrorId,
+    SuccessEven,
+    InfoDate,
+    SucessEvenS,
+    EvenSendSuccess,
+    EvenApproved,
+    EvenUpdateS,
+    EvenUpdateSS,
+    RightDeletion,
+    EvenDeletionS,
+    SendEvent,
+    RejectFail,
+    EventSubS,
+    EventA,
+    new_invoice,
+    new_account,
+    po,
+    invoice_to,
+    invoice_toPlc,
+    Entries,
+    Number,
+    From,
+    To,
+    OrderBy,
+    selectPlc,
+    OrderOn,
+    noTimesheet,
+    showDetails,
+    SaveNew,
+    AddLines,
+    ExportPDF,
+    ExportXLS,
+    approvalTitle,
+    Date,
+    startTime,
+    endTime,
+    noTimesheetItems,
+    Activity,
+    Duration_mins,
+    total_dur_mins,
+    total_free_dur_mins,
+    total_work_dur_mins,
+    total_dur_h,
+    total_free_dur_h,
+    total_work_dur_h,
+    delete_sheet_confirm,
+    delete_sheetitem_confirm,
+    succesDelete,
+    recordNotFounded,
+    Approver,
+    Owner,
+    timesheetHeaderTitle,
+    timesheetItemsHeaderTitle,
+    warn_weekend,
+    warn_period_confict,
+    create_item,
+    item_deatis,
+    Quantity,
+    Rate,
+    Project,
+    employee,
+    employeePc,
+    ressource,
+    ressourcePlc,
+    new_ressource,
+    create_inv_item,
+    edit_inv_item,
+    noinvoiceItems,
+    amount,
+    delete_invoice_confirm,
+    delete_invoiceItem_confirm,
+    Cap,
+    CapPlc,
+    sdi,
+    sdiPlc,
+    Civico,
+    Currency,
+    CivicoPlc,
 };
 export { labels }

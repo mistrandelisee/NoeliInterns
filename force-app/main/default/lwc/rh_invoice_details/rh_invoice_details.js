@@ -53,11 +53,15 @@ export default class Rh_invoice_details extends NavigationMixin(LightningElement
 
     @track columns = [
         { label: this.l.Name, fieldName: 'title',sortable:true, type: 'button',typeAttributes:{label:{fieldName:'title'},variant:'base'} },
-        { label: this.l.project, fieldName: 'Project',sortable:true, type: 'text' },
+        { label: this.l.Project, fieldName: 'Project',sortable:true, type: 'text' },
         { label: this.l.ressource, fieldName: 'Ressource',sortable:true, type: 'text',cellAttributes: { alignment: 'left' }, },
-        { label: this.l.amount, fieldName: 'RH_Amount__c',sortable:true, type: 'currency',cellAttributes: { alignment: 'left' }, },
-        { label: this.l.quantity, fieldName: 'RH_Quantity__c',sortable:true, type: 'number',cellAttributes: { alignment: 'left' }, },
-        { label: this.l.rate, fieldName: 'RH_Rate__c',sortable:true, type: 'currency',cellAttributes: { alignment: 'left' }, },
+        { label: this.l.Quantity, fieldName: 'RH_Quantity__c',sortable:true, type: 'number',cellAttributes: { alignment: 'left' }, },
+        { label: this.l.Rate, fieldName: 'RH_Rate__c',sortable:true, type: 'currency',
+                                typeAttributes: { currencyCode: { fieldName: 'currencyCode' }, step: '0.001' },
+                                cellAttributes: { alignment: 'left' }, },
+        { label: this.l.amount, fieldName: 'RH_Amount__c',sortable:true, type: 'currency',
+                                typeAttributes: { currencyCode: { fieldName: 'currencyCode' }, step: '0.001' },
+                                cellAttributes: { alignment: 'left' }, },
         { label: this.l.StartDate, fieldName: 'RH_StartDate__c',sortable:true, type: "date",wrapText:true, typeAttributes:{
             weekday: "long", year: "numeric",
             month: "long", day: "2-digit",
@@ -244,6 +248,7 @@ export default class Rh_invoice_details extends NavigationMixin(LightningElement
             item.class=e.Status;
             item.Project=e.RH_ProjectId__r?.Name;
             item.Ressource=e.RH_Ressource__r?.Name;
+            item.currencyCode=e.RH_Currency_Code__c;
             let Actions=[];
             //add status actions
             

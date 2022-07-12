@@ -16,4 +16,31 @@ public without sharing class rh_mainController {
 
         return mapReturn;
     }
+    @AuraEnabled
+    public static Map<String,Object> getRecordPage(String recordId) {
+        Map<String, Object> mapReturn = new Map<String, Object>();
+        Schema.SObjectType USER_OBJECT = Schema.User.getSObjectType();
+        Schema.SObjectType TIMESHEET_OBJECT = Schema.Timesheet.getSObjectType();
+        mapReturn.put('error',false);
+        try {
+            Id recID=recordId;
+            if(USER_OBJECT==recID.getSObjectType() ){
+                mapReturn.put('page', '/rhusers');
+            }else if(TIMESHEET_OBJECT==recID.getSObjectType() ){
+                mapReturn.put('page', '/rhtimesheet');
+            }
+
+            else{
+                mapReturn.put('page', '/');
+            }
+
+        } catch (Exception e) {
+            System.debug(e.getMessage());
+            mapReturn.put('error',true);
+            mapReturn.put('msg',e.getMessage());
+            mapReturn.put('e',e);
+        }
+
+        return mapReturn;
+    }
 }

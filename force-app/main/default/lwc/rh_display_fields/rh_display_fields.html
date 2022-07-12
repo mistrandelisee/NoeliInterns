@@ -43,7 +43,17 @@
                                                         weekday="long" ></lightning-formatted-date-time>
                                                 </template>
                                                 <template if:false={field.isDatetime}>
-                                                    {field.value}
+                                                    <template if:true={field.isCurrency}>
+                                                        <lightning-formatted-number
+                                                                value={field.value}
+                                                                format-style="currency"
+                                                                currency-code={field.code}
+                                                            >
+                                                            </lightning-formatted-number>
+                                                    </template>
+                                                    <template if:false={field.isCurrency}>
+                                                        {field.value}
+                                                    </template>
                                                 </template>
                                             </template>
                                             

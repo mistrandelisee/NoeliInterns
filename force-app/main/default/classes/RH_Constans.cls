@@ -15,12 +15,15 @@ public  class RH_Constans {
     public static final String CONTACT_ROLE_TL ='Team Leader';
     public static final String CONTACT_ROLE_BU ='Base User';
     public static final String CONTACT_ROLE_RH ='Ressource Manager';
-
+    public static final String ACTIVATED_ACCOMPLISHMENT_STATUS ='Active';
     public static final String RH_VACCATION_RT_NAME ='RH_FREE';
     public static final String test ='test Manager';
+    public static final String DEFAULT_CURRENCY ='EUR';
+    public  final String DEFAULT_CURRENCY2;
     public RH_Constans() {
-
+        DEFAULT_CURRENCY2 ='EUR';
     }
+    // new RH_Constans();
     @AuraEnabled(cacheable=true)
 	public static RH_Constans getAllConstants(){
 		return new RH_Constans();

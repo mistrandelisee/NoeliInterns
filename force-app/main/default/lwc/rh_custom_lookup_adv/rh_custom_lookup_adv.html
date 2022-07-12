@@ -40,26 +40,24 @@
                                             </span>
                                         </li>
                                     </template>
-                                    <template if:false={_disabled}>
 
-                                        <template if:true={showAddNew}>
-                                            <li role="presentation" class="slds-listbox__item" onmousedown={createNewRecord}>
-                                                <div class="slds-media slds-listbox__option slds-p-horizontal_small slds-p-vertical_small" role="option">
-                                                    <span class="slds-media__figure slds-listbox__option-icon">
-                                                        <span class="slds-icon_container">
-                                                            <lightning-icon class="slds-icon slds-icon_x-small slds-icon-text-default" icon-name="utility:add" size="x-small" alternative-text="New">
-                                                            </lightning-icon>
+                                    <template if:true={showAddNew}>
+                                        <li role="presentation" class="slds-listbox__item" onmousedown={createNewRecord}>
+                                            <div class="slds-media slds-listbox__option slds-p-horizontal_small slds-p-vertical_small" role="option">
+                                                <span class="slds-media__figure slds-listbox__option-icon">
+                                                    <span class="slds-icon_container">
+                                                        <lightning-icon class="slds-icon slds-icon_x-small slds-icon-text-default" icon-name="utility:add" size="x-small" alternative-text="New">
+                                                        </lightning-icon>
+                                                    </span>
+                                                </span>
+                                                <span class="slds-media__body">
+                                                    <span class="slds-listbox__option-text">
+                                                        {newLabel}
+                                                        <!-- {!v.newLabelPrefix} {!v.objectLabel} -->
                                                         </span>
-                                                    </span>
-                                                    <span class="slds-media__body">
-                                                        <span class="slds-listbox__option-text">
-                                                            {newLabel}
-                                                            <!-- {!v.newLabelPrefix} {!v.objectLabel} -->
-                                                            </span>
-                                                    </span>
-                                                </div>
-                                            </li>
-                                        </template>
+                                                </span>
+                                            </div>
+                                        </li>
                                     </template>
 
                                 </ul>

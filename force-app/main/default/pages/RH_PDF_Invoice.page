@@ -1,0 +1,567 @@
+<apex:page controller="RH_PDF_Invoice_Controller" renderAs="pdf" showHeader="false" sidebar="false" standardStylesheets="false" applyBodyTag="false" applyHtmlTag="false">
+    <!--APU005_GenerateOfferAsPDFCnt renderAs="pdf"  -->   
+    <apex:variable var="cnt" value="{!1}" /> 
+    <apex:stylesheet value="{!URLFOR($Resource.myPageStyle)}"/> 
+    <!-- only on page -->
+    <apex:outputpanel rendered="{!onePage}" >
+        <div class="invoice-box" style="padding: 0px 20px 0px 20px;">
+            <table cellpadding="0" cellspacing="0">
+                <tr class="top">
+                    <td colspan="2">
+                        <table cellpadding="0" cellspacing="0">
+                            <tr>
+                                <td style="width:60%; ">
+                                    <apex:image value="{!$Resource.WR_logoPDF}" />
+                                </td>
+                                <td style="width:40%; height:10%;text-align: right;">
+                                    <apex:panelGrid columns="3" cellpadding="0" cellspacing="0" > 
+                                        <apex:panelGrid columns="1" >
+                                            <apex:repeat value="{!getHeaderSettingvalue}" var="e" id="theRepeat">
+                                                <p style=" font-size: 20px;color: black;line-height:4px;font-weight: bold;text-align: right;"><apex:outputText value="{!e.CompanyName}"/> </p>
+                                                <p style=" font-size: 12px; line-height:4px;color: black;text-align: right; ">Company ID: <apex:outputText value=" {!e.CompanyId}"/></p>
+                                                <p style=" font-size: 12px;line-height:10px;color: black;text-align: right;">Tax ID: <apex:outputText value=" {!e.TaxId}"/></p>
+                                                <p style=" font-size: 12px;line-height:10px;color: black;text-align: right;"><apex:outputText value="{!e.Place}"/></p>
+                                                <p style=" font-size: 12px;line-height:10px;color: black;text-align: right;">P.O.Box: <apex:outputText value=" {!e.PoBox}"/></p>
+                                                <p style=" font-size: 12px;line-height:10px;color: black;text-align: right;"><apex:outputText value="{!e.Phone}"/></p>
+                                            </apex:repeat>
+                                        </apex:panelGrid>
+                                    </apex:panelGrid>
+                                </td>
+                            </tr>
+                            <hr class="delimiter-hr" />
+                            <tr class="invoiceTitle" style="margin-top:-1%;">
+                                <td >
+                                    <div>
+                                        Invoice: 
+                                        <apex:outputText value="{0, date, MMMM','  yyyy}">
+                                            <apex:param value="{!now()}" /> 
+                                        </apex:outputText>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="InvoiceToBox">
+                                <td >
+                                    <div class="invoiceTo-box">
+                                        Invoice To
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="">
+                                <td style="width:65%;" >
+                                    <div class="invoiceTo-box1">
+                                        <table style="width:65%;">
+                                            <tr>
+                                                <td colspan="2" style=" font-size: 14px;color: #555;font-weight: bold;">
+                                                    <apex:outputText value="{!getAccountObjectvalue.Name}"/>  
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="line-height:6px;">
+                                                    Name:  
+                                                </td>
+                                                <td style="line-height:6px;">
+                                                    <apex:outputText value="{!getAccountObjectvalue.Name}"/>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="line-height:10px;">
+                                                    Civico:
+                                                </td>
+                                                <td style="line-height:10px;">
+                                                    <apex:outputText value="{!getAccountObjectvalue.RHNumeroCivico}"/>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style=" font-size: 14px;color: #555;line-height:6px;">
+                                                    Cap:
+                                                </td>
+                                                <td style="line-height:6px;">
+                                                    <apex:outputText value="{!getAccountObjectvalue.RHCap}"/>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="line-height:6px;">
+                                                    Citta :
+                                                </td>
+                                                <td style="line-height:6px;">
+                                                    <apex:outputText value="{!getAccountObjectvalue.RHCitta}"/>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style=" font-size: 14px;color: #555;line-height:6px;">
+                                                    Phone: 
+                                                </td>
+                                                <td style="line-height:6px;">
+                                                    <apex:outputText value="{!getAccountObjectvalue.Phone}"/>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="line-height:6px;">
+                                                    Email: 
+                                                </td>
+                                                <td style="line-height:6px;">
+                                                        {!getAccountObjectvalue.RHEmail}
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="line-height:6px;">
+                                                    SDI:
+                                                </td>
+                                                <td style="line-height:6px;">
+                                                    <apex:outputText value="{!getAccountObjectvalue.RHSDI}"/>
+
+                                                </td>
+                                            </tr> 
+                                        </table>   
+                                    </div>
+                                </td>
+                                <td style="width:35%; " class="invoiceTo-box1" >
+                                    <div >
+                                        <apex:repeat value="{!getHeaderInvoiceObjectvalue}" var="in">
+                                            <table>
+                                                <tr>
+                                                    <td style=" font-size: 12px;line-height:4px;color: #555;">
+                                                        Invoice:
+                                                    </td>
+                                                    <td style=" font-size: 12px;line-height:4px;color: #555;text-align: right;">
+                                                        <apex:outputText value="{!in.Name}"/>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style=" font-size: 12px;line-height:10px;color: #555;">
+                                                        Invoice Date: 
+                                                    </td>
+                                                    <td style=" font-size: 12px;line-height:10px;color: #555;text-align: right;">
+                                                            <apex:outputText style="text-align: right;" value="{0,date,dd'/'MM'/'yyyy}">
+                                                                    <apex:param value="{!in.RHInvoiceDate}"/>
+                                                            </apex:outputText>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style=" font-size: 12px;line-height:10px;color: #555;">
+                                                        PO: 
+                                                    </td>
+                                                    <td style=" font-size: 12px;line-height:10px;color: #555;text-align: right;">
+                                                        <apex:outputText value="{!in.RHPo}"/> 
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style=" font-size: 12px;line-height:10px;color: #555;">
+                                                        Due Date: 
+                                                    </td>
+                                                    <td style=" font-size: 12px;line-height:10px;color: #555;text-align: right;">
+                                                            <apex:outputText style="text-align: right;" value="{0,date,dd'/'MM'/'yyyy}">
+                                                                    <apex:param value="{!in.RHDueDate}"/>
+                                                            </apex:outputText>
+                                                    </td>
+                                                </tr>
+                                            </table> 
+                                        </apex:repeat>   
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr style="width:100%;">
+                    <td>
+                        <div >
+                                <table style="margin-top:1%;">
+                                    <tr class="heading" style="width:100%;">
+                                        <td style="width:5%;">
+                                            N°
+                                        </td>
+                                        <td style="width:5%;">
+                                            Name
+                                        </td>
+                                        <td style="width:30%;">
+                                            Project
+                                        </td>
+                                        <td style="width:5%;">
+                                            Ressource
+                                        </td>
+                                        <td style="width:25%;">
+                                            Amount
+                                        </td>
+                                        <td style="width:10%;">
+                                            Quantity
+                                        </td>
+                                        <td style="width:10%;">
+                                            Rate
+                                        </td>
+                                        <td style="width:10%;">
+                                            Start date
+                                        </td>
+                                        <td style="width:10%;">
+                                            End date
+                                        </td>
+                                    </tr>
+                                    <apex:repeat value="{!getHeaderInvoiceItemObjectvalue}" var="item">
+                                    <tr class="item">
+                                        <td style="width:5%;">
+                                            <apex:outputText value="{!cnt}"/>
+                                        </td>
+                                        <td style="width:10%;">
+                                            <apex:outputText value="{!item.Name}"/>
+                                        </td>
+                                        <td style="width:10%;">
+                                            <apex:outputText value="{!item.RHProjectIdName}"/>
+                                        </td>
+                                        <td style="width:10%;">
+                                            <apex:outputText value="{!item.RHRessource}"/>
+                                        </td>
+                                        <td style="width:25%;">
+                                            <!-- <apex:outputText value="{!item.NL_Amount__c}"/> -->
+                                            <apex:outputText value="{0, number, EUR #.##0,00}">
+                                                <apex:param value="{!item.RHAmount}" />
+                                            </apex:outputText>
+                                        </td>
+                                        <td style="width:10%;">
+                                            <apex:outputText value="{!item.RHQuantity}"/>
+                                        </td>
+                                        <td style="width:10%;">
+                                            <apex:outputText value="{!item.RHRate}"/>
+                                        </td>
+                                        <td style="width:10%;">
+                                            <apex:outputText value="{0,date,dd'/'MM'/'yyyy}">
+                                                <apex:param value="{!item.RHStartDate}"/>
+                                            </apex:outputText>
+                                        </td>
+                                        <td style="width:10%;">
+                                            <apex:outputText value="{0,date,dd'/'MM'/'yyyy}">
+                                                <apex:param value="{!item.RHEndDate}"/>
+                                            </apex:outputText>
+                                        </td>
+                                    </tr>
+                                
+                                    <apex:variable var="cnt" value="{!cnt+1}"/>
+                                </apex:repeat>
+                                </table> 
+                            <table> 
+                                <tr>
+                                    <td style="width:75%;">
+                                        <p style=" font-size: 12px;color: #555;text-align: left;">Notes <br/>Thanks for your business.</p>
+                                        <apex:repeat value="{!getFooterSettingvalue}" var="e" id="theRepeat1">
+                                            <p style=" font-size: 12px;color: #555;text-align: left;">
+                                                Beneficiary Name: <apex:outputText value=" {!e.BeneficiaryName}"/> <br/>
+                                                Beneficiary Address: <apex:outputText value=" {!e.BeneficiaryAddress}"/> <br/>
+                                                Bank Name: <apex:outputText value=" {!e.BankName}"/> <br/>
+                                                Branch Name: <apex:outputText value=" {!e.BranchName}"/> <br/>
+                                                Acct No with UBA: <apex:outputText value="{!e.AccountNum}"/> <br/>
+                                                IBAN: <apex:outputText value=" {!e.IBAN}"/> <br/>
+                                                Bank Adress: <apex:outputText value=" {!e.BankAdress}"/> <br/>
+                                                Swift code: <apex:outputText value=" {!e.SwiftCode}"/> <br/>
+                                            </p>
+                                            <p style=" font-size: 12px;color: #555;text-align: left;">Terms Conditions <br/>Amount is exclusive of all taxes and bank transfert changes.</p>
+                                        </apex:repeat>
+                                    </td>
+                                    <td style="width:25%;">
+                                        Invoice Total:
+                                        <apex:outputText value="{0, number,{!getHeaderInvoiceItemObjectvalue[0].RHCurrencyCode} ###,###,##0.00}">
+                                            <apex:param value="{!getHeaderInvoiceObjectvalue.RHInvoiceItemSum}" />
+                                        </apex:outputText>
+                                        <hr class="delimiter-hr" />
+                                        <b>Balance Due:    
+                                        <apex:outputText value="{0, number,{!getHeaderInvoiceItemObjectvalue[0].RHCurrencyCode} ###,###,##0.00}">
+                                            <apex:param value="{!getHeaderInvoiceObjectvalue.RHInvoiceItemSum}" />
+                                        </apex:outputText>
+                                        </b>
+                                    </td>
+                                </tr>
+                            </table> 
+                        </div>
+                    </td>         
+                </tr>
+            </table>
+        </div>
+    </apex:outputpanel>    
+
+ 
+    <!-- multi page -->
+    <apex:outputpanel rendered="{!multipage}" >
+        <apex:repeat value="{!invoiceItemBlock}" var="LstItem" id="theRepeat12">
+            <div>
+                <div class="invoice-box">
+                    <table cellpadding="0" cellspacing="0">
+                        <tr class="top">
+                            <td colspan="2">
+                                <table cellpadding="0" cellspacing="0">
+                                    <tr>
+                                        <td style="width:60%; ">
+                                            <apex:image value="{!$Resource.WR_logoPDF}" />
+                                        </td>
+                                        <td style="width:40%; height:10%;text-align: right;">
+                                            <apex:panelGrid columns="3" cellpadding="0" cellspacing="0" > 
+                                                <apex:panelGrid columns="1" >
+                                                    <apex:repeat value="{!getHeaderSettingvalue}" var="e" id="theRepeat">
+                                                        <p style=" font-size: 20px;color: black;line-height:4px;font-weight: bold;text-align: right;"><apex:outputText value="{!e.CompanyName}"/> </p>
+                                                        <p style=" font-size: 12px; line-height:4px;color: black;text-align: right; ">Company ID: <apex:outputText value=" {!e.CompanyId}"/></p>
+                                                        <p style=" font-size: 12px;line-height:10px;color: black;text-align: right;">Tax ID: <apex:outputText value=" {!e.TaxId}"/></p>
+                                                        <p style=" font-size: 12px;line-height:10px;color: black;text-align: right;"><apex:outputText value="{!e.Place}"/></p>
+                                                        <p style=" font-size: 12px;line-height:10px;color: black;text-align: right;">P.O.Box: <apex:outputText value=" {!e.PoBox}"/></p>
+                                                        <p style=" font-size: 12px;line-height:10px;color: black;text-align: right;"><apex:outputText value="{!e.Phone}"/></p>
+                                                    </apex:repeat>
+                                                </apex:panelGrid>
+                                            </apex:panelGrid>
+                                        </td>
+                                    </tr>
+                                    <hr class="delimiter-hr" />
+                                    <!-- if is not the first page -->
+                                    <apex:outputpanel rendered="{!LstItem.page}" >
+                                        <tr class="invoiceTitle">
+                                            <td >
+                                                <div>
+                                                    Invoice: 
+                                                    <apex:outputText value="{0, date, MMMM','  yyyy}">
+                                                        <apex:param value="{!now()}" /> 
+                                                    </apex:outputText>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr class="InvoiceToBox">
+                                            <td >
+                                                <div class="invoiceTo-box">
+                                                    Invoice To
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr class="">
+                                            <td style="width:65%;" >
+                                                <div class="invoiceTo-box1">
+                                                    <table style="width:65%;">
+                                                        <tr>
+                                                            <td colspan="2" style=" font-size: 14px;color: #555;font-weight: bold;">
+                                                                <apex:outputText value="{!getAccountObjectvalue.Name}"/>  
+                                                            </td>
+                                                        </tr>
+                                                        <!-- <tr>
+                                                            <td style="line-height:6px;">
+                                                                Name:  
+                                                            </td>
+                                                            <td style="line-height:6px;">
+                                                            <apex:outputText value="{!getAccountObjectvalue.Name}"/>
+                                                            </td>
+                                                        </tr> -->
+                                                        <tr>
+                                                            <td style="line-height:10px;">
+                                                                Civico:
+                                                            </td>
+                                                            <td style="line-height:10px;">
+                                                                <apex:outputText value="{!getAccountObjectvalue.RHNumeroCivico}"/>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td style=" font-size: 14px;color: #555;line-height:6px;">
+                                                                Cap:
+                                                            </td>
+                                                            <td style="line-height:6px;">
+                                                                <apex:outputText value="{!getAccountObjectvalue.RHCap}"/>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td style="line-height:6px;">
+                                                                Citta :
+                                                            </td>
+                                                            <td style="line-height:6px;">
+                                                                <apex:outputText value="{!getAccountObjectvalue.RHCitta}"/>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td style=" font-size: 14px;color: #555;line-height:6px;">
+                                                                Phone: 
+                                                            </td>
+                                                            <td style="line-height:6px;">
+                                                                <apex:outputText value="{!getAccountObjectvalue.Phone}"/>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td style="line-height:6px;">
+                                                                Email: 
+                                                            </td>
+                                                            <td style="line-height:6px;">
+                                                                {!getAccountObjectvalue.RHEmail}
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td style="line-height:6px;">
+                                                                SDI:
+                                                            </td>
+                                                            <td style="line-height:6px;">
+                                                                <apex:outputText value="{!getAccountObjectvalue.RHSDI}"/>
+                                                            </td>
+                                                        </tr> 
+                                                    </table> 
+                                                </div>
+                                            </td>
+                                            <td style="width:35%; " class="invoiceTo-box1">
+                                                <div>
+                                                    <apex:repeat value="{!getHeaderInvoiceObjectvalue}" var="e" id="theRepeat50">
+                                                        <table>
+                                                            <tr>
+                                                                <td style=" font-size: 12px;line-height:4px;color: #555;">
+                                                                    Invoice:
+                                                                </td>
+                                                                <td style=" font-size: 12px;line-height:4px;color: #555;text-align: right;">
+                                                                    <apex:outputText value="{!e.Name}"/>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td style=" font-size: 12px;line-height:10px;color: #555;">
+                                                                    Invoice Date: 
+                                                                </td>
+                                                                <td style=" font-size: 12px;line-height:10px;color: #555;text-align: right;">
+                                                                        <apex:outputText style="text-align: right;" value="{0,date,dd'/'MM'/'yyyy}">
+                                                                            <apex:param value="{!e.RHInvoiceDate}"/>
+                                                                        </apex:outputText>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td style=" font-size: 12px;line-height:10px;color: #555;">
+                                                                    P.O.No: 
+                                                                </td>
+                                                                <td style=" font-size: 12px;line-height:10px;color: #555;text-align: right;">
+                                                                    <apex:outputText value="{!e.RHPo}"/> 
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td style=" font-size: 12px;line-height:10px;color: #555;">
+                                                                    Due Date:
+                                                                </td>
+                                                                <td style=" font-size: 12px;line-height:10px;color: #555;text-align: right;">
+                                                                        <apex:outputText style="text-align: right;" value="{0,date,dd'/'MM'/'yyyy}">
+                                                                            <apex:param value="{!e.RHDueDate}"/>
+                                                                        </apex:outputText>
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                    </apex:repeat>    
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </apex:outputpanel>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr style="width:100%;">
+                            <td>
+                                <div >
+                                        <table>
+                                            <tr class="heading" style="width:100%;">
+                                                <td style="width:5%;">
+                                                    N°
+                                                </td>
+                                                <td style="width:5%;">
+                                                    Name
+                                                </td>
+                                                <td style="width:30%;">
+                                                    Project 
+                                                </td>
+                                                <td style="width:5%;">
+                                                    Ressource
+                                                </td>
+                                                <td style="width:25%;">
+                                                    Amount
+                                                </td>
+                                                <td style="width:10%;">
+                                                    Quantity
+                                                </td>
+                                                <td style="width:10%;">
+                                                    Rate
+                                                </td>
+                                                <td style="width:10%;">
+                                                    Start date
+                                                </td>
+                                                <td style="width:10%;">
+                                                    End date
+                                                </td>
+                                            </tr>
+                                            <apex:repeat value="{!LstItem.invoiceItem}" var="item">
+                                            <tr class="item">
+                                                <td style="width:5%;">
+                                                    <apex:outputText value="{!cnt}"/>
+                                                </td>
+                                                <td style="width:10%;">
+                                                    <apex:outputText value="{!item.Name}"/>
+                                                </td>
+                                                <td style="width:10%;">
+                                                    <apex:outputText value="{!item.RHProjectIdName}"/>
+                                                </td>
+                                                <td style="width:10%;">
+                                                    <apex:outputText value="{!item.RHRessource}"/>
+                                                </td>
+                                                <td style="width:25%;">
+                                                    <!-- <apex:outputText value="{!item.NL_Amount__c}"/> -->
+                                                    <apex:outputText value="{0, number,{!item.RHCurrencyCode} ###,###,##0.00}">
+                                                        <apex:param value="{!item.RHAmount}" />
+                                                    </apex:outputText>
+                                                </td>
+                                                <td style="width:10%;">
+                                                    <apex:outputText value="{!item.RHQuantity}"/>
+                                                </td>
+                                                <td style="width:10%;">
+                                                    <apex:outputText value="{!item.RHRate}"/>
+                                                </td>
+                                                <td style="width:10%;">
+                                                    <apex:outputText value="{0,date,dd'/'MM'/'yyyy}">
+                                                            <apex:param value="{!item.RHStartDate}"/>
+                                                    </apex:outputText>
+                                                </td>
+                                                <td style="width:10%;">
+                                                    <apex:outputText value="{0,date,dd'/'MM'/'yyyy}">
+                                                            <apex:param value="{!item.RHEndDate}"/>
+                                                    </apex:outputText>
+                                                </td>
+                                            </tr>
+                                        
+                                            <apex:variable var="cnt" value="{!cnt+1}"/>
+                                        </apex:repeat>
+                                        </table> 
+                                    
+                                    <apex:outputpanel rendered="{!LstItem.showFt}" >
+                                        <div>
+                                            <table> 
+                                                <tr>
+                                                    <td style="width:75%;">
+                                                        <p style=" font-size: 12px;color: #555;text-align: left;">Notes <br/>Thanks for your business.</p>
+                                                        <apex:repeat value="{!getFooterSettingvalue}" var="e" id="theRepeat1">
+                                                            <p style=" font-size: 12px;color: #555;text-align: left;">
+                                                                Beneficiary Name: <apex:outputText value=" {!e.BeneficiaryName}"/> <br/>
+                                                                Beneficiary Address: <apex:outputText value=" {!e.BeneficiaryAddress}"/> <br/>
+                                                                Bank Name: <apex:outputText value=" {!e.BankName}"/> <br/>
+                                                                Branch Name: <apex:outputText value=" {!e.BranchName}"/> <br/>
+                                                                Acct No with UBA: <apex:outputText value="{!e.AccountNum}"/> <br/>
+                                                                IBAN: <apex:outputText value=" {!e.IBAN}"/> <br/>
+                                                                Bank Adress: <apex:outputText value=" {!e.BankAdress}"/> <br/>
+                                                                Swift code: <apex:outputText value=" {!e.SwiftCode}"/> <br/>
+                                                            </p>
+                                                            <p style=" font-size: 12px;color: #555;text-align: left;">Terms Conditions <br/>Amount is exclusive of all taxes and bank transfert changes.</p>
+                                                        </apex:repeat>
+                                                    </td>
+                                                    <td style="width:25%;">
+                                                        Invoice Total:
+                                                        <apex:outputText value="{0, number,{!getHeaderInvoiceItemObjectvalue[0].RHCurrencyCode} ###,###,##0.00}">
+                                                            <apex:param value="{!getHeaderInvoiceObjectvalue.RHInvoiceItemSum}" />
+                                                        </apex:outputText>
+                                                        <hr class="delimiter-hr" />
+                                                        <b>Balance Due:    
+                                                        <apex:outputText value="{0, number,{!getHeaderInvoiceItemObjectvalue[0].RHCurrencyCode} ###,###,##0.00}">
+                                                            <apex:param value="{!getHeaderInvoiceObjectvalue.RHInvoiceItemSum}" />
+                                                        </apex:outputText>
+                                                        </b>
+                                                    </td>
+                                                </tr>
+                                            </table> 
+                                        </div>
+                                    </apex:outputpanel>
+                                </div>
+                            </td>         
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <apex:outputpanel rendered="{!NOT(LstItem.showFt)}" >
+                <div style="display:block;page-break-after:always;"></div>
+            </apex:outputpanel>
+        </apex:repeat>
+    </apex:outputpanel>
+</apex:page>

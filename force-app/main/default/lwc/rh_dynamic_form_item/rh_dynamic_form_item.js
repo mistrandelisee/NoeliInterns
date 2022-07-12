@@ -18,11 +18,14 @@ export default class Rh_dynamic_form_item extends LightningElement {
     get isTextarea(){
         return this.item?.type=='textarea';
     }
+    get isRadio(){
+        return this.item?.type=='radio';
+    }
     get isFile(){
         return this.item?.type=='file';
     }
     get isBase(){
-        return ! (this.isTextarea || this.picklist || this.isFile || this.isLookup);
+        return ! (this.isTextarea || this.picklist || this.isFile || this.isRadio || this.isLookup);
     }
     get isDefault(){
         return !(this.isLookup);
@@ -32,8 +35,13 @@ export default class Rh_dynamic_form_item extends LightningElement {
     }
     get filter(){ return this.item?.filter || ''}
     get picklist(){ return this.item?.picklist;};
+    get radioType(){ return this.item?.radioType|| 'button';};
     get toggleActiveText(){ return this.item?.toggleActiveText || 'Active'};
     get toggleInactiveText(){ return this.item?.toggleInactiveText || 'Inactive'};
+    connectedCallback(){
+        console.log('ITEM');
+        console.log(this.item);
+    }
     handleChanged(event) {
         this.timeOut=this.timeOut || 0;
         const delay= +this.timeOut;
