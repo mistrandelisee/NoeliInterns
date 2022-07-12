@@ -432,12 +432,14 @@ public with sharing class RH_Invoice_Controller {
         @AuraEnabled public Date startDate;
         @AuraEnabled public Date endDate;
         @AuraEnabled public String po;
+        @AuraEnabled public String currencyCode ;
         public RH_Invoice__c getInvoice() {
             return new RH_Invoice__c(
                 RH_Account_Id__c=this.AccountId, 
                 Id=this.Id, 
                 RH_InvoiceDate__c=this.startDate, 
                 RH_DueDate__c=this.endDate, 
+                RH_Currency_Code__c=this.currencyCode,
                 RH_Po__c=this.po
                 );
         }

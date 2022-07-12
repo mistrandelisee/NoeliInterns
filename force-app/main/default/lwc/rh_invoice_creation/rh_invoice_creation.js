@@ -24,8 +24,7 @@ const SUCCESS_VARIANT='success';
 const WARNING_VARIANT='warning';
 const ERROR_VARIANT='error';
 export default class Rh_invoice_creation extends NavigationMixin(LightningElement) {
-    l={...labels,
-        currency:'Currency'}
+    l={...labels,}
     
     icon={...icons}
     @api action='';

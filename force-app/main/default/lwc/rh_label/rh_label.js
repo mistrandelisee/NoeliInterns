@@ -5,8 +5,8 @@
 
 
 const labels = {
-    //ARO_Title
     Add: 'Add',
+    Accomplishments: 'Accomplishments (#NB)',
     Edit: 'Edit',
     Save: 'Save',
     New: 'New',
@@ -69,32 +69,23 @@ const labels = {
     DateLb: 'Date',
     DatePlc: 'Enter Your Date',
     Visibility: 'Public ?',
-
-
-
     Activate: 'Activate',
     Freeze: 'Freeze',
     Disable: 'Disable',
-    // Delete: 'Delete',
     Group: 'Group',
     SaveAndActive: 'Save And Active',
     Back: 'Back',
     IsPublic: 'Is Public',
     Submiter: 'Submit By',
     StatusPlc: 'Select one status',
-
     Name: 'Name',
     GroupeMember: 'The Groupe Member are',
     Leader: 'Leader Name',
-
     PromoteBaseUser: 'Mark As Team Leader',
-    
     Submit:'Submit',
     Delete:'Delete',
     Approve:'Approve',
-
     Submited:'Submited',
-    // Delete:'Delete',
     Approved:'Approved',
     Draft:'Draft',
     Reject:'Reject',
@@ -106,18 +97,15 @@ const labels = {
     Createrequest:'Create request',
     CreatedDate: 'Created Date',
     FilterRequest: 'Filter Request',
-
     FilterTitle: 'Filter the news',
     ConfigTitle: 'News configuration',
     UploadFile: 'Upload File',
     FilterAccomplishment: 'Filter Accomplishment',
-    
     label: 'Field Label',
     value: 'Field Value',
     userInfoHlp : 'View user details',
     userEditHlp : 'Edit user details',
     moreInfo:'More Informations',
-    
     userMoreInfoHlp : 'More details',
     userEditMoreHlp : 'Edit additionnal information about you , check each time you edit an information. then save all...',
     successOp:'Succes operation',
@@ -125,14 +113,12 @@ const labels = {
     warningOp:'Warning',
     rmvfield:'Field removed',
     addfield:'Field Adjusted',
-    
     Supervisor:'Supervisor',
     myprojects:'My Projects (#NB)',
     mytimesheets:'My Timesheets (#NB)',
     myleadedGroups:'My Leaded Groups (#NB)',
     myleadedProjects:'My Leaded Projects (#NB)',
     About: 'About',
-    
     projects:'Projects (#NB)',
     timesheets:'Timesheets (#NB)',
     leadedGroups:'Leaded Groups (#NB)',
@@ -141,8 +127,6 @@ const labels = {
     disable_confirm:'Are you sure you want to disable this User?',
     reset_confirm:'Are you sure you want to reset this user Password?',
     action_confirm:' Action Confirmation',
-
-    //projects labels
     NewProject:'New Project',
     AvaibleMembers:'Avaible Members',
     SelectedMembers:'Selected Members',
@@ -166,8 +150,6 @@ const labels = {
     Priority:'Priority',
     ProjectMembers:'Project Members',
     ManageTask:'Manage Task',
-
-    // News Label
     AddNews: "Add News",
     Interval : 'Set Interval',
     IntervalPlc :'Enter Interval',
@@ -187,10 +169,8 @@ const labels = {
     French:'French',
     English:'English',
     SelectLang: 'Select your language',
-    AlreadyTranslate: 'Already translate in : ',
+    AlreadyTranslate: 'Already translate in  ',
     Copyright: '© Copyright (#NB) - Noeli.com ',
-
-    // Event Label
     Start:'Start',
     End: 'End',
     AddNews: "Add News",
@@ -213,7 +193,6 @@ const labels = {
     ToastEvent1:'Sorry you no longer have right deleted',
     ToastInfoEvent2: 'Your end date cannot be less than start date !',
     FileDeleteSuccessfully: 'File Delete Successfully !!',
-    //florent started
     RightAccess:'You no longer have the right to modify the event !',
     ErrorId:'Error about Id of userRole',
     SuccessEven: 'Event Add Successfully but Not send to CEO!!',
@@ -229,14 +208,11 @@ const labels = {
     RejectFail: 'You cannot rejected an event already approved',
     EventSubS: 'Event Submitted Successfully',
     EventA: 'This event has been already shared !',
-//invoices: 
-
     new_invoice:'New Invoice',
     new_account:'New Client Account',
     po:'Po',
     invoice_to:"Invoice To",
-
-    //timesheet
+    invoice_toPlc:"Search client",
     Entries:'Entries',
     Number: 'Number',
     From: 'From',
@@ -246,10 +222,7 @@ const labels = {
     OrderOn:'As',
     noTimesheet:'No timesheet founded',
     showDetails:'Show details',
-
     SaveNew:'Save & New',
-    // Delete:'Delete',
-    // Approve:'Approve',
     AddLines:'Add Items',
     ExportPDF:'Export PDF',
     ExportXLS:'Export XLSX',
@@ -278,7 +251,6 @@ const labels = {
     warn_period_confict: 'Start date must before end date',
     create_item  :'Create Line',
     item_deatis :'Line details',
-
     Quantity:'Quantity',
     Rate:'Rate',
     Project:'Project',
@@ -289,22 +261,16 @@ const labels = {
     new_ressource:'New Ressource',
     create_inv_item:'Create Invoice Item',
     edit_inv_item:'Edit Invoice Item',
-
-    // SaveNew:'Save & New',
-    // Submit:'Submit',
-    // Delete:'Delete',
-    // Approve:'Approve',
-    // AddLines:'Add Items',
-    // ExportPDF:'Export PDF',
-    // ExportXLS:'Export XLSX',
-    // approvalTitle:'APPROVAL ACTION',
-    // Date:'Date',
-    // startTime:'Start Time',
-    // endTime:'End Time',
     noinvoiceItems:'No Invoice Items found for this Invoice. Use the Add times Action to add items',
-    // 
     amount: 'Amount',
     delete_invoice_confirm:'Are you sure you want to delete this invoice',
     delete_invoiceItem_confirm:'Are you sure you want to delete this invoice Items', 
+    Cap:'Cap',
+    CapPlc:'Cap Number',
+    sdi:'SDI',
+    sdiPlc:'sdi',
+    Civico:'Civico',
+    Currency:'Currency',
+    CivicoPlc:'Numero',
 };
 export { labels }
