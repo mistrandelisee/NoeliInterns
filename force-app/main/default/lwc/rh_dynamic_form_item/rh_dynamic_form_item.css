@@ -1,12 +1,11 @@
 .form-section{
     padding: 10px;
 }
-lightning-input, lightning-combobox,lightning-textarea{
+lightning-input, lightning-combobox,lightning-textarea,lightning-input-address{
     --lwc-brandAccessibleActive: #2A2E43;
     --lwc-colorTextIconDefault: #2166f3;
     --lwc-borderWidthThin: 1px;
     --lwc-borderRadiusMedium: 5px;
-    --lwc-colorBorderInput: #eaebf2;
     --lwc-colorBackgroundInput: #fcfcff;
     --lwc-colorTextLabel: #272b2f;
     --lwc-spacingXSmall: 1rem;
@@ -18,7 +17,7 @@ lightning-input, lightning-combobox,lightning-textarea{
     font-weight: 700;
     --lwc-formLabelFontSize:0.8rem;
     --lwc-colorTextLabel:#272b2f;
-
+    --lwc-colorBorderInput: rebeccapurple;
 
     /* oogle */
     --lwc-brandAccessible: var(--secondaryColor);
@@ -31,6 +30,9 @@ lightning-input, lightning-combobox,lightning-textarea{
 }
 lightning-combobox{
     --lwc-colorTextIconDefault: #848484;
+    --lwc-borderWidthThin: 1px;
+    --lwc-colorBorderInput: rebeccapurple;
+
 }
 .textarea{
     --sds-c-textarea-sizing-min-height: 125px;

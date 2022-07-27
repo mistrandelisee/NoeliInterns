@@ -1,10 +1,12 @@
 <template>
     <template if:true={noneMode}>
-        <div class="slds-clearfix">
-            <div class="slds-float_right">
-                <lightning-button variant="brand-outline" label={l.new_invoice} icon-name="utility:add" title="Primary action with lighter look" onclick={handleNewClik} class="slds-m-left_x-small"></lightning-button>
+        <template if:false={hideNew}>
+            <div class="slds-clearfix">
+                <div class="slds-float_right">
+                    <lightning-button variant="brand-outline" label={l.new_invoice} icon-name="utility:add" title="Primary action with lighter look" onclick={handleNewClik} class="slds-m-left_x-small"></lightning-button>
+                </div>
             </div>
-        </div>
+        </template>
     </template>
     <template if:true={formMode}>
         <lightning-card class="custom-card">

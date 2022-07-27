@@ -7,31 +7,35 @@ public without sharing class RH_Timesheet_Controller {
     private static RH_TimeSheetEntry_Query timeSheetEntryQry = RH_TimeSheetEntry_Query.getInstance();
     
     @AuraEnabled 
-    public static Map<String,Object>  timeSheetCreation(){
+    public static Map<String,Object>  timeSheetCreation(String sheetJson){
         Map<String, Object> mapReturn = new Map<String, Object>();
-        
         mapReturn.put('error',false);
         try {
-            Contact con=RH_Utility.getCurentContact();
             String myUserId=UserInfo.getUserId();
-            List<TimeSheet> mytodaySheets = timesheetQry.getUserTodayTimeSheets(myUserId);
-            if (!myTodaySheets.isEmpty()){
-                mapReturn.put('myTodaySheets',myTodaySheets);
-                throw new RH_ControllerException('002','Exisisting TimeSheet On this date');
-                
+            mapReturn.put('Input',sheetJson);
+            sheetWrapper sheetInfo = (sheetWrapper) JSON.deserialize(sheetJson, sheetWrapper.class);
+            TimeSheet myTimesheet =sheetInfo.getSheet();
+            Boolean isInsert= String.isBlank(myTimesheet.Id);
+            // checkDuplicate(myUserId,myTimesheet.Id,mapReturn);
+            if(isInsert){
+                Contact con=RH_Utility.getCurentContact();
+                //create ressource necessary for the timesheet creation
+                ServiceResource sr=new ServiceResource(RH_External_ID__c=myUserId,IsActive=true,ResourceType='T',
+                        RelatedRecordId=myUserId, Name=UserInfo.getName());
+                upsert sr RH_External_ID__c;
+                myTimesheet.RH_Submiter__c=con.Id;
+                myTimesheet.RH_Approver__c=con.RH_WorkGroup__r.RH_Team_Leader__c;
+                myTimesheet.ServiceResourceId=sr.Id;
+                myTimesheet.Status='Nuovo';//TO DO: remove and store in constants
+            }else{
+
             }
-            ServiceResource sr=new ServiceResource(RH_External_ID__c=myUserId,IsActive=true,ResourceType='T',
-                    RelatedRecordId=myUserId, Name=UserInfo.getName());
-            upsert sr RH_External_ID__c;
-            TimeSheet myTimesheet = new TimeSheet(
-                StartDate= System.Today(),
-                RH_Submiter__c=con.Id,
-                RH_Approver__c=con.RH_WorkGroup__r.RH_Team_Leader__c,
-                ServiceResourceId=sr.Id,//'0Hn7Q0000004zSNSAY',//TO DO: remove and store in constants, then take values from custom Settings
-                EndDate= System.Today().addMonths(1).toStartofMonth().addDays(-1),//last day of the month
-                Status='Nuovo'//TO DO: remove and store in constants
-            );
-            insert myTimesheet;
+            
+            /* 
+            }*/
+            
+            
+            upsert myTimesheet;
             mapReturn.put('Ok',true); 
             mapReturn.put('Timesheet',myTimesheet); 
         } catch(Exception e) {
@@ -41,6 +45,13 @@ public without sharing class RH_Timesheet_Controller {
             mapReturn.put('e',e);
         }  
         return mapReturn;
+    }
+    void checkDuplicate (String myUserId,String timesheetId,Map<String, Object> mapReturn){
+        List<TimeSheet> mytodaySheets = timesheetQry.getUserTodayTimeSheets(myUserId);
+        if (!myTodaySheets.isEmpty()){
+            mapReturn.put('myTodaySheets',myTodaySheets);
+            throw new RH_ControllerException('002','Exisisting TimeSheet On this period');
+        }   
     }
 
     @AuraEnabled 
@@ -351,7 +362,17 @@ public without sharing class RH_Timesheet_Controller {
         return EncodingUtil.base64Encode(blb);
    }
 
-
+   public class sheetWrapper  {
+    @AuraEnabled public String Id;   
+    @AuraEnabled public Date startDate;
+    @AuraEnabled public Date endDate;
+    public TimeSheet getSheet() {
+        return new TimeSheet(
+            Id=this.Id, 
+            StartDate=this.StartDate,
+            EndDate=this.EndDate);
+    }
+} 
     
     public class entryWrapper  {
         @AuraEnabled public String Description;

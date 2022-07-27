@@ -16,22 +16,50 @@ public  class RH_User_Query {
     }
 
     public List<User> getUserById(String userId) {
-        return [SELECT id,Name,Username,RH_ContactId__c,CommunityNickname FROM User WHERE Id=: userId AND isActive= True];
+        // return [SELECT id,Name,Username,RH_ContactId__c,CommunityNickname FROM User WHERE Id=: userId AND isActive= True];
+        return getUserInfoById(userId,true);
+    }
+    public List<User> getUserInfoById(String userId,Boolean isActive) {
+        String query = 'SELECT id,Name,Username,RH_ContactId__c,isActive,CommunityNickname,Email  FROM User  ';
+        String queryWHERE ='WHERE Id=: userId ';
+        if(isActive != null){
+			queryWHERE = queryWHERE + 'AND (isActive=: isActive) ';
+		}
+        query= query+queryWHERE;
+        return Database.query(query);
+    }
+
+    private List<User> getUserByContactId(List<String> contactIds,Boolean isActive) {
+        String query = 'SELECT id,Name,Username,RH_ContactId__c,isActive,CommunityNickname,Email  FROM User  ';
+        String queryWHERE ='WHERE Profile.Name= :PROFILENAME AND RH_ContactId__c IN :contactIds ';
+        if(isActive != null){
+			queryWHERE = queryWHERE + 'AND (isActive=: isActive) ';
+		}
+        query= query+queryWHERE;
+        return Database.query(query);
     }
     public List<User> getUser(){
-        return [SELECT id, Name, Username,RH_ContactId__c FROM User WHERE Profile.Name= :PROFILENAME AND isActive= True];
+        return [SELECT id, Name, Username,RH_ContactId__c,Email FROM User WHERE Profile.Name= :PROFILENAME AND isActive= True];
     }
     public List<User> getOtherUsers(){
-        return [SELECT id, Name, Username,RH_ContactId__c FROM User WHERE Profile.Name= :PROFILENAME AND Id != :UserInfo.getUserId() AND isActive= True];
+        return [SELECT id, Name, Username,RH_ContactId__c,Email FROM User WHERE Profile.Name= :PROFILENAME AND Id != :UserInfo.getUserId() AND isActive= True];
     }
     public List<User> getUserByContactId(String contactId) {
-        return [SELECT id,Name,Username,RH_ContactId__c FROM User WHERE RH_ContactId__c=: contactId AND isActive= True];
+        // return [SELECT id,Name,Username,RH_ContactId__c,isActive FROM User WHERE RH_ContactId__c=: contactId AND isActive= True];
+        List<String> contactIds = new List<String>{contactId};
+        return getUserByContactId(contactIds,true);
+    }
+    public List<User> getUserInfoByContactId(String contactId) {
+        // return [SELECT id,Name,Username,RH_ContactId__c,isActive FROM User WHERE RH_ContactId__c=: contactId AND isActive= True];
+        List<String> contactIds = new List<String>{contactId};
+        return getUserByContactId(contactIds,null);
     }
     public List<User> getUserByContactId(List<Id> contactIds) {
-        return [SELECT id,Name,Username,RH_ContactId__c FROM User WHERE Profile.Name= :PROFILENAME AND RH_ContactId__c IN :contactIds AND isActive= True];
+        // return [SELECT id,Name,Username,RH_ContactId__c,isActive FROM User WHERE Profile.Name= :PROFILENAME AND RH_ContactId__c IN :contactIds AND isActive= True];
+        return getUserByContactId(contactIds,true);
     }
     public List<User> getOtherUsersByContactIds(List<Id> contactIds) {
-        return [SELECT id,Name,Username,RH_ContactId__c FROM User WHERE Profile.Name= :PROFILENAME 
+        return [SELECT id,Name,Username,RH_ContactId__c,Email FROM User WHERE Profile.Name= :PROFILENAME 
                                                                     AND RH_ContactId__c IN: contactIds 
                                                                     //AND Id != :UserInfo.getUserId()
                                                                     AND isActive= True];

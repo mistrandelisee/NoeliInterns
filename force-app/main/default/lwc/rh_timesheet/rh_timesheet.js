@@ -8,7 +8,7 @@ import { icons } from 'c/rh_icons';
 
 import initConfig from '@salesforce/apex/RH_Timesheet_Controller.InitFilter';
 import getTimeSheets from '@salesforce/apex/RH_Timesheet_Controller.getTimeSheets';
-import timeSheetCreation from '@salesforce/apex/RH_Timesheet_Controller.timeSheetCreation';
+// import timeSheetCreation from '@salesforce/apex/RH_Timesheet_Controller.timeSheetCreation';
 import submitTimeSheet from '@salesforce/apex/RH_Timesheet_Controller.submitTimeSheet';
 import deleteTimeSheet from '@salesforce/apex/RH_Timesheet_Controller.deleteTimeSheet';
 
@@ -204,15 +204,25 @@ export default class Rh_timesheet extends NavigationMixin(LightningElement) {
             this.startSpinner(false);
         })
     }
-
+    handleNewCreation(event){
+        console.log('handleNewCreation :', event.detail.action);
+        if (event.detail.action=='cancel') {
+            this.openCreation=false;
+        }
+    }
     handleDetailsActions(event){
         console.log('handleDetailsActions :', event.detail.action);
         if (event.detail.action==NEW_ACTION) {
             //call create new Timesheet then redirect to the timesheet
             console.log('call create new Timesheet then redirect to the timesheet');
-            this.createTimesheetApex()
+            // this.createTimesheetApex()
+            this.opentimesheetCreation();
         }
         
+    }
+    openCreation=false;
+    opentimesheetCreation(){
+        this.openCreation=true;
     }
     createTimesheetApex(){
         this.startSpinner(true);

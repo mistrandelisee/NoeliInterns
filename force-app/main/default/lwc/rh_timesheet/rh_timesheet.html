@@ -34,5 +34,9 @@
     <template if:true={hasrecordid}>
         <c-rh_timesheet_details  record-id={recordId}></c-rh_timesheet_details>
     </template>
+
+    <template if:true={openCreation}>
+        <c-rh_timesheet_creation  mode="modal" onaction={handleNewCreation}></c-rh_timesheet_creation>
+    </template>
    
 </template>

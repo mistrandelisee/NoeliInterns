@@ -1,0 +1,14 @@
+<template>
+    <ul>
+        <template if:true={items} for:each={items} for:item="item" for:index="index">
+        <li key={item.name} style="color:black">
+            <c-lwc_menu_item 
+            item={item}
+            padding='0'
+            data-item-id={item.name}
+            onexpanditem={handleSelectItem}
+            ></c-lwc_menu_item>
+        </li>
+        </template>
+    </ul>
+</template>

@@ -20,3 +20,14 @@ for (User u : userQry.getOtherUsers()) {
 Database.SaveResult[] srList = Database.update(contacts, false);
 
 Database.DeleteResult srList = Database.delete([select id from contact where recordTypeId != null and RH_User__c= null], false);
+
+delete [select id from RH_Invoice__c ];
+delete [select id from TimeSheet ];
+delete [select id from Account WHERE recordTypeId=:RH_Constans.RH_CLIENT_ACCOUNT_RT ];
+
+
+for( integer i = 0; i < 250; i++ ){
+    insert new Account(name='Account'+i);
+}
+
+System.debug([SELECT id,name,createdDate FROM account order by createdDate desc limit 5]);

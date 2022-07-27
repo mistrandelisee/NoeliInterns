@@ -172,14 +172,14 @@ public  class RH_Profile_controller {
         }
         return mapReturn;
     }
-    public class contactdetailswrapper  {
+       public class contactdetailswrapper  {
         @AuraEnabled public String LastName;
         @AuraEnabled public String FirstName;
         @AuraEnabled public String Email;
         // @AuraEnabled public String Role;
         @AuraEnabled public string AccountId;
         // @AuraEnabled public string Login;
-        @AuraEnabled public string City;
+        @AuraEnabled public Address Address;
         @AuraEnabled public Date Birthday;
         @AuraEnabled public String Phone;
         @AuraEnabled public String Description;
@@ -190,6 +190,11 @@ public  class RH_Profile_controller {
                 email=this.email,
                 // RH_Role__c=this.Role,
                 // AccountId=this.AccountId,
+                MailingCity=Address.City,
+                MailingCountry=Address.Country,
+                MailingPostalCode=Address.Postal,
+                MailingState=Address.Province,
+                MailingStreet=Address.Street,
                 Birthdate=Birthday,
                 Description=Description,
                 Phone=Phone
@@ -204,6 +209,15 @@ public  class RH_Profile_controller {
                 Phone=Phone
                 );
         }
+        
+    }
+
+    public class Address{
+        @AuraEnabled public String Country;
+        @AuraEnabled public String City;
+        @AuraEnabled public String Province;
+        @AuraEnabled public String Postal;
+        @AuraEnabled public String Street;
     }
 
     @AuraEnabled 

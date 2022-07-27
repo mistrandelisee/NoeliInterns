@@ -137,5 +137,28 @@
             </template> 
         <!-- message-when-value-missing={item.valueMissing}  -->
         </template>
+
+        <template if:true={isAddress}>
+            <lightning-input-address
+                data-id={item.name}
+                required={item.required} 
+                disabled={item.disabled}
+                address-label={item.addressLabel}
+                street-label={item.streetLabel}
+                city-label={item.cityLabel}
+                country-label={item.countryLabel}
+                province-label={item.provinceLabel}
+                postal-code-label={item.postalLabel}
+                street={item.street}
+                city={item.city}
+                country={item.countryP}
+                province={item.province}
+                postal-code={item.code}
+                field-level-help={item.field}
+                country-options={getCountryOptions}
+                province-options={getProvinceOptions}
+                onchange={handleChangeAddress} >
+            </lightning-input-address>       
+        </template>
     <!-- </lightning-layout-item> -->
 </template>

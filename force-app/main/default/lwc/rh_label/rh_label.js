@@ -1,4 +1,3 @@
-
 import Add from '@salesforce/label/c.rh_Add';
 import Accomplishments from '@salesforce/label/c.rh_Accomplishments';
 import Edit from '@salesforce/label/c.rh_Edit';
@@ -259,11 +258,23 @@ import sdiPlc from '@salesforce/label/c.rh_sdiPlc';
 import Civico from '@salesforce/label/c.rh_Civico';
 import Currency from '@salesforce/label/c.rh_Currency';
 import CivicoPlc from '@salesforce/label/c.rh_CivicoPlc';
+import delete_confirm from '@salesforce/label/c.rh_delete_confirm';
+
+const Address = 'Address';
+const Street = 'Street';
+const Country = 'Country';
+const Province = 'Province';
+const PostalCode = 'Postal Code';
 
 const labels = {
     Add,
+    Address,
     Accomplishments,
     Edit,
+    Street,
+    Country,
+    Province,
+    PostalCode,
     Save,
     New,
     Change,
@@ -528,5 +539,7 @@ const labels = {
     Civico,
     Currency,
     CivicoPlc,
+    delete_confirm,
 };
+
 export { labels }

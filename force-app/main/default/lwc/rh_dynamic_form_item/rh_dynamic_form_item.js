@@ -24,8 +24,11 @@ export default class Rh_dynamic_form_item extends LightningElement {
     get isFile(){
         return this.item?.type=='file';
     }
+    get isAddress(){
+        return this.item?.type=='address';
+    }
     get isBase(){
-        return ! (this.isTextarea || this.picklist || this.isFile || this.isRadio || this.isLookup);
+        return ! (this.isTextarea || this.picklist || this.isFile || this.isRadio || this.isLookup || this.isAddress);
     }
     get isDefault(){
         return !(this.isLookup);
@@ -114,14 +117,16 @@ export default class Rh_dynamic_form_item extends LightningElement {
         let outputsItems=[];
         if (isvalid) {
             let self=this;
+            let fieldvalue;
             const key=item.name;
             const fieldInput=self.template.querySelector(`[data-id="${key}"]`);
             if (fieldInput) {
+                    fieldvalue =  fieldInput.value;
                     output[key]=fieldInput.value || null;
                 switch (item.type) {
                     case 'datetime':
                         try {
-                            let dateTimevalue=fieldInput.value;
+                            let dateTimevalue=fieldvalue;
                             let datevalue=dateTimevalue? new Date(dateTimevalue).toLocaleDateString() :'';
                             let datelabel=item.label?  item.label.replace('/','').replace('ora','').replace('hour','') :' Date';
                             let timevalue=dateTimevalue? new Date(dateTimevalue).toLocaleTimeString() :'';
@@ -131,20 +136,35 @@ export default class Rh_dynamic_form_item extends LightningElement {
                             outputs.push({label:timelabel,name:key+'t',value:timevalue});
                         } catch (error) {
                             console.log('OUTPUT  : Error while spliting date time output ',error);
-                            outputs.push({label:item.label,name:key,value:fieldInput.value});
+                            outputs.push({label:item.label,name:key,value:fieldvalue});
                         }
                         break;
                     case 'toggle':
+                        fieldvalue=fieldInput.checked;
                         output[key]=fieldInput.checked;
-                        outputs.push({label:item.label,name:key,value:fieldInput.checked});
+                        outputs.push({label:item.label,name:key,value:fieldvalue});
                         break;
+
+                    case 'address':
+                        fieldvalue = {
+                            country: fieldInput.country,
+                            city: fieldInput.city,
+                            street: fieldInput.street,
+                            province: fieldInput.province,
+                            postal: fieldInput.postalCode
+                        };
+
+                        output[key]=fieldvalue;
+                        outputs.push({label:item.addressLabel,name:key,value:fieldvalue});
+                        break;
+
                     default:
-                        outputs.push({label:item.label,name:key,value:fieldInput.value});
+                        outputs.push({label:item.label,name:key,value:fieldvalue});
                         break;
                 }
                 
                 
-                outputsItems.push({...item,value:fieldInput.value});
+                outputsItems.push({...item,value:fieldvalue});
             }
            
         }
@@ -210,4 +230,24 @@ export default class Rh_dynamic_form_item extends LightningElement {
         this.item={...this.item,...updates};
         return true;
     }
+
+
+    // Address
+
+    countrySelected;
+
+    get getProvinceOptions() {
+        return this.item.countryProvinceMap[this.countrySelected];
+    }
+    get getCountryOptions() {
+        return this.item.countryOptions;
+    }
+
+    handleChangeAddress(event) {
+        //this.item.countryP = event.detail.country;
+        this.countrySelected = event.detail.country;
+        console.log('this.item.countryP');
+    }
+
+
 }

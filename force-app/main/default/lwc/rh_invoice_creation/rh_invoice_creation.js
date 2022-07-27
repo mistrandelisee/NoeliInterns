@@ -21,7 +21,9 @@ const SUCCESS_VARIANT='success';
 const WARNING_VARIANT='warning';
 const ERROR_VARIANT='error';
 export default class Rh_invoice_creation extends NavigationMixin(LightningElement) {
-    l={...labels,}
+    l={...labels,
+        Number:'Number'
+    }
     DEFAULT_CURRENCY='EUR';
     curriencies=[
         { label: 'EUR', value: 'EUR' },
@@ -38,6 +40,7 @@ export default class Rh_invoice_creation extends NavigationMixin(LightningElemen
 
     @api groups;
     @api invoice;
+    @api hideNew;
     roles=[];
     formInputs=[];
     record;
@@ -65,6 +68,7 @@ export default class Rh_invoice_creation extends NavigationMixin(LightningElemen
     connectedCallback(){
         console.log('teste');
         if (this.editMode) {
+            this.hideNew=true
             this.handleNew(false);
         }
     }
@@ -349,6 +353,19 @@ export default class Rh_invoice_creation extends NavigationMixin(LightningElemen
     buildForm(){
         this.formInputs=[
             {
+                label:this.l.Number,
+                placeholder:this.l.Number,
+                name:'RHNumber',
+                value: this.invoice?.RH_Number__c,
+                readOnly:this.disabledfields?.all || this.disabledfields?.number,
+                required:true,
+                ly_xs:'12', 
+                ly_md:'6', 
+                ly_lg:'6',
+                maxlength:50,
+                pattern:'[0-9]+?'
+            },
+            {
                 name:ACCOUNT_NAME_FIELD,
                 objName:"Account",
                 placeholder:this.l.invoice_toPlc,
@@ -366,8 +383,8 @@ export default class Rh_invoice_creation extends NavigationMixin(LightningElemen
                 readOnly:this.disabledfields?.all || this.disabledfields?.account,
                 type:'lookup',
                 ly_xs:'12', 
-                ly_md:'12', 
-                ly_lg:'12'
+                ly_md:'6', 
+                ly_lg:'6'
             },
             {
                 label:this.l.po,

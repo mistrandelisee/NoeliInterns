@@ -2,6 +2,43 @@ public class RH_ContactTriggerHandler {
     public RH_ContactTriggerHandler() {
 
     }
+
+    
+    public static void countEmployees(List<contact> newRHContacts, List<contact> oldRHContacts){
+        
+        Set<id> RHAccountsIds = new set<id>();
+
+        if(newRHContacts != null){
+            for(Contact con : newRHContacts){
+                If(con.accountId != null){
+                    RHAccountsIds.add(con.accountId);
+                }
+            }
+        }
+
+        if(oldRHContacts != null){
+            for(Contact con : oldRHContacts){
+                If(con.accountId != null){
+                    RHAccountsIds.add(con.accountId);
+                }
+            }
+        }
+
+        list<Account> accounts = [Select Id,NumberOfEmployees,
+        (Select Id,RH_Status__c from Contacts WHERE RH_Status__c = 'Active') 
+        from Account WHERE Id in :RHAccountsIds];
+
+        if(!accounts.isEmpty()){
+            for(Account acc:accounts){
+                acc.NumberOfEmployees = acc.contacts.size();
+            }
+        }
+
+        update accounts;
+
+       
+    }
+
     public static void UpadeRelatedUsers(List<Contact> RHContacts,Id ProfileId) {
         List<User> RHUsers = new List<User>();
         if (!RHContacts.isEmpty()) {
@@ -19,7 +56,7 @@ public class RH_ContactTriggerHandler {
         for (Contact con : RHContacts){
             Contact oldCon=(Contact) Trigger.oldMap.get(con.Id);
             if ( oldCon?.RH_Create_User__c && !con.RH_Create_User__c) {//Trying disable this field
-                con.addError('You can disable this field...Contact your Administrator');
+                con.addError('You can not disable this field...Contact your Administrator');
             }
         }
     }

@@ -1,0 +1,19 @@
+<template>
+    <p style={_itemStyle} onclick={handleClickItem}>{title}  {hasItems}</p>
+    <template if:true={expanded}>
+        <ul>
+            <template if:true={item.subItems} for:each={item.subItems} for:item="sItem" for:index="index">
+            <li key={sItem.name} style="color:black">
+                <c-lwc_menu_item 
+                item={sItem}
+                parent-item={item}
+                padding={childPadding}
+                data-sub-item-id={sItem.name}
+                onexpanditem={handleSelectItem}
+                ></c-lwc_menu_item>
+            </li>
+            </template>
+        </ul>
+    </template>
+    
+</template>

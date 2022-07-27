@@ -43,16 +43,20 @@ export default class Rh_invoice_info extends NavigationMixin(LightningElement) {
      @wire(CurrentPageReference) pageRef;
      buildInvoiceFields() {
         this.invoiceFields = [
+            
             {
                 label: this.l.invoice_to,
                 name: 'Account',
                 value: this.invoice?.RH_Account_Id__r?.Name,
             },
+
             {
                 label: this.l.po,
                 name: 'RH_Po__c',
                 value: this.invoice?.RH_Po__c
             },
+
+
             {
                 label: this.l.amount,
                 name: 'Amount',
@@ -74,8 +78,8 @@ export default class Rh_invoice_info extends NavigationMixin(LightningElement) {
         ];
 
         this.disabledfields={
-            account:this.invoice?.RH_Invoices_Items__r?.length>0, //can't change the account if line items exist already for this account
-            // po:this.invoice?.RH_Invoices_Items__r?.length>0, //po is still editable
+            account:this.invoice?.RH_Invoices_Items__r?.length>0,
+            po:this.invoice?.RH_Invoices_Items__r?.length>0,
             currency:this.invoice?.RH_Invoices_Items__r?.length>0,
             start:this.invoice?.RH_Invoices_Items__r?.length>0,
             end:this.invoice?.RH_Invoices_Items__r?.length>0,
@@ -95,6 +99,9 @@ export default class Rh_invoice_info extends NavigationMixin(LightningElement) {
         } else {//is edit
             this.action = event.detail.action;
         }
+    }
+    handleActionNew(event){
+        this.action = event.detail?.action;
     }
 
 

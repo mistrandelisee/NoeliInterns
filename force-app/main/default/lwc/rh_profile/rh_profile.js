@@ -351,6 +351,7 @@ icon ={...icons}
         
         ];
     }
+
     buildform(){
         this.formPersonanalInputDetails=[
             {
@@ -430,15 +431,53 @@ icon ={...icons}
                 ly_xs:'12', 
                 ly_lg:'6'
             },*/
+            // {
+            //     label:this.l.City,
+            //     placeholder:this.l.CityPlc,
+            //     name:'City',
+            //     type:'address',
+            //     value:this.profileinformation?.contact?.OtherAddress,
+            //     ly_md:'6', 
+            //     ly_xs:'12', 
+            //     ly_lg:'6'
+            // }
             {
-                label:this.l.City,
-                placeholder:this.l.CityPlc,
-                name:'City',
+                addressLabel: this.l.Address,
+                streetLabel: this.l.Street,
+                cityLabel: this.l.City,
+                countryLabel: this.l.Country,
+                provinceLabel: this.l.Province,
+                postalLabel: this.l.PostalCode,
+                disabled: false,
+                required: true,
+                countryProvinceMap: {
+                    CM: [
+                        { label: 'North', value: 'N' },
+                        { label: 'South', value: 'S' },
+                        { label: 'Centre', value: 'C' },
+                        { label: 'Est', value: 'E' },
+                        { label: 'West', value: 'W' },
+                        { label: 'South-West', value: 'SW' },
+                        { label: 'South-Est', value: 'SE' },
+                        { label: 'Extrem-North', value: 'EN' },
+                        { label: 'Adamaoua', value: 'A' },
+                        { label: 'Littoral', value: 'L' }
+                    ],
+                    IT: [
+                        { label: 'Milano', value: 'M' },
+                        { label: 'Roma', value: 'R' },
+                        { label: 'Vatican', value: 'V' }
+                    ]
+                },
+                countryOptions : [
+                    { label: 'Cameroon', value: 'CM' },
+                    { label: 'Italia', value: 'IT' }
+                ],    
+                name:'Address',
                 type:'address',
-                value:this.profileinformation?.contact?.OtherAddress,
-                ly_md:'6', 
+                ly_md:'12', 
                 ly_xs:'12', 
-                ly_lg:'6'
+                ly_lg:'12'
             },
             {
                 label:this.l.AboutMe,
@@ -451,8 +490,8 @@ icon ={...icons}
                 ly_md:'12', 
                 ly_xs:'12', 
                 ly_lg:'12'
-            }
-        
+            }, 
+            
         ];
     }
     buildAccountFields(){
@@ -512,4 +551,5 @@ icon ={...icons}
         }
         return output;
     }
+
 }

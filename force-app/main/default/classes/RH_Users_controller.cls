@@ -231,6 +231,7 @@ public without sharing class RH_Users_controller {
             if(conctactUser.RH_Status__c== new RH_Constans().LWC_ACTIVE_CONTACT_STATUS){
                 conctactUser.RH_Create_User__c=true;
                 //mapReturn.put('RH_Create_User__c', true); //mock
+                activeUser(conctactUser.Id);
             }
             if (conctactUser.RH_Status__c == new RH_Constans().LWC_DISABLE_CONTACT_STATUS) {
                 disableUser(conctactUser.Id);
@@ -257,6 +258,13 @@ public without sharing class RH_Users_controller {
         List<User> users = userQry.getUserByContactId(conId);
         if (!users.isEmpty()){
             update new user (isActive=false,Id=users[0].Id);
+        }
+    }
+    @future
+    public static void activeUser(String conId) {
+        List<User> users = userQry.getUserInfoByContactId(conId);
+        if (!users.isEmpty()){
+            update new user (isActive=true,Id=users[0].Id);
         }
     }
     @AuraEnabled 
@@ -293,6 +301,7 @@ public without sharing class RH_Users_controller {
         for(Contact con : conlist){
             if (! myconId.equalsIgnoreCase(con.Id)) {
                 Map<String, Object> mapObj = new Map<String, Object>();
+                string userId= (String.isNotBlank(con.RH_User__c)? con.RH_User__c : mapContactToUser.get(con.Id));
                 mapObj.put('id', con.Id);
                 mapObj.put('RHUser', con.RH_User__c);
                 mapObj.put('RHRolec', con.RH_Role__c);
@@ -300,7 +309,7 @@ public without sharing class RH_Users_controller {
                 mapObj.put('FirstName', con.FirstName);
                 mapObj.put('Status', String.isBlank(con.RH_Status__c)?'':con.RH_Status__c.toLowerCase() );
                 mapObj.put('LastName', con.LastName);
-                mapObj.put('UserId', mapContactToUser.get(con.Id));
+                mapObj.put('UserId', userId);
                 listcon.add(mapObj);  
             }
             
@@ -354,7 +363,8 @@ public without sharing class RH_Users_controller {
             Id recID=recordId;
             String ContactId=recordId;
             if(USER_OBJECT==recID.getSObjectType() ){
-                List<User> users=userQry.getUserById(recordId);
+                // List<User> users=userQry.getUserById(recordId);
+                List<User> users=userQry.getUserInfoById(recordId,null);
                 if (users.isEmpty()) throw new RH_ControllerException('001','Missing User');
                 User u=users[0];
                 ContactId=u.RH_ContactId__c;

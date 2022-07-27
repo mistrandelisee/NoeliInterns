@@ -17,7 +17,7 @@ import checkUserCreation from '@salesforce/apex/RH_Users_controller.checkUserCre
 
 // import getActiveWorkgroups from '@salesforce/apex/RH_WorkGroup_Query.getActiveWorkgroups';
 import { CurrentPageReference } from 'lightning/navigation';
-import { registerListener, unregisterAllListeners,fireEvent } from 'c/pubsub';
+import { registerListener,unregisterListener, unregisterAllListeners,fireEvent } from 'c/pubsub';
 const EDIT_ACTION='Edit';
 const SUCCESS_VARIANT='success';
 const WARNING_VARIANT='warning';
@@ -102,6 +102,9 @@ hasAction;
     get timeSheets(){
         return this.contactrecord?.RH_TimeSheets__r || [];
     }
+    get accomplishments(){
+        return this.contactrecord?.Accomplishments__r || [];
+    }
     get leadedGroups(){
         return this.contactrecord?.WorkGroups_Leader__r || [];
     }
@@ -112,6 +115,7 @@ hasAction;
     get TimeSheetsTitle(){ return this.generatedTitle(this.l.timesheets,this.timeSheets)}
     get LeadedGroupTitle(){ return this.generatedTitle(this.l.leadedGroups,this.leadedGroups)}
     get LeadedProjectTitle(){ return this.generatedTitle(this.l.leadedProjects,this.leadedProjects)}
+    get AccomplishmentsTitle(){ return this.generatedTitle(this.l.Accomplishments,this.accomplishments)}
     
 
     editContactMode=false;
@@ -120,6 +124,9 @@ hasAction;
         if (this.recordId) {
             this.getEmployeeInfos(this.recordId);
         }
+    }
+    disconnectedCallback() {
+        unregisterListener('ModalAction', this.doModalAction, this);
     }
     handleActionNew(event){
         const data=event.detail;
@@ -155,12 +162,18 @@ hasAction;
         console.log('doModalAction in user view ', JSON.stringify(event.action));
         switch (event.action) {
             case OK_DISABLE:
-                this.doUpdateStatus(this.actionRecord,OK_DISABLE)
-                this.actionRecord={};
+                if(this.actionRecord?.Id){
+                    this.doUpdateStatus(this.actionRecord,OK_DISABLE)
+                    this.actionRecord={};
+                }
+                
                 break;
             case OK_FREEZE:
-                this.doUpdateStatus(this.actionRecord,OK_FREEZE)
-                this.actionRecord={};
+                if(this.actionRecord?.Id){
+                    this.doUpdateStatus(this.actionRecord,OK_FREEZE)
+                    this.actionRecord={};
+                }
+                
                 break;
             case RESETPWD:
                 if (this.actionRecord.action == RESETPWD) {
@@ -412,7 +425,10 @@ hasAction;
         const Actions=[];
 
         //delete
-        Actions.push(this.createAction("brand-outline",this.l.Disable,DISABLE_ACTION,this.l.Disable,this.icon.ban,'slds-m-left_x-small'));
+        if ((this.constants.LWC_DISABLE_CONTACT_STATUS?.toLowerCase() != status?.toLowerCase())) {
+            Actions.push(this.createAction("brand-outline",this.l.Disable,DISABLE_ACTION,this.l.Disable,this.icon.ban,'slds-m-left_x-small'));
+        }
+        
         //Active
         if ((this.constants.LWC_ACTIVE_CONTACT_STATUS?.toLowerCase() != status?.toLowerCase())) {
             Actions.push(this.createAction("brand-outline",this.l.Activate,ACTIVE_ACTION,this.l.Activate,this.icon.approve,'slds-m-left_x-small'));
@@ -436,10 +452,11 @@ hasAction;
         Actions=Actions.concat(this.buildUserStatusActions(e?.RH_Status__c));
         if ((this.constants.LWC_ACTIVE_CONTACT_STATUS?.toLowerCase() == e.Status?.toLowerCase())) {//
             Actions=Actions.concat(this.buildUserRoleActions(e?.RH_Role__c));
+            if (this.isUser) {
+                Actions.push(this.createAction("brand-outline",this.l.ChangePasswordTitle,RESETPWD,this.l.ChangePasswordTitle,this.icon.close,'slds-m-left_x-small'));
+            }
         }
-        if (this.isUser) {
-            Actions.push(this.createAction("brand-outline",this.l.ChangePasswordTitle,RESETPWD,this.l.ChangePasswordTitle,this.icon.close,'slds-m-left_x-small'));
-        }
+        
         this.detailsActions=Actions.map(function(e, index) {return { ...e,variant:"brand-outline",class:e.class+" slds-m-left_x-small" } });
     }
     handleDetailsActions(event){
@@ -459,6 +476,13 @@ hasAction;
             const data=event.detail.data;
             console.log(data);
             this.goToPage('rhtimesheet',{'recordId': data.key})
+        }
+    }
+    goToAccomplishment(event){
+        if(event.detail.action=='Item'){
+            const data=event.detail.data;
+            console.log(data);
+            this.goToPage('accomplishment',{'recordId':data.key})
         }
     }
      
@@ -834,4 +858,5 @@ hasAction;
         }
         return output;
     }
+
 }

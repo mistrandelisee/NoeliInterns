@@ -24,3 +24,9 @@ lightning-radio-group .slds-radio_faux {
 .pill{
     --sds-c-pill-color-background:var(--pillbgcolor,#f0e8f1) ;
 }
+
+.slds-form-element__control{
+    --lwc-borderWidthThin: 1px;
+    --lwc-colorBorderInput: rebeccapurple;
+
+}

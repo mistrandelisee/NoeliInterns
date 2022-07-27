@@ -8,6 +8,7 @@ record;
 @api title;
 @api backcolor;
 @api modalCss;
+@api modalContainerCss;
 @api
 btnOkLabel = 'Create';
 l={...labels}

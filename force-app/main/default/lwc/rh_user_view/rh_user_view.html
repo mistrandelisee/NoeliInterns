@@ -86,7 +86,7 @@
             <template if:true={isUser}>
 
 
-                <lightning-layout-item size="12" padding="around-smallx" small-device-size="6" medium-device-size="6" large-device-size="3">
+                <lightning-layout-item size="12" padding="around-smallx" small-device-size="6" medium-device-size="6" large-device-size="4">
                     <div class="custom-box">
                        <div class="slds-p-around_medium extra_info">
                            <c-rh_list 
@@ -96,14 +96,35 @@
                             css-style="max-height:40vh;overflow-y:auto"
                             header-icon={icon.timesheet}
         
-                            key-value="TimeSheetNumber"
+                            key-value="RH_Name__c"
                             records={timeSheets}
                             onaction={goToTimsheet}
                            ></c-rh_list>
                        </div>
                     </div>
                 </lightning-layout-item>
-                <lightning-layout-item size="12" padding="around-smallx" small-device-size="6" medium-device-size="6" large-device-size="3">
+
+                
+                    <lightning-layout-item size="12" padding="around-smallx" small-device-size="6" medium-device-size="6" large-device-size="4">
+                        <div class="custom-box">
+                           <div class="slds-p-around_medium extra_info">
+                               <c-rh_list 
+                                css-class="list-bordered list-centered min-h_10 list-hover_underline slds-has-dividers_bottom slds-has-block-links_space slds-p-horizontal_medium"
+                                header-title={AccomplishmentsTitle}
+                                key-id="Id"
+                                css-style="max-height:40vh;overflow-y:auto"
+                                header-icon={icon.Accomplishment}
+            
+                                key-value="RH_Title__c"
+                                records={accomplishments}
+                                onaction={goToAccomplishment}
+                               ></c-rh_list>
+                           </div>
+                        </div>
+                    </lightning-layout-item>
+
+                
+                <lightning-layout-item size="12" padding="around-smallx" small-device-size="6" medium-device-size="6" large-device-size="4">
                     <div class="custom-box">
                        <div class="slds-p-around_medium extra_info">
                            <c-rh_list 
@@ -119,7 +140,7 @@
                        </div>
                     </div>
                 </lightning-layout-item>
-                <lightning-layout-item size="12" padding="around-smallx" small-device-size="6" medium-device-size="6" large-device-size="3">
+                <lightning-layout-item size="12" padding="around-smallx" small-device-size="6" medium-device-size="6" large-device-size="4">
                     <div class="custom-box">
                        <div class="slds-p-around_medium extra_info">
                            <c-rh_list 
@@ -135,7 +156,7 @@
                        </div>
                     </div>
                 </lightning-layout-item>
-                <lightning-layout-item size="12" padding="around-smallx" small-device-size="6" medium-device-size="6" large-device-size="3">
+                <lightning-layout-item size="12" padding="around-smallx" small-device-size="6" medium-device-size="6" large-device-size="4">
                     <div class="custom-box">
                        <div class="slds-p-around_medium extra_info">
                            <c-rh_list 
