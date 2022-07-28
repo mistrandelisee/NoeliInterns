@@ -1,13 +1,30 @@
 <template>
     <div class={className}>
         <lightning-card class="custom-card" >
-            <h3 slot="title">
-                <lightning-icon class="slds-m-right_medium ico-title" icon-name={iconeName} size="small"></lightning-icon>
-                <span data-name="title" onclick={goToLink} class="c-title">{title}</span>
-            </h3>
-            <!-- <lightning-button-icon  icon-name="utility:down" variant="border-filled" alternative-text="Show More" slot="actions">
+            <div slot="title">
                 
+                <div class="slds-clearfix">
+                    <div class="slds-float_left">
+                        <lightning-icon class="slds-m-right_medium ico-title" icon-name={iconeName} size="small"></lightning-icon>
+                        <span data-name="title" onclick={goToLink} class="c-title">{title}</span>
+                    </div>
+                    <div class="slds-float_right">
+                        <lightning-badge label="Approved" class="slds-theme_success"> </lightning-badge>
+                    </div>
+                </div>
+            </div>
+            <!-- <lightning-button-icon  icon-name="utility:down" variant="border-filled" alternative-text="Show More" slot="actions">
+            <template if:true={showBadges}>
+                <div slot="actions">
+                    <template  for:each={recordBadges} for:item="badge" >
+                        <lightning-badge key={badge.name} label={badge.label} class={badge.class} style={badge.style}> </lightning-badge>
+                    </template>
+                </div>
+            </template>
             </lightning-button-icon> -->
+            <div slot="actions">
+               
+            </div>
             <template if:true={hasActions}>
                 <!-- TO IMPLEMENT -->
                 <lightning-button-menu slot="actions" class="ico" alternative-text="Show menu"  variant="bare" icon-size="large"  menu-alignment="right" onselect={handleOnselect}>

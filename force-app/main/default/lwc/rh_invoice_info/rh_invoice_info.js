@@ -43,7 +43,11 @@ export default class Rh_invoice_info extends NavigationMixin(LightningElement) {
      @wire(CurrentPageReference) pageRef;
      buildInvoiceFields() {
         this.invoiceFields = [
-            
+            {
+                label: this.l.Number,
+                name: 'RH_Number__c',
+                value: this.invoice?.RH_Number__c
+            },
             {
                 label: this.l.invoice_to,
                 name: 'Account',
@@ -70,7 +74,7 @@ export default class Rh_invoice_info extends NavigationMixin(LightningElement) {
                 value: this.invoice?.RH_InvoiceDate__c
             },
             {
-                label: this.l.EndDate,
+                label: this.l.DueDate,
                 name: 'RH_DueDate__c',
                 value: this.invoice?.RH_DueDate__c
             },

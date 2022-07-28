@@ -540,6 +540,7 @@ const labels = {
     Currency,
     CivicoPlc,
     delete_confirm,
+    DueDate:'Due Date',
 };
 
 export { labels }

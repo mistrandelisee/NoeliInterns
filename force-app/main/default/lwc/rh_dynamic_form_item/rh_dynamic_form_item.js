@@ -1,4 +1,4 @@
-import { api, LightningElement } from 'lwc';
+import { api, LightningElement, track } from 'lwc';
 
 export default class Rh_dynamic_form_item extends LightningElement {
     @api item;
@@ -6,6 +6,8 @@ export default class Rh_dynamic_form_item extends LightningElement {
     
     timer;
     @api fileData;
+    @track countrySelected;
+    @track provinceSelected;
     get ly_md(){
         return this.item?.ly_md ?   this.item.ly_md: '4';
     }
@@ -44,6 +46,8 @@ export default class Rh_dynamic_form_item extends LightningElement {
     connectedCallback(){
         console.log('ITEM');
         console.log(this.item);
+        this.countrySelected=this.item?.country || '';
+        this.provinceSelected=this.item?.province || '';
     }
     handleChanged(event) {
         this.timeOut=this.timeOut || 0;
@@ -234,7 +238,6 @@ export default class Rh_dynamic_form_item extends LightningElement {
 
     // Address
 
-    countrySelected;
 
     get getProvinceOptions() {
         return this.item.countryProvinceMap[this.countrySelected];
@@ -244,9 +247,10 @@ export default class Rh_dynamic_form_item extends LightningElement {
     }
 
     handleChangeAddress(event) {
-        //this.item.countryP = event.detail.country;
+        (this.countrySelected != event.detail.country)?this.provinceSelected='':'';//change province alnly if country is selected
         this.countrySelected = event.detail.country;
-        console.log('this.item.countryP');
+        // console.log('this.item.countryP');
+        
     }
 
 

@@ -331,11 +331,31 @@ icon ={...icons}
                 label:this.l.Username,
                 name:'Login',
                 value:this.profileinformation?.user?.Username
+            }, 
+            {
+                label:this.l.Country,
+                name:'Country',
+                value:this.profileinformation?.contact?.MailingCountry
+            },
+            {
+                label:this.l.Province,
+                name:'Province',
+                value:this.profileinformation?.contact?.MailingState
             },
             {
                 label:this.l.City,
                 name:'City',
-                value:this.profileinformation?.contact?.OtherAddress
+                value:this.profileinformation?.contact?.MailingCity
+            },
+            {
+                label:this.l.Street,
+                name:'Street',
+                value:this.profileinformation?.contact?.MailingStreet
+            },
+            {
+                label:this.l.PostalCode,
+                name:'Postal Code',
+                value:this.profileinformation?.contact?.MailingPostalCode
             },
             {
                 label:this.l.Birthday,
@@ -448,30 +468,36 @@ icon ={...icons}
                 countryLabel: this.l.Country,
                 provinceLabel: this.l.Province,
                 postalLabel: this.l.PostalCode,
+                street : this.profileinformation?.contact?.MailingStreet,
+                city: this.profileinformation?.contact?.MailingCity,
+                country: this.profileinformation?.contact?.MailingCountry,
+                // provincePlaceholder: this.profileinformation?.contact?.MailingState,
+                province: this.profileinformation?.contact?.MailingState,
+                code: this.profileinformation?.contact?.MailingPostalCode,
                 disabled: false,
                 required: true,
                 countryProvinceMap: {
-                    CM: [
-                        { label: 'North', value: 'N' },
-                        { label: 'South', value: 'S' },
-                        { label: 'Centre', value: 'C' },
-                        { label: 'Est', value: 'E' },
-                        { label: 'West', value: 'W' },
-                        { label: 'South-West', value: 'SW' },
-                        { label: 'South-Est', value: 'SE' },
-                        { label: 'Extrem-North', value: 'EN' },
-                        { label: 'Adamaoua', value: 'A' },
-                        { label: 'Littoral', value: 'L' }
+                    Cameroon: [
+                        { label: 'North', value: 'North' },
+                        { label: 'South', value: 'South' },
+                        { label: 'Centre', value: 'Centre' },
+                        { label: 'Est', value: 'Est' },
+                        { label: 'West', value: 'West' },
+                        { label: 'South-West', value: 'South-West' },
+                        { label: 'South-Est', value: 'South-Est' },
+                        { label: 'Extrem-North', value: 'Extrem-North' },
+                        { label: 'Adamaoua', value: 'Adamaoua' },
+                        { label: 'Littoral', value: 'Littoral' }
                     ],
-                    IT: [
-                        { label: 'Milano', value: 'M' },
-                        { label: 'Roma', value: 'R' },
-                        { label: 'Vatican', value: 'V' }
+                    Italia: [
+                        { label: 'Milano', value: 'Milano' },
+                        { label: 'Roma', value: 'Roma' },
+                        { label: 'Vatican', value: 'Vatican' }
                     ]
                 },
                 countryOptions : [
-                    { label: 'Cameroon', value: 'CM' },
-                    { label: 'Italia', value: 'IT' }
+                    { label: 'Cameroon', value: 'Cameroon' },
+                    { label: 'Italia', value: 'Italia' }
                 ],    
                 name:'Address',
                 type:'address',

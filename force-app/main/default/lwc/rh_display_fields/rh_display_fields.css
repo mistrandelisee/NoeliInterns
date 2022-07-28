@@ -33,3 +33,6 @@
     --lwc-squareIconMediumContentAlt: 1.2rem;
     font-size: 1.5rem;
 }
+.pending-badge {
+    --sds-c-badge-color-background: orange;
+}

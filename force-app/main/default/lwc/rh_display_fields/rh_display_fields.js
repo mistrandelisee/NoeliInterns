@@ -17,6 +17,7 @@ export default class Rh_display_fields extends NavigationMixin(LightningElement)
     @api helpText;
     @api displayEdit;
 
+    @api badges=[];
     @api
     actionAvailable;
     @api
@@ -49,6 +50,14 @@ export default class Rh_display_fields extends NavigationMixin(LightningElement)
         }
         console.log(`allRows  `, allRows );
         return allRows;
+    }
+    get showBadges(){
+        return this.badges?.length > 0
+    }
+    get recordBadges(){
+        return this.badges?.map(function(badge){
+          return badge 
+        })
     }
     initDefaultAction(){
         this.actionAvailable= this.actionAvailable || [

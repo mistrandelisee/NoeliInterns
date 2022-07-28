@@ -141,8 +141,8 @@ export default class Rh_invoice_creation extends NavigationMixin(LightningElemen
     doCreateAccount(){
         this.accountInputs=[
             {
-                label:this.l.accountName,
-                placeholder:this.l.accountNamePlc,
+                label:this.l.Name,
+                placeholder:this.l.NamePlc,
                 name:'Name',
                 value: '',
                 required:true,
@@ -423,8 +423,8 @@ export default class Rh_invoice_creation extends NavigationMixin(LightningElemen
                 ly_lg:'6'
             },
             {
-                label:this.l.EndDate,
-                placeholder:this.l.EndDate,
+                label:this.l.DueDate,
+                placeholder:this.l.DueDate,
                 readOnly:this.disabledfields?.all || this.disabledfields?.end,
                 name:'endDate',
                 required:true,

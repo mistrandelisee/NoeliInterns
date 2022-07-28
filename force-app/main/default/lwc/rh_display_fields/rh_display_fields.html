@@ -5,6 +5,17 @@
                 <lightning-icon icon-name={iconsrc} size="small" class="slds-m-right_small"></lightning-icon>
                 {title}
             </h3>
+            <template if:true={showBadges}>
+                <div slot="actions">
+                    <template  for:each={recordBadges} for:item="badge" >
+                        <lightning-badge key={badge.name} label={badge.label} class={badge.class} style={badge.style}> </lightning-badge>
+                    </template>
+                </div>
+            </template>
+            <!-- <div slot="actions">
+                <lightning-badge label="Approved" class="slds-theme_success"> </lightning-badge>
+                <lightning-badge label="Pending" class="pending-badge"> </lightning-badge>
+            </div> -->
             <template if:true={showHeaderAction}>
                 <div class="slds-clearfix" slot="actions">
                     <template  for:each={actionAvailable} for:item="action" for:index="index">
