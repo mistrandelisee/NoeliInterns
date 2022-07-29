@@ -168,72 +168,61 @@
                         <div >
                                 <table style="margin-top:1%;">
                                     <tr class="heading" style="width:100%;">
-                                        <td style="width:5%;">
+                                        <td style="width:5%;" align="center">
                                             N°
                                         </td>
-                                        <td style="width:5%;">
-                                            Name
+                                        <td style="width:35%;" align="center">
+                                            Description
                                         </td>
-                                        <td style="width:30%;">
-                                            Project
-                                        </td>
-                                        <td style="width:5%;">
-                                            Ressource
-                                        </td>
-                                        <td style="width:25%;">
-                                            Amount
-                                        </td>
-                                        <td style="width:10%;">
-                                            Quantity
-                                        </td>
-                                        <td style="width:10%;">
-                                            Rate
-                                        </td>
-                                        <td style="width:10%;">
+                                        <td style="width:10%;" align="center">
                                             Start date
                                         </td>
-                                        <td style="width:10%;">
+                                        <td style="width:10%;" align="center">
                                             End date
+                                        </td>
+                                        <td style="width:5%;" align="center">
+                                            Qty
+                                        </td>
+                                        <td style="width:10%;" align="center">
+                                            Rate
+                                        </td>
+                                        <td style="width:25%;" align="center">
+                                            Amount
                                         </td>
                                     </tr>
                                     <apex:repeat value="{!getHeaderInvoiceItemObjectvalue}" var="item">
-                                    <tr class="item">
-                                        <td style="width:5%;">
-                                            <apex:outputText value="{!cnt}"/>
-                                        </td>
-                                        <td style="width:10%;">
-                                            <apex:outputText value="{!item.Name}"/>
-                                        </td>
-                                        <td style="width:10%;">
-                                            <apex:outputText value="{!item.RHProjectIdName}"/>
-                                        </td>
-                                        <td style="width:10%;">
-                                            <apex:outputText value="{!item.RHRessource}"/>
-                                        </td>
-                                        <td style="width:25%;">
-                                            <!-- <apex:outputText value="{!item.NL_Amount__c}"/> -->
-                                            <apex:outputText value="{0, number, EUR #.##0,00}">
-                                                <apex:param value="{!item.RHAmount}" />
-                                            </apex:outputText>
-                                        </td>
-                                        <td style="width:10%;">
-                                            <apex:outputText value="{!item.RHQuantity}"/>
-                                        </td>
-                                        <td style="width:10%;">
-                                            <apex:outputText value="{!item.RHRate}"/>
-                                        </td>
-                                        <td style="width:10%;">
-                                            <apex:outputText value="{0,date,dd'/'MM'/'yyyy}">
-                                                <apex:param value="{!item.RHStartDate}"/>
-                                            </apex:outputText>
-                                        </td>
-                                        <td style="width:10%;">
-                                            <apex:outputText value="{0,date,dd'/'MM'/'yyyy}">
-                                                <apex:param value="{!item.RHEndDate}"/>
-                                            </apex:outputText>
-                                        </td>
-                                    </tr>
-                                
+                                        <tr class="item" >
+                                            <td style="width:5%;height:50px" align="center">
+                                                <apex:outputText value="{!cnt}"/>
+                                            </td>
+                                            <td style="width:35%;" align="center">
+                                                <apex:outputText value="{!item.RHProjectIdName}"/>
+                                            </td>
+                                            <td style="width:10%;" align="center">
+                                                <apex:outputText value="{0,date,dd'/'MM'/'yyyy}">
+                                                        <apex:param value="{!item.RHStartDate}"/>
+                                                </apex:outputText>
+                                            </td>
+                                            <td style="width:10%;" align="center">
+                                                <apex:outputText value="{0,date,dd'/'MM'/'yyyy}">
+                                                        <apex:param value="{!item.RHEndDate}"/>
+                                                </apex:outputText>
+                                            </td>
+                                            <td style="width:5%;" align="center">
+                                                <apex:outputText value="{!item.RHQuantity}"/>
+                                            </td>
+                                            <td style="width:10%;" align="center">
+                                                <apex:outputText value="{0, number,{!item.RHCurrencySymbol} ###,###,##0.00}">
+                                                    <apex:param value="{!item.RHRate}" />
+                                                </apex:outputText>
+                                            </td>
+                                            <td style="width:25%;" align="center">
+                                                <!-- <apex:outputText value="{!item.NL_Amount__c}"/> -->
+                                                <apex:outputText value="{0, number,{!item.RHCurrencySymbol} ###,###,##0.00}">
+                                                    <apex:param value="{!item.RHAmount}" />
+                                                </apex:outputText>
+                                            </td>
+                                        </tr>
                                     <apex:variable var="cnt" value="{!cnt+1}"/>
                                 </apex:repeat>
                                 </table> 
@@ -257,12 +246,12 @@
                                     </td>
                                     <td style="width:25%;">
                                         Invoice Total:
-                                        <apex:outputText value="{0, number,{!getHeaderInvoiceItemObjectvalue[0].RHCurrencyCode} ###,###,##0.00}">
+                                        <apex:outputText value="{0, number,{!getHeaderInvoiceItemObjectvalue[0].RHCurrencySymbol} ###,###,##0.00}">
                                             <apex:param value="{!getHeaderInvoiceObjectvalue.RHInvoiceItemSum}" />
                                         </apex:outputText>
                                         <hr class="delimiter-hr" />
                                         <b>Balance Due:    
-                                        <apex:outputText value="{0, number,{!getHeaderInvoiceItemObjectvalue[0].RHCurrencyCode} ###,###,##0.00}">
+                                        <apex:outputText value="{0, number,{!getHeaderInvoiceItemObjectvalue[0].RHCurrencySymbol} ###,###,##0.00}">
                                             <apex:param value="{!getHeaderInvoiceObjectvalue.RHInvoiceItemSum}" />
                                         </apex:outputText>
                                         </b>
@@ -447,74 +436,63 @@
                                 <div >
                                         <table>
                                             <tr class="heading" style="width:100%;">
-                                                <td style="width:5%;">
+                                                <td style="width:5%;" align="center">
                                                     N°
                                                 </td>
-                                                <td style="width:5%;">
-                                                    Name
+                                                <td style="width:35%;" align="center">
+                                                    Description
                                                 </td>
-                                                <td style="width:30%;">
-                                                    Project 
-                                                </td>
-                                                <td style="width:5%;">
-                                                    Ressource
-                                                </td>
-                                                <td style="width:25%;">
-                                                    Amount
-                                                </td>
-                                                <td style="width:10%;">
-                                                    Quantity
-                                                </td>
-                                                <td style="width:10%;">
-                                                    Rate
-                                                </td>
-                                                <td style="width:10%;">
+                                                <td style="width:10%;" align="center">
                                                     Start date
                                                 </td>
-                                                <td style="width:10%;">
+                                                <td style="width:10%;" align="center">
                                                     End date
+                                                </td>
+                                                <td style="width:5%;" align="center">
+                                                    Qty
+                                                </td>
+                                                <td style="width:10%;" align="center">
+                                                    Rate
+                                                </td>
+                                                <td style="width:25%;" align="center">
+                                                    Amount
                                                 </td>
                                             </tr>
                                             <apex:repeat value="{!LstItem.invoiceItem}" var="item">
-                                            <tr class="item">
-                                                <td style="width:5%;">
-                                                    <apex:outputText value="{!cnt}"/>
-                                                </td>
-                                                <td style="width:10%;">
-                                                    <apex:outputText value="{!item.Name}"/>
-                                                </td>
-                                                <td style="width:10%;">
-                                                    <apex:outputText value="{!item.RHProjectIdName}"/>
-                                                </td>
-                                                <td style="width:10%;">
-                                                    <apex:outputText value="{!item.RHRessource}"/>
-                                                </td>
-                                                <td style="width:25%;">
-                                                    <!-- <apex:outputText value="{!item.NL_Amount__c}"/> -->
-                                                    <apex:outputText value="{0, number,{!item.RHCurrencyCode} ###,###,##0.00}">
-                                                        <apex:param value="{!item.RHAmount}" />
-                                                    </apex:outputText>
-                                                </td>
-                                                <td style="width:10%;">
-                                                    <apex:outputText value="{!item.RHQuantity}"/>
-                                                </td>
-                                                <td style="width:10%;">
-                                                    <apex:outputText value="{!item.RHRate}"/>
-                                                </td>
-                                                <td style="width:10%;">
-                                                    <apex:outputText value="{0,date,dd'/'MM'/'yyyy}">
-                                                            <apex:param value="{!item.RHStartDate}"/>
-                                                    </apex:outputText>
-                                                </td>
-                                                <td style="width:10%;">
-                                                    <apex:outputText value="{0,date,dd'/'MM'/'yyyy}">
-                                                            <apex:param value="{!item.RHEndDate}"/>
-                                                    </apex:outputText>
-                                                </td>
-                                            </tr>
-                                        
-                                            <apex:variable var="cnt" value="{!cnt+1}"/>
-                                        </apex:repeat>
+                                                <tr class="item">
+                                                    <td style="width:5%;height:50px" align="center">
+                                                        <apex:outputText value="{!cnt}"/>
+                                                    </td>
+                                                    <td style="width:35%;" align="center">
+                                                        <apex:outputText value="{!item.RHProjectIdName}"/>
+                                                    </td>
+                                                    <td style="width:10%;" align="center">
+                                                        <apex:outputText value="{0,date,dd'/'MM'/'yyyy}">
+                                                                <apex:param value="{!item.RHStartDate}"/>
+                                                        </apex:outputText>
+                                                    </td>
+                                                    <td style="width:10%;" align="center">
+                                                        <apex:outputText value="{0,date,dd'/'MM'/'yyyy}">
+                                                                <apex:param value="{!item.RHEndDate}"/>
+                                                        </apex:outputText>
+                                                    </td>
+                                                    <td style="width:5%;" align="center">
+                                                        <apex:outputText value="{!item.RHQuantity}"/>
+                                                    </td>
+                                                    <td style="width:10%;" align="center">
+                                                        <apex:outputText value="{0, number,{!item.RHCurrencySymbol} ###,###,##0.00}">
+                                                            <apex:param value="{!item.RHRate}" />
+                                                        </apex:outputText>
+                                                    </td>
+                                                    <td style="width:25%;" align="center">
+                                                        <!-- <apex:outputText value="{!item.NL_Amount__c}"/> -->
+                                                        <apex:outputText value="{0, number,{!item.RHCurrencySymbol} ###,###,##0.00}">
+                                                            <apex:param value="{!item.RHAmount}" />
+                                                        </apex:outputText>
+                                                    </td>
+                                                </tr>
+                                                <apex:variable var="cnt" value="{!cnt+1}"/>
+                                            </apex:repeat>
                                         </table> 
                                     
                                     <apex:outputpanel rendered="{!LstItem.showFt}" >
@@ -539,12 +517,12 @@
                                                     </td>
                                                     <td style="width:25%;">
                                                         Invoice Total:
-                                                        <apex:outputText value="{0, number,{!getHeaderInvoiceItemObjectvalue[0].RHCurrencyCode} ###,###,##0.00}">
+                                                        <apex:outputText value="{0, number,{!getHeaderInvoiceItemObjectvalue[0].RHCurrencySymbol} ###,###,##0.00}">
                                                             <apex:param value="{!getHeaderInvoiceObjectvalue.RHInvoiceItemSum}" />
                                                         </apex:outputText>
                                                         <hr class="delimiter-hr" />
                                                         <b>Balance Due:    
-                                                        <apex:outputText value="{0, number,{!getHeaderInvoiceItemObjectvalue[0].RHCurrencyCode} ###,###,##0.00}">
+                                                        <apex:outputText value="{0, number,{!getHeaderInvoiceItemObjectvalue[0].RHCurrencySymbol} ###,###,##0.00}">
                                                             <apex:param value="{!getHeaderInvoiceObjectvalue.RHInvoiceItemSum}" />
                                                         </apex:outputText>
                                                         </b>

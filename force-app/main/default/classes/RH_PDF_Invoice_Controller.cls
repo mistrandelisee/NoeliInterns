@@ -1,4 +1,5 @@
 public without sharing class RH_PDF_Invoice_Controller {
+    private static RH_Invoice_Query invoiceQry = RH_Invoice_Query.getInstance();
     public HeaderWrapDatas getHeaderSettingvalue{get;set;}
     public AccountWrapDatas getAccountObjectvalue{get;set;}
     public footerWrapDatas getFooterSettingvalue {get;set;}
@@ -33,8 +34,14 @@ public without sharing class RH_PDF_Invoice_Controller {
         
         //  System.debug('RH_PDF_Invoice_Controller getFooterSettingvalue: '+getFooterSettingvalue);
         //retrive invoice datas
-        RH_Invoice__c inv = [SELECT id,RH_Account_Id__c,RH_InvoiceDate__c,RH_Po__c,RH_DueDate__c,Name,RH_Name__c,RH_InvoiceItem_Sum__c,(SELECT Id,RH_Amount__c,RH_Ressource__r.Name,Name,RH_ProjectId__r.Name,RH_StartDate__c,RH_EndDate__c,
-        RH_Holiday__c,RH_Quantity__c,RH_Rate__c,RH_InvoiceId__c,RH_Currency_Symbol__c  FROM  RH_Invoices_Items__r) FROM RH_Invoice__c WHERE id =: recordId ];
+        //BEST PRACTICES
+        List<RH_Invoice__c> Invoices = invoiceQry.getInvoice(recordId);
+        if (Invoices.isEmpty()) {
+            throw new RH_ControllerException('002','No Invoice founded with this ID'+recordId);
+        }
+        RH_Invoice__c inv=Invoices[0];
+        // RH_Invoice__c inv = [SELECT id,RH_Account_Id__c,RH_InvoiceDate__c,RH_Po__c,RH_DueDate__c,Name,RH_Name__c,RH_InvoiceItem_Sum__c,(SELECT Id,RH_Amount__c,RH_Ressource__r.Name,Name,RH_ProjectId__r.Name,RH_StartDate__c,RH_EndDate__c,
+        // RH_Holiday__c,RH_Quantity__c,RH_Rate__c,RH_InvoiceId__c,RH_Currency_Symbol__c  FROM  RH_Invoices_Items__r) FROM RH_Invoice__c WHERE id =: recordId ];
         this.getHeaderInvoiceObjectvalue = buildInvoice(inv);
         this.getHeaderInvoiceItemObjectvalue = buildInvoiceItem(inv);
         
@@ -206,7 +213,8 @@ public without sharing class RH_PDF_Invoice_Controller {
         for(RH_Invoice_Item__c cc:ListItem){
             HeaderInvoiceItemWrapDatas response = new HeaderInvoiceItemWrapDatas();
             response.RHAmount=cc?.RH_Amount__c;
-            response.RHProjectIdName=cc?.RH_ProjectId__r.Name;
+            // response.RHProjectIdName=cc?.RH_ProjectId__r.Name;
+            response.RHProjectIdName=cc?.RH_Title__c;
             response.RHStartDate=cc?.RH_StartDate__c;
             response.RHEndDate=cc?.RH_EndDate__c;
             response.RHHoliday=cc?.RH_Holiday__c;
