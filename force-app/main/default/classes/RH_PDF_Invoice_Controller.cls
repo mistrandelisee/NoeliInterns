@@ -31,7 +31,7 @@ public without sharing class RH_PDF_Invoice_Controller {
         this.getFooterSettingvalue =buildFooter(footer);
 
         
-         System.debug('RH_PDF_Invoice_Controller getFooterSettingvalue: '+getFooterSettingvalue);
+        //  System.debug('RH_PDF_Invoice_Controller getFooterSettingvalue: '+getFooterSettingvalue);
         //retrive invoice datas
         RH_Invoice__c inv = [SELECT id,RH_Account_Id__c,RH_InvoiceDate__c,RH_Po__c,RH_DueDate__c,Name,RH_Name__c,RH_InvoiceItem_Sum__c,(SELECT Id,RH_Amount__c,RH_Ressource__r.Name,Name,RH_ProjectId__r.Name,RH_StartDate__c,RH_EndDate__c,
         RH_Holiday__c,RH_Quantity__c,RH_Rate__c,RH_InvoiceId__c,RH_Currency_Symbol__c  FROM  RH_Invoices_Items__r) FROM RH_Invoice__c WHERE id =: recordId ];
