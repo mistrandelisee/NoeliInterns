@@ -66,7 +66,7 @@ public with sharing class RH_Invoice_Controller {
             String myUserId=UserInfo.getUserId();
             List<RH_Invoice__c> Invoices = invoiceQry.getInvoice(invoiceId);
             if (Invoices.isEmpty()) {
-                throw new RH_ControllerException('002','No Timsheet founded with this ID'+invoiceId);
+                throw new RH_ControllerException('002','No Invoice founded with this ID'+invoiceId);
             }
             RH_Invoice__c theInvoice=Invoices[0];
             String userId=theInvoice.OwnerId;
@@ -167,7 +167,8 @@ public with sharing class RH_Invoice_Controller {
             String filter='recordTypeId=\''+RH_Constans.RH_CONTACT_RT+'\'';
             mapReturn.put('Projects',Projects); 
             mapReturn.put('ressourceFilter',filter); 
-
+            mapReturn.put('Picklists',RH_Utility.getPickListOptions(new List<String> {'RH_description_fields__c'},'RH_Invoice_Item__c')); 
+            
             mapReturn.put('Ok',true); 
         } catch(Exception e) {
             System.debug(e.getMessage());
@@ -182,6 +183,8 @@ public with sharing class RH_Invoice_Controller {
         @AuraEnabled public String projectId;
         @AuraEnabled public String invoiceId;
         @AuraEnabled public String ressourceId;
+        @AuraEnabled public String subject;
+        @AuraEnabled public List<String> descriptionFields;
         @AuraEnabled public Decimal quantity ;
         @AuraEnabled public Decimal rate ;
         @AuraEnabled public String currencyCode ;
@@ -190,6 +193,7 @@ public with sharing class RH_Invoice_Controller {
         @AuraEnabled public Date startDate;
         @AuraEnabled public Date endDate;
         public RH_Invoice_Item__c getEntry() {
+            List<String> fields =(descriptionFields!= null) ? descriptionFields : new List<String>();
             return new RH_Invoice_Item__c(
                 RH_ProjectId__c=this.projectId,
                 RH_InvoiceId__c=this.invoiceId,
@@ -200,7 +204,9 @@ public with sharing class RH_Invoice_Controller {
                 RH_Holiday__c=this.holiday,
                 Id=this.Id,
                 RH_StartDate__c=this.startDate,
-                RH_EndDate__c=this.endDate
+                RH_EndDate__c=this.endDate,
+                RH_Subject__c=this.subject,
+                RH_description_fields__c=String.join(fields,';')
                 );
         }
         public Decimal calculateAmount(){

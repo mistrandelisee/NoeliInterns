@@ -168,6 +168,7 @@ public without sharing class RH_Users_controller {
             conctactUser.LastName= mapInputs.LastName;
             conctactUser.FirstName= mapInputs.FirstName;
             conctactUser.Email= mapInputs.Email;
+            conctactUser.Languages__c=mapInputs.Language;
             conctactUser.RH_Role__c= mapInputs.Role;
             conctactUser.RH_Started_Date__c = mapInputs.startDate;
             String grp=mapInputs.wGroup;
@@ -304,10 +305,12 @@ public without sharing class RH_Users_controller {
                 string userId= (String.isNotBlank(con.RH_User__c)? con.RH_User__c : mapContactToUser.get(con.Id));
                 mapObj.put('id', con.Id);
                 mapObj.put('RHUser', con.RH_User__c);
+                mapObj.put('Email', con.Email);
                 mapObj.put('RHRolec', con.RH_Role__c);
                 mapObj.put('accountName', con.Account.Name);
                 mapObj.put('FirstName', con.FirstName);
                 mapObj.put('Status', String.isBlank(con.RH_Status__c)?'':con.RH_Status__c.toLowerCase() );
+                mapObj.put('statusLabel', con.get('statusLabel') );
                 mapObj.put('LastName', con.LastName);
                 mapObj.put('UserId', userId);
                 listcon.add(mapObj);  
@@ -425,6 +428,7 @@ public without sharing class RH_Users_controller {
         @AuraEnabled public String Id{get;set;}
         @AuraEnabled public String LastName{get;set;}
         @AuraEnabled public String FirstName{get;set;}
+        @AuraEnabled public String Language{get;set;}
         @AuraEnabled public String Email{get;set;}
         @AuraEnabled public String Role{get;set;}
         @AuraEnabled public String wGroup{get;set;}

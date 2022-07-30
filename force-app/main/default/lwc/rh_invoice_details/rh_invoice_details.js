@@ -53,8 +53,9 @@ export default class Rh_invoice_details extends NavigationMixin(LightningElement
 
     @track columns = [
         { label: this.l.Name, fieldName: 'title',sortable:true, type: 'button',typeAttributes:{label:{fieldName:'title'},variant:'base'} },
-        { label: this.l.Project, fieldName: 'Project',sortable:true, type: 'text' },
-        { label: this.l.ressource, fieldName: 'Ressource',sortable:true, type: 'text',cellAttributes: { alignment: 'left' }, },
+        // { label: this.l.Project, fieldName: 'Project',sortable:true, type: 'text' },
+        // { label: this.l.ressource, fieldName: 'Ressource',sortable:true, type: 'text',cellAttributes: { alignment: 'left' }, },
+        { label: this.l.Description, fieldName: 'RH_Title__c',sortable:true, type: 'text',wrapText:true,cellAttributes: { alignment: 'left' }, },
         { label: this.l.Quantity, fieldName: 'RH_Quantity__c',sortable:true, type: 'number',cellAttributes: { alignment: 'left' }, },
         { label: this.l.Rate, fieldName: 'RH_Rate__c',sortable:true, type: 'currency',
                                 typeAttributes: { currencyCode: { fieldName: 'currencyCode' }, step: '0.001' },

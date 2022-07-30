@@ -232,21 +232,21 @@ export default class Rh_custom_lookup extends LightningElement {
     @api updateField(item){
         this.errorMessage='';
         console.log(`%%%%%%%%%%%% updateField `,{...item} );
-        this.objName=item.objName ;
-        this.searchPlaceholder=item.placeholder;
-        this.iconName=item.iconName;
-        this.newLabelPrefix=item.newLabel ;
-        this.fieldLabel=item.label;
-        this.fieldName=item.name  ;
-        this.objectLabel=item.objectLabel;
-        this.filter=item.filter;
-        this.selectedId=item.value;
-        this.selectedName=item.selectName;
-        this.isValueSelected=item.isSelected;
-        this.showAddNew=item.enableCreate;
-        this.readOnly=item.readOnly;
-        this.isRequired=item.required;
-        this.optionnal=item;
+        this.objName=item?.hasOwnProperty('objName') ? item.objName : this.objName ;
+        this.searchPlaceholder=item?.hasOwnProperty('placeholder') ? item.placeholder : this.searchPlaceholder;
+        this.iconName=item?.hasOwnProperty('iconName') ? item.iconName : this.iconName;
+        this.newLabelPrefix=item?.hasOwnProperty('newLabel') ? item.newLabel : this.newLabelPrefix ;
+        this.fieldLabel=item?.hasOwnProperty('label') ? item.label : this.fieldLabel;
+        this.fieldName=item?.hasOwnProperty('name') ? item.name : this.fieldName  ;
+        this.objectLabel=item?.hasOwnProperty('objectLabel') ? item.objectLabel : this.objectLabel;
+        this.filter=item?.hasOwnProperty('filter') ? item.filter : this.filter;
+        this.selectedId=item?.hasOwnProperty('value') ? item.value : this.selectedId;
+        this.selectedName=item?.hasOwnProperty('selectName') ? item.selectName : this.selectedName;
+        this.isValueSelected=item?.hasOwnProperty('isSelected') ? item.isSelected : this.isValueSelected;
+        this.showAddNew=item?.hasOwnProperty('enableCreate') ? item.enableCreate : this.showAddNew;
+        this.readOnly=item?.hasOwnProperty('readOnly') ? item.readOnly : this.readOnly;
+        this.isRequired=item?.hasOwnProperty('required') ? item.required : this.isRequired;
+        this.optionnal={...this.optionnal,...item}; 
         this.getRecords();
         return true;
     }

@@ -24,6 +24,7 @@
     
     --sds-c-card-heading-font-weight:800;
     --lwc-cardFontWeight:800;
+    --lwc-colorBackgroundToastSuccess:var(--secondaryColor,#9735e1);
 }
 .card-footer {
     padding: 10px;

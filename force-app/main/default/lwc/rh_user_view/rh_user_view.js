@@ -450,7 +450,7 @@ hasAction;
     buildDetailsActions(e){
         let Actions=[];
         Actions=Actions.concat(this.buildUserStatusActions(e?.RH_Status__c));
-        if ((this.constants.LWC_ACTIVE_CONTACT_STATUS?.toLowerCase() == e.Status?.toLowerCase())) {//
+        if ((this.constants.LWC_ACTIVE_CONTACT_STATUS?.toLowerCase() == e.RH_Status__c?.toLowerCase())) {//
             Actions=Actions.concat(this.buildUserRoleActions(e?.RH_Role__c));
             if (this.isUser) {
                 Actions.push(this.createAction("brand-outline",this.l.ChangePasswordTitle,RESETPWD,this.l.ChangePasswordTitle,this.icon.close,'slds-m-left_x-small'));
@@ -727,6 +727,11 @@ hasAction;
                 label:this.l.Email,
                 name:'Email',
                 value:profileinformation?.Email,
+            },
+            {
+                label:this.l.Language,
+                name:'Language',
+                value:profileinformation?.Languages__c
             },
            {
                 label:this.l.Role,

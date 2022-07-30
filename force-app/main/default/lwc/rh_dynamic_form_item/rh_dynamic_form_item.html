@@ -30,6 +30,7 @@
             max-length={item.maxlength}
             pattern={item.pattern}
             read-only={item.readOnly}
+            disabled={item.disabled}
             checked={item.checked}
             message-toggle-active={toggleActiveText}
             message-toggle-inactive={toggleInactiveText}
@@ -50,6 +51,7 @@
                 max-length={item.maxlength}
                 read-only={item.readOnly}
                 onchange={handleChanged} 
+                disabled={item.disabled}
              >
 
             </lightning-textarea>
@@ -66,6 +68,7 @@
                     onchange={handleChanged} 
                     read-only={item.readOnly}
                     required={item.required}
+                    disabled={item.disabled}
                     
             ></lightning-combobox>
         <!-- message-when-value-missing={item.valueMissing}  -->
@@ -160,6 +163,23 @@
                 province-options={getProvinceOptions}
                 onchange={handleChangeAddress} >
             </lightning-input-address>       
+        </template>
+        
+        <template if:true={isCheckboxGroup}>
+            <lightning-checkbox-group
+                    data-id={item.name}
+                    name={item.name}
+                    label={item.label}
+                    value={item.value}
+                    options={item.options}
+                    onchange={handleChanged} 
+                    disabled={item.readOnly}
+                    variant={item.variant}
+                    required={item.required}
+                    class={item.class}
+                    
+            ></lightning-checkbox-group>
+        <!-- message-when-value-missing={item.valueMissing}  -->
         </template>
     <!-- </lightning-layout-item> -->
 </template>

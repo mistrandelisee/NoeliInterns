@@ -265,6 +265,7 @@ const Street = 'Street';
 const Country = 'Country';
 const Province = 'Province';
 const PostalCode = 'Postal Code';
+const Language = 'Language';
 
 const labels = {
     Add,
@@ -274,6 +275,7 @@ const labels = {
     Street,
     Country,
     Province,
+    Language,
     PostalCode,
     Save,
     New,
@@ -541,6 +543,8 @@ const labels = {
     CivicoPlc,
     delete_confirm,
     DueDate:'Due Date',
+    descriptionFields:'Description Display Fields',
+    Subject:'Subject',
 };
 
 export { labels }

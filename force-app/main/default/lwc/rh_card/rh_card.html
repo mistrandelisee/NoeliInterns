@@ -8,9 +8,6 @@
                         <lightning-icon class="slds-m-right_medium ico-title" icon-name={iconeName} size="small"></lightning-icon>
                         <span data-name="title" onclick={goToLink} class="c-title">{title}</span>
                     </div>
-                    <div class="slds-float_right">
-                        <lightning-badge label="Approved" class="slds-theme_success"> </lightning-badge>
-                    </div>
                 </div>
             </div>
             <!-- <lightning-button-icon  icon-name="utility:down" variant="border-filled" alternative-text="Show More" slot="actions">
@@ -78,6 +75,13 @@
     
     
             <p slot="footer">
+                <!-- <div class="slds-float_right">
+                    <lightning-badge label="Approved" class="slds-theme_success"> </lightning-badge>
+                </div> -->
+                <template if:true={hasBadge}>
+                    <lightning-badge label={badge.label} class={badge.class} style={badge.style} data-name={badge.nane}> </lightning-badge>
+                </template>
+                
                 <lightning-icon class="slds-m-right_medium ico" icon-name="utility:chevronright" size="small" data-name="title" onclick={goToLink} ></lightning-icon>
             </p>
         </lightning-card>

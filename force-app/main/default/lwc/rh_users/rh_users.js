@@ -51,12 +51,13 @@ currUser={};
 
 keysFields={accountName:'ok'};
 keysLabels={
-    accountName:'Company', FirstName:'First Name',
-    RHRolec:'Role',
+    accountName:this.l.Company, FirstName: this.l.FirstName, 
+    RHRolec:this.l.Role,Email:this.l.Email,
 };
 fieldsToShow={
-    accountName:'ok', FirstName:'',
-    RHRolec:'ok',
+    FirstName:'',Email:'', RHRolec:'ok', 
+    accountName:'ok',
+   
 };
 filter={
     searchText:null,
@@ -207,7 +208,7 @@ hasAction;
                     item.keysFields=self.keysFields;
                     item.keysLabels=self.keysLabels;
                     item.fieldsToShow=self.fieldsToShow;
-
+                   
                     let Actions=[];
                     //add status actions
                     if (isAD) {
@@ -221,7 +222,8 @@ hasAction;
                     item.actions=Actions;
                     console.log(`item`);
                     console.log(item);
-
+                    const badge={name: 'badge', class:self.classStyle(e.Status),label: e.statusLabel}
+                    item.addons={badge};
                     if(isAD || (!isAD && (self.constants.LWC_ACTIVE_CONTACT_STATUS?.toLowerCase() == e.Status?.toLowerCase())))
                         self.allEmployees.push(item) ;
                 });
@@ -243,6 +245,22 @@ hasAction;
         .finally(() => {
             this.startSpinner(false);
         })
+    }
+    classStyle(className){
+
+        switch(className){
+            case 'active':
+                return "slds-float_left slds-theme_success";
+            case 'draft':
+                return "slds-float_left slds-theme_info";
+            case 'frozen':
+                return "slds-float_left slds-theme_shade";
+            case 'banned':
+                return "slds-float_left slds-theme_error";
+            default:
+                return "slds-float_left slds-theme_alt-inverse";
+        }
+
     }
     handleActionNew(event){
         const data=event.detail;

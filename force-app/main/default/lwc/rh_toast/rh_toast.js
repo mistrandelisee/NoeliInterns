@@ -28,7 +28,7 @@ export default class RH_toast extends LightningElement {
     }
 
     get getIconName() {
-        debugger
+        
         console.log('@@@RH_Icons' + RH_Icons);
         var icon = '';
         if (this.type)

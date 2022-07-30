@@ -17,7 +17,7 @@ lightning-input, lightning-combobox,lightning-textarea,lightning-input-address{
     font-weight: 700;
     --lwc-formLabelFontSize:0.8rem;
     --lwc-colorTextLabel:#272b2f;
-    --lwc-colorBorderInput: rebeccapurple;
+    --lwc-colorBorderInput:var(--secondaryColor,#9735e1);
 
     /* oogle */
     --lwc-brandAccessible: var(--secondaryColor);
@@ -42,6 +42,29 @@ lightning-combobox{
 }
 lightning-radio-group{
     --lwc-borderWidthThin: 1px;
+    --lwc-colorBorder: var(--secondaryColor,#9735e1);
+    --lwc-borderRadiusMedium: .95rem;
+}
+lightning-checkbox-group{
+    --lwc-brandAccessibleActive: #2A2E43;
+    --lwc-colorTextIconDefault: #2166f3;
+    --lwc-borderWidthThin: 1px;
+    --lwc-borderRadiusMedium: 5px;
+    --lwc-colorBackgroundInput: #fcfcff;
+    --lwc-colorTextLabel: #272b2f;
+    --lwc-spacingXSmall: 1rem;
+    /* required asteric color */
+    --lwc-colorTextError:  #FF0F64;
+
+    --lwc-colorBorderError:#2A2E43;
+    /* --lwc-colorBorderError:rgb(240, 93, 93); */
+    font-weight: 700;
+    --lwc-formLabelFontSize:0.8rem;
+    --lwc-colorTextLabel:#272b2f;
+    --lwc-colorBorderInput:var(--secondaryColor,#9735e1);
+
+    /* oogle */
+    --lwc-brandAccessible: var(--secondaryColor);
     --lwc-colorBorder: var(--secondaryColor,#9735e1);
     --lwc-borderRadiusMedium: .95rem;
 }

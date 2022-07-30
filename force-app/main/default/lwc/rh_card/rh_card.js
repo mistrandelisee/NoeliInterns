@@ -19,6 +19,8 @@ export default class Rh_card extends LightningElement {
 
     @api
     fieldsToShow
+    @api
+    addons;
     isRendered;
     column=1;
     outputFields=[{
@@ -27,6 +29,9 @@ export default class Rh_card extends LightningElement {
         name:'xxxx',
         value: 'xcvcbvv',
     }];
+    get badge(){
+        return this.addons?.badge || {}
+    }
     initFields(obj){
         this.outputFields=[];
         if (obj) {
@@ -74,7 +79,29 @@ export default class Rh_card extends LightningElement {
     get hasFieldsRows(){
         return this.outputFields?.length >0;
      }
-    get getFieldsRows(){
+    
+     get hasBadge(){
+        return this.badge?.name
+    }
+
+    get classStyle(){
+
+        switch(this.className){
+            case 'active':
+                return "slds-float_left slds-theme_success";
+            case 'draft':
+                return "slds-float_left slds-theme_info";
+            case 'frozen':
+                return "slds-float_left slds-theme_shade";
+            case 'banned':
+                return "slds-float_left slds-theme_error";
+            default:
+                return "slds-float_left slds-theme_alt-inverse";
+        }
+
+    }
+    
+     get getFieldsRows(){
         let outfields=[];
         let outrows=[];
         let i=1;

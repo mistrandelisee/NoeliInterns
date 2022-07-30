@@ -29,8 +29,11 @@ export default class Rh_dynamic_form_item extends LightningElement {
     get isAddress(){
         return this.item?.type=='address';
     }
+    get isCheckboxGroup(){
+        return this.item?.type=='checkbox-group';
+    }
     get isBase(){
-        return ! (this.isTextarea || this.picklist || this.isFile || this.isRadio || this.isLookup || this.isAddress);
+        return ! (this.isTextarea || this.picklist || this.isFile || this.isRadio || this.isLookup || this.isAddress || this.isCheckboxGroup);
     }
     get isDefault(){
         return !(this.isLookup);
@@ -226,7 +229,7 @@ export default class Rh_dynamic_form_item extends LightningElement {
         let key=this.item?.name;
         let lookupCmp=this.template.querySelector(`c-rh_custom_lookup_adv[data-id="${key}"]`);
         if (lookupCmp) {
-            return  lookupCmp.updateField(this.item);
+            return  lookupCmp.updateField(updates);
         }
         return false;
     }
