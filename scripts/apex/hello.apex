@@ -31,3 +31,10 @@ for( integer i = 0; i < 250; i++ ){
 }
 
 System.debug([SELECT id,name,createdDate FROM account order by createdDate desc limit 5]);
+
+List<RH_Invoice_Item__c> items = new List<RH_Invoice_Item__c>();
+for (RH_Invoice_Item__c item : [SELECT id FROM RH_Invoice_Item__c WHERE RH_description_fields__c= null]) {
+    item.RH_description_fields__c='RH_ProjectId__c';
+    items.add(item);
+}
+update items;
