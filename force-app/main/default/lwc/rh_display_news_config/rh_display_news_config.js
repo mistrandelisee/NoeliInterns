@@ -2,7 +2,7 @@ import { LightningElement,track,wire } from 'lwc';
 import { NavigationMixin } from 'lightning/navigation';
 import getOrgConfig from '@salesforce/apex/RH_News_controller.getOrgConfig';
 import setOrgConfig from '@salesforce/apex/RH_News_controller.setOrgConfig';
-import getAllNews from '@salesforce/apex/RH_News_controller.getAllNews';
+//import getAllNews from '@salesforce/apex/RH_News_controller.getAllNews';
 import getNewsDetails from '@salesforce/apex/RH_News_controller.getNewsDetails';
 import updateNewsVisibility from '@salesforce/apex/RH_News_controller.updateNewsVisibility';
 import updateNews from '@salesforce/apex/RH_News_controller.updateNews';
@@ -11,7 +11,7 @@ import filterNews from '@salesforce/apex/RH_News_controller.filterNews';
 import deleteNews from '@salesforce/apex/RH_News_controller.deleteNews';
 import getFileInfos from '@salesforce/apex/RH_FileUploader.getFileInfos';
 import checkRole from '@salesforce/apex/RH_Utility.checkRole';
-import getUserLanguage from '@salesforce/apex/RH_Users_controller.getUserLanguage';
+//import getUserLanguage from '@salesforce/apex/RH_Users_controller.getUserLanguage';
 
 import { CurrentPageReference } from 'lightning/navigation';
 import { registerListener, unregisterAllListeners,fireEvent } from 'c/pubsub';
@@ -528,63 +528,7 @@ export default class Rh_display_news_config extends NavigationMixin(LightningEle
             this.startSpinner(false);
             this.showToast(ERROR_VARIANT,ERROR_VARIANT, error.message);
         });
-/*
-        getAllNews()
-            .then(result => {
-                const self=this;
-                this.allNews = result.map(function (e){
-                    let item={...e};
-                    item.title=e.Name?.length>27? e.Name.slice(0, 27) +'...': e.Name ;
-                    item.icon="standard:news";
-                    item.class=e.IsActive__c?'banned card':'active card';
-                    item.id= e.Id;
-                    item.summaryTitle= e.Name?.length>27? e.Name.slice(0, 27) +'...': e.Name ;
-                    item.summaryDescription= e.Description__c?.length>27? e.Description__c.slice(0, 27) +'...': e.Description__c ;
-                    item.keysFields=self.keysFields;
-                    item.keysLabels=self.keysLabels;
-                    item.fieldsToShow=self.fieldsToShow;
-                    
-                    if(self.isBaseUser==false){
-                        let Actions=[
-                            {
-                                name:e.IsActive__c?'Disabled':'Enabled',
-                                label:e.IsActive__c? self.label.Disable : self.label.Activate,
-                                iconName: e.IsActive__c? 'utility:preview':'action:preview'
-                               // class
-                            },
-                            {
-                                name:'Delete',
-                                label: self.label.Delete,
-                                iconName: self.icon.Delete
-                               // class
-                            }
-    
-                        ];
 
-                        item.actions=Actions;
-                    }
-                   
-
-
-                    //add status actions
-                    //Actions=Actions.concat(self.buildUserStatusActions(e.Status));
-                    
-                    
-                    console.log(`item`);
-                    console.log(item);
-
-                    return item;
-                    
-                })
-                
-                this.setviewsList(this.allNews);
-                this.getConfig();
-            })
-            .catch(error => {
-                this.startSpinner(false);
-                this.showToast(ERROR_VARIANT,ERROR_VARIANT, error.message);
-                console.log('@@@@@@@@@  getAllNews: ' + error );
-            });*/
     }
 
 
@@ -618,7 +562,7 @@ export default class Rh_display_news_config extends NavigationMixin(LightningEle
             let item={...e};
             item.title=e.name?.length>27? e.name.slice(0, 27) +'...': e.name ;
             item.icon= self.icon.NewsStd;
-            item.class=e.isActive?'banned card':'active card';
+            item.class=e.isActive?'active card':'banned card';
             item.id= e.id;
             item.summaryTitle= e.name?.length>27? e.name.slice(0, 27) +'...': e.name ;
             item.summaryDescription= e.description?.length>27? e.description.slice(0, 27) +'...': e.description ;
@@ -644,6 +588,8 @@ export default class Rh_display_news_config extends NavigationMixin(LightningEle
                 item.actions=Actions;
             }
             
+            const badge={name: 'badge', class:self.classStyle(e.isActive?'active':'banned'),label: e.isActive?'active':'banned'}
+            item.addons={badge};
             console.log(`item`);
             console.log(item);
 
@@ -652,6 +598,18 @@ export default class Rh_display_news_config extends NavigationMixin(LightningEle
         })
         this.setviewsList(this.allNews);
         this.getConfig();
+    }
+
+    classStyle(className){
+
+        switch(className){
+            case 'active':
+                return "slds-float_left slds-theme_success";
+            case 'banned':
+                return "slds-float_left slds-theme_error";
+            default:
+                return "slds-float_left slds-theme_info";
+        }
     }
 
 

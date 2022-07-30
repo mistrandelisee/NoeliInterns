@@ -7,5 +7,1831 @@
         <shortDescription>rh_Translate</shortDescription>
         <value>Translate</value>
     </labels>
-    
+    <labels>
+        <fullName>rh_ADDAttachment</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_ADDAttachment</shortDescription>
+        <value>ADD Attachment</value>
+    </labels>
+    <labels>
+        <fullName>rh_About</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_About</shortDescription>
+        <value>About</value>
+    </labels>
+    <labels>
+        <fullName>rh_AboutMe</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_AboutMe</shortDescription>
+        <value>About Me</value>
+    </labels>
+    <labels>
+        <fullName>rh_AboutMePlc</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_AboutMePlc</shortDescription>
+        <value>Say Something About you!</value>
+    </labels>
+    <labels>
+        <fullName>rh_Accomplishments</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_Accomplishments</shortDescription>
+        <value>Accomplishments (#NB)</value>
+    </labels>
+    <labels>
+        <fullName>rh_Account</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_Account</shortDescription>
+        <value>Account</value>
+    </labels>
+    <labels>
+        <fullName>rh_AccountInfoTitle</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_AccountInfoTitle</shortDescription>
+        <value>Company Informations</value>
+    </labels>
+    <labels>
+        <fullName>rh_Activate</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_Activate</shortDescription>
+        <value>Activate</value>
+    </labels>
+    <labels>
+        <fullName>rh_Activity</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_Activity</shortDescription>
+        <value>Activity</value>
+    </labels>
+    <labels>
+        <fullName>rh_Add</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_Add</shortDescription>
+        <value>Add</value>
+    </labels>
+    <labels>
+        <fullName>rh_AddLines</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_AddLines</shortDescription>
+        <value>Add Items</value>
+    </labels>
+    <labels>
+        <fullName>rh_AddNewEvent</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_AddNewEvent</shortDescription>
+        <value>Add New Event</value>
+    </labels>
+    <labels>
+        <fullName>rh_AddNews</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_AddNews</shortDescription>
+        <value>&quot;Add News&quot;</value>
+    </labels>
+    <labels>
+        <fullName>rh_AddorRemoveProject</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_AddorRemoveProject</shortDescription>
+        <value>Add or Remove members to the Project</value>
+    </labels>
+    <labels>
+        <fullName>rh_AddressedCc</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_AddressedCc</shortDescription>
+        <value>Addressed Cc</value>
+    </labels>
+    <labels>
+        <fullName>rh_AddressedTo</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_AddressedTo</shortDescription>
+        <value>Addressed To</value>
+    </labels>
+    <labels>
+        <fullName>rh_AlreadyTranslate</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_AlreadyTranslate</shortDescription>
+        <value>Already translate  in:</value>
+    </labels>
+    <labels>
+        <fullName>rh_Approve</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_Approve</shortDescription>
+        <value>Approve</value>
+    </labels>
+    <labels>
+        <fullName>rh_Approved</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_Approved</shortDescription>
+        <value>Approved</value>
+    </labels>
+    <labels>
+        <fullName>rh_Approver</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_Approver</shortDescription>
+        <value>Approver</value>
+    </labels>
+    <labels>
+        <fullName>rh_AssignTo</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_AssignTo</shortDescription>
+        <value>Asign To</value>
+    </labels>
+    <labels>
+        <fullName>rh_AssignToPh</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_AssignToPh</shortDescription>
+        <value>Select member</value>
+    </labels>
+    <labels>
+        <fullName>rh_AvaibleMembers</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_AvaibleMembers</shortDescription>
+        <value>Avaible Members</value>
+    </labels>
+    <labels>
+        <fullName>rh_Back</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_Back</shortDescription>
+        <value>Back</value>
+    </labels>
+    <labels>
+        <fullName>rh_Birthday</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_Birthday</shortDescription>
+        <value>Birthday</value>
+    </labels>
+    <labels>
+        <fullName>rh_BirthdayPlc</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_BirthdayPlc</shortDescription>
+        <value>Enter Birthday</value>
+    </labels>
+    <labels>
+        <fullName>rh_Cancel</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_Cancel</shortDescription>
+        <value>Cancel</value>
+    </labels>
+    <labels>
+        <fullName>rh_Cap</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_Cap</shortDescription>
+        <value>Cap</value>
+    </labels>
+    <labels>
+        <fullName>rh_CapPlc</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_CapPlc</shortDescription>
+        <value>Cap Number</value>
+    </labels>
+    <labels>
+        <fullName>rh_Change</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_Change</shortDescription>
+        <value>Change</value>
+    </labels>
+    <labels>
+        <fullName>rh_ChangePassword</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_ChangePassword</shortDescription>
+        <value>Change Password</value>
+    </labels>
+    <labels>
+        <fullName>rh_ChangePasswordTitle</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_ChangePasswordTitle</shortDescription>
+        <value>Change Password</value>
+    </labels>
+    <labels>
+        <fullName>rh_City</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_City</shortDescription>
+        <value>City</value>
+    </labels>
+    <labels>
+        <fullName>rh_CityPlc</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_CityPlc</shortDescription>
+        <value>Enter Current City</value>
+    </labels>
+    <labels>
+        <fullName>rh_Civico</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_Civico</shortDescription>
+        <value>Civico</value>
+    </labels>
+    <labels>
+        <fullName>rh_CivicoPlc</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_CivicoPlc</shortDescription>
+        <value>Numero</value>
+    </labels>
+    <labels>
+        <fullName>rh_Clonerequest</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_Clonerequest</shortDescription>
+        <value>Clone request</value>
+    </labels>
+    <labels>
+        <fullName>rh_Close</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_Close</shortDescription>
+        <value>Close</value>
+    </labels>
+    <labels>
+        <fullName>rh_Come</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_Come</shortDescription>
+        <value>Submit by</value>
+    </labels>
+    <labels>
+        <fullName>rh_Company</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_Company</shortDescription>
+        <value>Company</value>
+    </labels>
+    <labels>
+        <fullName>rh_CompanyName</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_CompanyName</shortDescription>
+        <value>Name</value>
+    </labels>
+    <labels>
+        <fullName>rh_ComplainOn</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_ComplainOn</shortDescription>
+        <value>Complain On</value>
+    </labels>
+    <labels>
+        <fullName>rh_ConfigTitle</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_ConfigTitle</shortDescription>
+        <value>News configuration</value>
+    </labels>
+    <labels>
+        <fullName>rh_ContactName</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_ContactName</shortDescription>
+        <value>Contact Name</value>
+    </labels>
+    <labels>
+        <fullName>rh_Copyright</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_Copyright</shortDescription>
+        <value>© Copyright (#NB) - Noeli.com</value>
+    </labels>
+    <labels>
+        <fullName>rh_CreatedDate</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_CreatedDate</shortDescription>
+        <value>Created Date</value>
+    </labels>
+    <labels>
+        <fullName>rh_Createrequest</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_Createrequest</shortDescription>
+        <value>Create request</value>
+    </labels>
+    <labels>
+        <fullName>rh_Currency</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_Currency</shortDescription>
+        <value>Currency</value>
+    </labels>
+    <labels>
+        <fullName>rh_CurrentPassword</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_CurrentPassword</shortDescription>
+        <value>Current Password</value>
+    </labels>
+    <labels>
+        <fullName>rh_CurrentPasswordPlc</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_CurrentPasswordPlc</shortDescription>
+        <value>Enter Current Password</value>
+    </labels>
+    <labels>
+        <fullName>rh_Date</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_Date</shortDescription>
+        <value>Date</value>
+    </labels>
+    <labels>
+        <fullName>rh_DateLb</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_DateLb</shortDescription>
+        <value>Date</value>
+    </labels>
+    <labels>
+        <fullName>rh_DatePlc</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_DatePlc</shortDescription>
+        <value>Enter Your Date</value>
+    </labels>
+    <labels>
+        <fullName>rh_Delete</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_Delete</shortDescription>
+        <value>Delete</value>
+    </labels>
+    <labels>
+        <fullName>rh_DeleteFile</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_DeleteFile</shortDescription>
+        <value>Delete File</value>
+    </labels>
+    <labels>
+        <fullName>rh_DeleteNews_Confirm</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_DeleteNews_Confirm</shortDescription>
+        <value>Are you sure you want to delete this News?</value>
+    </labels>
+    <labels>
+        <fullName>rh_DeleteNews_Title</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_DeleteNews_Title</shortDescription>
+        <value>Confirm Deletion</value>
+    </labels>
+    <labels>
+        <fullName>rh_Deleterequest</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_Deleterequest</shortDescription>
+        <value>Delete request</value>
+    </labels>
+    <labels>
+        <fullName>rh_Description</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_Description</shortDescription>
+        <value>Description</value>
+    </labels>
+    <labels>
+        <fullName>rh_DescriptionPlc</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_DescriptionPlc</shortDescription>
+        <value>Enter Your Description</value>
+    </labels>
+    <labels>
+        <fullName>rh_Disable</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_Disable</shortDescription>
+        <value>Disable</value>
+    </labels>
+    <labels>
+        <fullName>rh_Download</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_Download</shortDescription>
+        <value>Download</value>
+    </labels>
+    <labels>
+        <fullName>rh_DownloadAttachment</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_DownloadAttachment</shortDescription>
+        <value>Download Attachment file</value>
+    </labels>
+    <labels>
+        <fullName>rh_Draft</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_Draft</shortDescription>
+        <value>Draft</value>
+    </labels>
+    <labels>
+        <fullName>rh_Duration_mins</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_Duration_mins</shortDescription>
+        <value>Duration (Minutes)</value>
+    </labels>
+    <labels>
+        <fullName>rh_Edit</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_Edit</shortDescription>
+        <value>Edit</value>
+    </labels>
+    <labels>
+        <fullName>rh_EditMembers</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_EditMembers</shortDescription>
+        <value>Edit Members</value>
+    </labels>
+    <labels>
+        <fullName>rh_Editrequest</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_Editrequest</shortDescription>
+        <value>Edit request</value>
+    </labels>
+    <labels>
+        <fullName>rh_Email</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_Email</shortDescription>
+        <value>Email Address</value>
+    </labels>
+    <labels>
+        <fullName>rh_EmailPlc</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_EmailPlc</shortDescription>
+        <value>Enter Email Address</value>
+    </labels>
+    <labels>
+        <fullName>rh_End</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_End</shortDescription>
+        <value>End</value>
+    </labels>
+    <labels>
+        <fullName>rh_EndDate</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_EndDate</shortDescription>
+        <value>End date</value>
+    </labels>
+    <labels>
+        <fullName>rh_EndDatePlc</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_EndDatePlc</shortDescription>
+        <value>Enter the End date</value>
+    </labels>
+    <labels>
+        <fullName>rh_English</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_English</shortDescription>
+        <value>English</value>
+    </labels>
+    <labels>
+        <fullName>rh_Entries</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_Entries</shortDescription>
+        <value>Entries</value>
+    </labels>
+    <labels>
+        <fullName>rh_ErrorId</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_ErrorId</shortDescription>
+        <value>Error about Id of userRole</value>
+    </labels>
+    <labels>
+        <fullName>rh_EvenApproved</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_EvenApproved</shortDescription>
+        <value>This event has been already approved !</value>
+    </labels>
+    <labels>
+        <fullName>rh_EvenDeletionS</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_EvenDeletionS</shortDescription>
+        <value>Event Delete Successfully!!</value>
+    </labels>
+    <labels>
+        <fullName>rh_EvenSendSuccess</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_EvenSendSuccess</shortDescription>
+        <value>Event Send Successfully !!</value>
+    </labels>
+    <labels>
+        <fullName>rh_EvenUpdateS</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_EvenUpdateS</shortDescription>
+        <value>Event Update Successfully !!</value>
+    </labels>
+    <labels>
+        <fullName>rh_EvenUpdateSS</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_EvenUpdateSS</shortDescription>
+        <value>Event Update Successfully and send to CEO !!</value>
+    </labels>
+    <labels>
+        <fullName>rh_EventA</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_EventA</shortDescription>
+        <value>This event has been already shared !</value>
+    </labels>
+    <labels>
+        <fullName>rh_EventDetails</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_EventDetails</shortDescription>
+        <value>Event Details</value>
+    </labels>
+    <labels>
+        <fullName>rh_EventSubS</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_EventSubS</shortDescription>
+        <value>Event Submitted Successfully</value>
+    </labels>
+    <labels>
+        <fullName>rh_ExportPDF</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_ExportPDF</shortDescription>
+        <value>Export PDF</value>
+    </labels>
+    <labels>
+        <fullName>rh_ExportXLS</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_ExportXLS</shortDescription>
+        <value>Export XLSX</value>
+    </labels>
+    <labels>
+        <fullName>rh_FileDeleteSuccessfully</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_FileDeleteSuccessfully</shortDescription>
+        <value>File Delete Successfully !!</value>
+    </labels>
+    <labels>
+        <fullName>rh_FileName</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_FileName</shortDescription>
+        <value>File Name</value>
+    </labels>
+    <labels>
+        <fullName>rh_FileUpdate</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_FileUpdate</shortDescription>
+        <value>The file has not been updated</value>
+    </labels>
+    <labels>
+        <fullName>rh_FilterAccomplishment</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_FilterAccomplishment</shortDescription>
+        <value>Filter Accomplishment</value>
+    </labels>
+    <labels>
+        <fullName>rh_FilterRequest</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_FilterRequest</shortDescription>
+        <value>Filter Request</value>
+    </labels>
+    <labels>
+        <fullName>rh_FilterTitle</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_FilterTitle</shortDescription>
+        <value>Filter the news</value>
+    </labels>
+    <labels>
+        <fullName>rh_FirstName</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_FirstName</shortDescription>
+        <value>First Name</value>
+    </labels>
+    <labels>
+        <fullName>rh_FirstNamePlc</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_FirstNamePlc</shortDescription>
+        <value>Enter First Name</value>
+    </labels>
+    <labels>
+        <fullName>rh_Freeze</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_Freeze</shortDescription>
+        <value>Freeze</value>
+    </labels>
+    <labels>
+        <fullName>rh_French</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_French</shortDescription>
+        <value>French</value>
+    </labels>
+    <labels>
+        <fullName>rh_From</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_From</shortDescription>
+        <value>From</value>
+    </labels>
+    <labels>
+        <fullName>rh_Group</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_Group</shortDescription>
+        <value>Group</value>
+    </labels>
+    <labels>
+        <fullName>rh_GroupeMember</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_GroupeMember</shortDescription>
+        <value>The Groupe Member are</value>
+    </labels>
+    <labels>
+        <fullName>rh_Industry</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_Industry</shortDescription>
+        <value>Industry</value>
+    </labels>
+    <labels>
+        <fullName>rh_InfoDate</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_InfoDate</shortDescription>
+        <value>Your end date cannot be less than start date !</value>
+    </labels>
+    <labels>
+        <fullName>rh_Interval</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_Interval</shortDescription>
+        <value>Set Interval</value>
+    </labels>
+    <labels>
+        <fullName>rh_IntervalPlc</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_IntervalPlc</shortDescription>
+        <value>Enter Interval</value>
+    </labels>
+    <labels>
+        <fullName>rh_InvalidField</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_InvalidField</shortDescription>
+        <value>The field Is not valid</value>
+    </labels>
+    <labels>
+        <fullName>rh_IsPublic</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_IsPublic</shortDescription>
+        <value>Is Public</value>
+    </labels>
+    <labels>
+        <fullName>rh_Italian</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_Italian</shortDescription>
+        <value>Italian</value>
+    </labels>
+    <labels>
+        <fullName>rh_LastName</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_LastName</shortDescription>
+        <value>Last Name</value>
+    </labels>
+    <labels>
+        <fullName>rh_LastNamePlc</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_LastNamePlc</shortDescription>
+        <value>Enter Last Name</value>
+    </labels>
+    <labels>
+        <fullName>rh_Leader</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_Leader</shortDescription>
+        <value>Leader Name</value>
+    </labels>
+    <labels>
+        <fullName>rh_Link</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_Link</shortDescription>
+        <value>Link</value>
+    </labels>
+    <labels>
+        <fullName>rh_ManageTask</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_ManageTask</shortDescription>
+        <value>Manage Task</value>
+    </labels>
+    <labels>
+        <fullName>rh_Manager</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_Manager</shortDescription>
+        <value>Manager</value>
+    </labels>
+    <labels>
+        <fullName>rh_Name</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_Name</shortDescription>
+        <value>Name</value>
+    </labels>
+    <labels>
+        <fullName>rh_NamePlc</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_NamePlc</shortDescription>
+        <value>Enter Name</value>
+    </labels>
+    <labels>
+        <fullName>rh_New</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_New</shortDescription>
+        <value>New</value>
+    </labels>
+    <labels>
+        <fullName>rh_NewPassword</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_NewPassword</shortDescription>
+        <value>New Password</value>
+    </labels>
+    <labels>
+        <fullName>rh_NewPasswordPlc</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_NewPasswordPlc</shortDescription>
+        <value>Enter New Password</value>
+    </labels>
+    <labels>
+        <fullName>rh_NewProject</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_NewProject</shortDescription>
+        <value>New Project</value>
+    </labels>
+    <labels>
+        <fullName>rh_NewsActivated</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_NewsActivated</shortDescription>
+        <value>the news has been successfully activated</value>
+    </labels>
+    <labels>
+        <fullName>rh_NewsDeactivated</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_NewsDeactivated</shortDescription>
+        <value>the news has been successfully deactivated</value>
+    </labels>
+    <labels>
+        <fullName>rh_NewsDelete</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_NewsDelete</shortDescription>
+        <value>the news has been successfully deleted</value>
+    </labels>
+    <labels>
+        <fullName>rh_Next</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_Next</shortDescription>
+        <value>Next</value>
+    </labels>
+    <labels>
+        <fullName>rh_Note</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_Note</shortDescription>
+        <value>Reason</value>
+    </labels>
+    <labels>
+        <fullName>rh_NotePlc</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_NotePlc</shortDescription>
+        <value>Insert a note</value>
+    </labels>
+    <labels>
+        <fullName>rh_Number</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_Number</shortDescription>
+        <value>Number</value>
+    </labels>
+    <labels>
+        <fullName>rh_NumberOfEmployees</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_NumberOfEmployees</shortDescription>
+        <value>Number Of Employees</value>
+    </labels>
+    <labels>
+        <fullName>rh_OrderBy</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_OrderBy</shortDescription>
+        <value>sort By</value>
+    </labels>
+    <labels>
+        <fullName>rh_OrderOn</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_OrderOn</shortDescription>
+        <value>As</value>
+    </labels>
+    <labels>
+        <fullName>rh_Owner</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_Owner</shortDescription>
+        <value>Owner</value>
+    </labels>
+    <labels>
+        <fullName>rh_PermissionDelete</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_PermissionDelete</shortDescription>
+        <value>Are you sure to want to delete it ?</value>
+    </labels>
+    <labels>
+        <fullName>rh_PermissionRejected</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_PermissionRejected</shortDescription>
+        <value>Are you sure to want to reject it ?</value>
+    </labels>
+    <labels>
+        <fullName>rh_Phone</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_Phone</shortDescription>
+        <value>Phone</value>
+    </labels>
+    <labels>
+        <fullName>rh_PhonePlc</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_PhonePlc</shortDescription>
+        <value>Enter Phone Number</value>
+    </labels>
+    <labels>
+        <fullName>rh_Priority</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_Priority</shortDescription>
+        <value>Priority</value>
+    </labels>
+    <labels>
+        <fullName>rh_Project</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_Project</shortDescription>
+        <value>Project</value>
+    </labels>
+    <labels>
+        <fullName>rh_ProjectDetails</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_ProjectDetails</shortDescription>
+        <value>Project Details</value>
+    </labels>
+    <labels>
+        <fullName>rh_ProjectMembers</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_ProjectMembers</shortDescription>
+        <value>Project Members</value>
+    </labels>
+    <labels>
+        <fullName>rh_PromoteBaseUser</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_PromoteBaseUser</shortDescription>
+        <value>Mark As Team Leader</value>
+    </labels>
+    <labels>
+        <fullName>rh_Quantity</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_Quantity</shortDescription>
+        <value>Quantity</value>
+    </labels>
+    <labels>
+        <fullName>rh_Rate</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_Rate</shortDescription>
+        <value>Rate</value>
+    </labels>
+    <labels>
+        <fullName>rh_Reject</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_Reject</shortDescription>
+        <value>Reject</value>
+    </labels>
+    <labels>
+        <fullName>rh_RejectFail</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_RejectFail</shortDescription>
+        <value>You cannot rejected an event already approved</value>
+    </labels>
+    <labels>
+        <fullName>rh_RepeatPassword</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_RepeatPassword</shortDescription>
+        <value>Repeat Password</value>
+    </labels>
+    <labels>
+        <fullName>rh_RepeatPasswordPlc</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_RepeatPasswordPlc</shortDescription>
+        <value>Enter Repeat Password</value>
+    </labels>
+    <labels>
+        <fullName>rh_RequestTypeName</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_RequestTypeName</shortDescription>
+        <value>Request Type</value>
+    </labels>
+    <labels>
+        <fullName>rh_Reset</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_Reset</shortDescription>
+        <value>Reset</value>
+    </labels>
+    <labels>
+        <fullName>rh_ResetPassword</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_ResetPassword</shortDescription>
+        <value>Reset Password</value>
+    </labels>
+    <labels>
+        <fullName>rh_RightAccess</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_RightAccess</shortDescription>
+        <value>You no longer have the right to modify the event !</value>
+    </labels>
+    <labels>
+        <fullName>rh_RightDeletion</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_RightDeletion</shortDescription>
+        <value>You don\ t have right to deletion !!</value>
+    </labels>
+    <labels>
+        <fullName>rh_Role</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_Role</shortDescription>
+        <value>Role</value>
+    </labels>
+    <labels>
+        <fullName>rh_RolePlc</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_RolePlc</shortDescription>
+        <value>Select Role</value>
+    </labels>
+    <labels>
+        <fullName>rh_Save</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_Save</shortDescription>
+        <value>Save</value>
+    </labels>
+    <labels>
+        <fullName>rh_SaveAndActive</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_SaveAndActive</shortDescription>
+        <value>Save And Active</value>
+    </labels>
+    <labels>
+        <fullName>rh_SaveAndSend</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_SaveAndSend</shortDescription>
+        <value>Save And Send</value>
+    </labels>
+    <labels>
+        <fullName>rh_SaveConfiguration</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_SaveConfiguration</shortDescription>
+        <value>Your configuration has been successfully saved</value>
+    </labels>
+    <labels>
+        <fullName>rh_SaveNew</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_SaveNew</shortDescription>
+        <value>Save &amp; New</value>
+    </labels>
+    <labels>
+        <fullName>rh_SaveandSubmited</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_SaveandSubmited</shortDescription>
+        <value>Save and Submit</value>
+    </labels>
+    <labels>
+        <fullName>rh_SelectLang</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_SelectLang</shortDescription>
+        <value>Select your language</value>
+    </labels>
+    <labels>
+        <fullName>rh_SelectedMembers</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_SelectedMembers</shortDescription>
+        <value>Selected Members</value>
+    </labels>
+    <labels>
+        <fullName>rh_Send</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_Send</shortDescription>
+        <value>Send</value>
+    </labels>
+    <labels>
+        <fullName>rh_SendEvent</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_SendEvent</shortDescription>
+        <value>You should sent event before delete</value>
+    </labels>
+    <labels>
+        <fullName>rh_Sendrequest</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_Sendrequest</shortDescription>
+        <value>Send request</value>
+    </labels>
+    <labels>
+        <fullName>rh_Start</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_Start</shortDescription>
+        <value>Start</value>
+    </labels>
+    <labels>
+        <fullName>rh_StartDate</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_StartDate</shortDescription>
+        <value>Start date</value>
+    </labels>
+    <labels>
+        <fullName>rh_StartDatePlc</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_StartDatePlc</shortDescription>
+        <value>Enter the Start date</value>
+    </labels>
+    <labels>
+        <fullName>rh_Status</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_Status</shortDescription>
+        <value>Status</value>
+    </labels>
+    <labels>
+        <fullName>rh_StatusPlc</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_StatusPlc</shortDescription>
+        <value>Select one status</value>
+    </labels>
+    <labels>
+        <fullName>rh_Submit</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_Submit</shortDescription>
+        <value>Submit</value>
+    </labels>
+    <labels>
+        <fullName>rh_Submited</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_Submited</shortDescription>
+        <value>Submited</value>
+    </labels>
+    <labels>
+        <fullName>rh_Submiter</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_Submiter</shortDescription>
+        <value>Submit By</value>
+    </labels>
+    <labels>
+        <fullName>rh_SuccessEven</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_SuccessEven</shortDescription>
+        <value>Event Add Successfully but Not send to CEO!!</value>
+    </labels>
+    <labels>
+        <fullName>rh_SucessEvenS</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_SucessEvenS</shortDescription>
+        <value>Event Add Successfully And send to CEO !!</value>
+    </labels>
+    <labels>
+        <fullName>rh_Supervisor</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_Supervisor</shortDescription>
+        <value>Supervisor</value>
+    </labels>
+    <labels>
+        <fullName>rh_Task</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_Task</shortDescription>
+        <value>Add Task</value>
+    </labels>
+    <labels>
+        <fullName>rh_TaskDescr</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_TaskDescr</shortDescription>
+        <value>Enter your Task Description</value>
+    </labels>
+    <labels>
+        <fullName>rh_TaskList</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_TaskList</shortDescription>
+        <value>Task</value>
+    </labels>
+    <labels>
+        <fullName>rh_TaskPh</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_TaskPh</shortDescription>
+        <value>Enter your Task Name</value>
+    </labels>
+    <labels>
+        <fullName>rh_Title</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_Title</shortDescription>
+        <value>Title</value>
+    </labels>
+    <labels>
+        <fullName>rh_TitlePlc</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_TitlePlc</shortDescription>
+        <value>Enter Your Title</value>
+    </labels>
+    <labels>
+        <fullName>rh_To</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_To</shortDescription>
+        <value>To</value>
+    </labels>
+    <labels>
+        <fullName>rh_ToastEvent1</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_ToastEvent1</shortDescription>
+        <value>Sorry you no longer have right deleted</value>
+    </labels>
+    <labels>
+        <fullName>rh_ToastInfoEvent2</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_ToastInfoEvent2</shortDescription>
+        <value>Your end date cannot be less than start date !</value>
+    </labels>
+    <labels>
+        <fullName>rh_Update</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_Update</shortDescription>
+        <value>Update</value>
+    </labels>
+    <labels>
+        <fullName>rh_UpdateAndSend</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_UpdateAndSend</shortDescription>
+        <value>Update And Send</value>
+    </labels>
+    <labels>
+        <fullName>rh_UpdateEvent</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_UpdateEvent</shortDescription>
+        <value>Update Event</value>
+    </labels>
+    <labels>
+        <fullName>rh_UpdateNews</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_UpdateNews</shortDescription>
+        <value>the news has been successfully Update</value>
+    </labels>
+    <labels>
+        <fullName>rh_UpdateNewsError</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_UpdateNewsError</shortDescription>
+        <value>The record has not been updated</value>
+    </labels>
+    <labels>
+        <fullName>rh_UploadFile</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_UploadFile</shortDescription>
+        <value>Upload File</value>
+    </labels>
+    <labels>
+        <fullName>rh_UserProfileTitle</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_UserProfileTitle</shortDescription>
+        <value>User Informations</value>
+    </labels>
+    <labels>
+        <fullName>rh_Username</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_Username</shortDescription>
+        <value>Username</value>
+    </labels>
+    <labels>
+        <fullName>rh_UsernamePlc</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_UsernamePlc</shortDescription>
+        <value>Enter Username</value>
+    </labels>
+    <labels>
+        <fullName>rh_Visibility</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_Visibility</shortDescription>
+        <value>Public ?</value>
+    </labels>
+    <labels>
+        <fullName>rh_Website</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_Website</shortDescription>
+        <value>Website</value>
+    </labels>
+    <labels>
+        <fullName>rh_YearStarted</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_YearStarted</shortDescription>
+        <value>Year Started</value>
+    </labels>
+    <labels>
+        <fullName>rh_action_confirm</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_action_confirm</shortDescription>
+        <value>Action Confirmation</value>
+    </labels>
+    <labels>
+        <fullName>rh_addfield</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_addfield</shortDescription>
+        <value>Field Adjusted</value>
+    </labels>
+    <labels>
+        <fullName>rh_amount</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_amount</shortDescription>
+        <value>Amount</value>
+    </labels>
+    <labels>
+        <fullName>rh_approvalTitle</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_approvalTitle</shortDescription>
+        <value>APPROVAL ACTION</value>
+    </labels>
+    <labels>
+        <fullName>rh_create_inv_item</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_create_inv_item</shortDescription>
+        <value>Create Invoice Item</value>
+    </labels>
+    <labels>
+        <fullName>rh_create_item</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_create_item</shortDescription>
+        <value>Create Line</value>
+    </labels>
+    <labels>
+        <fullName>rh_delete_confirm</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_delete_confirm</shortDescription>
+        <value>Are you sure you want to delete this Group?</value>
+    </labels>
+    <labels>
+        <fullName>rh_delete_invoiceItem_confirm</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_delete_invoiceItem_confirm</shortDescription>
+        <value>Are you sure you want to delete this invoice Items</value>
+    </labels>
+    <labels>
+        <fullName>rh_delete_invoice_confirm</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_delete_invoice_confirm</shortDescription>
+        <value>Are you sure you want to delete this invoice</value>
+    </labels>
+    <labels>
+        <fullName>rh_delete_sheet_confirm</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_delete_sheet_confirm</shortDescription>
+        <value>Are you sure you want to delete this sheet?</value>
+    </labels>
+    <labels>
+        <fullName>rh_delete_sheetitem_confirm</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_delete_sheetitem_confirm</shortDescription>
+        <value>Are you sure you want to delete this sheet entry?</value>
+    </labels>
+    <labels>
+        <fullName>rh_disable_confirm</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_disable_confirm</shortDescription>
+        <value>Are you sure you want to disable this User?</value>
+    </labels>
+    <labels>
+        <fullName>rh_edit_inv_item</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_edit_inv_item</shortDescription>
+        <value>Edit Invoice Item</value>
+    </labels>
+    <labels>
+        <fullName>rh_employee</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_employee</shortDescription>
+        <value>Employee</value>
+    </labels>
+    <labels>
+        <fullName>rh_employeePc</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_employeePc</shortDescription>
+        <value>Select an Employee</value>
+    </labels>
+    <labels>
+        <fullName>rh_endTime</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_endTime</shortDescription>
+        <value>End Time</value>
+    </labels>
+    <labels>
+        <fullName>rh_errorOp</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_errorOp</shortDescription>
+        <value>Something goes wrong</value>
+    </labels>
+    <labels>
+        <fullName>rh_invoice_to</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_invoice_to</shortDescription>
+        <value>Invoice To&quot;</value>
+    </labels>
+    <labels>
+        <fullName>rh_invoice_toPlc</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_invoice_toPlc</shortDescription>
+        <value>Search client&quot;</value>
+    </labels>
+    <labels>
+        <fullName>rh_item_deatis</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_item_deatis</shortDescription>
+        <value>Line details</value>
+    </labels>
+    <labels>
+        <fullName>rh_label</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_label</shortDescription>
+        <value>Field Label</value>
+    </labels>
+    <labels>
+        <fullName>rh_leadedGroups</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_leadedGroups</shortDescription>
+        <value>Leaded Groups (#NB)</value>
+    </labels>
+    <labels>
+        <fullName>rh_leadedProjects</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_leadedProjects</shortDescription>
+        <value>Leaded Projects (#NB)</value>
+    </labels>
+    <labels>
+        <fullName>rh_moreInfo</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_moreInfo</shortDescription>
+        <value>More Informations</value>
+    </labels>
+    <labels>
+        <fullName>rh_myleadedGroups</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_myleadedGroups</shortDescription>
+        <value>My Leaded Groups (#NB)</value>
+    </labels>
+    <labels>
+        <fullName>rh_myleadedProjects</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_myleadedProjects</shortDescription>
+        <value>My Leaded Projects (#NB)</value>
+    </labels>
+    <labels>
+        <fullName>rh_myprojects</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_myprojects</shortDescription>
+        <value>My Projects (#NB)</value>
+    </labels>
+    <labels>
+        <fullName>rh_mytimesheets</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_mytimesheets</shortDescription>
+        <value>My Timesheets (#NB)</value>
+    </labels>
+    <labels>
+        <fullName>rh_new_account</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_new_account</shortDescription>
+        <value>New Client Account</value>
+    </labels>
+    <labels>
+        <fullName>rh_new_invoice</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_new_invoice</shortDescription>
+        <value>New Invoice</value>
+    </labels>
+    <labels>
+        <fullName>rh_new_ressource</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_new_ressource</shortDescription>
+        <value>New Ressource</value>
+    </labels>
+    <labels>
+        <fullName>rh_noTimesheet</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_noTimesheet</shortDescription>
+        <value>No timesheet founded</value>
+    </labels>
+    <labels>
+        <fullName>rh_noTimesheetItems</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_noTimesheetItems</shortDescription>
+        <value>No Timesheet Items found for this timesheet. Use the Add times Action to add items</value>
+    </labels>
+    <labels>
+        <fullName>rh_noinvoiceItems</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_noinvoiceItems</shortDescription>
+        <value>No Invoice Items found for this Invoice. Use the Add times Action to add items</value>
+    </labels>
+    <labels>
+        <fullName>rh_ok_confirm</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_ok_confirm</shortDescription>
+        <value>Yes I m sure</value>
+    </labels>
+    <labels>
+        <fullName>rh_po</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_po</shortDescription>
+        <value>Po</value>
+    </labels>
+    <labels>
+        <fullName>rh_projects</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_projects</shortDescription>
+        <value>Projects (#NB)</value>
+    </labels>
+    <labels>
+        <fullName>rh_recordNotFounded</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_recordNotFounded</shortDescription>
+        <value>record Not Found</value>
+    </labels>
+    <labels>
+        <fullName>rh_reset_confirm</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_reset_confirm</shortDescription>
+        <value>Are you sure you want to reset this user Password?</value>
+    </labels>
+    <labels>
+        <fullName>rh_ressource</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_ressource</shortDescription>
+        <value>Ressource</value>
+    </labels>
+    <labels>
+        <fullName>rh_ressourcePlc</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_ressourcePlc</shortDescription>
+        <value>Select a Ressource</value>
+    </labels>
+    <labels>
+        <fullName>rh_rmvfield</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_rmvfield</shortDescription>
+        <value>Field removed</value>
+    </labels>
+    <labels>
+        <fullName>rh_sdi</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_sdi</shortDescription>
+        <value>SDI</value>
+    </labels>
+    <labels>
+        <fullName>rh_sdiPlc</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_sdiPlc</shortDescription>
+        <value>sdi</value>
+    </labels>
+    <labels>
+        <fullName>rh_selectPlc</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_selectPlc</shortDescription>
+        <value>Select an option</value>
+    </labels>
+    <labels>
+        <fullName>rh_showDetails</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_showDetails</shortDescription>
+        <value>Show details</value>
+    </labels>
+    <labels>
+        <fullName>rh_startTime</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_startTime</shortDescription>
+        <value>Start Time</value>
+    </labels>
+    <labels>
+        <fullName>rh_succesDelete</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_succesDelete</shortDescription>
+        <value>record Deleted succesfully</value>
+    </labels>
+    <labels>
+        <fullName>rh_successOp</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_successOp</shortDescription>
+        <value>Succes operation</value>
+    </labels>
+    <labels>
+        <fullName>rh_test_Language</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_test_Language</shortDescription>
+        <value>English</value>
+    </labels>
+    <labels>
+        <fullName>rh_timesheetHeaderTitle</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_timesheetHeaderTitle</shortDescription>
+        <value>timesheet Header Title</value>
+    </labels>
+    <labels>
+        <fullName>rh_timesheetItemsHeaderTitle</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_timesheetItemsHeaderTitle</shortDescription>
+        <value>timesheet Items Header Title</value>
+    </labels>
+    <labels>
+        <fullName>rh_timesheets</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_timesheets</shortDescription>
+        <value>Timesheets (#NB)</value>
+    </labels>
+    <labels>
+        <fullName>rh_total_dur_h</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_total_dur_h</shortDescription>
+        <value>Total Duration In Hours&quot;</value>
+    </labels>
+    <labels>
+        <fullName>rh_total_dur_mins</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_total_dur_mins</shortDescription>
+        <value>Total Duration In Minutes&quot;</value>
+    </labels>
+    <labels>
+        <fullName>rh_total_free_dur_h</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_total_free_dur_h</shortDescription>
+        <value>Total Free Duration In Hours&quot;</value>
+    </labels>
+    <labels>
+        <fullName>rh_total_free_dur_mins</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_total_free_dur_mins</shortDescription>
+        <value>Total Free Duration In Minutes&quot;</value>
+    </labels>
+    <labels>
+        <fullName>rh_total_work_dur_h</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_total_work_dur_h</shortDescription>
+        <value>Total Working Duration In Hours&quot;</value>
+    </labels>
+    <labels>
+        <fullName>rh_total_work_dur_mins</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_total_work_dur_mins</shortDescription>
+        <value>Total Working Duration In Minutes&quot;</value>
+    </labels>
+    <labels>
+        <fullName>rh_userEditHlp</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_userEditHlp</shortDescription>
+        <value>Edit user details</value>
+    </labels>
+    <labels>
+        <fullName>rh_userEditMoreHlp</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_userEditMoreHlp</shortDescription>
+        <value>Edit additionnal information about you  check each time you edit an information. then save all...</value>
+    </labels>
+    <labels>
+        <fullName>rh_userInfoHlp</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_userInfoHlp</shortDescription>
+        <value>View user details</value>
+    </labels>
+    <labels>
+        <fullName>rh_userMoreInfoHlp</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_userMoreInfoHlp</shortDescription>
+        <value>More details</value>
+    </labels>
+    <labels>
+        <fullName>rh_value</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_value</shortDescription>
+        <value>Field Value</value>
+    </labels>
+    <labels>
+        <fullName>rh_warn_period_confict</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_warn_period_confict</shortDescription>
+        <value>Start date must before end date</value>
+    </labels>
+    <labels>
+        <fullName>rh_warn_weekend</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_warn_weekend</shortDescription>
+        <value>Please Select a weekday !!!</value>
+    </labels>
+    <labels>
+        <fullName>rh_warningOp</fullName>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh_warningOp</shortDescription>
+        <value>Warning</value>
+    </labels>
 </CustomLabels>

@@ -23,6 +23,10 @@
                     </c-rh_display_fields>
 
                 </template>
+             
+                    <!-- <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner> -->
+                    <c-rh_spinner></c-rh_spinner>
+  
                 <template if:true={statusEditGroup}>
                     <c-rh_group_create
                     new-group='Edit group'
@@ -35,7 +39,7 @@
                     >
                     </c-rh_group_create>
                 </template>
-
+            
             </div>
         </lightning-layout-item>
         <lightning-layout-item size="12" padding="around-smallx" small-device-size="12" medium-device-size="12" large-device-size="12">

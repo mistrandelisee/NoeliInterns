@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>RH_Currency_Symbol__c</fullName>
+    <externalId>false</externalId>
+    <formula>CASE(RH_InvoiceId__r.RH_Currency_Code__c,
+&quot;XAF&quot;, &quot;FCFA&quot;,
+&quot;EUR&quot;, &quot;€&quot;,
+&quot;USD&quot;, &quot;US$&quot;,
+&quot;?&quot;)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>RH_Currency_Symbol</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

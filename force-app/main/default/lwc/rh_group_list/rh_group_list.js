@@ -15,6 +15,7 @@ export default class Rh_group_list extends LightningElement {
       Name:'ok', leader:'',
       RH_Description__c:'ok',
     };
+
  //   desc = this.stringLenght(item.RH_Description__c, 20);
     connectedCallback(){ 
         
@@ -39,7 +40,13 @@ export default class Rh_group_list extends LightningElement {
               item.keysFields=self.keysFields;
               item.keysLabels=self.keysLabels;
               item.fieldsToShow=self.fieldsToShow;
-
+              
+              const badge={
+                name: 'badge',
+                label: e.RH_Status__c,
+                class: self.classStyle(e.RH_Status__c),
+              }
+              item.addons = {badge: badge}
 
               let Actions=[];
               if((e.RH_Status__c==='Desactived')||(e.RH_Status__c==='Draft')){
@@ -64,7 +71,7 @@ export default class Rh_group_list extends LightningElement {
               }
           
               item.actions=Actions;
-              return item;
+              return item; 
                });
                this.setviewsList(this.listeGroup)
             })
@@ -122,5 +129,22 @@ export default class Rh_group_list extends LightningElement {
               return str;
           } 
         }
+
+        classStyle(className){
+
+          switch(className){
+              case 'Activated':
+                  return "slds-float_left slds-theme_success";
+              case 'Draft':
+                  return "slds-float_left slds-theme_info";
+              case 'Desactived':
+                  return "slds-float_left slds-theme_shade";
+              case 'Closed':
+                  return "slds-float_left slds-theme_error";
+              default:
+                  return "slds-float_left slds-theme_alt-inverse";
+          }
+      
+      }
 
 }

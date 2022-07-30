@@ -3,7 +3,7 @@ import { NavigationMixin } from 'lightning/navigation';
 import getActiveNews from '@salesforce/apex/RH_News_controller.getActiveNews';
 import getOrgConfig from '@salesforce/apex/RH_News_controller.getOrgConfig';
 import CommunityBackground1jpg from '@salesforce/contentAssetUrl/CommunityBackground1jpg';
-import getUserLanguage from '@salesforce/apex/RH_Users_controller.getUserLanguage';
+//import getUserLanguage from '@salesforce/apex/RH_Users_controller.getUserLanguage';
 
 
 
@@ -28,11 +28,6 @@ export default class Rh_display_news extends NavigationMixin(LightningElement) {
        window.clearInterval(this.interval);
     }
 
-    
-
-
-
-    
     getNews(){
         getActiveNews()
             .then(result => {

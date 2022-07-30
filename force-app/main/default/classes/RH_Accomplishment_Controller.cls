@@ -90,8 +90,8 @@ public without sharing class RH_Accomplishment_Controller {
     }
 
     @AuraEnabled
-    public static List<RH_Accomplishment__c> filterAccomplishment(String title, String description, String status){
-        return accomQry.filterAccomplishment(title, description, status);
+    public static List<RH_Accomplishment__c> filterAccomplishment(String title, String status){
+        return accomQry.filterAccomplishment(title, status);
     }
 
     public class Accomplishmentdetailswrapper {

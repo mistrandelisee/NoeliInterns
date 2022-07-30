@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RecordType xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Explanation</fullName>
+    <active>true</active>
+    <label>Explanation</label>
+    <picklistValues>
+        <picklist>Rh_Status__c</picklist>
+        <values>
+            <fullName>Approved</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Draft</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Rejected</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Responded</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Submited</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+</RecordType>

@@ -15,10 +15,6 @@ public without sharing class RH_Request_controller {
          return requestQry.getAllMyRequestByYear(year,contactId);        
      }
      /*end*/
-    // public static List<RH_Request__c> getAllMyRequestByYear(Integer year) {
-	// 	return requestQry.getAllMyRequestByYear(year);        
-    // }
-
 
     
     @AuraEnabled
@@ -27,11 +23,19 @@ public without sharing class RH_Request_controller {
     }
 
     @AuraEnabled
-    public static List<RH_Request__c> getRequestToManage() {
-        String userName = UserInfo.getName();
-        return [SELECT id,Name,RH_Description__c,Rh_Status__c,RH_Note__c,CreatedBy.Name,RH_Addressed_Cc__c, RH_Addressed_To__r.Name,RecordType.Name ,CreatedDate,RH_RequestTypeName__c 
-                        FROM RH_Request__c 
-                        WHERE (RH_Addressed_To__r.Name =: userName or RH_Addressed_Cc__c =: userName) and Rh_Status__c != 'Draft' ORDER BY CreatedDate desc];
+    public static RH_Request__c getRequestByParent(String requestId){
+        return requestQry.getRequestByParent(requestId);
+    }
+
+    @AuraEnabled
+    public static List<RH_Request__c> getRequestToManage(){
+        List<User> currentUser = userQry.getUserById(UserInfo.getUserId());
+        List<RH_AdressedCC__c> adccs = requestQry.getAdressByContact(currentUser[0].RH_ContactId__c);
+        List<String> requestIds = new List<String>();
+        for(RH_AdressedCC__c add : adccs){
+            requestIds.add(add.RH_Request__c);
+        }
+        return requestQry.getRequestToManage(currentUser[0].RH_ContactId__c, requestIds);
     }
 
     @AuraEnabled(cacheable=true)
@@ -42,9 +46,11 @@ public without sharing class RH_Request_controller {
         return mapContacts;
     }
 
-    @AuraEnabled(cacheable=true)
-    public static List<Contact> getAdressedCCByListId(List<Id> ids) {
-        return [SELECT id, Name FROM Contact WHERE Id IN :ids];
+    @AuraEnabled
+    public static Boolean checkAdressedTo(String requestId){
+        RH_Request__c request = requestQry.retreiveRequest(requestId);
+        List<User> currentUser = userQry.getUserById(UserInfo.getUserId());
+        return currentUser[0].RH_ContactId__c == request.RH_Addressed_To__c ? true : false;
     }
 
     @AuraEnabled
@@ -57,6 +63,15 @@ public without sharing class RH_Request_controller {
         return requestQry.getRecordType();
     }
 
+    @AuraEnabled
+    public static List<RecordType> getAllRecordType(){
+        return requestQry.getAllRecordType();
+    }
+
+    @AuraEnabled
+    public static RecordType getExplanationType(){
+        return requestQry.getExplanationType();
+    }
 
     @AuraEnabled
     public static Map<String,Object> newRequest(String Requestjson){
@@ -70,25 +85,88 @@ public without sharing class RH_Request_controller {
             mapReturn.put('RequestUser',RequestUser);
             RequestUser.Name = Schema.SObjectType.RH_Request__c.getRecordTypeInfosById().get(RequestUser.RecordTypeId).getName().substring(0,3).toUpperCase() + Datetime.now().year() + Datetime.now().day() + Datetime.now().minute();
             System.debug('@@@@Name' + RequestUser);
-            if (String.isNotBlank(RequestUser.id)) {
-                update RequestUser;
-                
+            if (String.isNotBlank(RequestUser.Id)) {
+                update RequestUser;   
+                if(String.isNotBlank(Requestinfo.ACC)){
+                    List<RH_AdressedCC__c> addCcs = requestQry.getAdressByRequest(RequestUser.Id);
+                    List<String> contactIds = Requestinfo.ACC.split(',');
+                    if(addCcs.size() > 0){
+                        List<RH_AdressedCC__c> addccInsert = new List<RH_AdressedCC__c>();
+                        for(String conId : contactIds){  
+                            Boolean bool = false;
+                            for(RH_AdressedCC__c add : addCcs){
+                                if(add.RH_Contact__c == conId){
+                                    bool = true;
+                                }
+                            }
+                            if(!bool){
+                                addccInsert.add(new RH_AdressedCC__c(
+                                    RH_Contact__c = conId,
+                                    RH_Request__c = RequestUser.Id
+                                ));
+                            }
+                        }
+                        insert addccInsert;
+                        List<RH_AdressedCC__c> addccDelete = new List<RH_AdressedCC__c>();
+                        for(RH_AdressedCC__c add : addCcs){
+                            Boolean bool = false;
+                            for(String conId : contactIds){
+                               if(add.RH_Contact__c == conId){
+                                    bool = true;
+                                }
+                            }
+                            if(!bool){
+                                addccDelete.add(add);
+                            }
+                        }
+                        delete addccDelete;
+                    }else{
+                        List<RH_AdressedCC__c> addCcsInsert = new List<RH_AdressedCC__c>();
+                        for(String conId : contactIds){
+                            addCcsInsert.add(new RH_AdressedCC__c(
+                                RH_Contact__c = conId,
+                                RH_Request__c = RequestUser.Id
+                            ));
+                        }
+                        insert addCcsInsert;
+                    }
+                }else{
+                    List<RH_AdressedCC__c> addCcs = requestQry.getAdressByRequest(RequestUser.Id);
+                    if(addCcs.size() > 0){
+                        delete addCcs;
+                    }
+                }
             }else {
                 insert RequestUser;
+                if(String.isNotBlank(Requestinfo.ACC)){
+                    List<RH_AdressedCC__c> addCcs = new List<RH_AdressedCC__c>();
+                    List<String> contactIds = Requestinfo.ACC.split(',');
+                    for(String conId : contactIds){
+                        addCcs.add(new RH_AdressedCC__c(
+                            RH_Contact__c = conId,
+                            RH_Request__c = RequestUser.Id
+                        ));
+                    }
+                    insert addCcs;
+                }
             }
             if (RequestUser.RH_Status__c == 'Submited') {
-                String val = String.isNotBlank(RequestUser.RH_Addressed_Cc__c)? RequestUser.RH_Addressed_Cc__c:'';
-                List<String> addCc= val?.split(',');
-                Map<Id,User> mapUser = new map<Id,User> ([SELECT id,RH_ContactId__c    FROM User WHERE RH_ContactId__c IN : addCc]);
-                List<String> valuep = new List<String>();
-                valuep.addAll(new List<id>(mapUser.keySet()));
-                
+                String dateSub = System.today().format();
+                RequestUser.RH_Date_Submit__c = Date.parse(dateSub);
+                update RequestUser;
+                List<Id> addCc = new List<Id>();
+                if(String.isNotBlank(Requestinfo.ACC)){
+                    addCc = Requestinfo.ACC.split(',');
+                }
+                Map<Id,User> mapUser = new map<Id,User>(userQry.getUserByContactId(addCc));
+                List<Id> valuep = new List<Id>();
+                valuep.addAll(new List<Id>(mapUser.keySet()));
+                List<User> req = userQry.getUserByContactId(RequestUser.RH_Addressed_To__c);
+                valuep.add(req[0].Id);
                 mapReturn.put('valuep',valuep);
                 mapReturn.put('addCc',addCc);
                 mapReturn.put('mapUser',mapUser);
-                List<RH_Request__c> req = [SELECT id, RH_Addressed_To__r.RH_User__c, RH_Addressed_To__c    FROM RH_Request__c WHERE RH_Addressed_To__c  =: RequestUser.RH_Addressed_To__c limit 1];
-                valuep.add(req[0].RH_Addressed_To__r.RH_User__c);
-                sendNotifications(RequestUser.RH_Description__c,UserInfo.getUserId(),RequestUser.id,'request-management',RequestUser.Rh_Status__c,valuep /*new List<String> {req[0]. RH_Addressed_To__r.RH_User__c}*/);
+                sendNotifications(RequestUser.RH_Description__c,UserInfo.getUserId(),RequestUser.id,'request-management',RequestUser.Rh_Status__c,valuep);
             }
             
         } catch(Exception e) {
@@ -104,9 +182,23 @@ public without sharing class RH_Request_controller {
 
     @AuraEnabled
     public static string updateRequest(String requestId){
-        List<RH_Request__c> req = [SELECT Id,RH_Description__c, Rh_Status__c,RH_Addressed_To__r.RH_User__c FROM RH_Request__c WHERE Id =: requestId limit 1];
-        req[0].Rh_Status__c = 'Submited';
-        Database.SaveResult[] results = Database.update(req, false);
+        String dateSub = System.today().format();
+        List<RH_Request__c> request = new List<RH_Request__c> {requestQry.retreiveRequest(requestId)};
+        List<RH_AdressedCC__c> addccs = requestQry.getAdressByRequest(requestId);
+        List<Id> addIds = new List<Id>();
+        if(addccs.size() > 0){
+            for(RH_AdressedCC__c add : addccs){
+                addIds.add(add.RH_Contact__c);
+            }
+        }
+        Map<Id,User> mapUser = new map<Id,User>(userQry.getUserByContactId(addIds));
+        List<Id> valuep = new List<Id>();
+        valuep.addAll(new List<Id>(mapUser.keySet()));
+        List<User> users = userQry.getUserByContactId(request[0].RH_Addressed_To__c);
+        valuep.add(users[0].Id);
+        request[0].RH_Date_Submit__c = Date.parse(dateSub);
+        request[0].Rh_Status__c = 'Submited';
+        Database.SaveResult[] results = Database.update(request, false);
         String pop = '';
         for (Database.SaveResult drList : results) {
             if (!drList.isSuccess()) {
@@ -114,21 +206,41 @@ public without sharing class RH_Request_controller {
                 for(Database.Error err : drList.getErrors()) {
                     pop = pop + err.getMessage() + err.getFields();
                 }
-                // return pop;
-                
+
             }else {
                 pop = 'OK';
             }
         }
         if(pop=='OK'){
-            sendNotifications(req[0].RH_Description__c,UserInfo.getUserId(),req[0].id,'request-management',req[0].Rh_Status__c,new List<String> {req[0].RH_Addressed_To__r.RH_User__c});
+            sendNotifications(request[0].RH_Description__c,UserInfo.getUserId(),request[0].id,'request-management',request[0].Rh_Status__c, valuep);
         }
         return pop;
+    }
+  
+    @AuraEnabled
+    public static Map<String,Object> updateAnswerExp(String requestId, String answer){
+        Map<String, Object> mapReturn = new Map<String, Object>();
+        mapReturn.put('error',false);
+        String dateRep = System.today().format();
+        try{
+            RH_Request__c request = requestQry.retreiveRequest(requestId);
+            request.RH_Date_Response__c = Date.parse(dateRep);
+            request.Rh_Status__c = 'Responded';
+            request.RH_Answer__c = answer;
+            update request;
+            sendNotifications(answer,UserInfo.getUserId(),request.RH_Parent_Request_Id__c,'request-management',request.Rh_Status__c,new List<Id> {request.CreatedById});
+        }catch(Exception e){
+            System.debug(e.getMessage());
+            mapReturn.put('error',true);
+            mapReturn.put('msg',e.getMessage());
+            mapReturn.put('e',e);
+        }
+        return mapReturn;
     }
 
     @AuraEnabled
     public static string deleteRequest(String requestId){
-        RH_Request__c req = [SELECT Id from RH_Request__c WHERE Id =: requestId];
+        RH_Request__c req = requestQry.retreiveRequest(requestId);
         Database.DeleteResult drList = Database.delete(req, false);
 
         if (drList.isSuccess()) {
@@ -143,20 +255,20 @@ public without sharing class RH_Request_controller {
     }
 
     @AuraEnabled
-    public static Map<String,Object> updateRequestForRejet(String RecordT,String Reason,String StatusRejeted){
+    public static Map<String,Object> updateRequestForResponse(String RecordT,String Reason,String Status){
         Map<String, Object> mapReturn = new Map<String, Object>();
         mapReturn.put('error',false);
+        String dateRep = System.today().format();
         try {
-            List<RH_Request__c> updRejet = [SELECT Id,RH_Description__c, Rh_Status__c,RH_Note__c,RH_Reason__c,CreatedById   FROM RH_Request__c WHERE Id =: RecordT limit 1];
-            updRejet[0].RH_Status__c = StatusRejeted;
+            RH_Request__c updRejet = requestQry.retreiveRequest(RecordT);
+            updRejet.RH_Status__c = Status;
+            updRejet.RH_Date_Response__c = Date.parse(dateRep);
             if (string.isNotBlank(Reason)) {
-                updRejet[0].RH_Reason__c = Reason;
-                updRejet[0].RH_Note__c = Reason;
+                updRejet.RH_Reason__c = Reason;
+                updRejet.RH_Note__c = Reason;
             }
             update updRejet;
-
-            sendNotifications(updRejet[0].RH_Description__c,UserInfo.getUserId(),RecordT,'my-request',StatusRejeted,new List<String> {updRejet[0].CreatedById});
-            
+            sendNotifications(updRejet.RH_Description__c,UserInfo.getUserId(),RecordT,'my-request',Status,new List<Id> {updRejet.CreatedById});
         } catch (Exception e) {
             System.debug(e.getMessage());
             mapReturn.put('error',true);
@@ -167,72 +279,23 @@ public without sharing class RH_Request_controller {
     }
 
     @AuraEnabled
-    public static Map<String,Object> updateRequestForApprove(String RecordT,String Reason,String StatusApprove){
-        Map<String, Object> mapReturn = new Map<String, Object>();
-        mapReturn.put('error',false);
-        try {
-            List<RH_Request__c> updApprove = [SELECT Id,RH_Description__c, Rh_Status__c,RH_Note__c,RH_Reason__c,CreatedById   FROM RH_Request__c WHERE Id =: RecordT limit 1];
-            updApprove[0].RH_Status__c = StatusApprove;
-            if (string.isNotBlank(Reason)) {
-                updApprove[0].RH_Reason__c = Reason;
-                updApprove[0].RH_Note__c = Reason;
-            }
-            update updApprove;
-
-            sendNotifications(updApprove[0].RH_Description__c,UserInfo.getUserId(),RecordT,'my-request',StatusApprove,new List<String> {updApprove[0].CreatedById});
-            
-        } catch (Exception e) {
-            System.debug(e.getMessage());
-            mapReturn.put('error',true);
-            mapReturn.put('msg',e.getMessage());
-            mapReturn.put('e',e);
-        }
-        return mapReturn;
+    public static List<RH_Request__c> filterRequest(String requestType, String status, Datetime dateFrom, Datetime dateTo){
+        return requestQry.filterRequest(requestType, status, dateFrom, dateTo, 0, null, null);   
     }
 
     @AuraEnabled
-    public static List<RH_Request__c> filterRequest(String requestType, String status, DateTime createdDate){
-
-        String query= 'SELECT Id,Name,RH_Description__c,Rh_Status__c,RH_Addressed_To__r.Name,RH_Note__c,RecordType.Name ,CreatedDate,RH_RequestTypeName__c FROM RH_Request__c ';
-        Boolean check = false;
-        String currentUser = UserInfo.getUserId();
-        if(String.isNotBlank(requestType)){
-            if(check){
-                query+= 'AND RecordTypeId =:requestType ';
-            }else{
-                query+= 'WHERE OwnerId =:currentUser AND RecordTypeId =:requestType ';
-                check = true;
-            }
+    public static List<RH_Request__c> filterRequestToManage(String requestType, String status, Datetime dateFrom, Datetime dateTo){
+        List<User> currentUser = userQry.getUserById(UserInfo.getUserId());
+        List<RH_AdressedCC__c> adccs = requestQry.getAdressByContact(currentUser[0].RH_ContactId__c);
+        List<String> requestIds = new List<String>();
+        for(RH_AdressedCC__c add : adccs){
+            requestIds.add(add.RH_Request__c);
         }
-        if(String.isNotBlank(status)){
-            if(check){
-                query+= 'AND Rh_Status__c =:status ';
-            }else{
-                query+= 'WHERE OwnerId =:currentUser AND Rh_Status__c =:status ';
-                check = true;
-            }
-        }
-        if(createdDate != null){
-            Integer day = createdDate.day();
-            Integer month = createdDate.month();
-            Integer year = createdDate.year();
-            if(check){
-                query+= 'AND CALENDAR_MONTH(CreatedDate) =:month AND CALENDAR_YEAR(CreatedDate) =:year AND DAY_IN_MONTH(CreatedDate) =:day ';
-            }else{
-                query+= 'WHERE OwnerId =:currentUser AND CALENDAR_MONTH(CreatedDate) =:month AND CALENDAR_YEAR(CreatedDate) =:year AND DAY_IN_MONTH(CreatedDate) =:day ';
-                check = true;
-            }
-        }
-        if(check){
-            query+= 'ORDER BY CreatedDate DESC';
-            system.debug(query);
-            return Database.query(query);
-        }
-        return null;
+        return requestQry.filterRequest(requestType, status, dateFrom, dateTo, 1, currentUser[0].RH_ContactId__c, requestIds);   
     }
 
     @AuraEnabled(cacheable=true)
-    public static void sendNotifications(String strBody, String strSenderId, String pgRefId, String strTargetId, String strTitle,List<String> setUserIds) {
+    public static void sendNotifications(String strBody, String strSenderId, String pgRefId, String strTargetId, String strTitle,List<Id> setUserIds) {
         set<String> setUserId = new set<String>();
         for(String s : setUserIds){
             setUserId.add(s);
@@ -267,7 +330,6 @@ public without sharing class RH_Request_controller {
         // send used to send the notification, pass the set of user ids , Group or Queue member
         obj.send(setUserId);
     }
-
     
     public class Requestdetailswrapper  {
         @AuraEnabled public String ComplainOn;
@@ -280,17 +342,21 @@ public without sharing class RH_Request_controller {
         @AuraEnabled public String RH_AddressedTo;
         @AuraEnabled public string RH_AddressedCc;
         @AuraEnabled public string RH_Description;
+        @AuraEnabled public string ParentRequestId;
+        @AuraEnabled public string RH_Reason;
         public RH_Request__c getRequest() {
             return new RH_Request__c(
                 RH_Complain_On__c=this.ComplainOn, 
                 RecordTypeId=this.RecordT,
                 id = IdRequest != '' ? IdRequest : '',
+                RH_Parent_request_Id__c = ParentRequestId != '' ? ParentRequestId : '',
                 RH_Status__c = this.StatusRequest, 
                 RH_Start_date__c=this.RH_StartDate, 
                 RH_End_date__c=this.RH_EndDate,
                 RH_Addressed_To__c=this.RH_AddressedTo,
-                RH_Addressed_Cc__c=this.ACC,
-                RH_Description__c=this.RH_Description);
+                RH_Description__c=this.RH_Description,
+                RH_Reason__c = this.RH_Reason
+            );
         }
     }
 

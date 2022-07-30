@@ -17,9 +17,10 @@
                     <div class="slds-float_right">
                         <template if:true={showEdit}>
                             <lightning-button variant="brand-outline" label={l.Edit} icon-name={icon.Edit} title="Primary action with lighter look" onclick={handleEditValue} class="slds-m-left_x-small"></lightning-button>
+                            <lightning-button variant="brand-outline" label={l.Activate} title="Primary action with lighter look" onclick={handleActivate} class="slds-m-left_x-small"></lightning-button>
                         </template>
                         <template if:true={isCurrent}>
-                            <lightning-button variant="brand-outline" label={l.Delete} icon-name={icon.Delete} title="Primary action with lighter look" onclick={showModalDelete} class="slds-m-left_x-small"></lightning-button>
+                            <lightning-button variant="brand-outline" label={l.Delete} icon-name={icon.Delete} title="Primary action with lighter look" onclick={handleDeleteValue} class="slds-m-left_x-small"></lightning-button>
                         </template>
                     </div>
                 </div>

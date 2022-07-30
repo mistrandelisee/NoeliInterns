@@ -55,6 +55,7 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
     isUpdate = false;
     hidenButton = true;
     displayButton = true;
+    displayButton2 = false;
     updateSave = false;
     data0={};
     eventinformation = {};
@@ -190,13 +191,33 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
                 keysLabels:self.keysLabels,
                 fieldsToShow:self.fieldsToShow,
             }
-         
             console.log('@@@@@objectReturn', objetRep);
+            const badge={
+                name: 'badge', 
+                class:self.classStyle(elt?.Status__c),
+                label: elt?.Status__c
+            }
+            console.log('@@@@@@@@  badge  --> ' , badge);
+            objetRep.addons={badge};
             this.datas.push(objetRep);
             }); 
             this.setviewsList( this.datas);
             console.log('@@@@@@@@wiredatas--> ' , this.datas);
         })
+    }
+    classStyle(className){
+
+        switch(className){ 
+            case 'Submitted': 
+                return "slds-float_left slds-theme_warning"; 
+            case 'Draft': 
+                return "slds-float_left slds-theme_alt-inverse"; 
+            case 'Rejected': 
+                return "slds-float_left slds-theme_error"; 
+            default: 
+                return "slds-float_left slds-theme_info"; 
+        }
+
     }
     setviewsList(items){
         let cardsView=this.template.querySelector('c-rh_cards_view');
@@ -604,59 +625,105 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
             }
         }
     }
-    handleSaveEvent(){
-        // this.doSave(true,this.bool);
-        if(this.bool==true){
-            this.handleBeforeSave();
-            setTimeout(()=>{
-                this.checkIdOfFileBeforeSaveOrBeforeUpdate();
-                this.checkDataEventBeforeSave();
-            },1000);
-        }else{
-            this.handleBeforeSave();
-            this.checkDataEventBeforeSave();
-            setTimeout(()=>{
-                this.checkDataEventBeforeSave();
-            },1000);
-        }
+    // handleSaveEvent(){
+    //     // this.doSave(true,this.bool);
+    //     if(this.bool==true){
+    //         this.handleBeforeSave();
+    //         setTimeout(()=>{
+    //             this.checkIdOfFileBeforeSaveOrBeforeUpdate();
+    //             this.checkDataEventBeforeSave();
+    //         },1000);
+    //     }else{
+    //         this.handleBeforeSave();
+    //         this.checkDataEventBeforeSave();
+    //         setTimeout(()=>{
+    //             this.checkDataEventBeforeSave();
+    //         },1000);
+    //     }
            
-    }
-    handleSaveAndSendEvent(){
-        if(this.bool==true){
-            this.handleBeforeSave();
-            setTimeout(()=>{
-                this.checkIdOfFileBeforeSaveOrBeforeUpdate();
-                this.checkDataEventBeforeSaveAndSend();
-            },1000);
-        }else{
-            this.handleBeforeSave();
-            setTimeout(()=>{
-                this.checkDataEventBeforeSaveAndSend();
-            },1000);
+    // }
+    //-----------------florent start--------------
+    handleSaveAndSendEvent(event){
+        if (event.detail.action=='SaveAndSend'){
+            if(this.bool==true){
+                this.handleBeforeSave();
+                setTimeout(()=>{
+                    this.checkIdOfFileBeforeSaveOrBeforeUpdate();
+                    this.checkDataEventBeforeSaveAndSend();
+                },1000);
+            }else{
+                this.handleBeforeSave();
+                setTimeout(()=>{
+                    this.checkDataEventBeforeSaveAndSend();
+                },1000);
+            }
         }
     }
-    handleSendEvent(){
-        this.startSpinner(true);
-        this.recordId = this.getUrlParamValue(window.location.href, 'recordId');
-        console.log('eid----->', this.recordId);
-        sendEvent({evId: this.recordId})
-        .then(result => {
-            console.log('result ---> ', result);
-            this.data_Event = result;
-            this._evId = result[0].Id;
-            console.log('result _evId---> ', this._evId);
-            if(this._evId){
-                this.senNotification(this._evId);
-            }
-            // this.getNewEventList();
-            // this.closeComponentEdit();
-            this.goToEventDetail(result[0].Id);
-            this.showToast('success', 'success !!', this.label.EvenSendSuccess);
-        })
-        .catch(error =>{
-            this.error = error.message;
-            this.showToast('error', 'Error', this.label.AddFailed);
-        })
+
+    closeComponentEdit(event){
+        if (event.detail.action=='Back'){
+        this.showComponentBase = true;
+        this.showComponentDetails = false;
+        this.showComponentEdit = false;
+        this.showAttachement = false;
+        this.isUpdate = false;
+        }
+    }
+
+    
+    closeComponentUpdate(event){
+        if (event.detail.action=='Back'){
+        this.showComponentDetails = true;
+        this.showComponentBase = false;
+        this.showComponentEdit = false;
+        this.isUpdate = false;
+        }
+    }
+    backToPreviousComponent(){
+        this.recordId = undefined;
+        this.goToEventDetail(this.recordId);
+        this.getNewEventList();
+        this.showComponentBase = true;
+        this.showComponentDetails = false;
+        this.showComponentEdit = false;
+        this.isUpdate = false;
+    }
+    closeComponentDetails(event){
+        if (event.detail.action=='Back'){
+        this.recordId = undefined;
+        this.goToEventDetail(this.recordId);
+        this.getNewEventList();
+        this.showComponentBase = true;
+        this.showComponentDetails = false;
+        this.showComponentEdit = false;
+        this.isUpdate = false;
+        }
+    }
+    //-----------------florent end--------------
+    handleSendEvent(event){
+        if (event.detail.action=='Send'){
+            this.startSpinner(true);
+            this.recordId = this.getUrlParamValue(window.location.href, 'recordId');
+            console.log('eid----->', this.recordId);
+            sendEvent({evId: this.recordId})
+            .then(result => {
+                console.log('result ---> ', result);
+                this.data_Event = result;
+                this._evId = result[0].Id;
+                console.log('result _evId---> ', this._evId);
+                if(this._evId){
+                    this.senNotification(this._evId);
+                }
+                // this.getNewEventList();
+                // this.closeComponentEdit();
+                this.goToEventDetail(result[0].Id);
+                this.showToast('success', 'success !!', this.label.EvenSendSuccess);
+            })
+            .catch(error =>{
+                this.error = error.message;
+                this.showToast('error', 'Error', this.label.AddFailed);
+            })
+        }
     }
     // handleCancelSave(){
     //     this.startSpinner(true);
@@ -704,19 +771,21 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
             } 
         }
     }
-    handleUpdateEvent(){
-        console.log('bool1 bool1---> ', this.bool1);
-        if(this.bool1==true){
-            this.handleBeforeUpdate();
-            setTimeout(()=>{
-                this.checkIdOfFileBeforeSaveOrBeforeUpdate();
-                this.checkDataEventBeforeUpdate();
-            },1000);
-        }else{
-            this.handleBeforeUpdate();
-            setTimeout(()=>{
-                this.checkDataEventBeforeUpdate();
-            },1000);
+    handleUpdateEvent(event){
+        if (event.detail.action=='Update'){
+            console.log('bool1 bool1---> ', this.bool1);
+            if(this.bool1==true){
+                this.handleBeforeUpdate();
+                setTimeout(()=>{
+                    this.checkIdOfFileBeforeSaveOrBeforeUpdate();
+                    this.checkDataEventBeforeUpdate();
+                },1000);
+            }else{
+                this.handleBeforeUpdate();
+                setTimeout(()=>{
+                    this.checkDataEventBeforeUpdate();
+                },1000);
+            }
         }
     }
     checkDataEventBeforeUpdateAndSendEvent(){
@@ -744,56 +813,65 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
             },500);
         }
     }
-    handleUpdateAndSendEvent(){
-        if(this.bool1==true){
-            this.handleBeforeUpdateAndSendEvent();
-            setTimeout(()=>{
-                this.checkIdOfFileBeforeSaveOrBeforeUpdate();
-                this.checkDataEventBeforeUpdateAndSendEvent();
-            },1000);
-        }else{
-            this.handleBeforeUpdateAndSendEvent();
-            setTimeout(()=>{
-                this.checkDataEventBeforeUpdateAndSendEvent();
-            },1000);
-        }
-             
+    handleUpdateAndSendEvent(event){
+        if (event.detail.action=='Update And Send'){
+            if(this.bool1==true){
+                this.handleBeforeUpdateAndSendEvent();
+                setTimeout(()=>{
+                    this.checkIdOfFileBeforeSaveOrBeforeUpdate();
+                    this.checkDataEventBeforeUpdateAndSendEvent();
+                },1000);
+            }else{
+                this.handleBeforeUpdateAndSendEvent();
+                setTimeout(()=>{
+                    this.checkDataEventBeforeUpdateAndSendEvent();
+                },1000);
+            }
+        }    
     }
 
-    handledeleteEvent(){debugger
-        this.startSpinner(true);
-        this.recordId = this.getUrlParamValue(window.location.href, 'recordId');
-        console.log('eid----->', this.recordId);
-        deleteEvent({evid : this.recordId})
+    handledeleteEvent(event){debugger
+        if (event.detail.action=='Yes I m sure'){
+            this.startSpinner(true);
+            this.recordId = this.getUrlParamValue(window.location.href, 'recordId');
+            console.log('eid----->', this.recordId);
+            deleteEvent({evid : this.recordId})
             .then(result => {
                 this.data = result;
                 console.log('res----->', result[0].Status__c);
                 console.log('Message----->', result[0].Message__c);
                 console.log('CreatedBy----->', result[0].CreatedBy.UserRole.Name);
                 if(result[0].Status__c=='Approved' && (result[0].Message__c=='Right no allowed')){
-                            this.closeModalDelete();
+                            this.closeModalAfterDelete();
                             this.showToast('info', 'Toast Info', this.label.RightDeletion);
                 }else{
                     switch (result[0].Status__c) {
                         case 'Submitted':
-                            this.closeModalDelete();
+                            this.closeModalAfterDelete();
                             this.showToast('info', 'Toast Info', this.label.ToastEvent1);
                                 break;
                         default:
-                            this.closeModalDelete();
-                            this.closeComponentDetails();
+                            this.closeModalAfterDelete();
+                            this.backToPreviousComponent();
                             this.showToast('success', 'success !!', this.label.successOp);
                                 break;
                     }
                 }
+                this.startSpinner(false);
             })
             .catch(error => {
                 console.error(error?.msg);
                 this.showToast('error', 'Error', this.label.errorOp);
             });
+        }
     }
-    closeModalDelete(){
+    closeModalAfterDelete(){
         this.showModalDelete=false;
+    }
+    closeModalDelete(event){
+        if (event.detail.action=='Cancel'){
+            this.showModalDelete=false;
+        }
     }
     handleBeforeEdit(){
         this.startSpinner(true);
@@ -817,22 +895,6 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
         this.startSpinner(false);
     }
     getEventDetails(eventId) {debugger
-        // this.startSpinner(true);
-        getEvent({evId:eventId})
-        .then(result =>{
-            console.log('@@result Status__c--> ' , result);
-            if(result.Status__c=='Rejected' ){
-                console.log('@@result Status__c--> ' , result.Status__c);
-                this.hidenButton = false;
-            }else if(result.Status__c=='Submitted'){
-                this.hidenButton = false;
-                this.displayButton = false;
-            }else{
-                console.log('@@result Status__c--> ' , result.Status__c);
-                this.hidenButton = true;
-                this.displayButton = true;
-            }
-        })
         console.log('eventId--> ' , eventId);
         getEventEdite({evenId: eventId})
         .then(result =>{
@@ -848,10 +910,119 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
                     .then(result1 =>{
                         console.log('conId2 --> ' , result1);
                         if(result1==creatById){
+                            this.displayButton2 = false;
                             this.displayButton = true;
                             this.hidenButton = true;
                             if(status=='Rejected'){
                                 this.hidenButton = false;
+                                this.displayButton = false;
+                                this.displayButton2 = true;
+                                console.log('event --> ' , result);
+                                this.data0 = result.map(obj => {
+                                    var newobj={};
+                                        newobj.Id = obj.Id;
+                                        newobj.EventName=obj.Name;
+                                        newobj.ContactName=obj.Contact_Id__r.Name;
+                                        newobj.Description=obj.Description__c;
+                                        newobj.StartDate= obj.Start_Dates__c; 
+                                        newobj.EndDate= obj.End_Dates__c;
+                                        newobj.Status=obj.Status__c;
+                                    return newobj;
+                                });
+                                console.log('data0--->', this.data0);
+                                this.eventinformationEdite = result.map(obj => {
+                                    var newobj={};
+                                        newobj.Id = obj.Id;
+                                        newobj.EventName=obj.Name;
+                                        newobj.ContactName=obj.Contact_Id__r.Name;
+                                        newobj.Description=obj.Description__c;
+                                        newobj.StartDate= obj.Start_Dates__c.split('T')[0]+'  à '+ obj.Start_Dates__c.split('T')[1].substring(0,5); 
+                                        newobj.EndDate= obj.End_Dates__c.split('T')[0]+'  à '+obj.End_Dates__c.split('T')[1].substring(0,5);
+                                        newobj.Status=obj.Status__c;
+                                    return newobj;
+                                });
+                                this.data = this.eventinformationEdite;
+                                console.log('eventinformationEdite--->', this.eventinformationEdite);
+                                // this.optionsStatus();
+                                this.eventDetails =[
+                                    {
+                                        label: this.label.EventName, 
+                                        name:'Name',
+                                        type:'text',
+                                        value:this.eventinformationEdite[0].EventName,
+                                        required:true,
+                                        ly_md:'12', 
+                                        ly_lg:'12'
+                                    },
+                                    {
+                                        label:this.label.StartDate,
+                                        name:'StartDate',
+                                        type:'datetime',
+                                        value:this.eventinformationEdite[0].StartDate,
+                                        required:true,
+                                        ly_md:'12', 
+                                        ly_lg:'12'
+                                    },
+                                    {
+                                        label:this.label.Status,
+                                        name:'Status',
+                                        picklist: true,
+                                        value:this.eventinformationEdite[0].Status,
+                                        required:true,
+                                        ly_md:'12', 
+                                        ly_lg:'12'
+                                    },
+                                    {
+                                        label:this.label.EndDate,
+                                        name:'EndDate',
+                                        type:'datetime',
+                                        value:this.eventinformationEdite[0].EndDate,
+                                        ly_md:'12', 
+                                        ly_lg:'12'
+                                    },
+                                    {
+                                        label: this.label.Description,
+                                        name:'Description',
+                                        type:'textarea',
+                                        value:this.eventinformationEdite[0].Description,
+                                        ly_md:'12', 
+                                        ly_lg:'12'
+                                    },
+                                ];
+                                getRelatedFilesByRecordId({recordId: eventId})
+                                .then(result=>{
+                                    console.log('@@@ @@@ @@@ 1 result-->', result);
+                                    this.filesList = result.data.map(elt =>{
+                                        var obj = {};
+                                        obj.label = elt.Name,
+                                        obj.value = elt.Name,
+                                        obj.fname = elt.Name,
+                                        obj.conVerId = elt.ContentVersionId,
+                                        obj.docId = elt.ContentDocumentId,
+                                        obj.url = elt.ContentDownloadUrl
+                                        return obj;
+                                    })
+                                    console.log('@@@ filesList @@@ ===> ',this.filesList);
+                                    for(let i=0; i<this.filesList.length; i++){
+                                        this.contentDocId = this.filesList[i].docId;
+                                        this.contentDocIdList.push(this.filesList[i].docId);
+                                    }
+                                    debugger
+                                    console.log('@@@ contentDocId @@@ ===> ', this.contentDocIdList);
+                                    let data_t =[];
+                                    for(let key2 in result['data2']) {   
+                                        for(let key in result['data']) {
+                                            if(result['data'][key].ContentDocumentId == result['data2'][key2].Id){
+                                                data_t.push({Id:result['data2'][key2].Id, FileName: result['data2'][key2].Title, url: result['data'][key].ContentDownloadUrl});
+                                            }
+                                        }
+                                    }
+                                    this.filesLists = data_t;
+                                    console.log('-->',this.filesLists);
+                                });
+                            }else if(status=='Submitted'){
+                                this.hidenButton = false;
+                                this.displayButton = false;
                                 console.log('event --> ' , result);
                                 this.data0 = result.map(obj => {
                                     var newobj={};
@@ -1060,9 +1231,7 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
                                     console.log('-->',this.filesLists);
                                 });
                             }
-                            
-                        }
-                        else{
+                        }else{
                             this.displayButton = false;
                             this.hidenButton = false;
                             console.log('event --> ' , result);
@@ -1501,12 +1670,14 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
         this.showComponentBase = false;
         this.showComponentDetails = true;
     }
-    handleEdit(){
-        this.handleBeforeEdit();
-        this.buildformEdit();
-        this.showComponentBase = false;
-        this.showComponentDetails = false;
-        this.isUpdate = true;
+    handleEdit(event){
+        if (event.detail.action=='Edit'){
+            this.handleBeforeEdit();
+            this.buildformEdit();
+            this.showComponentBase = false;
+            this.showComponentDetails = false;
+            this.isUpdate = true;
+        }
     }
     // handleOpenComponentSave(){ 
     //     this.showComponentEdit = true;
@@ -1524,6 +1695,24 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
             this.showAttachement = false;
         }
     }
+    handleSaveEvent(event){
+        if (event.detail.action=='Save') {
+            // this.doSave(true,this.bool);
+            if(this.bool==true){
+                this.handleBeforeSave();
+                setTimeout(()=>{
+                    this.checkIdOfFileBeforeSaveOrBeforeUpdate();
+                    this.checkDataEventBeforeSave();
+                },1000);
+            }else{
+                this.handleBeforeSave();
+                this.checkDataEventBeforeSave();
+                setTimeout(()=>{
+                    this.checkDataEventBeforeSave();
+                },1000);
+            }
+        }
+    }
     detailsActionsSave=[
         {   variant:"brand-outline",
             class:" slds-var-m-right_medium",
@@ -1533,28 +1722,109 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
             iconName:this.icon.Add,
         }
     ]
-    closeComponentDetails(){
-        this.recordId = undefined;
-        this.goToEventDetail(this.recordId);
-        this.getNewEventList();
-        this.showComponentBase = true;
-        this.showComponentDetails = false;
-        this.showComponentEdit = false;
-        this.isUpdate = false;
-    }
-    closeComponentEdit(){
-        this.showComponentBase = true;
-        this.showComponentDetails = false;
-        this.showComponentEdit = false;
-        this.showAttachement = false;
-        this.isUpdate = false;
-    }
-    closeComponentUpdate(){
-        this.showComponentDetails = true;
-        this.showComponentBase = false;
-        this.showComponentEdit = false;
-        this.isUpdate = false;
-    }
+    // Start New change 
+    detailsActionsSaveEvent=[
+        {   variant:"brand-outline",
+            class:" slds-m-right_medium",
+            label:"Save",
+            name:'Save',
+            title:"Save",
+            iconName:this.icon.Save,
+        }
+    ]
+    // End New change
+    //----------------------started---------------------------------------
+    detailsSaveAndSendEvent=[
+        {   variant:"brand-outline",
+            class:" slds-m-right_medium",
+            label:"SaveAndSend",
+            name:'SaveAndSend',
+            title:"SaveAndSend",
+            iconName:this.icon.Save,
+        }
+    ]
+    detailsCloseComponentEdit=[
+        {   
+            variant:"brand-outline",
+            // class:" slds-m-left_medium",
+            
+            label:"Back",
+            name:'Back',
+            title:"Back",
+            iconName:this.icon.Back,
+        }
+    ]
+    detailspredeleteEvent=[
+        {   
+            variant:"brand-outline",
+            // class:" slds-m-left_medium",
+            
+            label:this.label.Delete,
+            name:'Delete',
+            title:"Delete",
+            iconName:this.icon.Delete,
+        }
+    ]
+    detailspreEditEvent=[
+        {   
+            variant:"brand-outline",
+            // class:" slds-m-left_medium",
+            
+            label:this.label.Edit,
+            name:'Edit',
+            title:"Edit",
+            iconName:this.icon.Edit,
+        }
+    ]
+    detailspreSendEvent=[
+        {   
+            variant:"brand-outline",
+            // class:" slds-m-left_medium",
+            
+            label:this.label.Send,
+            name:'Send',
+            title:"Send",
+            iconName:this.icon.submit,
+        }
+    ]
+    detailsUpdateEvent=[
+        {   variant:"brand-outline",
+            class:" slds-m-right_medium",
+            label:this.label.Update,
+            name:'Update',
+            title:"Update",
+            iconName:this.icon.Save,
+        }
+    ]
+    detailsUpdateAndSendEvent=[
+        {   variant:"brand-outline",
+            class:" slds-m-right_medium",
+            label:this.label.UpdateAndSend,
+            name:'Update And Send',
+            title:"Update And Send",
+            iconName:this.icon.Save,
+        }
+    ]
+    detailsDeleteEvent=[
+        {   variant:"brand-outline",
+            class:" slds-m-right_medium",
+            label:this.label.ok_confirm,
+            name:'Yes I m sure',
+            title:"Yes I m sure",
+            iconName:this.icon.approve,
+        }
+    ]
+    detailsModalDelete=[
+        {   variant:"brand-outline",
+            class:" slds-m-right_medium",
+            label:this.label.Cancel,
+            name:'Cancel',
+            title:"Cancel",
+            iconName:this.icon.close,
+        }
+    ]
+    //--------------------finish--------------------------------
+
     nextToAttachementSave(){
         this.disable = false;
         this.showAttachement = true;
@@ -1576,8 +1846,10 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
         this.showAttachement = false;
         this.showComponentEdit = true;
     }
-    handlepredeleteEvent(){
-        this.showModalDelete=true;
+    handlepredeleteEvent(event){
+        if (event.detail.action=='Delete'){
+            this.showModalDelete=true;
+        }
     }
     //handle spinner
     startSpinner(b){

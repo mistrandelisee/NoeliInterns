@@ -16,14 +16,26 @@
                 <label>XAF</label>
             </value>
             <value>
+                <fullName>USD</fullName>
+                <default>false</default>
+                <label>USD</label>
+            </value>
+            <value>
                 <fullName>EUR</fullName>
                 <default>true</default>
                 <label>EUR</label>
             </value>
             <value>
-                <fullName>USD</fullName>
+                <fullName>US$</fullName>
                 <default>false</default>
-                <label>USD</label>
+                <isActive>false</isActive>
+                <label>US$</label>
+            </value>
+            <value>
+                <fullName>€</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>€</label>
             </value>
         </valueSetDefinition>
     </valueSet>

@@ -25,6 +25,11 @@
                 <default>false</default>
                 <label>Base User</label>
             </value>
+            <value>
+                <fullName>Ressource Manager</fullName>
+                <default>false</default>
+                <label>Ressource Manager</label>
+            </value>
         </valueSetDefinition>
     </valueSet>
 </CustomField>

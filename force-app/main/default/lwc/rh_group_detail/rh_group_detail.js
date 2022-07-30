@@ -5,13 +5,19 @@ import updateGroupStatut from '@salesforce/apex/RH_groupController.updateGroupSt
 import { CurrentPageReference,NavigationMixin } from 'lightning/navigation';
 import { labels } from 'c/rh_label';
 import checkRole from '@salesforce/apex/RH_Utility.checkRole';
+import { registerListener, unregisterAllListeners,fireEvent } from 'c/pubsub';
+import { icons } from 'c/rh_icons';
 
-
+const OK_DELETE='Deleted';
 
 export default class Rh_group_detail  extends NavigationMixin(LightningElement) {
     @wire(CurrentPageReference) pageRef;
+
+    l={...labels,
+    }
+    icon ={...icons}
+
     data = [];
-  //  columns = columns;
     rowOffset = 0;
     listId = [];
     statusEditGroup;
@@ -25,6 +31,9 @@ export default class Rh_group_detail  extends NavigationMixin(LightningElement) 
     contactMemberss=[];
     newGroup = 'Edit group';
     @api statusGroup;
+    isLoading=false;
+
+    constants={};
     //backSource='group_detail';
 
     @track columns = [
@@ -72,6 +81,8 @@ export default class Rh_group_detail  extends NavigationMixin(LightningElement) 
               console.error('Error:', error);
             }); 
             this.roleManage();  
+
+            registerListener('ModalAction', this.doModalAction, this);
     }
     refreshTable(data) {
         const dataTableCmp = this.template.querySelector('c-rh_datatable_component');
@@ -220,22 +231,40 @@ export default class Rh_group_detail  extends NavigationMixin(LightningElement) 
          
      }
 
+     actionRecord={};
      handleManageAction(event){
+        let text='';
+        const Actions=[]
+        const extra={style:'width:20vw;'};
+
          console.log('Action Name ==-->:', event.detail.action);
         // this.detailGroup = false;
          if(event.detail.action=='Edited'){
+            //this.isLoading = true;
+            this.template.querySelector('c-rh_spinner').start();
             this.statusEditGroup = true;
             this.detailGroup = false;
+            window.setTimeout(() => {this.template.querySelector('c-rh_spinner').stop(); /*this.isLoading = false;*/}, 2000);
          }
          if(event.detail.action=='Deleted'){
-            deleteGroupe({ id: this.groupeId })
+            
+            /*deleteGroupe({ id: this.groupeId })
               .then(result => {
                 console.log('Result', result.result);
                 this.dispatchEvent(new CustomEvent('homegroupe'));
               })
               .catch(error => {
                 console.error('Error:', error);
-            });
+            });*/
+
+            //record.Status='this.constants.LWC_DISABLE_CONTACT_STATUS';
+            //this.actionRecord=record;
+            text=this.l.delete_confirm;
+            extra.title=this.l.action_confirm;
+            extra.style+='--lwc-colorBorder: var(--bannedColor);';
+            // Actions.push(this.createAction("brand-outline",this.l.Cancel,'KO',this.l.Cancel,"utility:close",'slds-m-left_x-small'));
+            Actions.push(this.createAction("brand-outline",this.l.ok_confirm,OK_DELETE,this.l.ok_confirm,this.icon.check,'slds-m-left_x-small'));
+            this.ShowModal(true,text,Actions,extra);
          }
          if(event.detail.action=='Activated' || event.detail.action=='Desactived'){
             updateGroupStatut({ id: this.groupeId, statut: event.detail.action })
@@ -247,7 +276,7 @@ export default class Rh_group_detail  extends NavigationMixin(LightningElement) 
                 console.error('Error:', error);
             });
         }
-        
+
      }
 
      handleBack(){
@@ -287,5 +316,57 @@ export default class Rh_group_detail  extends NavigationMixin(LightningElement) 
             this.goToUserDetail(event.detail.eltName);
         }
         // this.selectedContact = this.contacts.data.find(contact => contact.Id === contactId);
+    }
+
+    ShowModal(show,text,actions,extra={}){
+        fireEvent(this.pageRef, 'Modal', {show,text,actions,extra});
+     }
+
+     doModalAction(event){
+        console.log('doModalAction in user view ', JSON.stringify(event.action));
+        //this.isLoading=true;
+        this.template.querySelector('c-rh_spinner').start();
+        if(event.action=='Deleted'){
+            deleteGroupe({ id: this.groupeId }) 
+              .then(result => {
+                console.log('Result', result.result);
+                this.dispatchEvent(new CustomEvent('homegroupe'));
+                //this.isLoading=false;
+                this.template.querySelector('c-rh_spinner').stop();
+              })
+              .catch(error => {
+                console.error('Error:', error);
+            });
+        }else{
+            this.template.querySelector('c-rh_spinner').stop();
+        }
+        /*
+        switch (event.action) {
+            case OK_DISABLE:
+                this.doUpdateStatus(this.actionRecord,OK_DISABLE)
+                this.actionRecord={};
+                break;
+            case OK_FREEZE:
+                this.doUpdateStatus(this.actionRecord,OK_FREEZE)
+                this.actionRecord={};
+                break;
+            case RESETPWD:
+                if (this.actionRecord.action == RESETPWD) {
+                    this.ChangePasswordApex({});
+                    this.actionRecord={};
+                }
+                break;
+            default:
+                this.actionRecord={}; 
+                break;
+        }*/
+        this.ShowModal(false,null,[]);//close modal any way
+        event.preventDefault();
+    }
+
+    createAction(variant,label,name,title,iconName,className){ 
+        return {
+            variant, label, name, title, iconName,  class:className ,pclass :' slds-float_right'
+        };
     }
 }

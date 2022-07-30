@@ -5,9 +5,11 @@
     </template> -->
 
     <template if:true={newAccount}>
+    <lightning-card>
         <c-rh_dynamic_form_modal title={l.new_account} form-modal-inputs={accountInputs} onbuttonclicked={handleCreateAccount} btn-create={l.save}>
 
         </c-rh_dynamic_form_modal>
+    </lightning-card>
     </template>
     <template if:false={hasrecordid}>
     <template if:true={showList}>
@@ -38,6 +40,7 @@
     </template>
   
     <template if:true={showInsertform}>
+        <lightning-card >
         <div class="slds-var-m-vertical_medium">
             <c-rh_dynamic_form  inputs-items={inputsItems} oninputchanged={handleChanged} oncreatelookup={handleLookupCreation} data-id="create"></c-rh_dynamic_form>
         </div>
@@ -45,10 +48,11 @@
             <lightning-button variant="brand-outline" label={l.Cancel} icon-name="utility:close" class="slds-m-right_medium" onclick={handleBack111} style="margin-left: 21px;"></lightning-button>
             <lightning-button variant="brand-outline" label={l.Next} icon-name="utility:arrow_right" class="slds-float_right" onclick={handleNext} style="margin-right: 21px;"></lightning-button>
         </div>
+        </lightning-card>
     </template>
 
     <template if:true={showAddMembers}>
-        
+        <lightning-card>
         <div class="slds-var-m-vertical_medium">
             <!-- <c-rh_add_and_remove   initial={allInitialContacts}></c-rh_add_and_remove> -->
             <c-rh_dual_box source-label={l.AvaibleMembers}
@@ -63,6 +67,7 @@
             <lightning-button variant="brand-outline" label={l.SaveAndActive} icon-name="utility:save" class="slds-float_right slds-m-right_medium" onclick={handleSave} data-id="actif"></lightning-button>
             
         </div>
+        </lightning-card>
     </template>
     
     </template>
@@ -193,7 +198,7 @@
                 </div>
         </template>
         <template if:true={showEdit}>
-            
+        <lightning-card>
             <div class="slds-var-m-vertical_medium">
                 <!-- <c-rh_edit_project  record-id={curentProject}></c-rh_edit_project> -->
                 <c-rh_dynamic_form inputs-items={curentDetailsToUpdate} oninputchanged={handleChanged} oncreatelookup={handleLookupCreation} data-id="edit"></c-rh_dynamic_form>
@@ -203,11 +208,11 @@
                 <lightning-button variant="brand-outline" label={l.Save} icon-name="utility:save" class="slds-float_right" onclick={handleSaveEdit} data-id="only" style="margin-right: 20px;"></lightning-button>
                 <!-- <lightning-button label="Save" class="slds-float_right" onclick={handleSaveEdit}></lightning-button> -->
             </div>
-
+        </lightning-card>
         </template>
 
         <template if:true={showManage}>
-            
+        <lightning-card>
             <div class="slds-var-m-vertical_medium">
                 <!-- <c-rh_add_and_remove  selected={memberSelected} initial={memberNotSelected}></c-rh_add_and_remove> -->
                 <c-rh_dual_box source-label={l.AvaibleMembers}
@@ -224,6 +229,7 @@
                     <lightning-button variant="brand-outline" label={l.Save} icon-name="utility:save" class="slds-float_right" onclick={handleSaveEditMember}></lightning-button>
                 </template>
             </div>
+        </lightning-card>
         </template>
 
         <template if:true={addAttach}>

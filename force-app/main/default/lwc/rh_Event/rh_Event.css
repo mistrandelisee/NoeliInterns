@@ -32,7 +32,7 @@
     --secondaryColor: rgb(3 45 96);
     --warningColor: #c1a60e;
     --bannedColor:#e41d0b;
-    --frozenColor:#f7f308fe;
+    --frozenColor:#f8a202fe;
     --greenedColor:#69ff05;
 }
 
@@ -48,4 +48,7 @@
     border-left-style: none;
     background: white;
     color: red;
+}
+.marginTop{
+  margin-top:-50px;
 }

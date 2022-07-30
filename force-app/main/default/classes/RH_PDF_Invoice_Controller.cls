@@ -68,8 +68,9 @@ public without sharing class RH_PDF_Invoice_Controller {
         List<lineBlock> blocks = new List<lineBlock>();
         integer total_size=InvoiceItems.size();
         integer block_number=0;
+        integer i=0;
         integer cnt=1;
-        boolean endOfItems=true;//when empty 
+        boolean endWhile=true;//when empty 
         do{
             Boolean isFirst=block_number==0;
             Boolean isLast= cnt==total_size;
@@ -89,8 +90,8 @@ public without sharing class RH_PDF_Invoice_Controller {
             integer remaining_size=InvoiceItems.size();
             block_size = block_size <= remaining_size ? block_size : remaining_size;
 
-            lineBlock block = new lineBlock(showHeader,new List<lineItem> (),showFooter);
 
+            lineBlock block = new lineBlock(showHeader,new List<lineItem> (),showFooter);
             for (Integer k = 0; k < block_size; k++) {
                 block.items.add(
                     buildLine(cnt,InvoiceItems.remove(0))//remove the item from the list, this action decrease the size of the list
@@ -99,9 +100,9 @@ public without sharing class RH_PDF_Invoice_Controller {
             }
             blocks.add(block);
             block_number=block_number+1; 
-            endOfItems=(block_size >= remaining_size);
-            block.showFooter= block.showFooter || endOfItems;//recaculate show footer
-        }while (!endOfItems) ;
+            endWhile=(block_size >= remaining_size);
+            block.showFooter= block.showFooter || endWhile;
+        }while (!endWhile) ;
 
         return blocks;
     }

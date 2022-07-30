@@ -3,6 +3,9 @@
     --primaryColor: #001639;
     --secondaryColor: rgb(3 45 96);
     --warningColor: #c1a60e;
-    --bannedColor:#e41d0b;
+    --bannedColor:#f8a202fe;
     --frozenColor:#62f70cfe;
+}
+.marginTop{
+    margin-top:-32px;
 }

@@ -27,7 +27,7 @@ public without sharing class RH_Accomplishment_Query {
         return [SELECT Id, Name, OwnerId, RH_Description__c, Rh_Status__c, RH_Date__c, RH_Submiter__c, RH_Submiter__r.Name, RH_Title__c, RH_Visibility__c FROM RH_Accomplishment__c WHERE OwnerId =: UserInfo.getUserId() order by createddate desc LIMIT : endLimit];
     }
 
-    public List<RH_Accomplishment__c> filterAccomplishment(String title, String description, String status){
+    public List<RH_Accomplishment__c> filterAccomplishment(String title, String status){
 
         String query= 'SELECT Id, Name, RH_Description__c, Rh_Status__c, RH_Date__c, RH_Submiter__r.Name, RH_Title__c, RH_Visibility__c FROM RH_Accomplishment__c ';
         Boolean check = false;
@@ -38,15 +38,6 @@ public without sharing class RH_Accomplishment_Query {
                 query+= 'AND RH_Title__c LIKE :tle ';
             }else{
                 query+= 'WHERE OwnerId =:currentUser  AND RH_Title__c LIKE :tle ';
-                check = true;
-            }
-        }
-        if(String.isNotBlank(description)){
-            String descr ='%'+ description +'%';
-            if(check){
-                query+= 'AND RH_Description__c LIKE :descr ';
-            }else{
-                query+= 'WHERE OwnerId =:currentUser AND RH_Description__c LIKE :descr ';
                 check = true;
             }
         }

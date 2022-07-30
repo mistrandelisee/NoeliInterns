@@ -37,6 +37,7 @@ export default class Rh_accomplishment extends NavigationMixin(LightningElement)
     @wire(CurrentPageReference) pageRef;
     status = 'Draft';
     formInputs=[];
+    deleteId;
 
     keysLabels={
         Statut: 'Statut',
@@ -130,18 +131,11 @@ export default class Rh_accomplishment extends NavigationMixin(LightningElement)
                 options: this.statusOptions,
                 ly_md:'6', 
                 ly_lg:'6'
-            },
-            {
-                label:this.l.Description,
-                placeholder:this.l.DescriptionPlc,
-                name:'Description',
-                required:false,
-                ly_md:'6', 
-                ly_lg:'6'
             }];
     }
 
     connectedCallback(){
+        registerListener('ModalAction', this.doModalAction, this);
         registerListener('backbuttom', this.dobackbuttom, this);
         this.recordId = this.getUrlParamValue(window.location.href, 'recordId');
         if(this.recordId){
@@ -164,8 +158,6 @@ export default class Rh_accomplishment extends NavigationMixin(LightningElement)
             result.forEach(elt => { 
             let objetRep = {};
             objetRep = {
-                "Statut": elt?.RH_Status__c,
-                "Description": elt?.RH_Description__c,
                 "date": elt?.RH_Date__c,
                 "Submiter":  elt.RH_Submiter__r?.Name.length>25? elt.RH_Submiter__r?.Name.slice(0, 25) +'...': elt.RH_Submiter__r?.Name,
                 "id" : elt.Id,
@@ -185,29 +177,30 @@ export default class Rh_accomplishment extends NavigationMixin(LightningElement)
             ];
             if(elt?.RH_Status__c == 'Draft'){
                 Actions.push( {
-                    name:'Enabled',
-                    label:'Enabled',
+                    name:'Activate',
+                    label:'Activate',
                     iconName:'action:preview'
                 });   
             }
             objetRep.actions = Actions;
+            const badge={name: 'badge', class:self.classStyle(elt?.RH_Status__c),label: elt?.RH_Status__c}
+            objetRep.addons={badge};
             this.itemCard.push(objetRep);
             }); 
             this.setviewsList( this.itemCard)
         }).catch(error => {
             console.error('Error:', error);
         }).finally(() => {
-            this.startSpinner(false)
+            this.startSpinner(false);
         });
     }
 
     filterAccomplishment(event){
         this.startSpinner(true);
         let title= event.detail.title;
-        let description= event.detail.description;
         let status= event.detail.status;
 
-        filterAccomplishment({title: title ,description: description , status: status })
+        filterAccomplishment({title: title , status: status })
         .then(result => {
             console.log('result', result);
             if(result){
@@ -216,8 +209,6 @@ export default class Rh_accomplishment extends NavigationMixin(LightningElement)
                 result.forEach(elt => { 
                     let objetRep = {};
                     objetRep = {
-                        "Statut": elt?.RH_Status__c,
-                        "Description": elt?.RH_Description__c,
                         "date": elt?.RH_Date__c,
                         "Submiter": elt.RH_Submiter__r?.Name.length>25? elt.RH_Submiter__r?.Name.slice(0, 25) +'...': elt.RH_Submiter__r?.Name,
                         "id" : elt.Id,
@@ -237,13 +228,15 @@ export default class Rh_accomplishment extends NavigationMixin(LightningElement)
                     ];
                     if(elt?.RH_Status__c == 'Draft'){
                         Actions.push( {
-                            name:'Enabled',
-                            label:'Enabled',
+                            name:'Activate',
+                            label:'Activate',
                             iconName:'action:preview'
                         });   
                     }
                     objetRep.actions = Actions;
                     console.log(objetRep);
+                    const badge={name: 'badge', class:self.classStyle(elt?.RH_Status__c),label: elt?.RH_Status__c}
+                    objetRep.addons={badge};
                     this.itemCard.push(objetRep);
                 }); 
                 this.setviewsList( this.itemCard)
@@ -257,6 +250,18 @@ export default class Rh_accomplishment extends NavigationMixin(LightningElement)
         }).finally(() => {
             this.startSpinner(false)
         });
+    }
+
+    classStyle(className){
+
+        switch(className){
+            case 'Active':
+                return "slds-float_left slds-theme_success";
+            case 'Draft':
+                return "slds-float_left slds-theme_info";
+            default:
+                return "slds-float_left slds-theme_alt-inverse";
+        }
     }
 
     setviewsList(items){
@@ -607,7 +612,11 @@ export default class Rh_accomplishment extends NavigationMixin(LightningElement)
         activateAccomplishment({accomId: idAcc, status:this.status})
         .then(result =>{
             console.log('accomplishment --> ' , result);
-            this.handleCancelDetail();
+            if(this.recordId){
+                this.goToRequestDetail(this.recordId);
+            }else{
+                this.handleCancelDetail();
+            }
             this.showToast('success', 'Success', 'Accomplishment have been successfuly activated');
         }).catch(error =>{
             console.error('error',error)
@@ -615,6 +624,10 @@ export default class Rh_accomplishment extends NavigationMixin(LightningElement)
         }).finally(() => {
             this.startSpinner(false)
         });
+    }
+
+    handleActivate(){
+        this.activateAccom(this.recordId);
     }
 
     deleteFiles(idRec, redirect=false){
@@ -643,7 +656,9 @@ export default class Rh_accomplishment extends NavigationMixin(LightningElement)
     }
 
     handleDeleteValue(){
-        this.deleteAccomplishment(this.recordId);
+         this.deleteId = this.recordId;
+         this.showModalDelete();
+        //this.deleteAccomplishment(this.recordId);
     }
 
     handleCancelEdit(){
@@ -704,6 +719,14 @@ export default class Rh_accomplishment extends NavigationMixin(LightningElement)
         this.handleCancelDetail();
     }
 
+    doModalAction(event){
+        if(event.action == "OK_DELETE"){
+            this.deleteAccomplishment(this.deleteId);
+        }
+        this.ShowModal(false,null,[]);
+        event.preventDefault();
+    }
+
     ShowModal(show,text,actions,extra={}){
         fireEvent(this.pageRef, 'Modal', {show,text,actions,extra});
     }
@@ -719,11 +742,12 @@ export default class Rh_accomplishment extends NavigationMixin(LightningElement)
     handleCardAction(event){
         console.log('event parent ' +JSON.stringify(event.detail));
         const info=event.detail;
-        if(info.extra.item=='Enabled'){
+        if(info.extra.item=='Activate'){
             this.activateAccom(info?.data?.id);
         }else{
             if(info.extra.item=='Delete'){
-                this.deleteAccomplishment(info?.data?.id);
+                this.deleteId = info?.data?.id;
+                this.showModalDelete();
             }else{
                this.goToRequestDetail(info?.data?.id);
             } 

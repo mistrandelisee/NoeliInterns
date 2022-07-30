@@ -4,12 +4,11 @@ import { labels } from 'c/rh_label';
 import { CurrentPageReference, NavigationMixin } from 'lightning/navigation';
 import getrequest from '@salesforce/apex/RH_Request_controller.getrequest';
 import retreiveRequest from '@salesforce/apex/RH_Request_controller.retreiveRequest';
-import getRecordType from '@salesforce/apex/RH_Request_controller.getRecordType';
+import getAllRecordType from '@salesforce/apex/RH_Request_controller.getAllRecordType';
 import newRequest from '@salesforce/apex/RH_Request_controller.newRequest';
 import deleteRequest from '@salesforce/apex/RH_Request_controller.deleteRequest';
 import updateRequest from '@salesforce/apex/RH_Request_controller.updateRequest';
 import getContacts from '@salesforce/apex/RH_Request_controller.getContacts';
-import getAdressByIdList from '@salesforce/apex/RH_Request_controller.getAdressedCCByListId';
 import filterRequest from '@salesforce/apex/RH_Request_controller.filterRequest';
 
 const columns = [
@@ -79,11 +78,12 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
     @track showSpinner = false;
     @track requestType;
     allContact=[];
-    activeContact=[];
     @track inputFormFilter=[];
     @track isOpenDualBox=false;
     @track listConts=[];
     @track listContsValue=[];
+    allRecType = [];
+    natureOpt;
     todo;
 
     keysFields = { AddressedTo: 'ok' };//non used now
@@ -118,6 +118,10 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
         {
             label: 'Submited',
             value: 'Submited'
+        },
+        {
+            label: 'Responded',
+            value: 'Responded'
         }
     ];
 
@@ -150,13 +154,22 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
                 ly_lg:'6'
             },
             {
-                label:this.l.CreatedDate,
-                placeholder:this.l.CreatedDate,
-                name:'CreatedDate',
+                label:'From',
+                placeholder:'From',
+                name:'From',
                 required:false,
                 type: 'Date',
-                ly_md: '6',
-                ly_lg: '6',
+                ly_md: '3',
+                ly_lg: '3',
+            },
+            {
+                label:'To',
+                placeholder:'To',
+                name:'To',
+                required:false,
+                type: 'Date',
+                ly_md: '3',
+                ly_lg: '3',
             }];
     }
 
@@ -164,11 +177,12 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
     //     getReq({data,errr}){
     //         console.log('@@@@@objectReturn');
     filterRequest(event){
-        this.showSpinner = true;
         let reqType= event.detail.RequestType;
         let status= event.detail.status;
-        let createdDate= event.detail.CreatedDate;
-        filterRequest({requestType: reqType, status: status, createdDate: createdDate})
+        let dateFrom= event.detail.From;
+        let dateTo = event.detail.To;
+        this.startSpinner(true);
+        filterRequest({requestType: reqType, status: status, dateFrom: dateFrom, dateTo: dateTo})
             .then(result => {
                 this.tabReq = [];
                 const self = this;
@@ -176,7 +190,6 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
                     let objetRep = {};
                     objetRep = {
                         "Request": elt?.RH_Description__c,
-                        "Statut": elt?.Rh_Status__c,
                         "CreatedDate": (new Date(elt.CreatedDate)).toLocaleString(),
                         "AddressedTo": elt.RH_Addressed_To__r?.Name,
                         "Type": elt.RecordType.Name,
@@ -190,26 +203,30 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
                     }
 
                     console.log('@@@@@objectReturn' + objetRep);
+                    const badge={name: 'badge', class:self.classStyle(elt?.Rh_Status__c),label: elt?.Rh_Status__c}
+                    objetRep.addons={badge};
                     this.tabReq.push(objetRep);
                 });
                 // this.refreshTable(this.tabReq); 
                 this.setviewsList(this.tabReq)
-                this.showSpinner = false;
-            })
+            }).catch(error => {
+                console.error('Error:', error);
+            }).finally(() => {
+               this.startSpinner(false)
+            });
     }
 
     getRequest() {
-        this.showSpinner = true;
+        this.startSpinner(true);
         getrequest()
             .then(result => {
                 this.tabReq = [];
-                this.buildFormFilter(this.optionsRecord);
+                this.buildFormFilter(this.allRecType);
                 const self = this;
                 result.forEach(elt => {
                     let objetRep = {};
                     objetRep = {
                         "Request": elt?.RH_Description__c,
-                        "Statut": elt?.Rh_Status__c,
                         "CreatedDate": (new Date(elt.CreatedDate)).toLocaleString(),
                         "AddressedTo": elt.RH_Addressed_To__r?.Name,
                         "Type": elt.RecordType.Name,
@@ -223,52 +240,34 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
                     }
 
                     console.log('@@@@@objectReturn' + objetRep);
+                    const badge={name: 'badge', class:self.classStyle(elt?.Rh_Status__c),label: elt?.Rh_Status__c}
+                    objetRep.addons={badge};
                     this.tabReq.push(objetRep);
                 });
                 // this.refreshTable(this.tabReq); 
                 this.setviewsList(this.tabReq)
-                this.showSpinner = false;
-            })
-    }
-    /*getAdressCC() {
-        getAdressedCC()
-            .then(result => {
-                if (result) {
-                    result.forEach(elt => {
-                        let objetRep = {};
-                        objetRep = {
-                            "Name": elt?.Name,
-                            "Email": elt?.Email,
-                            "Role": elt.RH_Role__c
-                        }
-                        this.dataCC.push(objetRep);
-                    });
-                }
-            })
-    }*/
-    /*getAllContact() {
-        getAdressedCC()
-            .then(result => {
-                console.log('contact', result);
-                 result.forEach(plValue => {
-                    let picklistVal = {};
-                    picklistVal = {
-                        label: plValue.Name,
-                        value: plValue.Id
-                    };
-                    console.log(picklistVal);
-                    this.allContact.push(picklistVal);
-                    if(plValue.RH_Status__c == 'Active'){
-                        this.activeContact.push(picklistVal);
-                    }
-                });
-                console.log(this.allContact);
-                console.log(this.activeContact);
             }).catch(error => {
                 console.error('Error:', error);
+            }).finally(() => {
+                this.startSpinner(false)
             });
-    }*/
+    }
 
+    classStyle(className){
+
+        switch(className){
+            case 'Approved':
+                return "slds-float_left slds-theme_success";
+            case 'Draft':
+                return "slds-float_left slds-theme_info";
+            case 'Submited':
+                return "slds-float_left slds-theme_warning";
+            case 'Rejected':
+                return "slds-float_left slds-theme_error";
+            default:
+                return "slds-float_left slds-theme_alt-inverse";
+        }
+    }
 
     handleCardAction(event) {
         console.log('event parent ' + JSON.stringify(event.detail));
@@ -289,10 +288,20 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
             label: this.l.Note,
             placeholder: this.l.Note,
             name: 'RH_Note',
-            value: profileinformation?.RH_Note__c,
+            value: profileinformation?.RH_Reason__c,
             required: true,
             ly_md: '6',
             ly_lg: '6'
+        }
+
+        let objAns = {
+            
+            label:'Answer',
+            name:'RH_Reason',
+            value:profileinformation?.RH_Answer__c,
+            required:true,
+            ly_md:'6', 
+            ly_lg:'6'
         }
 
         console.log('@@@@@RecordType.Name' + profileinformation?.RecordType.Name);
@@ -351,6 +360,22 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
                     ly_lg: '6'
                 },
                 {
+                    label:'Date Submit',
+                    name:'RH_Date_Submit__c',
+                    value:profileinformation?.RH_Date_Submit__c ? profileinformation?.RH_Date_Submit__c : 'Not available For Now',
+                    required:true,
+                    ly_md:'6', 
+                    ly_lg:'6'
+                },
+                {
+                    label:'Date Response',
+                    name:'RH_Date_Response__c',
+                    value:profileinformation?.RH_Date_Response__c ? profileinformation?.RH_Date_Response__c : 'Not available For Now',
+                    required:true,
+                    ly_md:'6', 
+                    ly_lg:'6'
+                },
+                {
                     label: this.l.Description,
                     placeholder: this.l.Description,
                     name: 'RH_Description',
@@ -358,18 +383,9 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
                     required: true,
                     ly_md: '6',
                     ly_lg: '6'
-                },
-                {
-                    label: this.l.Note,
-                    placeholder: this.l.Note,
-                    name: 'RH_Note',
-                    value: profileinformation?.RH_Note__c,
-                    required: true,
-                    ly_md: '6',
-                    ly_lg: '6'
                 }
             ];
-            if (profileinformation?.RH_Note__c != null) {
+            if (profileinformation?.RH_Reason__c != null) {
                 
                 this.formPersonanalInputDetails.push(objNte);
             }
@@ -385,15 +401,6 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
                     options: this.addressedRecord,
                     value: profileinformation?.RH_Addressed_To__r?.Name,
                     required: false,
-                    ly_md: '6',
-                    ly_lg: '6'
-                },
-                {
-                    label: this.l.AddressedCc,
-                    placeholder: this.l.AddressedCc,
-                    name: 'RH_AddressedCc',
-                    required: true,
-                    value: profileinformation?.RH_Addressed_Cc__c,
                     ly_md: '6',
                     ly_lg: '6'
                 },
@@ -419,6 +426,22 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
                     ly_lg: '6'
                 },
                 {
+                    label:'Date Submit',
+                    name:'RH_Date_Submit__c',
+                    value:profileinformation?.RH_Date_Submit__c ? profileinformation?.RH_Date_Submit__c : 'Not available For Now',
+                    required:true,
+                    ly_md:'6', 
+                    ly_lg:'6'
+                },
+                {
+                    label:'Date Response',
+                    name:'RH_Date_Response__c',
+                    value:profileinformation?.RH_Date_Response__c ? profileinformation?.RH_Date_Response__c : 'Not available For Now',
+                    required:true,
+                    ly_md:'6', 
+                    ly_lg:'6'
+                },
+                {
                     label: this.l.Description,
                     placeholder: this.l.Description,
                     name: 'RH_Description',
@@ -426,20 +449,15 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
                     required: true,
                     ly_md: '6',
                     ly_lg: '6'
-                },
-                {
-                    label: this.l.Note,
-                    placeholder: this.l.Note,
-                    name: 'RH_Note',
-                    value: profileinformation?.RH_Note__c,
-                    required: true,
-                    ly_md: '6',
-                    ly_lg: '6'
                 }
             ];
-            if (profileinformation?.RH_Note__c != null) {
+            if (profileinformation?.RH_Reason__c != null) {
                 
                 this.formPersonanalInputDetails.push(objNte);
+            }
+            if (profileinformation?.RH_Answer__c != null) {
+                
+                this.formPersonanalInputDetails.push(objAns);
             }
         }
         if (profileinformation?.RecordType.Name == 'Holiday' || profileinformation?.RecordType.Name == 'Permisson') {
@@ -478,15 +496,6 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
                     ly_lg: '6'
                 },
                 {
-                    label: this.l.Description,
-                    placeholder: this.l.Description,
-                    name: 'RH_Description',
-                    value: profileinformation?.RH_Description__c,
-                    required: true,
-                    ly_md: '6',
-                    ly_lg: '6'
-                },
-                {
                     label: this.l.StartDate,
                     placeholder: this.l.StartDate,
                     name: 'RH_StartDate',
@@ -506,10 +515,34 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
                     ly_md: '6',
                     ly_lg: '6',
                     isDatetime: true
+                },
+                {
+                    label:'Date Submit',
+                    name:'RH_Date_Submit__c',
+                    value:profileinformation?.RH_Date_Submit__c ? profileinformation?.RH_Date_Submit__c : 'Not available For Now',
+                    required:true,
+                    ly_md:'6', 
+                    ly_lg:'6'
+                },
+                {
+                    label:'Date Response',
+                    name:'RH_Date_Response__c',
+                    value:profileinformation?.RH_Date_Response__c ? profileinformation?.RH_Date_Response__c : 'Not available For Now',
+                    required:true,
+                    ly_md:'6', 
+                    ly_lg:'6'
+                },
+                {
+                    label: this.l.Description,
+                    placeholder: this.l.Description,
+                    name: 'RH_Description',
+                    value: profileinformation?.RH_Description__c,
+                    required: true,
+                    ly_md: '6',
+                    ly_lg: '6'
                 }
-                
             ];
-            if (profileinformation?.RH_Note__c != null) {
+            if (profileinformation?.RH_Reason__c != null) {
                 
                 this.formPersonanalInputDetails.push(objNte);
             }
@@ -589,15 +622,6 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
                     options: this.addressedRecord,
                     value: profileinformation?.RH_Addressed_To__r?.Id,
                     required: false,
-                    ly_md: '6',
-                    ly_lg: '6'
-                },
-                {
-                    label: this.l.AddressedCc,
-                    placeholder: this.l.AddressedCc,
-                    name: 'RH_AddressedCc',
-                    required: true,
-                    value: profileinformation?.RH_Addressed_Cc__c,
                     ly_md: '6',
                     ly_lg: '6'
                 },
@@ -746,22 +770,33 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
             });
     }
 
-    getRecordType(){
-        getRecordType()
+    getAllRecordType(){
+        getAllRecordType()
             .then(result => {
-                this.optionsRecord = result.map(plValue => {
+                this.allRecType = result.map(plValue => {
                     return {
                         label: plValue.Name,
                         value: plValue.Id
                     };
                 });
-                console.log('recordtype',result);
+                result.forEach(plValue => {
+                    if(plValue.Name != 'Explanation'){
+                        this.optionsRecord.push(
+                           {
+                                label: plValue.Name,
+                                value: plValue.Id
+                            }
+                        ) ;
+                    }
+                });
                 this.optionsRecordList = result;
+                console.log('recordalltype',result);
             })
     }
 
     handleChangeValue() {
         this.isNew = true;
+        //this.getRecordType();
         this.buildform();
     }
 
@@ -789,10 +824,11 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
     }
 
     handleDeleteValue() {
+        this.startSpinner(true);
         deleteRequest({ requestId: this.recordId })
             .then(result => {
                 if (result == 'OK') {
-                    this.showToast('success', 'success', 'OK');
+                    this.showToast('success', 'success', 'Request have been deleted successfully');
                     // this.getRequest();
                     this.handleCancelDetail();
                 } else {
@@ -800,6 +836,8 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
                 }
             }).catch(error => {
                 console.error('Error:', error);
+            }).finally(() => {
+                this.startSpinner(false);
             });
     }
 
@@ -827,21 +865,6 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
                 console.error('Error:', error);
             });
     }
-
-    // getAAdressedTo(){
-    //     getAdressedTo()
-    //     .then(result =>{
-    //         this.addressedRecord = result.map(plValue => {
-    //                         return {
-    //                             label: plValue.Name,
-    //                             value: plValue.Id
-    //                         };
-    //                     });
-    //         this.buildformDetail(result);
-    //     }).catch(error => {
-    //         console.error('Error:', error);
-    //     });
-    // }
 
     handleCancelEdit() {
         this.editMode = false;
@@ -904,18 +927,13 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
                 if(result.RecordType.Name == 'Complain'){
                     this.isComplain = true;
                 }
-                if(result.RH_Addressed_Cc__c){
-                    this.listContsValue = result.RH_Addressed_Cc__c.split(',');
+                let NameAdressed;
+                if(result.Adressedccs__r){
+                    this.listContsValue = result.Adressedccs__r.map(elt => elt.RH_Contact__c);
+                    let tabName = result.Adressedccs__r.map(elt => elt.RH_Contact__r.Name);
+                    NameAdressed = tabName.join(',');
                 }
-                getAdressByIdList({ ids: this.listContsValue })
-                .then(res => {
-                    let tabName = res.map(elt => elt.Name);
-                    let NameAdressed = tabName.join(',');
-                    this.buildformDetail(this.resultRecord, NameAdressed);
-                    console.log('name', NameAdressed);
-                }).catch(error => {
-                    console.error(error);
-                });
+                this.buildformDetail(this.resultRecord, NameAdressed);
                 this.requestType = result?.RecordType?.Name;
                 if (result.Rh_Status__c == 'Draft') {
                     this.isDraft = true;
@@ -928,7 +946,6 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
     }
 
     connectedCallback() {
-       // this.getAllContact();
         registerListener('backbuttom', this.dobackbuttom, this);
         registerListener('ModalAction', this.doModalAction, this);
         registerListener('valueMember', this.dovalueMember, this);    
@@ -936,7 +953,7 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
         if (this.recordId) {
             this.detailPage(this.recordId);
         } else {
-            this.getRecordType();
+            this.getAllRecordType();
             this.getRequest();
         }
     }
@@ -1005,11 +1022,11 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
     }
 
     handleSendValue() {
-
-        updateRequest({ requestId: this.recordId })
+        this.startSpinner(true);
+        updateRequest({ requestId: this.recordId})
             .then(result => {
                 if (result == 'OK') {
-                    this.showToast('success', 'success', 'OK');
+                    this.showToast('success', 'success', 'Request have been send successfully');
                     // this.getRequest();
                     // this.handleCancelDetail();
                     this.goToRequestDetail(this.recordid);
@@ -1018,8 +1035,9 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
                 }
             }).catch(error => {
                 console.error(error);
+            }).finally(() => {
+                this.startSpinner(false);
             });
-
     }
 
     handleCloneValue() {
@@ -1050,7 +1068,6 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
         this.cloneMode = false;
     }
     handleSaveClone() {
-        this.showSpinner = true;
         let result = this.save();
         if (result.isvalid) {
             this.emp = { ...this.emp, ...result.obj };
@@ -1064,17 +1081,15 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
             if (currentDate > this.emp.RH_StartDate || this.emp.RH_StartDate > this.emp.RH_EndDate) {
                 this.showToast('error', 'Error', 'Take another date');
             } else {
+                this.natureOpt = 'cloned';
                 this.createRequest();
             }
-            this.showSpinner = false;
         } else {
             console.log(`Is not valid `);
-            this.showSpinner = false;
         }
         console.log(`emp`, this.emp);
     }
     handleSaveCloneAndSend() {
-        this.showSpinner = true;
         let result = this.save();
         if (result.isvalid) {
             this.emp = { ...this.emp, ...result.obj };
@@ -1088,18 +1103,16 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
             if (currentDate > this.emp.RH_StartDate || this.emp.RH_StartDate > this.emp.RH_EndDate) {
                 this.showToast('error', 'Error', 'Take another date');
             } else {
+                this.natureOpt = 'cloned and send';
                 this.createRequest();
             }
-            this.showSpinner = false;
         } else {
             console.log(`Is not valid `);
-            this.showSpinner = false;
         }
         console.log(`emp`, this.emp);
 
     }
     handleSaveEditAndSend() {
-        this.showSpinner = true;
         let result = this.save();
         if (result.isvalid) {
             this.emp = { ...this.emp, ...result.obj };
@@ -1115,18 +1128,16 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
             if (currentDate > this.emp.RH_StartDate || this.emp.RH_StartDate > this.emp.RH_EndDate) {
                 this.showToast('error', 'Error', 'Take another date');
             } else {
+                this.natureOpt = 'edited and send';
                 this.createRequest();
             }
-            this.showSpinner = false;
         } else {
             console.log(`Is not valid `);
-            this.showSpinner = false;
         }
         console.log(`emp`, this.emp);
     }
 
     handleSaveEdit() {
-        this.showSpinner = true;
         let result = this.save();
         if (result.isvalid) {
             this.emp = { ...this.emp, ...result.obj };
@@ -1142,18 +1153,16 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
             if (currentDate > this.emp.RH_StartDate || this.emp.RH_StartDate > this.emp.RH_EndDate) {
                 this.showToast('error', 'Error', 'Take another date');
             } else {
+                this.natureOpt = 'edited';
                 this.createRequest();
             }
-            this.showSpinner = false;
         } else {
             console.log(`Is not valid `);
-            this.showSpinner = false;
         }
         console.log(`emp`, this.emp);
     }
 
     handleSave() {
-        this.showSpinner = true;
         let result = this.save();
         if (result.isvalid) {
             this.emp = { ...this.emp, ...result.obj };
@@ -1167,18 +1176,16 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
             if (currentDate > this.emp.RH_StartDate || this.emp.RH_StartDate > this.emp.RH_EndDate) {
                 this.showToast('error', 'Error', 'Take another date');
             } else {
+                this.natureOpt = 'created';
                 this.createRequest();
             }
-            this.showSpinner = false;
         } else {
             console.log(`Is not valid `);
-            this.showSpinner = false;
         }
         console.log(`emp`, this.emp);
     }
 
     handleSaveAndSend() {
-        this.showSpinner = true;
         let result = this.save();
         if (result.isvalid) {
             this.emp = { ...this.emp, ...result.obj };
@@ -1192,12 +1199,11 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
             if (currentDate > this.emp.RH_StartDate || this.emp.RH_StartDate > this.emp.RH_EndDate) {
                 this.showToast('error', 'Error', 'Take another date');
             } else {
+                this.natureOpt = 'created and send';
                 this.createRequest();
             }
-            this.showSpinner = false;
         } else {
             console.log(`Is not valid `);
-            this.showSpinner = false;
         }
         console.log(`emp`, this.emp);
     }
@@ -1221,6 +1227,7 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
     createRequest() {
         console.log('this.emp ///> ', this.emp);
         this.emp.RecordT = this.typeId;
+        this.startSpinner(true);
         newRequest({
             Requestjson: JSON.stringify(this.emp)
         })//{ con: this.emp }
@@ -1229,7 +1236,7 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
                 if (result.error) {
                     this.showToast('error', 'Error', result.msg);
                 } else {
-                    this.showToast('success', 'success', 'ok');
+                    this.showToast('success', 'success', 'Request have been '+this.natureOpt+' successfully');
                     // this.handleCancelDetail();
                     this.goToRequestDetail(result.RequestUser.Id);
                     // this.tabReq = [];
@@ -1240,6 +1247,7 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
             .catch(error => {
                 console.error('Error:', error);
             }).finally(() => {
+                this.startSpinner(false);
             });
     }
 
@@ -1247,9 +1255,12 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
         fireEvent(this.pageRef, 'Modal', { show, text, actions, extra });
     }
 
-    showToast(variant, title, message) {
-        let toast = this.template.querySelector('c-rh_toast');
-        toast?.showToast(variant, title, message);
+    showToast(variant, title, message){
+        fireEvent(this.pageRef, 'Toast', {variant, title, message});
+    }
+
+    startSpinner(b){
+        fireEvent(this.pageRef, 'Spinner', {start:b});
     }
 
     dobackbuttom(event) {

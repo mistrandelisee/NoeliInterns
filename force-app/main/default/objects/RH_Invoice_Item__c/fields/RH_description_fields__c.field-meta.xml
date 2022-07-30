@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>RH_description_fields__c</fullName>
+    <externalId>false</externalId>
+    <label>description Fields</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>MultiselectPicklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>RH_ProjectId__c</fullName>
+                <default>false</default>
+                <label>Project Name</label>
+            </value>
+            <value>
+                <fullName>RH_Ressource__c</fullName>
+                <default>false</default>
+                <label>Resource Name</label>
+            </value>
+            <value>
+                <fullName>RH_Subject__c</fullName>
+                <default>false</default>
+                <label>Subject</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+    <visibleLines>4</visibleLines>
+</CustomField>

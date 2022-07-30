@@ -22,6 +22,7 @@ export default class Rh_user_creation extends NavigationMixin(LightningElement) 
     l={...labels}
     action;
     @api groups;
+    LANGUAGES=[];
     roles=[];
     formInputs=[];
     record;
@@ -75,6 +76,21 @@ export default class Rh_user_creation extends NavigationMixin(LightningElement) 
                 name:'wGroup',
                 picklist: true,
                 options: this.groups,
+                value: '',
+                maxlength:100,
+                ly_md:'6', 
+                ly_lg:'6'
+            },
+            {
+                label:'Language',
+                name:'Language',
+                picklist: true,
+                // options: this.LANGUAGES,
+                options: [
+                    { label: 'French', value: 'French' },
+                    { label: 'English', value: 'English' },
+                    { label: 'Italian', value: 'Italian' }
+                ],
                 value: '',
                 maxlength:100,
                 ly_md:'6', 

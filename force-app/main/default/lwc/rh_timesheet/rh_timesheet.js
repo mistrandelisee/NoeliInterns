@@ -56,7 +56,7 @@ export default class Rh_timesheet extends NavigationMixin(LightningElement) {
         TimeSheetEntryCount:this.l.Entries
     };
     fieldsToShow={
-        StartDate:'',EndDate:'',StatusLabel:'',
+        StartDate:'',EndDate:'',
         TimeSheetEntryCount:'',
     };
 
@@ -175,6 +175,8 @@ export default class Rh_timesheet extends NavigationMixin(LightningElement) {
                         Actions=Actions.concat(self.buildUserStatusActions(e.Status));
                         Actions=Actions.concat(self.buildUserRoleActions(e.RHRolec));
                     }*/
+                    const badge={name: 'timesheetBadge', class:self.classStyle(e.Status),label: e.StatusLabel}
+                    item.addons={badge};
                     if (DRAFT_STATUS.toLowerCase() == e.Status?.toLowerCase()) {//if draft
                         if (self.isMine) {//is mine
                             //add SUBMIT_ACTION ,DELETE_ACTION  
@@ -203,6 +205,22 @@ export default class Rh_timesheet extends NavigationMixin(LightningElement) {
            
             this.startSpinner(false);
         })
+    }
+    classStyle(className){
+
+        switch(className){
+            case 'approvato':
+                return "slds-float_left slds-theme_success";
+            case 'nuovo':
+                return "slds-float_left slds-theme_info";
+            case 'inviato':
+                return "slds-float_left slds-theme_shade";
+            case 'reject':
+                return "slds-float_left slds-theme_error";
+            default:
+                return "slds-float_left slds-theme_alt-inverse";
+        }
+
     }
     handleNewCreation(event){
         console.log('handleNewCreation :', event.detail.action);

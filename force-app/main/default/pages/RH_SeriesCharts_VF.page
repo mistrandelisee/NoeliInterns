@@ -1,4 +1,5 @@
 <apex:page controller="RH_SeriesCharts_controller" showHeader="false" >
+    <apex:includeLightning />
    	<apex:slds />
      <style type='text/css'>
        .my-legend .donut-title {
@@ -120,78 +121,117 @@
           <div  class="slds-col slds-p-top_medium  slds-size_1-of-1"  >
             <div class='TitleCompoment'> Annual performance | {!currentYear}  </div> 
           </div>
-          <div  class="slds-col slds-p-top_medium  slds-size_1-of-2"  id="chart">
-                <div class='my-legend'>
-                <div class='donut-title'>By month</div>
-                <div class='legend-title'>The legend</div>
-                    <div class='legend-scale'>
-                      <ul class='legend-labels'>
-                        <li><span style='background:#0b6fce;'></span>Jan</li>
-                        <li><span style='background:#78c953;'></span>Feb</li>
-                        <li><span style='background:#e27001;'></span>Mar</li>
-                        <li><span style='background:#a845dc;'></span>Apr</li>
-                        <li><span style='background:#f3d904;'></span>May</li>
-                        <li><span style='background:#a53711;'></span>Jun</li>
-                        <li><span style='background:#66e9bd;'></span>Jul</li>
-                        <li><span style='background:#0b24be;'></span>Aug</li>
-                        <li><span style='background:#419249;'></span>Sep</li>
-						<li><span style='background:#b6e32e;'></span>Oct</li>
-                        <li><span style='background:#641ccf;'></span>Nov</li>
-                        <li><span style='background:#f96fb7;'></span>Dec</li>                         
-                      </ul>
-                    </div> 
-                </div>
-             <apex:chart data="{!Opportunities}" height="300px" width="400px"  >
-                <!--<apex:legend position="bottom" id="legendChart"/>-->
-                <apex:pieSeries labelField="percent" dataField="allData" donut="20"  >
-                    <apex:chartLabel display="middle" orientation="horizontal" 
-                        font="bold 12px Helvetica" field="percent" />
-                    <!-- -->
-                    <apex:chartTips height="30" width="215" rendererFn="renderDetailChartTip"/> 
-                </apex:pieSeries>
-            </apex:chart>
-          </div>
-          <div  class="slds-col slds-p-top_medium slds-size_1-of-2 " id="detailChart">
-               <apex:outputPanel id="detail">
+          
+
+          <apex:outputPanel rendered="{!renderChart}" layout="none">
+            <div  class="slds-col slds-p-top_medium  slds-size_1-of-2"  id="chart">
+              <div class='my-legend'>
+              <div class='donut-title'>By month</div>
+              <div class='legend-title'>The legend</div>
+                  <div class='legend-scale'>
+                    <ul class='legend-labels'>
+                      <li><span style='background:#0b6fce;'></span>Jan</li>
+                      <li><span style='background:#78c953;'></span>Feb</li>
+                      <li><span style='background:#e27001;'></span>Mar</li>
+                      <li><span style='background:#a845dc;'></span>Apr</li>
+                      <li><span style='background:#f3d904;'></span>May</li>
+                      <li><span style='background:#a53711;'></span>Jun</li>
+                      <li><span style='background:#66e9bd;'></span>Jul</li>
+                      <li><span style='background:#9c803b;'></span>Aug</li>
+                      <li><span style='background:#419249;'></span>Sep</li>
+                      <li><span style='background:#b6e32e;'></span>Oct</li>
+                      <li><span style='background:#641ccf;'></span>Nov</li>
+                      <li><span style='background:#f96fb7;'></span>Dec</li>                         
+                    </ul>
+                  </div> 
+              </div>
+              <apex:chart data="{!Opportunities}" height="300px" width="400px"  >
+                  <!--<apex:legend position="bottom" id="legendChart"/>-->
+                  <apex:pieSeries colorSet="#0b6fce,#78c953,#e27001,#a845dc,#f3d904,#a53711,#66e9bd,#9c803b,#419249,#b6e32e,#641ccf,#f96fb7"
+                                  labelField="percent" dataField="allData" donut="20"  highlight="false" >
+                      <apex:chartLabel display="middle" orientation="horizontal" 
+                          font="bold 12px Helvetica" field="percent" />
+                      <!-- -->
+                      <apex:chartTips height="30" width="215" rendererFn="renderDetailChartTip"/> 
+                  </apex:pieSeries>
+              </apex:chart>
+            </div>
+          </apex:outputPanel>
+          
+
+          <apex:outputPanel id="detail" rendered="{!renderDetail}" layout="none">
+              <div  class="slds-col slds-p-top_medium slds-size_1-of-2 " id="detailChart">
                     <div class='my-legend'>
-                    <div class='donut-title'>Of {!stringCurrentMonth}</div>
+                    <div class='donut-title' id='currentMonth'>Of {!stringCurrentMonth}</div>
                     <div class='legend-title'>The legend</div>
                         <div class='legend-scale'>
                           <ul class='legend-labels'>
-                            <li><span style='background:#008000;'></span>Actived</li>
+                            <li><span style='background:#008000;'></span>Approved</li>
                             <li><span style='background:#FF0000;'></span>Rejected</li>
-                            <li><span style='background:#ff9100;'></span>Pending</li>                         
+                            <li><span style='background:#ff9100;'></span>Pending</li>
+                            <li><span style='background:#9695a1;'></span>Draft</li>                          
                           </ul>
                         </div> 
                     </div>
-                   <!--
-                   <apex:outputText style="font-style:italic" value="This is {0} ">
-                   		<apex:param value="{!approved}"/>
-               	   </apex:outputText>-->
-                     <apex:chart data="{!Detail}" height="300px" width="300px" >
+                    <!--
+                    <apex:outputText style="font-style:italic" value="This is {0} ">
+                        <apex:param value="{!approved}"/>
+                    </apex:outputText>-->
+                      <apex:chart data="{!Detail}" height="300px" width="300px" >
                         <!--<apex:legend position="bottom"/>-->
                 
-                        <apex:pieSeries labelField="percent" dataField="allRecord" donut="0" colorSet="#008000,#FF0000,#ff9100">
+                        <apex:pieSeries labelField="percent" dataField="allRecord" donut="0" colorSet="#008000,#FF0000,#ff9100,#9695a1" highlight="false"  tips="false">
                             <apex:chartLabel display="middle" orientation="horizontal" 
                                 font="bold 18px Helvetica" />
-                           <apex:chartTips height="30" width="100" rendererFn="renderChartTip"/> 
+                          <!-- Not Define for this graph don't delete
+                            <apex:chartTips height="30" width="100" rendererFn="renderChartTip"/>  --> 
                         </apex:pieSeries>
                     </apex:chart>
-                </apex:outputPanel>   
-          </div>
-        </div>
-        
+                  
+              </div>
+            </apex:outputPanel>  
+            </div> 
+          
+          
+         
         <apex:form >
             <apex:actionFunction name="setCurrentMonth" action="{!setCurrentMonth}" rerender="detail">
-                    <apex:param name="currentMonth" assignTo="{!currentMonth}" value="" />
+                  <apex:param name="currentMonth" assignTo="{!currentMonth}" value="" />
                 	<apex:param name="stringCurrentMonth" assignTo="{!stringCurrentMonth}" value="" />
             </apex:actionFunction>
         </apex:form>
          
     </div>
+
+      <div id="rh_illustration" style="width: 490px;margin: auto;">
+        <!-- Lightning Web Component will be included here. -->
+      </div>
     
-    
+      
+   
+
+   
+       
     <script>
+      setTimeout(function(){
+        if({!noData}){
+          $Lightning.use(
+             "c:rh_AppForVfPage", // Name of Aura Dependency app where c is namespace.
+             function() { // Callback function
+                 $Lightning.createComponent(
+                     "c:rh_illustration", // Name of Lightning Component where c is namespace.
+                     {type : 'fish',
+                      title: 'No Request  data  for this year',
+                      size: 'large'
+                    }, // attribute parameters
+                     "rh_illustration" // Id of the element where Lightning Component will be rendered.
+                 );
+             }
+         );
+        } 
+      }, 2);
+      
+
     	function renderDetailChartTip(event) {
             
             //debugger;
@@ -207,9 +247,11 @@
             this.setTitle('Click to view more details of '+ monthString);
             
             var e = window.event;
-			var t = e?.target || e?.srcElement;
+			      var t = e?.target || e?.srcElement;
             if(t){
             	t.onclick=function(event){
+                let ele = document.getElementById('currentMonth');
+                ele.innerHTML = 'Of '+monthString;
             		d=setCurrentMonth(monthInteger,monthString);
             	};
             }         

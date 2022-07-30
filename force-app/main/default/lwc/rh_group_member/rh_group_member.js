@@ -38,16 +38,18 @@ export default class Rh_group_member extends LightningElement {
    }
 
     connectedCallback(){
+        let lst=[];
         registerListener('valueMember', this.dovalueMember, this);
         console.log('backSource groupe_member --->', this.backSource);
-        this.listContact=this.listContact || [];
-        this.listContactToInsert=this.listContactToInsert || [];
+        console.log('contactMembers ==>', this.contactMembers);
         getContactForGroupe({ })
           .then(result => {
             console.log('Result', result);
             console.log('groupeId ==', this.groupeId);
             this.listOption = this.updateListContact(result.listeContact);
             //this.listId = this.updateId(this.contactMembers);
+            lst = this.updateListContact((this.contactMembers));
+            this.listOption.push(...lst);
             this.listContact =this.ccsUpdate(result.listeContact,'') ;
           })
           .catch(error => {

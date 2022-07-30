@@ -208,60 +208,14 @@ export default class Rh_Projects extends NavigationMixin(LightningElement) {
         fireEvent(this.pageRef, 'Spinner', {start:b});
      }
 
-    //  startSpinner(b){
-    //     let spinner=this.template.querySelector('c-rh_spinner');
-    //     if (b) {    spinner?.start(); }
-    //         else{   spinner?.stop();}
-    // }
 
      showToast(variant, title, message){
         let toast=this.template.querySelector('c-rh_toast');
         toast?.showToast(variant, title, message);
     }
      
-    // errorCallback(error,stack){
-    //     this.error=error;
-    //     this.stack=stack;
-    // }
  getAllprojects(){
-    // let isTrue = false;
-    // getProjectList()
-    // .then(result => {
-    //     console.log('result',result);
-    //     const self=this;
-    //     let tabReq111 = [];
-    //     for(let key in result) {
-    //         let objetRep = {};
-    //         objetRep = {
-    //         "Status": result[key]?.Status__c,
-    //         "StartdDate":  result[key].Start_Date__c,
-    //         "EndDate":  result[key].End_Date__c,
-    //         "Name": result[key].Name,
-    //         "id" : result[key].Id,
-    //         // icon:"standard:people",
-    //         icon:this.icon.project,
-            
-    //         title: result[key]?.Name,
-    //         keysFields:self.keysFields,
-    //         keysLabels:self.keysLabels,
-    //         fieldsToShow:self.fieldsToShow,
-    //         }
     
-    //         console.log('@@@@@objectReturn' + objetRep);
-    //         tabReq111.push(objetRep);
-    //     }
-    //     this.tabReq = tabReq111;
-    //     this.tabReqfilter = tabReq111;
-    //     isTrue = true;
-    //     console.log('isTrue',isTrue);
-    //     this.setviewsList( this.tabReq)
-        
-    // })
-    // .catch(error => {
-    //     console.log('error',error);
-    //     // this.error = error;
-    //     this.returnList = undefined;
-    // });
     return new Promise((resolve, reject) => {
         getProjectList()
         .then(result => {
@@ -284,7 +238,8 @@ export default class Rh_Projects extends NavigationMixin(LightningElement) {
                 keysLabels:self.keysLabels,
                 fieldsToShow:self.fieldsToShow,
                 }
-        
+                const badge={name: 'badge', class:self.classStyle(result[key]?.Status__c),label: result[key]?.Status__c}
+                objetRep.addons={badge};
                 console.log('@@@@@objectReturn' + objetRep);
                 tabReq111.push(objetRep);
             }
@@ -304,6 +259,22 @@ export default class Rh_Projects extends NavigationMixin(LightningElement) {
     });
  }
 
+ classStyle(className){
+
+    switch(className){
+        case 'Active':
+            return "slds-float_left slds-theme_success";
+        case 'Draft':
+            return "slds-float_left slds-theme_info";
+        case 'frozen':
+            return "slds-float_left slds-theme_shade";
+        case 'Closed':
+            return "slds-float_left slds-theme_error";
+        default:
+            return "slds-float_left slds-theme_alt-inverse";
+    }
+
+}
 setviewsList(items){
     let cardsView=this.template.querySelector('c-rh_cards_view');
     cardsView?.setDatas(items);
@@ -1273,8 +1244,8 @@ setviewsList(items){
     doCreateAccount(){
         this.accountInputs=[
             {
-                label:'Name',
-                placeholder:'Name',
+                label:this.l.accountName,
+                placeholder:this.l.accountNamePlc,
                 name:'Name',
                 value: '',
                 required:true,
@@ -1283,8 +1254,8 @@ setviewsList(items){
                 ly_lg:'6'
             },
             {
-                label:'Phone',
-                placeholder:'Phone',
+                label:this.l.Phone,
+                placeholder:this.l.PhonePlc,
                 name:'Phone',
                 value: '',
                 required:false,
@@ -1293,8 +1264,8 @@ setviewsList(items){
                 ly_lg:'6'
             },
             {
-                label:'Cap',
-                placeholder:'Cap Number',
+                label:this.l.Cap,
+                placeholder:this.l.CapPlc,
                 name:'Cap',
                 value: '',
                 required:false,
@@ -1303,8 +1274,8 @@ setviewsList(items){
                 ly_lg:'6'
             },
             {
-                label:'Citta',
-                placeholder:'City',
+                label:this.l.City,
+                placeholder:this.l.CityPlc,
                 name:'City',
                 value: '',
                 required:false,
@@ -1313,8 +1284,8 @@ setviewsList(items){
                 ly_lg:'6'
             },
             {
-                label:'SDI',
-                placeholder:'sdi',
+                label:this.l.sdi,
+                placeholder:this.l.sdiPlc,
                 name:'Sdi',
                 value: '',
                 required:false,
@@ -1323,8 +1294,8 @@ setviewsList(items){
                 ly_lg:'6'
             },
             {
-                label:'Email',
-                placeholder:'email',
+                label:this.l.Email,
+                placeholder:this.l.EmailPlc,
                 name:'Email',
                 value: '',
                 required:false,
@@ -1333,8 +1304,8 @@ setviewsList(items){
                 ly_lg:'6'
             },
             {
-                label:'Civico',
-                placeholder:'Numero',
+                label:this.l.Civico,
+                placeholder:this.l.CivicoPlc,
                 name:'Civico',
                 value: '',
                 required:true,

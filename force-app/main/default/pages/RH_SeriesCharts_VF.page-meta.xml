@@ -4,4 +4,9 @@
     <availableInTouch>true</availableInTouch>
     <confirmationTokenRequired>false</confirmationTokenRequired>
     <label>RH_SeriesCharts_VF</label>
+    <packageVersions>
+        <majorNumber>236</majorNumber>
+        <minorNumber>1</minorNumber>
+        <namespace>sbaa</namespace>
+    </packageVersions>
 </ApexPage>

@@ -75,7 +75,30 @@
             <default>false</default>
         </values>
         <values>
+            <fullName>Ressource Manager</fullName>
+            <default>false</default>
+        </values>
+        <values>
             <fullName>Team Leader</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+    <picklistValues>
+        <picklist>RH_Status__c</picklist>
+        <values>
+            <fullName>Active</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Banned</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Draft</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Frozen</fullName>
             <default>false</default>
         </values>
     </picklistValues>

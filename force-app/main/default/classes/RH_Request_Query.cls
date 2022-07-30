@@ -32,12 +32,86 @@ public class RH_Request_Query {
     }
 
     public RH_Request__c retreiveRequest(String requestId){
-        return [SELECT id, Name, RH_Description__c , CreatedBy.Name,RH_Addressed_To__r.Name, Rh_Status__c, RH_Start_date__c, 
-        RH_End_date__c, RH_Parent_request_id__c, RH_Addressed_Cc__c, RH_Complain_On__r.Id,RH_Complain_On__r.Name, RH_Note__c,RecordTypeId,RecordType.Name  FROM RH_Request__c WHERE id =: requestId ];
+        return [SELECT Id, Name, RH_Description__c , CreatedBy.Name,RH_Addressed_To__r.Name, Rh_Status__c, RH_Start_date__c, 
+        RH_End_date__c, RH_Reason__c, RH_Date_Response__c, RH_Date_Submit__c, RH_Answer__c, RH_Parent_Request_Id__c,RH_Complain_On__r.Id,RH_Complain_On__r.Name, RH_Note__c,RecordTypeId,RecordType.Name, (SELECT Id, RH_Contact__c, RH_Contact__r.Name FROM Adressedccs__r) FROM RH_Request__c WHERE Id =: requestId ];
     }
 
     public List<RecordType> getRecordType(){
-        return [select Id,Name from RecordType where sObjectType='RH_Request__c' AND Name != 'Explanation'];
+        return [SELECT Id,Name FROM RecordType WHERE sObjectType='RH_Request__c' AND Name != 'Explanation'];
+    }
+
+    public List<RecordType> getAllRecordType(){
+        return [SELECT Id,Name FROM RecordType WHERE sObjectType='RH_Request__c'];
+    }
+
+    public RecordType getExplanationType(){
+        return [SELECT Id,Name FROM RecordType WHERE sObjectType='RH_Request__c' AND Name = 'Explanation' LIMIT 1];
+    }
+
+    public List<RH_AdressedCC__c> getAdressByRequest(String requestId){
+        return [SELECT Id, RH_Contact__c, RH_Request__c FROM RH_AdressedCC__c WHERE RH_Request__c = :requestId];
+    }
+
+    public List<RH_AdressedCC__c> getAdressByContact(String contactId){
+        return [SELECT Id, RH_Contact__c, RH_Request__c FROM RH_AdressedCC__c WHERE RH_Contact__c = :contactId];
+    }
+
+    public List<RH_Request__c> getRequestToManage(String currentContact, List<String> requestIds){
+        return [SELECT id,Name,RH_Description__c,Rh_Status__c,RH_Note__c,CreatedBy.Name,RH_Addressed_Cc__c, RH_Addressed_To__r.Name,RecordType.Name ,CreatedDate,RH_RequestTypeName__c 
+                 FROM RH_Request__c 
+                 WHERE (RH_Addressed_To__c = :currentContact OR Id IN :requestIds) AND Rh_Status__c != 'Draft' ORDER BY CreatedDate DESC];
+    }
+
+    public RH_Request__c getRequestByParent(String requestId){
+        return [SELECT Id, Name, RH_Description__c, RH_Addressed_To__r.Name, Rh_Status__c, RH_Reason__c,RH_Date_Response__c, RH_Date_Submit__c, RH_Answer__c, RH_Parent_Request_Id__c, RecordType.Name FROM RH_Request__c WHERE RH_Parent_Request_Id__c =: requestId LIMIT 1];
+    }
+    
+    public List<RH_Request__c> filterRequest(String requestType, String status, Datetime dateFrom, Datetime dateTo, Integer type, String currentContact, List<String> requestIds){
+
+        String query= 'SELECT Id,Name,RH_Description__c,Rh_Status__c,CreatedBy.Name,RH_Addressed_Cc__c,RH_Addressed_To__r.Name,RH_Note__c,RecordType.Name ,CreatedDate,RH_RequestTypeName__c FROM RH_Request__c ';
+        Boolean check = false;
+        String currentUser = UserInfo.getUserId();
+        String draftStatus = 'Draft';
+        String queryWhere = type == 0 ? 'OwnerId =:currentUser ' : '(RH_Addressed_To__c = :currentContact OR Id IN :requestIds) AND Rh_Status__c != :draftStatus ';
+        if(String.isNotBlank(requestType)){
+            if(check){
+                query+= 'AND RecordTypeId =:requestType ';
+            }else{
+                query+= 'WHERE '+queryWhere+'AND RecordTypeId =:requestType ';
+                check = true;
+            }
+        }
+        if(String.isNotBlank(status)){
+            if(check){
+                query+= 'AND Rh_Status__c =:status ';
+            }else{
+                query+= 'WHERE '+queryWhere+'AND Rh_Status__c =:status ';
+                check = true;
+            }
+        }
+        if(dateFrom != null){
+            if(check){
+                query+= 'AND CreatedDate >= :dateFrom ';
+            }else{
+                query+= 'WHERE '+queryWhere+'AND CreatedDate >= :dateFrom ';
+                check = true;
+            }
+        }
+        if(dateTo != null){
+            Datetime myDateTo = dateTo.addDays(1);
+            if(check){
+                query+= 'AND CreatedDate < :myDateTo ';
+            }else{
+                query+= 'WHERE '+queryWhere+'AND CreatedDate < :myDateTo ';
+                check = true;
+            }
+        }
+        if(check){
+            query+= 'ORDER BY CreatedDate DESC';
+            system.debug(query);
+            return Database.query(query);
+        }
+        return null;
     }
 
 }

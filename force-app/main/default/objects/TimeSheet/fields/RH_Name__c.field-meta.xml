@@ -2,7 +2,7 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>RH_Name__c</fullName>
     <externalId>false</externalId>
-    <formula>CASE( MONTH(StartDate ), 1, &apos;January&apos;,2, &apos;February&apos;,3, &apos;March&apos;,4, &apos;April&apos;,5, &apos;May&apos;,6, &apos;June&apos;,7, &apos;	July&apos;,
+    <formula>ServiceResource.Name +&apos;-&apos;+ CASE( MONTH(StartDate ), 1, &apos;January&apos;,2, &apos;February&apos;,3, &apos;March&apos;,4, &apos;April&apos;,5, &apos;May&apos;,6, &apos;June&apos;,7, &apos;	July&apos;,
 							8, &apos;August&apos;,9, &apos;September&apos;,10, &apos;October&apos;,11, &apos;November&apos;,12, &apos;December&apos;,&apos;NONE&apos;	) +&apos;-&apos;+  TEXT(YEAR(StartDate))</formula>
     <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
     <label>Title</label>

@@ -1,48 +1,83 @@
 <template>
     <c-rh_toast auto-close-time="6000"></c-rh_toast>
     <template if:false={hasRecordId}>
+        <div class="filterClass">
+            <template if:true={enableForm}>
+                <c-rh_filter title={l.FilterRequest} field-details={inputFormFilter} onsubmit={filterRequestToManage} onreset={getRequestToManage}></c-rh_filter>
+            </template> 
+        </div>
         <c-rh_cards_view page-size="6"  items={tabReq} onrowselected={handleCardAction}></c-rh_cards_view>
     </template>
 
     <template if:true={hasRecordId}>
         <template if:true={isDetails}>
             <div class="slds-clearfix">
-                <div class="slds-float_right">
-                    <template if:false={isRejetedOrApproved}>
-                        <template if:true={isComplain}>
-                            <lightning-button variant="brand-outline" label="Ask an explanation" icon-name="action:new_note" title="Primary action with lighter look" onclick={handleExplanation} class="slds-m-left_x-small"></lightning-button>
-                        </template> 
-                        <template if:true={isApprove}>
-                            <lightning-button variant="brand-outline" label="Approve request" icon-name="action:new_note" title="Primary action with lighter look" onclick={handleApproveRequest} class="slds-m-left_x-small"></lightning-button>
-                        </template>                   
-                        <lightning-button variant="brand-outline" label="Rejet request" icon-name="utility:add" title="Primary action with lighter look" onclick={handleRejetRequest} class="slds-m-left_x-small"></lightning-button>
+                <div class="slds-float_right" style="margin-right: 15px;">
+                    <template if:true={isAdressedTo}>
+                        <template if:false={isExplanation}>
+                            <template if:false={isRejetedOrApproved}>
+                                <template if:true={isComplain}>
+                                    <lightning-button variant="brand-outline" label="Ask an explanation" icon-name="action:new_note" title="Primary action with lighter look" onclick={handleExplanation} class="slds-m-left_x-small"></lightning-button>
+                                </template> 
+                                <lightning-button variant="brand-outline" label="Approve request"  title="Primary action with lighter look" onclick={handleApproveRequest} class="slds-m-left_x-small"></lightning-button>                  
+                                <lightning-button variant="brand-outline" label="Reject request"  title="Primary action with lighter look" onclick={handleRejetRequest} class="slds-m-left_x-small"></lightning-button>
+                            </template>
+                        </template>
                     </template>
-                    <lightning-button variant="brand-outline" label="Cancel" icon-name="action:preview" title="Primary action with lighter look" onclick={handleCancelDetail} class="slds-m-left_x-small"></lightning-button>
+                    <lightning-button variant="brand-outline" label="Back" icon-name="action:preview" title="Primary action with lighter look" onclick={handleCancelDetail} class="slds-m-left_x-small"></lightning-button>
                 </div>
             </div>
             <div class="slds-p-around_medium profile_user_info">
                 <c-rh_display_fields 
                 title="Request Informations"
-                iconsrc="utility:people"
                 column="2"
                 output-fields={formPersonanalInputDetails}
                 ></c-rh_display_fields>
+                <template if:true={isExpAns}>
+                    <template if:false={showAnswer}>
+                        <div class="slds-clearfix">
+                            <div class="slds-float_left" style="margin-top: 15px;">
+                                <lightning-button variant="brand-outline" label="Answer Explanation"  title="Primary action with lighter look" onclick={handleAnswerExp} class="slds-m-left_x-small"></lightning-button>
+                            </div>
+                        </div>
+                    </template>
+                    <template if:true={showAnswer}>
+                        <c-rh_dynamic_form inputs-items={answerForm}></c-rh_dynamic_form>
+                        <div class="slds-clearfix">
+                            <div class="slds-float_right">
+                                <lightning-button variant="brand-outline" label={l.Cancel} icon-name="action:preview"  title="Primary action with lighter look" onclick={handleCancelExp} class="slds-m-left_x-small"></lightning-button>
+                                <lightning-button variant="brand-outline" label={l.Send} icon-name="utility:send"  title="Primary action with lighter look" onclick={handleSendExp} class="slds-m-left_x-small"></lightning-button>
+                            </div>
+                        </div>
+                    </template>
+                </template>
             </div>
+            <template if:true={isManageExp}>
+                <div class="slds-p-around_medium profile_user_info">
+                    <c-rh_display_fields 
+                    title={titleExp}
+                    column="2"
+                    output-fields={childRequests}
+                    ></c-rh_display_fields>
+                </div>
+            </template>
         </template>
         <template if:true={isApprovedRejeted}> 
             <c-rh_dynamic_form inputs-items={fieldForRejet}></c-rh_dynamic_form>
             <div class="slds-clearfix">
                 <div class="slds-float_right">
-                    <lightning-button variant="brand-outline" label="Cancel" icon-name="action:preview" title="Primary action with lighter look" onclick={handleCancelRejet} class="slds-m-left_x-small"></lightning-button>
-                    <lightning-button variant="brand-outline" label={appOrRej} icon-name="utility:add" title="Primary action with lighter look" onclick={handleSaveRejet} class="slds-m-left_x-small"></lightning-button>
+                    <lightning-button variant="brand-outline" label="Back" icon-name="action:preview" title="Primary action with lighter look" onclick={handleCancelRejet} class="slds-m-left_x-small"></lightning-button>
+                    <lightning-button variant="brand-outline" label="Confirm" icon-name="utility:add" title="Primary action with lighter look" onclick={handleSaveResponse} class="slds-m-left_x-small"></lightning-button>
                 </div>
             </div>
         </template>
 
-        <template if:true={isExplanation}>
+        <template if:true={showNewExp}>
             <lightning-card class="custom-card">
                 <h3 slot="title">
-                    Ask Explanation
+                    <lightning-icon icon-name="utility:add" alternative-text="New note" size="small">
+                    </lightning-icon>
+                     New Explanation
                 </h3>
                 <c-rh_dynamic_form inputs-items={inputExplanForm}></c-rh_dynamic_form>
                 <div class="slds-clearfix">

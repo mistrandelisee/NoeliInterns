@@ -123,18 +123,36 @@ export default class rh_Event_Management extends  NavigationMixin(LightningEleme
 
                 icon:this.icon.user, 
                 title: elt.Name,
-                class: elt.Status__c=='Approved'? 'frozen': 'active',
+                class: elt.Status__c=='Approved'? 'frozen': elt.Status__c=='Submitted'? 'banned': 'active',
                 keysFields:self.keysFields,
                 keysLabels:self.keysLabels,
                 fieldsToShow:self.fieldsToShow,
             }
-         
             console.log('@@@@@objectReturn', objetRep);
+            const badge={
+                name: 'badge', 
+                class:self.classStyle(elt?.Status__c),
+                label: elt?.Status__c
+            }
+            console.log('@@@@@@@@  badge  --> ' , badge);
+            objetRep.addons={badge};
             this.datas.push(objetRep);
             }); 
             this.setviewsList( this.datas);
             console.log('@@@@@@@@wiredatas--> ' , this.datas);
         })
+    }
+    classStyle(className){ 
+ 
+        switch(className){ 
+            case 'Approved':
+                return "slds-float_left slds-theme_success";
+            case 'Submitted': 
+                return "slds-float_left slds-theme_warning"; 
+            default: 
+                return "slds-float_left slds-theme_alt-inverse"; 
+        } 
+ 
     }
     setviewsList(items){
         let cardsView=this.template.querySelector('c-rh_cards_view');
@@ -397,15 +415,19 @@ export default class rh_Event_Management extends  NavigationMixin(LightningEleme
             console.error('error',err)
         })
     }
-    sendNotification(){
-        this.eventId = this.getUrlParamValue(window.location.href, 'recordId');
-        console.log('eventId --> ' ,this.eventId);
-        this.getEventInformation(this.eventId);
+    sendNotification(event){
+        if (event.detail.action=='Share'){
+            this.eventId = this.getUrlParamValue(window.location.href, 'recordId');
+            console.log('eventId --> ' ,this.eventId);
+            this.getEventInformation(this.eventId);
+        }
 
     }
-    handleRejectEvent(){
-        this.changeEventStatus(this.eventId);
-        this.closeModalRejected();
+    handleRejectEvent(event){
+        if (event.detail.action=='Yes I m sure'){
+            this.changeEventStatus(this.eventId);
+            this.closeModalRejected();
+        }
     }
     handledeleteEvent(){debugger
         let _id = this.eventId;
@@ -438,11 +460,13 @@ export default class rh_Event_Management extends  NavigationMixin(LightningEleme
         this.showModalDelete = true;
     }
     handleprerejectEvent(event){
-        this.eventId = this.getUrlParamValue(window.location.href, 'recordId');
-        // this.eventId = event.currentTarget.getAttribute("data-id");
-        console.log('eventId --> ' ,this.eventId);
-        this.visible = false;
-        this.showModalDelete = true;
+        if (event.detail.action=='Rejected'){
+            this.eventId = this.getUrlParamValue(window.location.href, 'recordId');
+            // this.eventId = event.currentTarget.getAttribute("data-id");
+            console.log('eventId --> ' ,this.eventId);
+            this.visible = false;
+            this.showModalDelete = true;
+        }
     }
     closeModalRejected(){
         this.showModalDelete = false;
@@ -450,8 +474,10 @@ export default class rh_Event_Management extends  NavigationMixin(LightningEleme
             window.location.reload();
         },500);
     }
-    closeModalDelete(){
-        this.showModalDelete = false;
+    closeModalDelete(event){
+        if (event.detail.action=='Cancel'){
+            this.showModalDelete = false;
+        }
     }
     changeEventStatus(evId){debugger
         console.log('evId -- >' + evId);
@@ -556,11 +582,61 @@ export default class rh_Event_Management extends  NavigationMixin(LightningEleme
         this.showComponentBase = false;
         this.showComponentDetails = true;
     }
-    closeComponentDetails(){
-        this.recordId = undefined;
-        this.goToEventDetail(this.recordId);
-        this.getEventManager();
-        this.showComponentBase = true;
-        this.showComponentDetails = false;
+    closeComponentDetails(event){
+        if (event.detail.action=='Back'){
+            this.recordId = undefined;
+            this.goToEventDetail(this.recordId);
+            this.getEventManager();
+            this.showComponentBase = true;
+            this.showComponentDetails = false;
+        }
     }
+    detailsCloseComponentEdit=[
+        {   
+            variant:"brand-outline",
+            
+            label:"Back",
+            name:'Back',
+            title:"Back",
+            iconName:this.icon.Back,
+        }
+    ]
+    detailsPrerejectEvent=[
+        {   
+            variant:"brand-outline",
+            
+            label:"Rejected",
+            name:'Rejected',
+            title:"Rejected",
+            iconName:this.icon.close,
+        }
+    ]
+    detailsSendNotification=[
+        {   
+            variant:"brand-outline",
+            
+            label:"Share",
+            name:'Share',
+            title:"Share",
+            iconName:this.icon.Share,
+        }
+    ]
+    detailsDeleteEvent=[
+        {   
+            variant:"brand-outline",
+            label:this.label.ok_confirm,
+            name:'Yes I m sure',
+            title:"Yes I m sure",
+            iconName:this.icon.approve,
+        }
+    ]
+    detailsCloseModalDelete=[
+        {   
+            variant:"brand-outline",
+            label:this.label.Cancel,
+            name:'Cancel',
+            title:"Cancel",
+            iconName:this.icon.close,  
+        }
+    ]
 }

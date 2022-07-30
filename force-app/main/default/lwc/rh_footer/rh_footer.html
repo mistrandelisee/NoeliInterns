@@ -1,0 +1,54 @@
+<template>
+  <!-- <div class="footer">
+    <lightning-layout>
+        <lightning-layout-item size="9" padding="around-small" small-device-size="9" medium-device-size="9"  large-device-size="9" >
+            <div class ="slds-p-top_xx-large">
+                {copyright}
+            </div>
+        </lightning-layout-item>
+        <lightning-layout-item size="3" padding="around-small" small-device-size="3" medium-device-size="3"  large-device-size="3">
+            <div class =" buttonLang">
+                <lightning-combobox
+                dropdown-alignment ="bottom-left"
+                name="progress"
+                label="Language"
+                value={defaultLang}
+                placeholder="Select Language"
+                options={options}
+                onchange={handleChange} >
+                </lightning-combobox>
+            </div>
+        </lightning-layout-item>
+    </lightning-layout>
+   </div>-->
+
+   
+
+   <template if:true={langList}>
+      <div class="otherLang">
+        <template for:each={options} for:item="lang">
+            <div key={lang.value} data-id={lang.value}  class="footerLang" onclick={handleChange}>
+                <img src={lang.img}  class="flags"/>  
+                {lang.label}  
+            </div>
+        </template>
+
+
+      <!--  <div class="footerLang">
+            <img src={scdLang}  class="flags"/>  
+            Francais 
+        </div>
+        <div class="footerLang">
+        <img src={thdLang}  class="flags"/> 
+        Italian  
+        </div>  -->   
+    </div>
+   </template>
+
+   
+
+   <div class=" footer"  data-id="currentLang" onclick={enableChoice}>
+        <img src={initLang}  class="flags"/>
+   </div>
+
+</template>

@@ -18,8 +18,14 @@
         <div class="slds-clearfix" style="margin-right: -16px;">
             <div class="slds-float_right slds-m-right_none" style="margin-top: 0px;">
                 <template if:true={displayButton}>
-                    <lightning-button variant="brand-outline" label="Rejected" icon-name={icon.close} class="slds-m-left_x-small buttons"   onclick={handleprerejectEvent} style="margin-right: 16px;"></lightning-button>
-                    <lightning-button variant="brand-outline" label="Share" icon-name={icon.Share} class="slds-m-right_none buttons"  onclick={sendNotification}></lightning-button>
+                    <div class="custom-box">
+                        <c-rh_actions  onaction={handleprerejectEvent} action-available={detailsPrerejectEvent} class="slds-float_right marginTop" style="margin-right:103px;"></c-rh_actions>
+                    </div>
+                    <!-- <lightning-button variant="brand-outline" label="Rejected" icon-name={icon.close} class="slds-m-left_x-small buttons"   onclick={handleprerejectEvent} style="margin-right: 16px;"></lightning-button> -->
+                    <div class="custom-box">
+                        <c-rh_actions  onaction={sendNotification} action-available={detailsSendNotification} class="slds-float_right marginTop" style="margin-right:1px;"></c-rh_actions>
+                    </div>
+                    <!-- <lightning-button variant="brand-outline" label="Share" icon-name={icon.Share} class="slds-m-right_none buttons"  onclick={sendNotification}></lightning-button> -->
                 </template>
             </div>
         </div>
@@ -49,7 +55,10 @@
             </lightning-card>
         </div>
         <div class="slds-p-around_medium" style="margin-left: -16px;">
-            <lightning-button variant="brand-outline" label="Back" icon-name={icon.Back} class="slds-float_left" onclick={closeComponentDetails}></lightning-button>
+            <div class="custom-box">
+                <c-rh_actions  onaction={closeComponentDetails} action-available={detailsCloseComponentEdit} class="slds-float_left" style="margin-left: -8px;"></c-rh_actions>
+            </div>
+            <!-- <lightning-button variant="brand-outline" label="Back" icon-name={icon.Back} class="slds-float_left" onclick={closeComponentDetails}></lightning-button> -->
         </div>
     </template>
 
@@ -69,7 +78,10 @@
                 <div class="slds-p-around_medium">
                     <div class="slds-clearfix">
                         <div class="slds-float_right" style="margin-bottom: -25px; margin-top: -8px;">
-                            <lightning-button variant="brand-outline" label="Back" icon-name={icon.Back} class="slds-m-right_medium" onclick={closeComponentDetails}></lightning-button>
+                            <div class="custom-box">
+                                <c-rh_actions  onaction={closeComponentDetails} action-available={detailsCloseComponentEdit} class="slds-float_left" style="margin-left: -8px;"></c-rh_actions>
+                            </div>
+                            <!-- <lightning-button variant="brand-outline" label="Back" icon-name={icon.Back} class="slds-m-right_medium" onclick={closeComponentDetails}></lightning-button> -->
                         </div>
                       </div>
                 </div>
@@ -104,13 +116,19 @@
                                 <p style="font-size:18px;">{label.PermissionRejected}</p>
                             </div>
                         </template>
-                        <template if:false={visible}>
+                        <div class="slds-clearfix" style="margin-top: 30px;">
                             <div class="slds-float_left">
-                                <lightning-button variant="brand-outline" icon-name={icon.approve} style="margin-left:40px" label="Ok" title="Primary action" onclick={handleRejectEvent} class="slds-m-left_x-small"></lightning-button>
+                                <div class="custom-box" style="margin-top: -19px;">
+                                    <c-rh_actions  onaction={handleRejectEvent} action-available={detailsDeleteEvent} style="margin-left:40px"></c-rh_actions>
+                                </div>
+                                <!-- <lightning-button variant="brand-outline" icon-name={icon.approve} style="margin-left:40px" label="Ok" title="Primary action" onclick={handleRejectEvent} class="slds-m-left_x-small"></lightning-button> -->
                             </div>
-                        </template>
-                        <div class="slds-float_right">
-                            <lightning-button variant="brand-outline" icon-name={icon.close} style="margin-right:40px" label="Cancel" title="Primary action" onclick={closeModalDelete} class="slds-m-left_x-small"></lightning-button>
+                            <div class="slds-float_right">
+                                <div class="custom-box">
+                                    <c-rh_actions  onaction={closeModalDelete} action-available={detailsCloseModalDelete} style="margin-right:40px"></c-rh_actions>
+                                </div>
+                                <!-- <lightning-button variant="brand-outline" icon-name={icon.close} style="margin-right:40px" label="Cancel" title="Primary action" onclick={closeModalDelete} class="slds-m-left_x-small"></lightning-button> -->
+                            </div>
                         </div>
                     </div>
                 </div>

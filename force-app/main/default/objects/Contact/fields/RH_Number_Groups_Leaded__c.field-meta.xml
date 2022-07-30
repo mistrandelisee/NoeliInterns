@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>RH_Number_Groups_Leaded__c</fullName>
+    <externalId>false</externalId>
+    <label>Number of Groups Leaded</label>
+    <summaryFilterItems>
+        <field>RH_WorkGroup__c.RH_Status__c</field>
+        <operation>equals</operation>
+        <value>Activated</value>
+    </summaryFilterItems>
+    <summaryForeignKey>RH_WorkGroup__c.RH_Team_Leader__c</summaryForeignKey>
+    <summaryOperation>count</summaryOperation>
+    <type>Summary</type>
+</CustomField>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>TESTFOOTER</label>
+    <protected>false</protected>
+    <values>
+        <field>Acct_No_with_UBA__c</field>
+        <value xsi:type="xsd:double">10.0</value>
+    </values>
+    <values>
+        <field>Bank_Adress__c</field>
+        <value xsi:type="xsd:string">USA</value>
+    </values>
+    <values>
+        <field>Bank_Name__c</field>
+        <value xsi:type="xsd:string">UNITED BANK FOR AMERICA</value>
+    </values>
+    <values>
+        <field>Beneficiary_Address__c</field>
+        <value xsi:type="xsd:string">via antonio</value>
+    </values>
+    <values>
+        <field>Beneficiary_Name__c</field>
+        <value xsi:type="xsd:string">Ets montenegr</value>
+    </values>
+    <values>
+        <field>Branch_Name__c</field>
+        <value xsi:type="xsd:string">BRANCK TEST</value>
+    </values>
+    <values>
+        <field>IBAN__c</field>
+        <value xsi:type="xsd:string">CM21 : 208U024U9’242’240439U9U</value>
+    </values>
+    <values>
+        <field>Swift_code__c</field>
+        <value xsi:type="xsd:string">unic0393</value>
+    </values>
+</CustomMetadata>
