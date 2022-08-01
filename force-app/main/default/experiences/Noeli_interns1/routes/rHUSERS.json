@@ -1,0 +1,11 @@
+{
+  "activeViewId" : "3b7c186e-1e81-40fd-9aac-8bc89b8c8d6b",
+  "appPageId" : "b66b8655-4217-43a3-88b7-8256d61f02ee",
+  "configurationTags" : [ ],
+  "id" : "286e33e5-bb65-4741-945e-2e52bd92a92e",
+  "label" : "RH USERS",
+  "pageAccess" : "UseParent",
+  "routeType" : "custom-rhusers",
+  "type" : "route",
+  "urlPrefix" : "rhusers"
+}

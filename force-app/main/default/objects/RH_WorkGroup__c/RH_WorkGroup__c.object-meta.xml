@@ -153,7 +153,7 @@
     <enableSharing>true</enableSharing>
     <enableStreamingApi>true</enableStreamingApi>
     <externalSharingModel>ControlledByParent</externalSharingModel>
-    <gender>Masculine</gender>
+    
     <label>WorkGroup</label>
     <nameField>
         <label>WorkGroup Name</label>

@@ -97,24 +97,20 @@
             <table class="tab1">
                 <tr>
                     <th>Name:</th>
-                    <td><apex:outputText value="{!accountList.RH_Approver__r.Account.Name}"/></td>
+                    <td><apex:outputText value="{!accountList.Name}"/></td>
                 </tr>
                 <tr>
                     <th>Phone:</th>
-                    <td><apex:outputText value="{!accountList.RH_Approver__r.Account.Phone}"/></td>
+                    <td><apex:outputText value="{!accountList.phone}"/></td>
                 </tr>
                 <tr>
                     <th>Type:</th>
-                    <td><apex:outputText value="{!accountList.RH_Approver__r.Account.Type}"/></td>
+                    <td><apex:outputText value="{!accountList.Type}"/></td>
                 </tr>
                 <tr>
                     <th>Website:</th>
-                    <td><apex:outputText value="{!accountList.RH_Approver__r.Account.Website}"/></td>
-                </tr>
-                <tr>
-                    <th>Owner Name:</th>
-                    <td><apex:outputText value="{!accountList.RH_Approver__r.Account.Owner.Name}"/></td> 
-                </tr>               
+                    <td><apex:outputText value="{!accountList.website}"/></td>
+                </tr>           
             </table>
         </div>
 
@@ -123,14 +119,22 @@
         </div>
         <table class="tab3">
             <tr><th>Status :</th>
-                <td><apex:outputText value="{!timeSheetList.Status}"/></td>
+                <td><apex:outputText value="{!sheet.Status}"/></td>
                 </tr>
             <tr><th>Duration :</th>
-                <td><apex:outputText value="{!timeSheetList.TotalDurationInHours}"/></td>
+                <td><apex:outputText value="{!sheet.Duration}"/></td>
                 </tr>
             <tr><th>Start Date :</th>
-                <td><apex:outputText value="{!timeSheetList.StartDate}"/></td>
+                <td>
+                    <apex:outputText value="{0, date, d MMMM yyyy hh:mm a}">
+                        <apex:param value="{!DATETIMEVALUE(sheet.StartDate)}" />
+                    </apex:outputText>
+                </td>
                 </tr>
+            <tr>
+                <th>Owner Name</th>
+                <td><apex:outputText value="{!accountList.owner}"/></td>
+            </tr>
             </table>
         <div class="tab2">
             <table style="width:100%" class="table1" >
@@ -142,10 +146,10 @@
                             Duration(Minutes)
                         </th>
                         <th>
-                            Start Time
+                            Start Date
                         </th>
                         <th >
-                            End Time
+                            End Date
                         </th>
                 
                 </thead>
@@ -153,17 +157,27 @@
                     <apex:repeat value="{!timeSheetEntryList}" var="time">
                     <tr>
                             <td >
-                                {!time.RH_Project__r.Name}
+                                {!time.ProjectName}
                             </td>
                             <td >
-                                {!time.DurationInMinutes }
+                                {!time.Duration}
                             </td>
-                            <td >
+                            <td>
+                                <apex:outputText value="{0, date, d MMMM yyyy hh:mm a}">
+                                    <apex:param value="{!DATETIMEVALUE(time.StartTime)}" />
+                                </apex:outputText>
+                            </td>
+                            <!-- <td >
                                 {!time.StartTime}
                             </td>
                             <td >
                                 {!time.EndTime}
-                            </td>             
+                            </td> -->
+                            <td>
+                                <apex:outputText value="{0, date, d MMMM yyyy hh:mm a}">
+                                    <apex:param value="{!DATETIMEVALUE(time.EndTime)}" />
+                                </apex:outputText>
+                            </td>
                     </tr>
                 </apex:repeat>
                 </tbody>

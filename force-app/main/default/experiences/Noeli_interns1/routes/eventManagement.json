@@ -1,0 +1,11 @@
+{
+  "activeViewId" : "24531a0e-13e8-404e-844e-a9323f87c4bc",
+  "appPageId" : "b66b8655-4217-43a3-88b7-8256d61f02ee",
+  "configurationTags" : [ ],
+  "id" : "82a976f2-2704-4ed6-ab23-deca9d0280fd",
+  "label" : "Event Management",
+  "pageAccess" : "UseParent",
+  "routeType" : "custom-event-management",
+  "type" : "route",
+  "urlPrefix" : "event-management"
+}

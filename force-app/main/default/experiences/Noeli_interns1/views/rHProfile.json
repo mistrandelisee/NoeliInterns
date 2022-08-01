@@ -1,0 +1,67 @@
+{
+  "appPageId" : "b66b8655-4217-43a3-88b7-8256d61f02ee",
+  "componentName" : "siteforce:dynamicLayout",
+  "id" : "82498084-65e7-48c5-8176-a53d76daf069",
+  "label" : "RHProfile",
+  "regions" : [ {
+    "components" : [ {
+      "componentAttributes" : {
+        "background" : "background: rgba(0,0,0,0)",
+        "backgroundOverlay" : "rgba(0,0,0,0.5)",
+        "contentAreaWidth" : 100,
+        "sectionConfig" : {
+          "UUID" : "09cb94ad-2356-4ab6-afe8-7e98d907e976",
+          "columns" : [ {
+            "UUID" : "d7d1b10e-8622-4dab-b010-741d8d5f3d5c",
+            "columnKey" : "1",
+            "columnName" : "Column 1",
+            "columnWidth" : "12",
+            "seedComponents" : [ ]
+          } ]
+        },
+        "sectionHeight" : 300
+      },
+      "componentName" : "forceCommunity:section",
+      "id" : "09cb94ad-2356-4ab6-afe8-7e98d907e976",
+      "regions" : [ {
+        "components" : [ {
+          "componentAttributes" : { },
+          "componentName" : "c:rh_profile",
+          "id" : "af717878-ae05-40ea-889f-d6cef4457214",
+          "renderPriority" : "NEUTRAL",
+          "renditionMap" : { },
+          "type" : "component"
+        } ],
+        "id" : "d7d1b10e-8622-4dab-b010-741d8d5f3d5c",
+        "regionLabel" : "Column 1",
+        "regionName" : "1",
+        "renditionMap" : { },
+        "type" : "region"
+      } ],
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "c385f19e-4e27-4c25-b617-9ede280157ad",
+    "regionName" : "content",
+    "type" : "region"
+  }, {
+    "components" : [ {
+      "componentAttributes" : {
+        "customHeadTags" : "",
+        "description" : "",
+        "title" : "RHProfile"
+      },
+      "componentName" : "forceCommunity:seoAssistant",
+      "id" : "916fdb51-0eec-46b7-b203-eafcb0730401",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "99b398ac-3e28-4e2f-9241-4f247ba8a80a",
+    "regionName" : "sfdcHiddenRegion",
+    "type" : "region"
+  } ],
+  "themeLayoutType" : "Inner",
+  "type" : "view",
+  "viewType" : "custom-rhprofile"
+}

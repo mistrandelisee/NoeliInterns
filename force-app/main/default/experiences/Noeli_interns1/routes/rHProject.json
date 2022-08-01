@@ -1,0 +1,11 @@
+{
+  "activeViewId" : "6ba099d7-d00d-4e4f-8961-2bc7c3511c3a",
+  "appPageId" : "b66b8655-4217-43a3-88b7-8256d61f02ee",
+  "configurationTags" : [ ],
+  "id" : "463837d7-3a9e-4d50-9d63-8d92be317363",
+  "label" : "RHProject",
+  "pageAccess" : "UseParent",
+  "routeType" : "custom-rhproject",
+  "type" : "route",
+  "urlPrefix" : "rhproject"
+}

@@ -1,0 +1,32 @@
+{
+  "appPageId" : "63386af7-5e97-4223-9920-6456bad66e85",
+  "componentName" : "siteforce:sldsOneColLayout",
+  "id" : "34989c11-63f0-400c-a7ed-206c45aa88da",
+  "label" : "Quip Docs Related List",
+  "regions" : [ {
+    "id" : "4ad844df-c769-4c7c-abcb-18ba46155831",
+    "regionName" : "header",
+    "type" : "region"
+  }, {
+    "components" : [ {
+      "componentAttributes" : {
+        "parentRecordId" : "{!recordId}"
+      },
+      "componentName" : "forceCommunity:relatedQuipItemsView",
+      "id" : "f5a547a1-6b18-4d48-83fe-d52f0a45a3a7",
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "0dbaebf0-3fb2-4107-b6a3-e477bf22b577",
+    "regionName" : "content",
+    "type" : "region"
+  }, {
+    "id" : "71e2f5b0-0319-47fe-92cc-b968d6d393b5",
+    "regionName" : "footer",
+    "type" : "region"
+  } ],
+  "themeLayoutType" : "Inner",
+  "type" : "view",
+  "viewType" : "extrelated-quip"
+}

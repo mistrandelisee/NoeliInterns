@@ -1,0 +1,45 @@
+{
+  "appPageId" : "b66b8655-4217-43a3-88b7-8256d61f02ee",
+  "componentName" : "siteforce:sldsOneColLayout",
+  "id" : "d0df5011-ca9a-4a8d-8d10-c323f2210843",
+  "label" : "Banner Configuration",
+  "regions" : [ {
+    "id" : "f19dd2d0-2e0c-4802-ac04-ad45de0fc443",
+    "regionName" : "header",
+    "type" : "region"
+  }, {
+    "components" : [ {
+      "componentAttributes" : { },
+      "componentName" : "c:rh_display_news_config",
+      "id" : "1583799f-90a1-4c9a-9898-dac0e3794926",
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "2ba1d4d7-50d0-4d44-90ad-97566d588876",
+    "regionName" : "content",
+    "type" : "region"
+  }, {
+    "id" : "e4a0d689-6316-46db-8b3d-d817c894d37e",
+    "regionName" : "footer",
+    "type" : "region"
+  }, {
+    "components" : [ {
+      "componentAttributes" : {
+        "customHeadTags" : "",
+        "description" : "",
+        "title" : "Banner Configuration"
+      },
+      "componentName" : "forceCommunity:seoAssistant",
+      "id" : "dad7457f-9a0c-4ba9-a56c-879045c4dd7b",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "8d413819-10e1-4c8c-9b3e-ad237a3b80ae",
+    "regionName" : "sfdcHiddenRegion",
+    "type" : "region"
+  } ],
+  "themeLayoutType" : "Inner",
+  "type" : "view",
+  "viewType" : "custom-banner-configuration"
+}

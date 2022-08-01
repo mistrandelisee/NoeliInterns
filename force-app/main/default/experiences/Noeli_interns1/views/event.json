@@ -1,0 +1,45 @@
+{
+  "appPageId" : "b66b8655-4217-43a3-88b7-8256d61f02ee",
+  "componentName" : "siteforce:sldsOneColLayout",
+  "id" : "dc3cf0b4-ce52-418b-9263-e4816f9c07c5",
+  "label" : "Event",
+  "regions" : [ {
+    "id" : "cc74dbd7-0b6f-4cf3-9f2d-8a2ebf59f43e",
+    "regionName" : "header",
+    "type" : "region"
+  }, {
+    "components" : [ {
+      "componentAttributes" : { },
+      "componentName" : "c:rh_Event",
+      "id" : "4f0dd917-3549-4609-9281-5e6160f12ca0",
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "ebd76685-0174-4b8d-ac5a-aabc7c8e4028",
+    "regionName" : "content",
+    "type" : "region"
+  }, {
+    "id" : "794edc4a-c9cd-4a63-9f96-8d42183b593d",
+    "regionName" : "footer",
+    "type" : "region"
+  }, {
+    "components" : [ {
+      "componentAttributes" : {
+        "customHeadTags" : "",
+        "description" : "",
+        "title" : "Event"
+      },
+      "componentName" : "forceCommunity:seoAssistant",
+      "id" : "a11f0c7a-4d51-4ba4-830c-11a0ada937a2",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "9c77cf15-19d1-409e-a6a6-a666f2ef7542",
+    "regionName" : "sfdcHiddenRegion",
+    "type" : "region"
+  } ],
+  "themeLayoutType" : "Inner",
+  "type" : "view",
+  "viewType" : "custom-event"
+}

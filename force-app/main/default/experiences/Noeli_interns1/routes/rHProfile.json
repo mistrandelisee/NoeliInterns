@@ -1,0 +1,11 @@
+{
+  "activeViewId" : "82498084-65e7-48c5-8176-a53d76daf069",
+  "appPageId" : "b66b8655-4217-43a3-88b7-8256d61f02ee",
+  "configurationTags" : [ ],
+  "id" : "a25bfd0f-684e-47d6-84a6-d1cdabe2b7b5",
+  "label" : "RHProfile",
+  "pageAccess" : "UseParent",
+  "routeType" : "custom-rhprofile",
+  "type" : "route",
+  "urlPrefix" : "rhprofile"
+}

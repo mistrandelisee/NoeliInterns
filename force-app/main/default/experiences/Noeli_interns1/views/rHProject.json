@@ -1,0 +1,67 @@
+{
+  "appPageId" : "b66b8655-4217-43a3-88b7-8256d61f02ee",
+  "componentName" : "siteforce:dynamicLayout",
+  "id" : "6ba099d7-d00d-4e4f-8961-2bc7c3511c3a",
+  "label" : "RHProject",
+  "regions" : [ {
+    "components" : [ {
+      "componentAttributes" : {
+        "background" : "background: rgba(0,0,0,0)",
+        "backgroundOverlay" : "rgba(0,0,0,0.5)",
+        "contentAreaWidth" : 100,
+        "sectionConfig" : {
+          "UUID" : "777289b3-75ae-4ba6-adc5-822aabfd7bde",
+          "columns" : [ {
+            "UUID" : "344ec66a-eccd-490e-94ac-2a1fc632483d",
+            "columnKey" : "1",
+            "columnName" : "Column 1",
+            "columnWidth" : "12",
+            "seedComponents" : [ ]
+          } ]
+        },
+        "sectionHeight" : 300
+      },
+      "componentName" : "forceCommunity:section",
+      "id" : "777289b3-75ae-4ba6-adc5-822aabfd7bde",
+      "regions" : [ {
+        "components" : [ {
+          "componentAttributes" : { },
+          "componentName" : "c:rh_Projects",
+          "id" : "9ba380e3-47b9-4385-bb16-80a3f818c475",
+          "renderPriority" : "NEUTRAL",
+          "renditionMap" : { },
+          "type" : "component"
+        } ],
+        "id" : "344ec66a-eccd-490e-94ac-2a1fc632483d",
+        "regionLabel" : "Column 1",
+        "regionName" : "1",
+        "renditionMap" : { },
+        "type" : "region"
+      } ],
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "834164e1-1201-44e8-a66d-0503a2c441f7",
+    "regionName" : "content",
+    "type" : "region"
+  }, {
+    "components" : [ {
+      "componentAttributes" : {
+        "customHeadTags" : "",
+        "description" : "",
+        "title" : "RHProject"
+      },
+      "componentName" : "forceCommunity:seoAssistant",
+      "id" : "d67837e9-da50-4206-967e-f30ca9e5b5e6",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "e5b94a9c-54bc-4ee2-a88d-d3f5c8c63c9b",
+    "regionName" : "sfdcHiddenRegion",
+    "type" : "region"
+  } ],
+  "themeLayoutType" : "Inner",
+  "type" : "view",
+  "viewType" : "custom-rhproject"
+}

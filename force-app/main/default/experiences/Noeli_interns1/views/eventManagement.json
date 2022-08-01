@@ -1,0 +1,45 @@
+{
+  "appPageId" : "b66b8655-4217-43a3-88b7-8256d61f02ee",
+  "componentName" : "siteforce:sldsOneColLayout",
+  "id" : "24531a0e-13e8-404e-844e-a9323f87c4bc",
+  "label" : "Event Management",
+  "regions" : [ {
+    "id" : "c362f063-fc6e-42d5-a28d-f5869d7114c2",
+    "regionName" : "header",
+    "type" : "region"
+  }, {
+    "components" : [ {
+      "componentAttributes" : { },
+      "componentName" : "c:rh_Event_Management",
+      "id" : "2a3d1d39-3735-4fdf-a605-ce8171e34cf7",
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "29e20f9b-b3ee-4536-8fc2-1fd8531d9ef1",
+    "regionName" : "content",
+    "type" : "region"
+  }, {
+    "id" : "4373d612-3f89-4551-895a-3510949f7eea",
+    "regionName" : "footer",
+    "type" : "region"
+  }, {
+    "components" : [ {
+      "componentAttributes" : {
+        "customHeadTags" : "",
+        "description" : "",
+        "title" : "Event Management"
+      },
+      "componentName" : "forceCommunity:seoAssistant",
+      "id" : "f7f09da0-df8a-44d1-9563-81068b23fdb8",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "f0b1769f-93ca-4365-a05f-2ad0828dfb9b",
+    "regionName" : "sfdcHiddenRegion",
+    "type" : "region"
+  } ],
+  "themeLayoutType" : "Inner",
+  "type" : "view",
+  "viewType" : "custom-event-management"
+}

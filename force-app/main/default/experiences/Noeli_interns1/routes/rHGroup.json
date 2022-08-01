@@ -1,0 +1,11 @@
+{
+  "activeViewId" : "74a09cdb-62e7-4601-bdc4-209bf9ac515e",
+  "appPageId" : "b66b8655-4217-43a3-88b7-8256d61f02ee",
+  "configurationTags" : [ ],
+  "id" : "d0a24d6c-2cde-4dc4-b8a0-025af48c68f9",
+  "label" : "RHGroup",
+  "pageAccess" : "UseParent",
+  "routeType" : "custom-rhgroup",
+  "type" : "route",
+  "urlPrefix" : "rhgroup"
+}

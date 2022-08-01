@@ -1,0 +1,11 @@
+{
+  "activeViewId" : "6d4f4bf2-c33f-4aaf-a0ee-d998fe2c9c66",
+  "appPageId" : "b66b8655-4217-43a3-88b7-8256d61f02ee",
+  "configurationTags" : [ ],
+  "id" : "c0cd7012-0596-4192-b1e4-d2c4d1dcca92",
+  "label" : "Accomplishment",
+  "pageAccess" : "UseParent",
+  "routeType" : "custom-accomplishment",
+  "type" : "route",
+  "urlPrefix" : "accomplishment"
+}

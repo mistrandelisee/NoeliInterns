@@ -1,0 +1,67 @@
+{
+  "appPageId" : "b66b8655-4217-43a3-88b7-8256d61f02ee",
+  "componentName" : "siteforce:dynamicLayout",
+  "id" : "aee0859a-6edf-4ce1-913a-15e14774f157",
+  "label" : "RHTimeSheet",
+  "regions" : [ {
+    "components" : [ {
+      "componentAttributes" : {
+        "background" : "background: rgba(0,0,0,0)",
+        "backgroundOverlay" : "rgba(0,0,0,0.5)",
+        "contentAreaWidth" : 100,
+        "sectionConfig" : {
+          "UUID" : "b872bc2e-bee0-4f58-8b6e-5dac7b35eb28",
+          "columns" : [ {
+            "UUID" : "063acfa8-9a1c-4e09-842b-5e8d222bd322",
+            "columnKey" : "1",
+            "columnName" : "Column 1",
+            "columnWidth" : "12",
+            "seedComponents" : [ ]
+          } ]
+        },
+        "sectionHeight" : 300
+      },
+      "componentName" : "forceCommunity:section",
+      "id" : "b872bc2e-bee0-4f58-8b6e-5dac7b35eb28",
+      "regions" : [ {
+        "components" : [ {
+          "componentAttributes" : { },
+          "componentName" : "c:rh_timesheet",
+          "id" : "79fc5c19-ebdc-485b-90de-4127af335f77",
+          "renderPriority" : "NEUTRAL",
+          "renditionMap" : { },
+          "type" : "component"
+        } ],
+        "id" : "063acfa8-9a1c-4e09-842b-5e8d222bd322",
+        "regionLabel" : "Column 1",
+        "regionName" : "1",
+        "renditionMap" : { },
+        "type" : "region"
+      } ],
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "cb27821c-dbd0-4ec7-99cf-d939e39e382e",
+    "regionName" : "content",
+    "type" : "region"
+  }, {
+    "components" : [ {
+      "componentAttributes" : {
+        "customHeadTags" : "",
+        "description" : "",
+        "title" : "RHTimeSheet"
+      },
+      "componentName" : "forceCommunity:seoAssistant",
+      "id" : "1d5ce093-63f1-4d88-ac92-0c6812e3cab0",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "4f671639-5dfe-4127-bf32-b59972ab4cf1",
+    "regionName" : "sfdcHiddenRegion",
+    "type" : "region"
+  } ],
+  "themeLayoutType" : "Inner",
+  "type" : "view",
+  "viewType" : "custom-rhtimesheet"
+}

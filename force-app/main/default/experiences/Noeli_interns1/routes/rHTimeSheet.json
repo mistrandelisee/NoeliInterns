@@ -1,0 +1,11 @@
+{
+  "activeViewId" : "aee0859a-6edf-4ce1-913a-15e14774f157",
+  "appPageId" : "b66b8655-4217-43a3-88b7-8256d61f02ee",
+  "configurationTags" : [ ],
+  "id" : "a647eb7a-ae4e-4598-a784-e1e26a7c93f2",
+  "label" : "RHTimeSheet",
+  "pageAccess" : "UseParent",
+  "routeType" : "custom-rhtimesheet",
+  "type" : "route",
+  "urlPrefix" : "rhtimesheet"
+}

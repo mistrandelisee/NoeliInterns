@@ -1,0 +1,67 @@
+{
+  "appPageId" : "b66b8655-4217-43a3-88b7-8256d61f02ee",
+  "componentName" : "siteforce:dynamicLayout",
+  "id" : "3b7c186e-1e81-40fd-9aac-8bc89b8c8d6b",
+  "label" : "RH USERS",
+  "regions" : [ {
+    "components" : [ {
+      "componentAttributes" : {
+        "background" : "background: rgba(0,0,0,0)",
+        "backgroundOverlay" : "rgba(0,0,0,0.5)",
+        "contentAreaWidth" : 100,
+        "sectionConfig" : {
+          "UUID" : "ab276060-2f1c-4cf3-8537-33cdccea3126",
+          "columns" : [ {
+            "UUID" : "97dd1487-c852-4352-9166-9d251d56a214",
+            "columnKey" : "1",
+            "columnName" : "Column 1",
+            "columnWidth" : "12",
+            "seedComponents" : [ ]
+          } ]
+        },
+        "sectionHeight" : 300
+      },
+      "componentName" : "forceCommunity:section",
+      "id" : "ab276060-2f1c-4cf3-8537-33cdccea3126",
+      "regions" : [ {
+        "components" : [ {
+          "componentAttributes" : { },
+          "componentName" : "c:rh_users",
+          "id" : "478888da-406b-451b-87ce-41e49f96632b",
+          "renderPriority" : "NEUTRAL",
+          "renditionMap" : { },
+          "type" : "component"
+        } ],
+        "id" : "97dd1487-c852-4352-9166-9d251d56a214",
+        "regionLabel" : "Column 1",
+        "regionName" : "1",
+        "renditionMap" : { },
+        "type" : "region"
+      } ],
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "23437891-9432-43e2-98b3-a68f82d33956",
+    "regionName" : "content",
+    "type" : "region"
+  }, {
+    "components" : [ {
+      "componentAttributes" : {
+        "customHeadTags" : "",
+        "description" : "",
+        "title" : "RH USERS"
+      },
+      "componentName" : "forceCommunity:seoAssistant",
+      "id" : "017a3e2c-53d9-477b-8ddb-f1f1484a946e",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "03983f9b-e12e-4d6b-9026-f1e0971e608f",
+    "regionName" : "sfdcHiddenRegion",
+    "type" : "region"
+  } ],
+  "themeLayoutType" : "Inner",
+  "type" : "view",
+  "viewType" : "custom-rhusers"
+}

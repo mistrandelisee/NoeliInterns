@@ -1,0 +1,11 @@
+{
+  "activeViewId" : "d0df5011-ca9a-4a8d-8d10-c323f2210843",
+  "appPageId" : "b66b8655-4217-43a3-88b7-8256d61f02ee",
+  "configurationTags" : [ ],
+  "id" : "474e2a05-4f24-427b-8e91-59aca88f5d51",
+  "label" : "Banner Configuration",
+  "pageAccess" : "UseParent",
+  "routeType" : "custom-banner-configuration",
+  "type" : "route",
+  "urlPrefix" : "rhbannerConfig"
+}

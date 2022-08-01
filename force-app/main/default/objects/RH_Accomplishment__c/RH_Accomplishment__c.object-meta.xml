@@ -153,7 +153,7 @@
     <enableSharing>true</enableSharing>
     <enableStreamingApi>true</enableStreamingApi>
     <externalSharingModel>Private</externalSharingModel>
-    <gender>Feminine</gender>
+   
     <label>Accomplishment</label>
     <nameField>
         <displayFormat>AC-{0000}</displayFormat>
