@@ -49,6 +49,7 @@ export default class Rh_user_view extends NavigationMixin(LightningElement) {
 l={...labels,
 }
 
+badge=[];
 icon ={...icons}
 @track groups=[];
 @track roles=[];
@@ -285,6 +286,8 @@ hasAction;
                                                     isBaseUser:result.isBaseUser,
                                     }
                 this.constants=result.Constants;
+                const status=result.Employe?.statusLabel;
+                this.badge=[{name: 'userBadge', class: 'slds-float_left slds-badge_inverse'/*this.classStyle(this.contactrecord.Status)*/,label: status}]
                 this.buildUserDetails(this.contactrecord);
                 this.buildAccountFields(this.contactrecord);
                 this.buildExtraField(this.contactrecord?.RH_Extra_Infos__c);
@@ -320,6 +323,22 @@ hasAction;
         }).finally(() => {
             this.startSpinner(false);
         })
+    }
+    classStyle(className){
+
+        switch(className){
+            case 'approvato':
+                return "slds-float_left slds-theme_success";
+            case 'nuovo':
+                return "slds-float_left slds-theme_info";
+            case 'inviato':
+                return "slds-float_left .slds-theme_warning";
+            case 'reject':
+                return "slds-float_left slds-theme_error";
+            default:
+                return "slds-float_left slds-badge_inverse";
+        }
+
     }
     handleUserDetails(event){
         let action=event.detail.action;
@@ -766,9 +785,34 @@ hasAction;
                     value:profileinformation?.Phone,
                 },
                 {
+                    label:this.l.Country,
+                    name:'Country',
+                    value:this.profileinformation?.contact?.MailingCountry
+                },
+                {
+                    label:this.l.label,
+                    name:'Label',
+                    value:this.profileinformation?.contact?.Status
+                },
+                {
+                    label:this.l.Province,
+                    name:'Province',
+                    value:this.profileinformation?.contact?.MailingState
+                },
+                {
                     label:this.l.City,
                     name:'City',
-                    value:profileinformation?.OtherAddress,
+                    value:this.profileinformation?.contact?.MailingCity
+                },
+                {
+                    label:this.l.Street,
+                    name:'Street',
+                    value:this.profileinformation?.contact?.MailingStreet
+                },
+                {
+                    label:this.l.PostalCode,
+                    name:'Postal Code',
+                    value:this.profileinformation?.contact?.MailingPostalCode
                 },
                 {
                     label:this.l.Birthday,

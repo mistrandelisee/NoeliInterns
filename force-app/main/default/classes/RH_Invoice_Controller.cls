@@ -149,7 +149,7 @@ public with sharing class RH_Invoice_Controller {
         } catch(Exception e) {
             System.debug(e.getMessage());
             mapReturn.put('error',true);
-            mapReturn.put('msg',e.getMessage());
+            mapReturn.put('msg',e.getMessage()+' '+e.getStackTraceString());
             mapReturn.put('e',e);
         }  
         return mapReturn;

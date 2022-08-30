@@ -40,7 +40,7 @@ public without sharing class RH_Invoice_Query {
 			queryWHERE = queryWHERE + ' AND (RH_InvoiceDate__c >= : startdate) ';
 		}
         if(enddate != null){
-			queryWHERE = queryWHERE + ' AND (RH_DueDate__c <= : enddate) ';
+			queryWHERE = queryWHERE + ' AND (RH_InvoiceDate__c <= : enddate OR RH_DueDate__c <= : enddate) ';
 		}
         String queryORDER='';
         if(String.isNotBlank(ordBy)){

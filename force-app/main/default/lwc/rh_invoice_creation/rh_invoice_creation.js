@@ -392,7 +392,7 @@ export default class Rh_invoice_creation extends NavigationMixin(LightningElemen
                 name:'po',
                 value: this.invoice?.RH_Po__c,
                 readOnly:this.disabledfields?.all || this.disabledfields?.po,
-                required:true,
+                // required:true,
                 ly_xs:'12', 
                 ly_md:'6', 
                 ly_lg:'6'

@@ -202,8 +202,7 @@ icon ={...icons}
     UpdateExtraInfo(event){
         this.startSpinner(true);
         const cusEvt=event.detail;
-        console.log('cusEvt >>',cusEvt,' \naction ',cusEvt?.action);
-        console.log('cusEvt >>',cusEvt,' \ndata ',cusEvt?.data);
+        console.log('cusEvt >>',cusEvt,' \naction ',cusEvt?.action,' \ndata ',cusEvt?.data);
         const userinfo = cusEvt?.data;
         UpdateExtraInfo({
             recordId: this.recordId,
@@ -219,10 +218,11 @@ icon ={...icons}
             }
             
         }).catch(error =>{
+            console.error(error);
             this.showToast(ERROR_VARIANT,this.l.moreInfo,this.l.errorOp);
         })
         .finally(() =>{
-            this.startSpinner(true);
+            this.startSpinner(false);
         })
     }
 

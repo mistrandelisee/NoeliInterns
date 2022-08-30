@@ -1,6 +1,5 @@
 <template>
     <template if:true={contactNotFounded}>
-                
         <c-rh_success_operation title={title} information={information} recordid={recordId}></c-rh_success_operation>
     </template>
     <template if:true={hasEmployeeInfo}>
@@ -35,6 +34,7 @@
                                 onaction={handleUserDetails}
                                 action-available={actionAvailable}
                                 has-action={hasAction}
+                                badges={badge}
                                 ></c-rh_display_fields>
                             </template>
                             <template if:true={editContactMode}>

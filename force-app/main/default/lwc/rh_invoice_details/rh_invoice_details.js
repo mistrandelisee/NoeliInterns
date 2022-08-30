@@ -64,15 +64,17 @@ export default class Rh_invoice_details extends NavigationMixin(LightningElement
                                 typeAttributes: { currencyCode: { fieldName: 'currencyCode' }, step: '0.001' },
                                 cellAttributes: { alignment: 'left' }, },
         { label: this.l.StartDate, fieldName: 'RH_StartDate__c',sortable:true, type: "date",wrapText:true, typeAttributes:{
-            weekday: "long", year: "numeric",
-            month: "long", day: "2-digit",
-            hour: "2-digit", minute: "2-digit"
+            // weekday: "long",
+             year: "numeric",
+            month: "2-digit", day: "2-digit",
+            // hour: "2-digit", minute: "2-digit"
         } },
         { label: this.l.EndDate, fieldName: 'RH_EndDate__c',sortable:true, type: "date",wrapText:true,
         typeAttributes:{
-            weekday: "long", year: "numeric",
-            month: "long", day: "2-digit",
-            hour: "2-digit", minute: "2-digit"
+            // weekday: "long",
+             year: "numeric",
+            month: "2-digit", day: "2-digit",
+            // hour: "2-digit", minute: "2-digit"
         } },
     ];
     invoiceItemsCols = [
