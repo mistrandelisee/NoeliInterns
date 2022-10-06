@@ -177,21 +177,24 @@ export default class Rh_group_detail  extends NavigationMixin(LightningElement) 
                 variant:"brand-outline",
                 label:"Delete",
                 iconName:"utility:delete",
-                                class:"slds-m-left_x-small"
+                class:"slds-m-left_x-small",
+                pclass :' slds-float_right'
             },
             {
                 name:"Edited",
                 variant:"brand-outline",
                 label:"Edit",
                 iconName:"utility:edit",
-                                class:"slds-m-left_x-small"
+                class:"slds-m-left_x-small",
+                pclass :'slds-float_right'
             },
             {
                 name:"Activated",
                 variant:"brand-outline",
                 label:"Active",
                 iconName:"utility:add",
-                                class:"slds-m-left_x-small"
+                class:"slds-m-left_x-small",
+                pclass :' slds-float_right'
             }
             
          ];
@@ -201,21 +204,24 @@ export default class Rh_group_detail  extends NavigationMixin(LightningElement) 
                 variant:"brand-outline",
                 label:"Delete",
                 iconName:"utility:delete",
-                                class:"slds-m-left_x-small"
+                class:"slds-m-left_x-small",
+                pclass :' slds-float_right'
             },
             {
                 name:"Edited",
                 variant:"brand-outline",
                 label:"Edit",
                 iconName:"utility:edit",
-                                class:"slds-m-left_x-small"
+                class:"slds-m-left_x-small",
+                pclass :' slds-float_right'
             },
             {
                 name:"Desactived",
                 variant:"brand-outline",
                 label:"Desactive",
                 iconName:"utility:deprecate",
-                                class:"slds-m-left_x-small"
+                class:"slds-m-left_x-small",
+                pclass :' slds-float_right'
             }
             
          ];
@@ -245,6 +251,7 @@ export default class Rh_group_detail  extends NavigationMixin(LightningElement) 
             this.statusEditGroup = true;
             this.detailGroup = false;
             window.setTimeout(() => {this.template.querySelector('c-rh_spinner').stop(); /*this.isLoading = false;*/}, 2000);
+          //  this.template.querySelector('c-rh_spinner').stop();
          }
          if(event.detail.action=='Deleted'){
             
@@ -271,6 +278,7 @@ export default class Rh_group_detail  extends NavigationMixin(LightningElement) 
               .then(result => {
                 console.log('Result', result);
                 this.updateStatus(result.statut);
+                this.AvailableAction(result.statut);
               })
               .catch(error => {
                 console.error('Error:', error);

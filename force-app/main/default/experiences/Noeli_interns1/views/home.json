@@ -1,15 +1,29 @@
 {
-  "appPageId" : "63386af7-5e97-4223-9920-6456bad66e85",
-  "componentName" : "siteforce:sldsTwoCol84Layout",
-  "id" : "c552c950-ce8d-48b7-9acd-6fde0fb465b7",
+  "appPageId" : "b66b8655-4217-43a3-88b7-8256d61f02ee",
+  "componentName" : "siteforce:sldsTwoCol84SidebarFeaturedLayout",
+  "id" : "b67a1732-9861-44db-ae4c-f096c24889d2",
   "label" : "Home",
   "regions" : [ {
     "components" : [ {
       "componentAttributes" : {
-        "richTextValue" : "<img class='sfdcCbImage' src='/sfsites/c/img/community/cpt/cpt-home-banner.png'             style='width:100%;'/>"
+        "richTextValue" : "<p><img class=\"sfdcCbImage\" alt=\"\" src=\"/sfsites/c/img/community/cpt/cpt-home-banner.png\" style=\"width: 100%;\"></p>"
       },
       "componentName" : "forceCommunity:richTextInline",
-      "id" : "636a1df2-7260-448e-853c-3bd0116ade04",
+      "id" : "0e4f26f2-7747-4f05-8580-7da250e20046",
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    }, {
+      "componentAttributes" : { },
+      "componentName" : "c:rh_add_and_remove",
+      "id" : "dfc6aca6-7c09-4f41-a4cf-f7a69ad7cd6e",
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    }, {
+      "componentAttributes" : { },
+      "componentName" : "c:rh_Event",
+      "id" : "1e10c7c4-e25e-4d54-9c55-c4e6d0ed9171",
       "renderPriority" : "NEUTRAL",
       "renditionMap" : { },
       "type" : "component"
@@ -31,12 +45,12 @@
         "titleHorizontalAlign" : "center"
       },
       "componentName" : "community_navigation:tileMenu",
-      "id" : "9f239a4c-32ec-4329-9b39-0be106504701",
+      "id" : "b663e7a4-14f1-4014-948c-232ca1ba923c",
       "renderPriority" : "NEUTRAL",
       "renditionMap" : { },
       "type" : "component"
     } ],
-    "id" : "3d31484c-a9be-4e57-9d26-7864ca0d7cb9",
+    "id" : "9fa9b5e6-ba1a-452c-929c-f6c868880f9d",
     "regionName" : "header",
     "type" : "region"
   }, {
@@ -58,12 +72,12 @@
         "showSearchBar" : true
       },
       "componentName" : "forceCommunity:objectHome",
-      "id" : "ab49762b-04fc-45ac-ac42-153929b0e6d7",
+      "id" : "6f2616c2-5419-46c7-aebf-7aa016213adc",
       "renderPriority" : "NEUTRAL",
       "renditionMap" : { },
       "type" : "component"
     } ],
-    "id" : "1713ca2b-48ec-455b-b4c5-b3cde1d8b4c7",
+    "id" : "5450bab4-6c43-4137-b0df-ed132c8c0bd6",
     "regionName" : "content",
     "type" : "region"
   }, {
@@ -82,7 +96,7 @@
         "title" : "Paused Flows"
       },
       "componentName" : "forceCommunity:pausedInterviewCard",
-      "id" : "07f6a9ec-1b24-45de-9c21-e40f3c75406a",
+      "id" : "80bd8c65-88bd-4809-b42b-cd9dc7255ec2",
       "renderPriority" : "NEUTRAL",
       "renditionMap" : { },
       "type" : "component"
@@ -91,16 +105,16 @@
         "richTextValue" : "             <p><b style=\"font-size: 16px;\">Quick Links</b></p>             <p><br></p>             <p><a href=\"http://www.salesforce.com/\" target=\"_blank\">Link 1</a></p>             <p><br></p>             <p><a href=\"http://www.salesforce.com/\" target=\"_blank\">Link 2</a></p>             <p><br></p>             <p><a href=\"http://www.salesforce.com/\" target=\"_blank\">Link 3</a></p>             <p><br></p>             <p><a href=\"http://www.salesforce.com/\" target=\"_blank\">Link 4</a></p>         "
       },
       "componentName" : "forceCommunity:richTextInline",
-      "id" : "b0ac18c7-24ee-44db-a42c-817bccad0f36",
+      "id" : "53c7e58a-3a1e-4f2c-b8b0-cbafd86fb220",
       "renderPriority" : "NEUTRAL",
       "renditionMap" : { },
       "type" : "component"
     } ],
-    "id" : "336fcb3f-733b-4528-a5e0-8a45bbbe7c03",
+    "id" : "0b6f6604-9568-4958-ab48-cf2839a88f14",
     "regionName" : "sidebar",
     "type" : "region"
   }, {
-    "id" : "6603da8d-e650-4c07-9b5b-40e93dbc1d03",
+    "id" : "6661fce5-0475-4f24-906b-1d8434a0369d",
     "regionName" : "footer",
     "type" : "region"
   }, {
@@ -111,12 +125,16 @@
         "title" : "Home"
       },
       "componentName" : "forceCommunity:seoAssistant",
-      "id" : "85e6db4e-5684-49f7-979e-109bfe77ce81",
+      "id" : "107ecf2c-fc27-4923-b1a6-1c1086bfd310",
       "renditionMap" : { },
       "type" : "component"
     } ],
-    "id" : "091f9bf7-f8ce-4745-82b3-60662af11826",
+    "id" : "d5e8258e-22bf-4bbb-a83b-b4d5b56daeb4",
     "regionName" : "sfdcHiddenRegion",
+    "type" : "region"
+  }, {
+    "id" : "41a02cef-6eb1-4d37-86b0-0e18c2f4452e",
+    "regionName" : "featured",
     "type" : "region"
   } ],
   "themeLayoutType" : "Inner",

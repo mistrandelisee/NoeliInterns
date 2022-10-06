@@ -10,12 +10,13 @@ export default class Rh_filter extends LightningElement {
     label={...labels};
     pillList=[];
     form;
+    formFormated;
 
     labelRemove={};
 
-    //@api fieldDetails=[];
+    @api fieldDetails=[];
 
-    @api fieldDetails=[
+   /* @api fieldDetails=[
         {
             label:'Title',
             placeholder:'Enter Title',
@@ -50,12 +51,12 @@ export default class Rh_filter extends LightningElement {
             ly_lg:'6'
         }];
         
-    @api title="Filter ";
+    @api title="Filter ";*/
     
     
     @track fieldDetailsCopy=[];  
 
-    //@api title;
+    @api title;
     @api timeOut;
     @api backcolor;
 
@@ -129,12 +130,15 @@ export default class Rh_filter extends LightningElement {
         this.displayFields= !this.displayFields;
     }
 
+
+
     handlePill(field){
         var pillVal=[];
         for(var key in this.fieldDetails){
             let name =this.fieldDetails[key].name;
             let label =this.fieldDetails[key].label;
             let value;
+
             switch (this.fieldDetails[key]?.type){
                 case 'toggle': 
                     value =this.fieldDetails[key].checked;
@@ -146,9 +150,24 @@ export default class Rh_filter extends LightningElement {
 
             if(field[name] !== null && String(field[name]).length!=0){
                 let obj={};
+                let pillValue; // text who will be display for each pill 
+              
+                // if we have a picklist display the label instead of value 
+                if(this.fieldDetails[key]?.picklist){
+                    this.fieldDetails[key].options.forEach(function(e){
+                       if(e.value==field[name]){
+                          pillValue = label +' : '+ e.label;
+                          return true;
+                       }
+                    }); 
+                }else{
+                    pillValue = label +' : '+ field[name];
+                }
+
                 obj[name]=field[name];
                 obj.label=label;
-                obj.pillValue=label +' : '+ field[name];
+                obj.pillValue=pillValue;
+                
                 pillVal.push(obj);
             } 
         }

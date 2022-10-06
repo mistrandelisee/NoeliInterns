@@ -1,8 +1,8 @@
 {
-  "activeViewId" : "6cb39f0f-f528-47a7-ad32-507ce18f2713",
-  "appPageId" : "63386af7-5e97-4223-9920-6456bad66e85",
+  "activeViewId" : "672e41a1-20e0-4ad5-b716-dffa16257c74",
+  "appPageId" : "b66b8655-4217-43a3-88b7-8256d61f02ee",
   "configurationTags" : [ ],
-  "id" : "62e492ab-a6f9-4f1b-94fa-74fcd3598c63",
+  "id" : "38310a90-3d6e-4bc8-ab39-bddf33ca9a50",
   "label" : "User Settings",
   "routeType" : "usersettings",
   "type" : "route",

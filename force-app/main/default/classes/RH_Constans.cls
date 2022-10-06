@@ -1,10 +1,11 @@
 public  class RH_Constans {
+    private static final  RH_Settings__c cs = RH_Settings__c.getOrgDefaults();
     public static final String RH_CONTACT_RT =Schema.SObjectType.Contact.getRecordTypeInfosByDeveloperName().get('RH_USER').getRecordTypeId();
     public static final String RH_CLIENT_ACCOUNT_RT =Schema.SObjectType.Account.getRecordTypeInfosByDeveloperName().get('RH_CLIENT').getRecordTypeId();
     public static final String RH_ACCOUNT_RT =Schema.SObjectType.Account.getRecordTypeInfosByDeveloperName().get('RH').getRecordTypeId();
     public static final String RH_PROJECT_RT =Schema.SObjectType.Project__c.getRecordTypeInfosByDeveloperName().get('Real_Project').getRecordTypeId();
     public static final String RH_PROFILE_NAME ='Custom Identity User';
-    public static final String ORG_NAME ='rh-dev';
+    public static final String ORG_NAME =String.isNotBlank(cs.RH_Org_Name__c)?cs.RH_Org_Name__c: 'rh-dev';
     public static final String ACTIVATED_WORKGROUP_STATUS ='Activated';
     public static final String ACTIVATED_CONTACT_STATUS ='Active';
     public static final String ACTIVATED_PROJECT_STATUS ='Active';

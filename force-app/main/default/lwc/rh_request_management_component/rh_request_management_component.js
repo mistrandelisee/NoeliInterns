@@ -69,6 +69,7 @@ export default class Rh_request_management_component extends NavigationMixin(Lig
     allContact = [];
     childRequests = [];
     allRecType = [];
+    valueComplain;
 
 
     keysFields={AddressedTo:'ok'};//non used now
@@ -88,6 +89,10 @@ export default class Rh_request_management_component extends NavigationMixin(Lig
     };
 
     statusOptions = [
+        {
+            label: 'All',
+            value: 'All'
+        },
         {
             label: 'Approved',
             value: 'Approved'
@@ -408,6 +413,7 @@ export default class Rh_request_management_component extends NavigationMixin(Lig
             this.resultRecord = result;
             this.statusDetail = result.Rh_Status__c;
             if(result.RecordType.Name == 'Complain'){
+                this.valueComplain = result.RH_Complain_On__r.Id;
                 this.isComplain = true;
             }
             if(result.RecordType.Name == 'Explanation'){
@@ -568,6 +574,22 @@ export default class Rh_request_management_component extends NavigationMixin(Lig
     }
 
     buildFormRequestChild(infosChild){
+        let objAns = {
+            label:'Answer',
+            name:'RH_Answer',
+            value:infosChild?.RH_Answer__c,
+            required:true,
+            ly_md:'12', 
+            ly_lg:'12'
+        }
+        let dateResp = {
+            label:'Responded Date',
+            name:'RH_Date_Response__c',
+            value:infosChild?.RH_Date_Response__c,
+            required:true,
+            ly_md:'6', 
+            ly_lg:'6'
+        }
         this.childRequests = [
             {
                 label:this.l.Description,
@@ -578,42 +600,50 @@ export default class Rh_request_management_component extends NavigationMixin(Lig
                 ly_lg:'12'
             },
             {
-                label:'Answer',
-                name:'RH_Answer',
-                value:infosChild?.RH_Answer__c ? infosChild?.RH_Answer__c : 'Not available For Now',
-                required:true,
-                ly_md:'12', 
-                ly_lg:'12'
-            },
-            {
-                label:'Date Submit',
+                label:'Submited Date',
                 name:'RH_Date_Submit__c',
                 value:infosChild?.RH_Date_Submit__c,
                 required:true,
                 ly_md:'6', 
                 ly_lg:'6'
-            },
-            {
-                label:'Date Response',
-                name:'RH_Date_Response__c',
-                value:infosChild?.RH_Date_Response__c ? infosChild?.RH_Date_Response__c : 'Not available For Now',
-                required:true,
-                ly_md:'6', 
-                ly_lg:'6'
             }
         ];
+        if (infosChild.RH_Date_Response__c != null) {
+                
+            this.childRequests.push(dateResp);
+        }
+        if (infosChild?.RH_Answer__c != null) {
+            
+            this.childRequests.splice(1, 0, objAns);
+        }
     }
 
     buildformDetail(profileinformation, adrrName){
 
         console.log('@@@@@RecordType.Name' + profileinformation?.RecordType.Name);
+        let dateResp = {
+            label:'Responded Date',
+            name:'RH_Date_Response__c',
+            value:profileinformation?.RH_Date_Response__c,
+            required:true,
+            ly_md:'6', 
+            ly_lg:'6'
+        }
+        let objAns = {
+            label:'Answer',
+            name:'RH_Answer',
+            value:profileinformation?.RH_Answer__c,
+            required:true,
+            ly_md:'12', 
+            ly_lg:'12'
+        }
         if(profileinformation?.RecordType.Name == 'Complain'){
             this.formPersonanalInputDetails=[ 
                             
                         {
-                            label:this.l.AddressedTo,
-                            name:'RH_AddressedTo',
-                            value:profileinformation?.RH_Addressed_To__r?.Name,
+                            label: this.l.ComplainOn,
+                            name: 'ComplainOn',
+                            value:profileinformation?.RH_Complain_On__r?.Name,
                             required:false,
                             ly_md:'6', 
                             ly_lg:'6'
@@ -651,99 +681,86 @@ export default class Rh_request_management_component extends NavigationMixin(Lig
                             ly_lg:'6'
                         },
                         {
-                            label:'Date Submit',
-                            name:'RH_Date_Submit__c',
-                            value:profileinformation?.RH_Date_Submit__c,
-                            required:true,
-                            ly_md:'6', 
-                            ly_lg:'6'
-                        },
-                        {
-                            label:'Date Response',
-                            name:'RH_Date_Response__c',
-                            value:profileinformation?.RH_Date_Response__c ? profileinformation?.RH_Date_Response__c : 'Not available For Now',
-                            required:true,
-                            ly_md:'6', 
-                            ly_lg:'6'
-                        },
-                        {
                             label:this.l.Description,
                             name:'RH_Description',
                             value:profileinformation?.RH_Description__c,
                             required:true,
                             ly_md:'6', 
                             ly_lg:'6'
+                        },
+                        {
+                            label:'Submited Date',
+                            name:'RH_Date_Submit__c',
+                            value:profileinformation?.RH_Date_Submit__c,
+                            required:true,
+                            ly_md:'6', 
+                            ly_lg:'6'
                         }
                     ];
+                    if (profileinformation?.RH_Date_Response__c != null) {
+                
+                        this.formPersonanalInputDetails.push(dateResp);
+                    }
         }
         if(profileinformation?.RecordType.Name == 'Explanation'){
             this.formPersonanalInputDetails=[
             
-            {
-                label:this.l.AddressedTo,
-                name:'RH_AddressedTo',
-                value:profileinformation?.RH_Addressed_To__r?.Name,
-                required:false,
-                ly_md:'6', 
-                ly_lg:'6'
-            },
-            {
-                label:this.l.Come,
-                name:'RH_Owner',
-                value:profileinformation?.CreatedBy.Name,
-                required:true,
-                ly_md:'6', 
-                ly_lg:'6'
-            },
-            {
-                label:this.l.Status,
-                name:'StatusRequest',
-                required:true,
-                value:profileinformation?.Rh_Status__c,
-                ly_md:'6', 
-                ly_lg:'6'
-            },
-            {
-                label:this.l.RequestTypeName,
-                name:'RecordT',
-                required:true,
-                value:profileinformation?.RecordType?.Name,
-                ly_md:'12', 
-                ly_lg:'6'
-            },
-            {
-                label:'Answer',
-                name:'RH_Answer',
-                value:profileinformation?.RH_Answer__c ? profileinformation?.RH_Answer__c : 'Not available For Now',
-                required:true,
-                ly_md:'6', 
-                ly_lg:'6'
-            },
-            {
-                label:'Date Submit',
-                name:'RH_Date_Submit__c',
-                value:profileinformation?.RH_Date_Submit__c,
-                required:true,
-                ly_md:'6', 
-                ly_lg:'6'
-            },
-            {
-                label:'Date Response',
-                name:'RH_Date_Response__c',
-                value:profileinformation?.RH_Date_Response__c ? profileinformation?.RH_Date_Response__c : 'Not available For Now',
-                required:true,
-                ly_md:'6', 
-                ly_lg:'6'
-            },
-            {
-                label:this.l.Description,
-                name:'RH_Description',
-                value:profileinformation?.RH_Description__c,
-                required:true,
-                ly_md:'6', 
-                ly_lg:'6'
+                {
+                    label:this.l.AddressedTo,
+                    name:'RH_AddressedTo',
+                    value:profileinformation?.RH_Addressed_To__r?.Name,
+                    required:false,
+                    ly_md:'6', 
+                    ly_lg:'6'
+                },
+                {
+                    label:this.l.Come,
+                    name:'RH_Owner',
+                    value:profileinformation?.CreatedBy.Name,
+                    required:true,
+                    ly_md:'6', 
+                    ly_lg:'6'
+                },
+                {
+                    label:this.l.Status,
+                    name:'StatusRequest',
+                    required:true,
+                    value:profileinformation?.Rh_Status__c,
+                    ly_md:'6', 
+                    ly_lg:'6'
+                },
+                {
+                    label:this.l.RequestTypeName,
+                    name:'RecordT',
+                    required:true,
+                    value:profileinformation?.RecordType?.Name,
+                    ly_md:'12', 
+                    ly_lg:'6'
+                },
+                {
+                    label:'Submited Date',
+                    name:'RH_Date_Submit__c',
+                    value:profileinformation?.RH_Date_Submit__c,
+                    required:true,
+                    ly_md:'6', 
+                    ly_lg:'6'
+                },
+                {
+                    label:this.l.Description,
+                    name:'RH_Description',
+                    value:profileinformation?.RH_Description__c,
+                    required:true,
+                    ly_md:'6', 
+                    ly_lg:'6'
+                }
+            ];
+            if (profileinformation?.RH_Date_Response__c != null) {
+                this.formPersonanalInputDetails.splice(5, 0, dateResp)
             }
-        ];
+            if (profileinformation?.RH_Answer__c != null) {
+                
+                this.formPersonanalInputDetails.push(objAns);
+            }
         }
         if(profileinformation?.RecordType.Name == 'Holiday' || profileinformation?.RecordType.Name == 'Permisson'){
             this.formPersonanalInputDetails=[ 
@@ -797,17 +814,9 @@ export default class Rh_request_management_component extends NavigationMixin(Lig
                     ly_lg:'6',
                 },
                 {
-                    label:'Date Submit',
+                    label:'Submited Date',
                     name:'RH_Date_Submit__c',
                     value:profileinformation?.RH_Date_Submit__c,
-                    required:true,
-                    ly_md:'6', 
-                    ly_lg:'6'
-                },
-                {
-                    label:'Date Response',
-                    name:'RH_Date_Response__c',
-                    value:profileinformation?.RH_Date_Response__c ? profileinformation?.RH_Date_Response__c : 'Not available For Now',
                     required:true,
                     ly_md:'6', 
                     ly_lg:'6'
@@ -822,6 +831,10 @@ export default class Rh_request_management_component extends NavigationMixin(Lig
                     ly_lg:'6'
                 }
             ];
+            if (profileinformation?.RH_Date_Response__c != null) {
+                
+                this.formPersonanalInputDetails.splice(7, 0, dateResp)
+            }
         }
         
     }
@@ -835,7 +848,7 @@ export default class Rh_request_management_component extends NavigationMixin(Lig
                 name:'RH_AddressedTo',
                 picklist: true,
                 options: this.allContact,
-                value: '',
+                value: this.valueComplain,
                 ly_md:'6', 
                 ly_lg:'6'
             },

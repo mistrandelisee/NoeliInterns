@@ -25,103 +25,76 @@
         </div>
     </template>
     <template if:true={showComponentEdit}>
-        <div class="slds-m-around--xx-large" style="margin-top: 0px;">
-            <br/>
-            <div style="float:right;margin-top: -25px;margin-right: -64px;" class="slds-list_horizontal">
-                <template if:false={isUpdate} >
-                    <!-- save -->              
-                    <div class="custom-box">
-                        <!-- Actions -->
-                        <c-rh_actions  onaction={handleSaveEvent} action-available={detailsActionsSaveEvent} >  </c-rh_actions>
-                    </div>
-                    <!-- <lightning-button variant="brand-outline" label={label.Save} icon-name={icon.Save} class="slds-m-right_medium" onclick={handleSaveEvent} ></lightning-button> -->
-                    <!-- save -->
-                    
-                   <!--florent start-->
-                    <div class="custom-box">
-                        <c-rh_actions  onaction={handleSaveAndSendEvent} action-available={detailsSaveAndSendEvent}></c-rh_actions>
-                    </div>
-                     <!-- <lightning-button variant="brand-outline" label={label.SaveAndSend} icon-name={icon.Save} class="slds-m-right_medium" onclick={handleSaveAndSendEvent} ></lightning-button> -->
-                   <!--florent finish-->
-                
-                   
-                    <!-- <lightning-button variant="brand-outline" label="Next" icon-name=icon.arrow_right" class="slds-m-right_medium" onclick={handleBeforeSave}></lightning-button> -->
-                </template>
-                <template if:true={isUpdate}>
-                    <div class="custom-box">
-                        <c-rh_actions  onaction={handleUpdateEvent} action-available={detailsUpdateEvent}></c-rh_actions>
-                    </div>
-                    <div class="custom-box">
-                        <c-rh_actions  onaction={handleUpdateAndSendEvent} action-available={detailsUpdateAndSendEvent}></c-rh_actions>
-                    </div>
-                    <!-- <lightning-button variant="brand-outline" label={label.Update} icon-name={icon.save} class="slds-m-right_medium" onclick={handleUpdateEvent}></lightning-button> -->
-                    <!-- <lightning-button variant="brand-outline" label={label.UpdateAndSend} icon-name={icon.Save} onclick={handleUpdateAndSendEvent}></lightning-button> -->
-                    <!-- <lightning-button variant="brand-outline" label="Next" icon-name=icon.arrow_right" class="slds-m-right_medium" onclick={handleBeforeUpdate}></lightning-button> -->
-                </template>
-            </div>
-        </div>
         <section style="margin-top:-20px;">
-            <div style="color: rgb(0, 0, 0);background-color: rgb(223,226,230);">
+            <div style="color: rgb(0, 0, 0);background-color: white;">
                 <div class="slds-box slds-p-around_none slds-m-top_x-small slds-m-bottom_medium slds-m-horizontal_none">
                     
                     <header >
                         <h2 id="heading-02" class="slds-text-heading_medium slds-hyphenate" style="margin-top:10px; margin-bottom:-25px;">
-                            <template if:false={isUpdate}>
-                                <div class="slds-text-align_center">
-                                    <b>{label.AddNewEvent}</b>
-                                </div>
-                            </template>
-                            <template if:true={isUpdate}>
-                                <div class="slds-text-align_center">
-                                    <b>{label.UpdateEvent}</b>
-                                </div>
-                            </template>
+                            <div style="margin-bottom: 20px; margin-top: 20px;">
+                                <template if:false={isUpdate}>
+                                    <div class="slds-clearfix">
+                                        <div class="slds-float_left" style="margin-left:40px;">
+                                            <b>{label.AddNewEvent}</b>
+                                        </div>
+                                    </div>
+                                </template>
+                                <template if:true={isUpdate}>
+                                    <div class="slds-clearfix">
+                                        <div class="slds-float_left" style="margin-left:40px;">
+                                            <b>{label.UpdateEvent}</b>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
                         </h2>
                     </header>
                     <div class="slds-p-around_medium" id="content-id-2">
                         <c-rh_dynamic_form  inputs-items={inputsItems}></c-rh_dynamic_form>
-    
-                        <template if:false={isUpdate}>
-                            <div class="slds-m-around_medium" style="margin-left: 25px; margin-top: 20px;">
-                                <lightning-input 
-                                    type="file" 
-                                    accept=".xlsx, .xls, .csv, .png, .doc, .docx, .pdf"
-                                    onchange={openfileUpload}>
-                                </lightning-input>
+                        <div class="card-footer" slot="footer" style="margin-top: 20px;">
+                            <div class="slds-clearfix">
+                                <div class="slds-float_right">
+                                    <template if:false={isUpdate}>
+                                        <lightning-button variant="base" label={label.Cancel} data-action-name="Cancel" title="Cancel" icon-name={icon.close} onclick={closeComponentEdit} class="slds-m-left_x-small"></lightning-button>
+                                        <lightning-button variant="base" label={label.Save} data-action-name="Edit" title="Save" icon-name={icon.Save} onclick={handleSaveEvent} class="slds-m-left_medium"></lightning-button>
+                                        <lightning-button variant="base" label={label.SaveAndSend} data-action-name="Edit" title="Save And Send" icon-name={icon.Save} onclick={handleSaveAndSendEvent} class="slds-m-left_medium"></lightning-button>
+                                    </template>
+                                    <template if:true={isUpdate}>
+                                        <lightning-button variant="base" label={label.Cancel} data-action-name="Cancel" title="Cancel" icon-name={icon.close} onclick={closeComponentUpdate} class="slds-m-left_x-small"></lightning-button>
+                                        <lightning-button variant="base" label={label.Update} data-action-name="Edit" title="Save" icon-name={icon.Save} onclick={handleUpdateEvent} class="slds-m-left_medium"></lightning-button>
+                                        <lightning-button variant="base" label={label.UpdateAndSend} data-action-name="Edit" title="Save And Send" icon-name={icon.Save} onclick={handleUpdateAndSendEvent} class="slds-m-left_medium"></lightning-button>
+                                    </template>
+                                </div>
                             </div>
-                        </template>
-                        <template if:true={isUpdate}>
-                            <div class="slds-m-around_medium" style="margin-left: 25px; margin-top: 20px;">
-                                <lightning-input 
-                                    disabled={disable}
-                                    type="file" 
-                                    accept=".xlsx, .xls, .csv, .png, .doc, .docx, .pdf"
-                                    onchange={openfileUploadForUpdate}>
-                                </lightning-input>
-                            </div>
-                        </template>
-                        <template if:true={fileData}>
-                            <p style="margin-left: 26px;">{fileData.filename}</p>
-                        </template>
+                        </div>
+                        <div style="margin-top:-100px;">
+                            <template if:false={isUpdate}>
+                                <div class="slds-m-around_medium" style="margin-left: 25px; margin-top: 20px;">
+                                    <lightning-input 
+                                        type="file" 
+                                        accept=".xlsx, .xls, .csv, .png, .doc, .docx, .pdf"
+                                        onchange={openfileUpload}>
+                                    </lightning-input>
+                                </div>
+                            </template>
+                            <template if:true={isUpdate}>
+                                <div class="slds-m-around_medium" style="margin-left: 25px; margin-top: 20px;">
+                                    <lightning-input 
+                                        disabled={disable}
+                                        type="file" 
+                                        accept=".xlsx, .xls, .csv, .png, .doc, .docx, .pdf"
+                                        onchange={openfileUploadForUpdate}>
+                                    </lightning-input>
+                                </div>
+                            </template>
+                            <template if:true={fileData}>
+                                <p style="margin-left: 26px;">{fileData.filename}</p>
+                            </template>
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
-        <!-- florent start -->
-        <template if:false={isUpdate}>
-            <div class="custom-box">
-                <c-rh_actions  onaction={closeComponentEdit} action-available={detailsCloseComponentEdit} class="slds-float_left" style="margin-left:-8;">  </c-rh_actions>
-            </div>
-
-            <!-- <lightning-button variant="brand-outline" label={label.Back} icon-name={icon.Back} class="slds-m-right_medium" onclick={closeComponentEdit}></lightning-button> -->
-        </template>
-        <template if:true={isUpdate}>
-            <div class="custom-box" style="margin-left:-8;">
-                <c-rh_actions  onaction={closeComponentUpdate} action-available={detailsCloseComponentEdit} class="slds-float_left" style="margin-left:-8;"></c-rh_actions>
-            </div>
-            <!-- <lightning-button variant="brand-outline" label={label.Back} icon-name={icon.Back} class="slds-m-right_medium" onclick={closeComponentUpdate}></lightning-button> -->
-        </template>
-        <!-- florent end -->
     </template>
     <template if:true={showComponentDetails}>
         <div style=" margin-top: 0px;">
@@ -175,7 +148,7 @@
                     </header>
                     <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-2">
                         <div class="slds-clearfix">
-                            <div class="slds-align_absolute-center" style="margin-top:-20px;margin-bottom: 15px;">
+                            <div class="slds-align_absolute-center" style="margin-top:-16px;margin-bottom: -16px; border-top: 2px solid orange; border-bottom: 2px solid orange;">
                                 <p style="font-size:18px;">{label.PermissionDelete}</p>
                             </div>
                         </div>

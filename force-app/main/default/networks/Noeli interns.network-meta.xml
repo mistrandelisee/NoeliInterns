@@ -29,7 +29,7 @@
     <gatherCustomerSentimentData>false</gatherCustomerSentimentData>
     <networkMemberGroups>
         <profile>admin</profile>
-        <profile>custom identity user</profile>
+        <profile>Custom Identity User</profile>
     </networkMemberGroups>
     <networkPageOverrides>
         <changePasswordPageOverrideSetting>Standard</changePasswordPageOverrideSetting>
@@ -48,5 +48,5 @@
         <standardTab>Chatter</standardTab>
     </tabs>
     <urlPathPrefix>NoeliInterns</urlPathPrefix>
-    <welcomeTemplate>unfiled$public/RH_New_Member_Welcome_Email</welcomeTemplate>
+    <welcomeTemplate>RH_TEMPLATE_FOLDER/RH_New_Member_Welcome_Email</welcomeTemplate>
 </Network>

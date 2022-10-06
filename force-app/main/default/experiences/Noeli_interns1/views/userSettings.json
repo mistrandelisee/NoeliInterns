@@ -1,27 +1,20 @@
 {
-  "appPageId" : "63386af7-5e97-4223-9920-6456bad66e85",
+  "appPageId" : "b66b8655-4217-43a3-88b7-8256d61f02ee",
   "componentName" : "siteforce:sldsOneColLayout",
-  "id" : "6cb39f0f-f528-47a7-ad32-507ce18f2713",
+  "id" : "672e41a1-20e0-4ad5-b716-dffa16257c74",
   "label" : "User Settings",
   "regions" : [ {
-    "id" : "55f05eb7-c7c5-4ead-a17a-2755dea0a8b3",
+    "id" : "66f9ee08-2fe1-4146-94a0-03177dda54e5",
     "regionName" : "header",
     "type" : "region"
   }, {
     "components" : [ {
       "componentAttributes" : {
         "accountSectionTitle" : "Account",
-        "accountTabName" : "Account Management",
+        "accountTabName" : "Account Details",
         "connectedSourcesTabName" : "Connected Sources",
-        "deleteAccountButtonTitle" : "Deactivate My Account",
-        "deleteAccountConfirmationPopupBody" : "After you deactivate your account, you'll lose access to this site.",
-        "deleteAccountConfirmationPopupButtonTitle" : "Got It",
-        "deleteAccountConfirmationPopupTitle" : "Deactivate your account?",
-        "deleteAccountErrorMessage" : "Something went wrong. Contact your site administrator.",
-        "deleteAccountSectionTitle" : "Deactivate Account",
         "emailNotificationsTitle" : "Email Notifications",
         "emailSectionDescText" : "When email notifications are enabled, email me when someone:",
-        "hideAccountDeleteSection" : true,
         "hideChatterNotificationSettings" : true,
         "hideConnectedSources" : false,
         "hideEmailNotificationSettings" : false,
@@ -34,16 +27,16 @@
         "settingsPageTitle" : "My Settings"
       },
       "componentName" : "forceCommunity:userSettingsCustomizable",
-      "id" : "34ec1f31-7b7c-4ea1-ad12-0162fe6855bc",
+      "id" : "49db8dad-bd79-4d71-ac29-6a454a2f330b",
       "renderPriority" : "NEUTRAL",
       "renditionMap" : { },
       "type" : "component"
     } ],
-    "id" : "cf7ae9fa-fbae-449c-9db1-981591569fe4",
+    "id" : "83adc2da-225b-4bce-993f-710e959d5d24",
     "regionName" : "content",
     "type" : "region"
   }, {
-    "id" : "0d32ee7f-725a-485c-983d-e5a2f5c94389",
+    "id" : "d5aa4e31-2256-4953-9cf0-c592a5361138",
     "regionName" : "footer",
     "type" : "region"
   } ],

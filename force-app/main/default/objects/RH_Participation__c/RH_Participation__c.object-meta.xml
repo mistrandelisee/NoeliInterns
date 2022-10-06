@@ -153,7 +153,6 @@
     <enableSharing>true</enableSharing>
     <enableStreamingApi>true</enableStreamingApi>
     <externalSharingModel>ControlledByParent</externalSharingModel>
-   
     <label>Participation</label>
     <nameField>
         <displayFormat>P-{0000}</displayFormat>

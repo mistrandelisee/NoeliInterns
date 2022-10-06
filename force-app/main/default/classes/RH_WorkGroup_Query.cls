@@ -36,4 +36,34 @@ public  class RH_WorkGroup_Query {
         
         return mapName;
     } */
+
+    public static Map<String, Object> getFilteredGroup(RH_groupController.GroupFilterWrapper filterWrp){
+        Map<String, Object> mapGroup = new Map<String, Object>();
+        String text=String.isNotBlank(filterWrp.searchText) ? '%'+filterWrp.searchText+'%' :'';
+        String status=filterWrp.status;
+        String ordBy=String.isNotBlank(filterWrp.orderBy)?filterWrp.orderBy: ' CreatedDate ' ;
+        String ordOn= String.isNotBlank(filterWrp.orderOn)?filterWrp.orderOn: ' DESC ';
+
+        String query = 'SELECT Id,RH_Status__c, Name, RH_Description__c,  RH_Team_Leader__r.Name '
+                            +'FROM RH_WorkGroup__c';
+        String queryWHERE = ' WHERE ';
+        if(String.isNotBlank(text)){
+			queryWHERE = queryWHERE + 'Name LIKE: text ';
+		}
+        if (String.isNotBlank(status)) {
+            queryWHERE = queryWHERE + 'AND (RH_Status__c =: status)';
+        }  
+        String queryORDER='';
+        if(String.isNotBlank(ordBy)){
+
+			queryORDER = queryORDER
+             + ' Order by '+ordBy+' '+ordOn;
+		}
+        query= query+queryWHERE; //+queryORDER;
+        System.debug('query to execute--->: ' + query);
+        List<RH_WorkGroup__c> mlist = Database.query(query);
+        mapGroup.put('liste', mlist);
+        return mapGroup;
+    }
+
 }

@@ -26,6 +26,10 @@ import { labels } from 'c/rh_label';
 
 const DRAFT='Draft';
 const SUBMIT='Submitted';
+const TeamLeader = 'Team Leader';
+const RhManager = 'RH Manager';
+const HumanResourceManagment = 'Human Resource Managment';
+const RoleCEO = 'CEO';
 export default class Rh_Event extends  NavigationMixin(LightningElement) {
     l={...labels,
         //searchText:null,
@@ -346,7 +350,7 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
             for(let i=0; i<result.length; i++){
                 console.log('@@@ All IDUSER --> ' , result[i].Id);
                 console.log('@@@ UserRole.Name --> ' , result[i].UserRole.Name);
-                if(result[i].UserRole.Name=='CEO' || result[i].UserRole.Name=='Human Resource Managment' || result[i].UserRole.Name=='RH Manager'){
+                if(result[i].UserRole.Name==RoleCEO || result[i].UserRole.Name==HumanResourceManagment || result[i].UserRole.Name==RhManager || result[i].UserRole.Name==TeamLeader){
                     console.log('@@@ IDUSER CEO --> ' , result[i].Id);
                     let name = this.data_Event[0].Name;
                     let desc = this.data_Event[0].Description__c;
@@ -454,7 +458,6 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
                 saveEvenWithoutStatus({ objEven: this.strEventData})
                 .then(result => {
                     console.log('### result----->', result );
-                    console.log('### res----->', result);
                     this._eventData = JSON.stringify(result);
                     console.log('_eventData ---> ', this._eventData);
                     this.evId_ForFile = result.Id;
@@ -530,7 +533,7 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
             this.handleClick();
             console.log('@@@_eventData ---> ', this._eventData);
             if(this.state==''){
-                console.log('@@@ --->  TRUE', this.evId_ForFile);
+                console.log('@@@File --->  TRUE', this.evId_ForFile);
                 saveEven({ objEven: this._eventData, eId: this.evId_ForFile})
                 .then(result => {
                     console.log('&&&& &&&& result ---> ', result);
@@ -551,7 +554,7 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
         }else{
             console.log('@@@_eventData ---> ', this._eventData);
             if(this.state==''){
-                console.log('@@@ --->  TRUE', this.evId_ForFile);
+                console.log('@@@File --->  FALSE', this.evId_ForFile);
                 saveEven({ objEven: this._eventData, eId: this.evId_ForFile})
                 .then(result => {
                     console.log('&&&& &&&& result ---> ', result);
@@ -625,59 +628,58 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
             }
         }
     }
-    // handleSaveEvent(){
-    //     // this.doSave(true,this.bool);
-    //     if(this.bool==true){
-    //         this.handleBeforeSave();
-    //         setTimeout(()=>{
-    //             this.checkIdOfFileBeforeSaveOrBeforeUpdate();
-    //             this.checkDataEventBeforeSave();
-    //         },1000);
-    //     }else{
-    //         this.handleBeforeSave();
-    //         this.checkDataEventBeforeSave();
-    //         setTimeout(()=>{
-    //             this.checkDataEventBeforeSave();
-    //         },1000);
-    //     }
+    handleSaveEvent(){debugger
+        // this.doSave(true,this.bool);
+        if(this.bool==true){
+            this.handleBeforeSave();
+            setTimeout(()=>{
+                this.checkIdOfFileBeforeSaveOrBeforeUpdate();
+                this.checkDataEventBeforeSave();
+            },1000);
+        }else{
+            this.handleBeforeSave();
+            setTimeout(()=>{
+                this.checkDataEventBeforeSave();
+            },2000);
+        }
            
-    // }
+    }
     //-----------------florent start--------------
-    handleSaveAndSendEvent(event){
-        if (event.detail.action=='SaveAndSend'){
-            if(this.bool==true){
-                this.handleBeforeSave();
-                setTimeout(()=>{
-                    this.checkIdOfFileBeforeSaveOrBeforeUpdate();
-                    this.checkDataEventBeforeSaveAndSend();
-                },1000);
-            }else{
-                this.handleBeforeSave();
-                setTimeout(()=>{
-                    this.checkDataEventBeforeSaveAndSend();
-                },1000);
-            }
+    handleSaveAndSendEvent(){
+        if(this.bool==true){
+            this.handleBeforeSave();
+            setTimeout(()=>{
+                this.checkIdOfFileBeforeSaveOrBeforeUpdate();
+                this.checkDataEventBeforeSaveAndSend();
+            },1000);
+        }else{
+            this.handleBeforeSave();
+            setTimeout(()=>{
+                this.checkDataEventBeforeSaveAndSend();
+            },1000);
         }
     }
 
-    closeComponentEdit(event){
-        if (event.detail.action=='Back'){
+    closeComponentEdit(){
         this.showComponentBase = true;
         this.showComponentDetails = false;
         this.showComponentEdit = false;
         this.showAttachement = false;
         this.isUpdate = false;
-        }
     }
 
     
-    closeComponentUpdate(event){
-        if (event.detail.action=='Back'){
+    closeComponentUpdate(){
         this.showComponentDetails = true;
         this.showComponentBase = false;
         this.showComponentEdit = false;
         this.isUpdate = false;
-        }
+        // if (event.detail.action=='Back'){
+        // this.showComponentDetails = true;
+        // this.showComponentBase = false;
+        // this.showComponentEdit = false;
+        // this.isUpdate = false;
+        // }
     }
     backToPreviousComponent(){
         this.recordId = undefined;
@@ -771,21 +773,19 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
             } 
         }
     }
-    handleUpdateEvent(event){
-        if (event.detail.action=='Update'){
-            console.log('bool1 bool1---> ', this.bool1);
-            if(this.bool1==true){
-                this.handleBeforeUpdate();
-                setTimeout(()=>{
-                    this.checkIdOfFileBeforeSaveOrBeforeUpdate();
-                    this.checkDataEventBeforeUpdate();
-                },1000);
-            }else{
-                this.handleBeforeUpdate();
-                setTimeout(()=>{
-                    this.checkDataEventBeforeUpdate();
-                },1000);
-            }
+    handleUpdateEvent(){
+        console.log('bool1 bool1---> ', this.bool1);
+        if(this.bool1==true){
+            this.handleBeforeUpdate();
+            setTimeout(()=>{
+                this.checkIdOfFileBeforeSaveOrBeforeUpdate();
+                this.checkDataEventBeforeUpdate();
+            },1000);
+        }else{
+            this.handleBeforeUpdate();
+            setTimeout(()=>{
+                this.checkDataEventBeforeUpdate();
+            },1000);
         }
     }
     checkDataEventBeforeUpdateAndSendEvent(){
@@ -813,20 +813,18 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
             },500);
         }
     }
-    handleUpdateAndSendEvent(event){
-        if (event.detail.action=='Update And Send'){
-            if(this.bool1==true){
-                this.handleBeforeUpdateAndSendEvent();
-                setTimeout(()=>{
-                    this.checkIdOfFileBeforeSaveOrBeforeUpdate();
-                    this.checkDataEventBeforeUpdateAndSendEvent();
-                },1000);
-            }else{
-                this.handleBeforeUpdateAndSendEvent();
-                setTimeout(()=>{
-                    this.checkDataEventBeforeUpdateAndSendEvent();
-                },1000);
-            }
+    handleUpdateAndSendEvent(){
+        if(this.bool1==true){
+            this.handleBeforeUpdateAndSendEvent();
+            setTimeout(()=>{
+                this.checkIdOfFileBeforeSaveOrBeforeUpdate();
+                this.checkDataEventBeforeUpdateAndSendEvent();
+            },1000);
+        }else{
+            this.handleBeforeUpdateAndSendEvent();
+            setTimeout(()=>{
+                this.checkDataEventBeforeUpdateAndSendEvent();
+            },1000);
         }    
     }
 
@@ -1695,24 +1693,24 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
             this.showAttachement = false;
         }
     }
-    handleSaveEvent(event){
-        if (event.detail.action=='Save') {
-            // this.doSave(true,this.bool);
-            if(this.bool==true){
-                this.handleBeforeSave();
-                setTimeout(()=>{
-                    this.checkIdOfFileBeforeSaveOrBeforeUpdate();
-                    this.checkDataEventBeforeSave();
-                },1000);
-            }else{
-                this.handleBeforeSave();
-                this.checkDataEventBeforeSave();
-                setTimeout(()=>{
-                    this.checkDataEventBeforeSave();
-                },1000);
-            }
-        }
-    }
+    // handleSaveEvent(event){
+    //     if (event.detail.action=='Save') {
+    //         // this.doSave(true,this.bool);
+    //         if(this.bool==true){
+    //             this.handleBeforeSave();
+    //             setTimeout(()=>{
+    //                 this.checkIdOfFileBeforeSaveOrBeforeUpdate();
+    //                 this.checkDataEventBeforeSave();
+    //             },1000);
+    //         }else{
+    //             this.handleBeforeSave();
+    //             this.checkDataEventBeforeSave();
+    //             setTimeout(()=>{
+    //                 this.checkDataEventBeforeSave();
+    //             },1000);
+    //         }
+    //     }
+    // }
     detailsActionsSave=[
         {   variant:"brand-outline",
             class:" slds-var-m-right_medium",
@@ -1787,15 +1785,15 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
             iconName:this.icon.submit,
         }
     ]
-    detailsUpdateEvent=[
-        {   variant:"brand-outline",
-            class:" slds-m-right_medium",
-            label:this.label.Update,
-            name:'Update',
-            title:"Update",
-            iconName:this.icon.Save,
-        }
-    ]
+    // detailsUpdateEvent=[
+    //     {   variant:"brand-outline",
+    //         class:" slds-m-right_medium",
+    //         label:this.label.Update,
+    //         name:'Update',
+    //         title:"Update",
+    //         iconName:this.icon.Save,
+    //     }
+    // ]
     detailsUpdateAndSendEvent=[
         {   variant:"brand-outline",
             class:" slds-m-right_medium",

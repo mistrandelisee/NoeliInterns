@@ -286,8 +286,9 @@ hasAction;
                                                     isBaseUser:result.isBaseUser,
                                     }
                 this.constants=result.Constants;
-                const status=result.Employe?.statusLabel;
-                this.badge=[{name: 'userBadge', class: 'slds-float_left slds-badge_inverse'/*this.classStyle(this.contactrecord.Status)*/,label: status}]
+                const statusLabel=result.Employe?.statusLabel ;
+                const status=result.Employe?.status ;
+                this.badge=[{name: 'userBadge', class: this.classStyle(statusLabel),label: statusLabel}];
                 this.buildUserDetails(this.contactrecord);
                 this.buildAccountFields(this.contactrecord);
                 this.buildExtraField(this.contactrecord?.RH_Extra_Infos__c);
@@ -327,16 +328,16 @@ hasAction;
     classStyle(className){
 
         switch(className){
-            case 'approvato':
+            case 'Active':
                 return "slds-float_left slds-theme_success";
-            case 'nuovo':
+            case 'Draft':
                 return "slds-float_left slds-theme_info";
-            case 'inviato':
-                return "slds-float_left .slds-theme_warning";
-            case 'reject':
+            case 'Frozen':
+                return "slds-float_left slds-theme_shade";
+            case 'Banned':
                 return "slds-float_left slds-theme_error";
             default:
-                return "slds-float_left slds-badge_inverse";
+                return "slds-float_left slds-theme_alt-inverse";
         }
 
     }
@@ -502,6 +503,13 @@ hasAction;
             const data=event.detail.data;
             console.log(data);
             this.goToPage('accomplishment',{'recordId':data.key})
+        }
+    }
+    goToGroup(event){
+        if(event.detail.action=='Item'){
+            const data=event.detail.data;
+            console.log(data);
+            this.goToPage('rhgroup',{'recordId': data.key})
         }
     }
      
@@ -788,11 +796,6 @@ hasAction;
                     label:this.l.Country,
                     name:'Country',
                     value:this.profileinformation?.contact?.MailingCountry
-                },
-                {
-                    label:this.l.label,
-                    name:'Label',
-                    value:this.profileinformation?.contact?.Status
                 },
                 {
                     label:this.l.Province,

@@ -1,10 +1,18 @@
 {
-  "appPageId" : "63386af7-5e97-4223-9920-6456bad66e85",
+  "appPageId" : "b66b8655-4217-43a3-88b7-8256d61f02ee",
   "componentName" : "siteforce:sldsOneColLayout",
-  "id" : "27632b3b-ee6c-4b42-936d-bc5c4d38622c",
+  "id" : "3bf76f1f-6592-443f-a55c-7c1faf660516",
   "label" : "Record Detail",
   "regions" : [ {
-    "id" : "c56839fd-d601-4295-9e1c-68028a2294a2",
+    "components" : [ {
+      "componentAttributes" : { },
+      "componentName" : "c:rh_orchestrator",
+      "id" : "54bf7a97-8d69-4b04-91dd-cc03c4d35285",
+      "renderPriority" : "NEUTRAL",
+      "renditionMap" : { },
+      "type" : "component"
+    } ],
+    "id" : "712c4a14-c9ca-4a5f-ae51-5b42a5a65633",
     "regionName" : "header",
     "type" : "region"
   }, {
@@ -13,7 +21,7 @@
         "recordId" : "{!recordId}"
       },
       "componentName" : "forceCommunity:recordHeadline",
-      "id" : "77cf8008-31aa-47f6-85b6-5e83831ed924",
+      "id" : "e3e00452-a01d-43f1-8d8f-8c973df35f8d",
       "renderPriority" : "NEUTRAL",
       "renditionMap" : { },
       "type" : "component"
@@ -30,16 +38,16 @@
         "timelineTabLabel" : "Activity"
       },
       "componentName" : "forceCommunity:recordHomeTabs",
-      "id" : "eb9e715e-326f-4e37-9070-e44a7543e4f8",
+      "id" : "9ac08a23-abaa-4bd4-9858-3c364720a4a0",
       "renderPriority" : "NEUTRAL",
       "renditionMap" : { },
       "type" : "component"
     } ],
-    "id" : "1c62af3c-d890-4d51-aaf1-e01d7e5d924e",
+    "id" : "561d7c12-c834-4a5d-80d0-a39cb037c409",
     "regionName" : "content",
     "type" : "region"
   }, {
-    "id" : "1cd4b3f5-2a5e-4067-9a61-f1ce17410688",
+    "id" : "10cf33f1-38b8-4bb9-876e-6c973c79d653",
     "regionName" : "footer",
     "type" : "region"
   }, {
@@ -50,11 +58,11 @@
         "title" : "{!Record._Object}: {!Record._Title}"
       },
       "componentName" : "forceCommunity:seoAssistant",
-      "id" : "9be8e618-40be-4827-a1bb-a81da0f21885",
+      "id" : "f17c68ef-d0f2-4270-8652-c3d4ddc7cda4",
       "renditionMap" : { },
       "type" : "component"
     } ],
-    "id" : "f49d2d1a-0dcd-4020-9cb9-a520034d96ac",
+    "id" : "dc18d42f-eb35-4675-9960-9204e0a2e58a",
     "regionName" : "sfdcHiddenRegion",
     "type" : "region"
   } ],

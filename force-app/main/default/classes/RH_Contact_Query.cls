@@ -146,7 +146,7 @@ public  class RH_Contact_Query {
     }
     public  List<Contact> getAllContactInitial(){
         Contact currentContact = RH_Utility.getCurentContact();
-        return [SELECT Id,Name FROM Contact WHERE recordTypeId=:RH_Constans.RH_CONTACT_RT AND RH_Status__c=:RH_Constans.ACTIVATED_CONTACT_STATUS AND AccountId=:currentContact.AccountId AND RH_Role__c=:RH_Constans.CONTACT_ROLE_BU];
+        return [SELECT Id,Name FROM Contact WHERE recordTypeId=:RH_Constans.RH_CONTACT_RT AND RH_Status__c=:RH_Constans.ACTIVATED_CONTACT_STATUS AND AccountId=:currentContact.AccountId AND (RH_Role__c=:RH_Constans.CONTACT_ROLE_BU OR RH_Role__c=:RH_Constans.CONTACT_ROLE_TL OR RH_Role__c=:RH_Constans.CONTACT_ROLE_CEO)];
     }
 
     public List<Contact> getAccountId(String rh_contactId){

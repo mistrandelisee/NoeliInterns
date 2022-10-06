@@ -19,7 +19,7 @@ public without sharing class RH_EventController {
             User u = userQuery.getUserInfoId();
                 String conId = u.RH_ContactId__c;
                 String userRole = u.UserRole.Name;
-                if(userRole == 'CEO' || userRole =='Human Resource Managment' || userRole =='RH Manager' || userRole =='Base User'){
+                if(userRole == 'CEO' || userRole =='Human Resource Managment' || userRole =='RH Manager' || userRole =='Team Leader' || userRole =='Group Leader' || userRole =='Base User'){
                     System.debug('event-->' + eventQuery.getEventListByUserRole(userRole,conId));
                     return eventQuery.getEventListByUserRole(userRole,conId);
                 }else{
@@ -45,7 +45,7 @@ public without sharing class RH_EventController {
             User u = userQuery.getUserInfoId();
             String conId = u.RH_ContactId__c;
             String userRole = u.UserRole.Name;
-            if(userRole == 'CEO' || userRole =='Human Resource Managment' || userRole =='RH Manager' || userRole =='Base User'){
+            if(userRole == 'CEO' || userRole =='Human Resource Managment' || userRole =='RH Manager' || userRole =='Team Leader' || userRole =='Group Leader' || userRole =='Base User'){
                 return eventQuery.getEventList(evenId);
             }else{
                 return null;
@@ -65,7 +65,7 @@ public without sharing class RH_EventController {
                 String userRole = u.UserRole.Name;
                 System.debug('conId-->' + conId);
                 System.debug('userRole-->' + userRole);
-                if(userRole == 'CEO' || userRole =='Human Resource Managment' || userRole =='RH Manager'){
+                if(userRole == 'CEO' || userRole =='Human Resource Managment' || userRole =='RH Manager' || userRole =='Team Leader' || userRole =='Group Leader'){
                     List<Event__c> evenList = eventQuery.getMyEventManagerForCEO();
                     for(Event__c ev: evenList){
                         ev.Message__c = 'CEO';
@@ -293,7 +293,7 @@ public without sharing class RH_EventController {
             system.debug('@@@@ userRole---> '+ userRole );
             List<Event__c> event = eventQuery.getEventList(evid);
             system.debug('&&&event ---> '+ event[0] );
-            if(userRole=='CEO' || userRole =='Human Resource Managment' || userRole =='RH Manager'){
+            if(userRole =='CEO' || userRole =='Human Resource Managment' || userRole =='RH Manager' || userRole =='Team Leader' || userRole =='CEO'){
                 for(Event__c ev : event){
                     system.debug('@@@@ ev ---> '+ ev );
                     if(ev.Status__c=='Submitted'){

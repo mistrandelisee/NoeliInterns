@@ -1,13 +1,13 @@
 {
-  "appPageId" : "b0267ff8-b641-485b-9e63-37c07359d5a0",
+  "appPageId" : "9240f665-bede-4f24-b508-dcf3d913b463",
   "componentName" : "siteforce:sldsOneColLayout",
-  "id" : "5134780f-8f4f-446a-b5a6-be5302b0347f",
+  "id" : "a6c8038f-1b70-41e1-a08e-1d125430de2a",
   "label" : "Login",
   "regions" : [ {
     "components" : [ {
       "componentAttributes" : { },
       "componentName" : "salesforceIdentity:communityLogo2",
-      "id" : "91b7b364-a0c5-43b6-a694-0a95a12cf8ac",
+      "id" : "824716e9-df51-4caa-8011-6163796cdb32",
       "renderPriority" : "NEUTRAL",
       "renditionMap" : { },
       "type" : "component"
@@ -19,11 +19,12 @@
         "passwordLabel" : "Password",
         "selfRegisterLabel" : "Not a member?",
         "selfRegisterUrl" : "/SelfRegister",
+        "showForgotPassword" : false,
         "startUrl" : "",
         "usernameLabel" : "Username"
       },
-      "componentName" : "salesforceIdentity:loginForm2",
-      "id" : "c09e4c6f-b779-439d-a90c-69aa29a9356a",
+      "componentName" : "c:loginForm",
+      "id" : "a21045c2-013d-416d-81d4-88f65bded2e8",
       "renderPriority" : "NEUTRAL",
       "renditionMap" : { },
       "type" : "component"
@@ -34,7 +35,7 @@
         "useCommunityDomainSso" : false
       },
       "componentName" : "salesforceIdentity:socialLogin2",
-      "id" : "5cf108ef-2bfb-49ca-aaf4-ec71a90f6d43",
+      "id" : "24ecb000-41b4-495f-862a-e682fa7080a6",
       "renderPriority" : "NEUTRAL",
       "renditionMap" : { },
       "type" : "component"
@@ -43,12 +44,12 @@
         "employeeLoginLinkLabel" : "Are you an employee? Login here"
       },
       "componentName" : "salesforceIdentity:employeeLoginLink2",
-      "id" : "ab6389e6-59f2-4bd0-bc9c-f5cea5e89447",
+      "id" : "78e8b65e-5565-47c2-a8eb-5b85a0c573f9",
       "renderPriority" : "NEUTRAL",
       "renditionMap" : { },
       "type" : "component"
     } ],
-    "id" : "04a99187-aa62-4c3f-82b3-a34a3651a71a",
+    "id" : "9feac688-688f-4903-965f-cfa7d54d9545",
     "regionName" : "content",
     "type" : "region"
   }, {
@@ -59,11 +60,11 @@
         "title" : "Login"
       },
       "componentName" : "forceCommunity:seoAssistant",
-      "id" : "92b2ed6a-b58f-4237-8667-85dda8e9a4aa",
+      "id" : "1b35a384-39fb-4aa1-97e0-d2dfe34a4173",
       "renditionMap" : { },
       "type" : "component"
     } ],
-    "id" : "1e518920-4e16-46fb-b89f-4cd5288a8a4c",
+    "id" : "a10f80e2-916f-418a-9173-8d756aeb1f63",
     "regionName" : "sfdcHiddenRegion",
     "type" : "region"
   } ],

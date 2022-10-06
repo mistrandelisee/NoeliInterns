@@ -1,10 +1,13 @@
 trigger RH_ContactTrigger on Contact (After insert,After update, Before update, After delete, After undelete) {
     List<Contact> RHContacts=new List<Contact>();
-    for (Contact con : Trigger.new) {
-        if (con.recordTypeId==RH_Constans.RH_CONTACT_RT) {
-            RHContacts.add(con);
+    if (! Trigger.isDelete) {
+        for (Contact con : Trigger.new) {
+            if (con.recordTypeId==RH_Constans.RH_CONTACT_RT) {
+                RHContacts.add(con);
+            }
         }
     }
+    
 
     if(Trigger.isAfter){
         if(Trigger.isInsert || Trigger.isUpdate || Trigger.isDelete || Trigger.isUndelete){

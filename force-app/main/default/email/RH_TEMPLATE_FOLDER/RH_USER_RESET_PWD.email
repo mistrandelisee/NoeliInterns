@@ -1,0 +1,109 @@
+<style>
+
+        body{
+            margin: 0px;
+            color: black;
+        }   
+        .header-img{
+            width:100%;
+            height: 160px;
+            vertical-align: middle;
+        }
+        .container{
+            font-size: 12px;
+            text-align: left;
+        }
+
+        .hr{
+            margin-top: 20px;
+            margin-bottom: 20px;
+            width: 95%;
+        }
+        .link{
+            text-decoration: none !important;
+        }
+        .button{
+            text-align: center;
+            margin-top: 60px;
+            cursor: pointer;
+        }
+        .btn{
+            cursor: pointer;
+            text-align: center;
+            font-weight: bold;
+            font-size: 12px;
+            padding-top: 10px;
+            padding-bottom: 10px;
+            border-radius: 100px;
+            background-color: #001639;
+            width: auto;
+            height: 60px;
+            border: 4px ;
+            color: #F8F8F8;
+            
+
+        }
+
+
+        .text-dark-gray{
+            color:#C6C6C6;
+        }
+        .text-light-gray{
+            color: #F8F8F8;
+        }
+        .text-active{
+            color:#001639;
+        }
+        .text-bold{
+            font-weight: bold;
+        }
+        .phrase12{
+            color:#C6C6C6 ;
+            font-weight: 900;
+        }
+        .body-footer{
+            text-align: left;
+            padding-top: 15px;
+            font-size: 12px;
+        }
+        .footer{
+            text-align: left;
+            background-color:#2A2E43;
+            padding-top: 37px;
+            padding-bottom: 20px;
+            
+        }
+
+        .footer > img{
+            padding: 0px 15px 0px 15px;
+        }
+
+        
+    </style>
+<table  border="0" cellpadding="5"  style="width: 100%;" cellspacing="5" height="400" >
+       <tr valign="top">
+           <td >
+               <div class="container">
+                   <div>
+                       <p > Dear Operator,
+                           
+                        <br>You Requested a reset password, here is your new password
+                        <br> <i>$pass</i></p>
+                        <p class="text-boldx">Follow this link to access to your private space to reset your password</p>
+
+                        <hr class="hr">
+                       <div class="button"> <a href="$urlToSend" class="link"><input class="btn" type="button" value="Noeli Intern"/></a> </div>
+                   </div>
+           </div>
+           </td>
+       </tr>
+       <tr valign="center"  >
+           <td  >
+               <div  class="body-footer" >
+                   <p>Best Regards,</p>
+                   <p class="text-active"> Noeli Team</p>
+                   <!-- <p>This is an automatic message. Do not reply.</p> -->
+                </div>
+           </td>
+       </tr>
+   </table>

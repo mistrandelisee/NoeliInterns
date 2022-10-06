@@ -57,6 +57,20 @@ public without sharing class RH_Request_controller {
     public static RH_Request__c retreiveRequest(String requestId){
         return requestQry.retreiveRequest(requestId);
     }
+    
+    @AuraEnabled
+    public static Boolean isBaseUsers(){
+       Boolean isBase = false;
+       List<User> currentUser = userQry.getUserById(UserInfo.getUserId());
+       List<Contact> baseContacts = contactQry.getBaseUsers();
+       for(Contact bcon : baseContacts){
+           if(currentUser[0].RH_ContactId__c == bcon.Id){
+               isBase = true;
+               break;
+           }
+       }
+       return isBase;
+    }
 
     @AuraEnabled
     public static List<RecordType> getRecordType(){
@@ -166,7 +180,7 @@ public without sharing class RH_Request_controller {
                 mapReturn.put('valuep',valuep);
                 mapReturn.put('addCc',addCc);
                 mapReturn.put('mapUser',mapUser);
-                sendNotifications(RequestUser.RH_Description__c,UserInfo.getUserId(),RequestUser.id,'request-management',RequestUser.Rh_Status__c,valuep);
+                sendNotifications(RequestUser.RH_Description__c,UserInfo.getUserId(),RequestUser.id,'request-management',Schema.SObjectType.RH_Request__c.getRecordTypeInfosById().get(RequestUser.RecordTypeId).getName(),valuep);
             }
             
         } catch(Exception e) {
@@ -212,7 +226,7 @@ public without sharing class RH_Request_controller {
             }
         }
         if(pop=='OK'){
-            sendNotifications(request[0].RH_Description__c,UserInfo.getUserId(),request[0].id,'request-management',request[0].Rh_Status__c, valuep);
+            sendNotifications(request[0].RH_Description__c,UserInfo.getUserId(),request[0].id,'request-management',request[0].RecordType.Name, valuep);
         }
         return pop;
     }
@@ -228,7 +242,7 @@ public without sharing class RH_Request_controller {
             request.Rh_Status__c = 'Responded';
             request.RH_Answer__c = answer;
             update request;
-            sendNotifications(answer,UserInfo.getUserId(),request.RH_Parent_Request_Id__c,'request-management',request.Rh_Status__c,new List<Id> {request.CreatedById});
+            sendNotifications(answer,UserInfo.getUserId(),request.RH_Parent_Request_Id__c,'request-management',request.RecordType.Name,new List<Id> {request.CreatedById});
         }catch(Exception e){
             System.debug(e.getMessage());
             mapReturn.put('error',true);
@@ -267,8 +281,9 @@ public without sharing class RH_Request_controller {
                 updRejet.RH_Reason__c = Reason;
                 updRejet.RH_Note__c = Reason;
             }
+            String notifTitle = updRejet.RecordType.Name + 'Response';
             update updRejet;
-            sendNotifications(updRejet.RH_Description__c,UserInfo.getUserId(),RecordT,'my-request',Status,new List<Id> {updRejet.CreatedById});
+            sendNotifications(updRejet.RH_Description__c,UserInfo.getUserId(),RecordT,'my-request',notifTitle,new List<Id> {updRejet.CreatedById});
         } catch (Exception e) {
             System.debug(e.getMessage());
             mapReturn.put('error',true);

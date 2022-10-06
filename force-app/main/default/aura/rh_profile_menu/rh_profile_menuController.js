@@ -7,6 +7,7 @@
         // component.set("v.Username", 'Mistrand');
         const options=[
             { label:'Profile', value:'01',icon:''},
+            // { label:'Settings', value:'01.5',icon:''},//to remove
             { label:'Logout', value:'02',icon:''},
         ]
         component.set("v.options", options);
@@ -19,6 +20,7 @@
                 console.log('result ',response);
                 if (!response.error) {
                     component.set("v.Username", response.user.CommunityNickname);
+                    component.set("v.UserId", response.user.Id);
                 }else{
                     console.error(response.msg);
                 }

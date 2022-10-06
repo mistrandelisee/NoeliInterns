@@ -153,7 +153,6 @@
     <enableSharing>true</enableSharing>
     <enableStreamingApi>true</enableStreamingApi>
     <externalSharingModel>Private</externalSharingModel>
-   
     <label>Accomplishment</label>
     <nameField>
         <displayFormat>AC-{0000}</displayFormat>

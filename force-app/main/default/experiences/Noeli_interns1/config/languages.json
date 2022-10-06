@@ -1,6 +1,23 @@
 {
   "defaultCode" : "en_US",
   "defaultLabel" : "English (US)",
-  "id" : "6676ef8c-c486-425e-94c5-bcd9b4cf6558",
+  "id" : "e780b769-89cb-43e3-86a1-f2d21719a5cb",
+  "languages" : [ {
+    "countryCode" : "",
+    "fallbackLanguageId" : null,
+    "id" : "83681342-214f-411e-b7f7-11455d2381f4",
+    "isActive" : true,
+    "label" : "Italian",
+    "languageCode" : "it",
+    "type" : "language"
+  }, {
+    "countryCode" : "",
+    "fallbackLanguageId" : null,
+    "id" : "78810f8a-c823-493d-89e7-11ff1752defa",
+    "isActive" : true,
+    "label" : "French",
+    "languageCode" : "fr",
+    "type" : "language"
+  } ],
   "type" : "languageContainer"
 }

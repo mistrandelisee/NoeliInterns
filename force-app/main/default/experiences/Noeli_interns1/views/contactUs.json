@@ -1,10 +1,10 @@
 {
-  "appPageId" : "63386af7-5e97-4223-9920-6456bad66e85",
+  "appPageId" : "b66b8655-4217-43a3-88b7-8256d61f02ee",
   "componentName" : "siteforce:sldsTwoCol66Layout",
-  "id" : "0d6c8e4d-27a4-44ac-8aba-13a5a84715dd",
+  "id" : "7b3895a5-8fde-433f-8bcf-f21ccff56f0c",
   "label" : "Contact Us",
   "regions" : [ {
-    "id" : "c3bac171-472b-4fb9-a98c-01ed3e5ba2cd",
+    "id" : "07261972-0da4-4fbb-942e-1a3bdf93a269",
     "regionName" : "header",
     "type" : "region"
   }, {
@@ -29,16 +29,16 @@
         "guestQuickActionName" : "Select or configure a global action",
         "headerSubtitle" : "Tell us how we can help.",
         "headerTitle" : "Contact Customer Support",
-        "quickActionName" : "NewCommunityCase",
+        "quickActionName" : "NewCase",
         "requestSummaryText" : "Case summary"
       },
       "componentName" : "forceCommunity:contactSupportForm",
-      "id" : "f97a1555-4cc7-4707-9608-0eb5f50830d8",
+      "id" : "48c13670-c224-4482-8dbb-b979465eea76",
       "renderPriority" : "NEUTRAL",
       "renditionMap" : { },
       "type" : "component"
     } ],
-    "id" : "04ea0aa0-9b45-4fd2-b7eb-c7d7f7cbdf7e",
+    "id" : "bfff2a7c-3d24-4afa-9f9e-b41228f57673",
     "regionName" : "content",
     "type" : "region"
   }, {
@@ -58,16 +58,16 @@
         "topicId" : ""
       },
       "componentName" : "forceCommunity:caseDeflection",
-      "id" : "cfde6451-f2fe-4d00-a919-7bf36238da75",
+      "id" : "39940bd1-1455-4cd1-ba64-6fc957ff9876",
       "renderPriority" : "NEUTRAL",
       "renditionMap" : { },
       "type" : "component"
     } ],
-    "id" : "4b09f550-d7e8-4556-acd1-671e9f295535",
+    "id" : "08480e55-ccd3-4b0a-8771-34225a03ea20",
     "regionName" : "sidebar",
     "type" : "region"
   }, {
-    "id" : "360f7f9d-1268-4bf1-ba28-b430b7c7d4f1",
+    "id" : "4e00cafc-8bc3-416a-87bb-28a6da1e3602",
     "regionName" : "footer",
     "type" : "region"
   }, {
@@ -78,11 +78,11 @@
         "title" : "Contact Us"
       },
       "componentName" : "forceCommunity:seoAssistant",
-      "id" : "88601ed1-2ed5-4b9f-b221-a661249ef850",
+      "id" : "ee4651ac-a913-4444-b054-accc11d02ba7",
       "renditionMap" : { },
       "type" : "component"
     } ],
-    "id" : "e2ec77f4-777f-4ade-88f5-fd0e6228c0ed",
+    "id" : "a46336da-3162-4785-8ee2-1b38cde4c9e5",
     "regionName" : "sfdcHiddenRegion",
     "type" : "region"
   } ],

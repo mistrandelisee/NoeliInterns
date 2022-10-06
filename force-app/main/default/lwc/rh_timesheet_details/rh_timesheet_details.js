@@ -227,7 +227,7 @@ export default class Rh_timesheet_details extends NavigationMixin(LightningEleme
         if (this.isFinal) { //the record is close for modification
             this.timeSheetFields.push(
                 {label:this.l.Approver,name:APPROVER_LINK,value:this.record?.RH_Approver__r?.Name,
-                    type:'Link',class:'Link',dataId:this.RH_Approver__r?.RH_User__c /*link specifications*/},
+                    type:'Link',class:'Link',dataId:this.record?.RH_Approver__r?.RH_User__c /*link specifications*/},
                 {label:this.l.Note,name:'Note',value:this.record?.RH_NoteApprover__c },
             )
         }

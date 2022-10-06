@@ -8,6 +8,11 @@
                 this.gotoURL(component,attribs);
 
                 break;
+            case '01.5'://profile
+                attribs='/settings/'+component.get("v.UserId")
+                this.gotoURL(component,attribs);
+
+                break;
             case '02'://logout
                 window.location.replace('/NoeliInterns/secur/logout.jsp?startURL=%2FNoeliInterns%2Fs%2F');
                 break;

@@ -214,11 +214,11 @@ export default class Rh_timesheet extends NavigationMixin(LightningElement) {
             case 'nuovo':
                 return "slds-float_left slds-theme_info";
             case 'inviato':
-                return "slds-float_left slds-theme_shade";
+                return "slds-float_left .slds-theme_warning";
             case 'reject':
                 return "slds-float_left slds-theme_error";
             default:
-                return "slds-float_left slds-theme_alt-inverse";
+                return "slds-float_left slds-badge_inverse";
         }
 
     }

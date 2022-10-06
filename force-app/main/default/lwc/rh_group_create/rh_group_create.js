@@ -11,9 +11,16 @@ export default class Rh_group_create extends LightningElement {
     @api labelButton='Next';
     @api logo="utility:chevronright";
     @api newGroup = 'new group';
+    @api name = 'Next';
+    @api statusGroup;
     updateView;
-    handleClick (){
+    handleClick (event){
+        console.log('source du button --->:', event.target.name);
         console.log('updateView dans le save--->:', this.updateView);
+        console.log('statut groupe --->:', this.statusGroup);
+        if( event.target.name=='Next'){
+            this.statusGroup = 'Draft'
+        }
        let form=this.template.querySelector('c-rh_dynamic_form');
         let saveResult=form.save();
         let outputs = saveResult.outputs;
@@ -21,7 +28,8 @@ export default class Rh_group_create extends LightningElement {
             createGroupe({ name: saveResult.obj.Namex, 
                            description: saveResult.obj.Description, 
                            Leader: saveResult.obj.Leader,
-                           id: this.groupeId})
+                           id: this.groupeId,
+                           statut: this.statusGroup})
               .then(result => {
                 console.log('Result:', result); 
                     this.dispatchEvent(new CustomEvent('groupmember',{detail: result}));               

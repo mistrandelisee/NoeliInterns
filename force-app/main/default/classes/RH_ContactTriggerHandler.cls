@@ -224,7 +224,7 @@ public class RH_ContactTriggerHandler {
                     Database.rollback(savepoint);
                 }
                 System.debug('e  error ' + e);
-                System.debug(e.getMessage());
+                System.debug(e.getMessage()+' :: '+e.getStackTraceString());
             }
         
         }

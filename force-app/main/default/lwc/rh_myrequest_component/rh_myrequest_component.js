@@ -5,6 +5,7 @@ import { CurrentPageReference, NavigationMixin } from 'lightning/navigation';
 import getrequest from '@salesforce/apex/RH_Request_controller.getrequest';
 import retreiveRequest from '@salesforce/apex/RH_Request_controller.retreiveRequest';
 import getAllRecordType from '@salesforce/apex/RH_Request_controller.getAllRecordType';
+import isBaseUsers from '@salesforce/apex/RH_Request_controller.isBaseUsers';
 import newRequest from '@salesforce/apex/RH_Request_controller.newRequest';
 import deleteRequest from '@salesforce/apex/RH_Request_controller.deleteRequest';
 import updateRequest from '@salesforce/apex/RH_Request_controller.updateRequest';
@@ -83,6 +84,7 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
     @track listConts=[];
     @track listContsValue=[];
     allRecType = [];
+    isBase;
     natureOpt;
     todo;
 
@@ -103,6 +105,10 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
     };
     
     statusOptions = [
+        {
+            label: 'All',
+            value: 'All'
+        },
         {
             label: 'Approved',
             value: 'Approved'
@@ -284,9 +290,13 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
     }
 
     buildformDetail(profileinformation, addrName) {
+        let std = new Date(profileinformation?.RH_Start_date__c);
+        let stDate = std.getFullYear()+'-'+(std.getMonth()+1)+'-'+std.getDate();
+        let end = new Date(profileinformation?.RH_End_date__c);
+        let enDate = end.getFullYear()+'-'+(end.getMonth()+1)+'-'+end.getDate();
         let objNte =   {
-            label: this.l.Note,
-            placeholder: this.l.Note,
+            label: profileinformation?.RecordType.Name == 'Complain' || profileinformation?.RecordType.Name == 'Explanation' ? 'Reason' : 'Note',
+            placeholder: 'Note',
             name: 'RH_Note',
             value: profileinformation?.RH_Reason__c,
             required: true,
@@ -299,6 +309,22 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
             label:'Answer',
             name:'RH_Reason',
             value:profileinformation?.RH_Answer__c,
+            required:true,
+            ly_md:'6', 
+            ly_lg:'6'
+        }
+        let dateSb ={
+            label:'Submited Date',
+            name:'RH_Date_Submit__c',
+            value:profileinformation?.RH_Date_Submit__c,
+            required:true,
+            ly_md:'6', 
+            ly_lg:'6'
+        }
+        let dateResp = {
+            label:'Responded Date',
+            name:'RH_Date_Response__c',
+            value:profileinformation?.RH_Date_Response__c,
             required:true,
             ly_md:'6', 
             ly_lg:'6'
@@ -360,22 +386,6 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
                     ly_lg: '6'
                 },
                 {
-                    label:'Date Submit',
-                    name:'RH_Date_Submit__c',
-                    value:profileinformation?.RH_Date_Submit__c ? profileinformation?.RH_Date_Submit__c : 'Not available For Now',
-                    required:true,
-                    ly_md:'6', 
-                    ly_lg:'6'
-                },
-                {
-                    label:'Date Response',
-                    name:'RH_Date_Response__c',
-                    value:profileinformation?.RH_Date_Response__c ? profileinformation?.RH_Date_Response__c : 'Not available For Now',
-                    required:true,
-                    ly_md:'6', 
-                    ly_lg:'6'
-                },
-                {
                     label: this.l.Description,
                     placeholder: this.l.Description,
                     name: 'RH_Description',
@@ -385,6 +395,14 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
                     ly_lg: '6'
                 }
             ];
+            if (profileinformation?.RH_Date_Submit__c != null) {
+                
+                this.formPersonanalInputDetails.push(dateSb);
+            }
+            if (profileinformation?.RH_Date_Response__c != null) {
+                
+                this.formPersonanalInputDetails.push(dateResp);
+            }
             if (profileinformation?.RH_Reason__c != null) {
                 
                 this.formPersonanalInputDetails.push(objNte);
@@ -426,22 +444,6 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
                     ly_lg: '6'
                 },
                 {
-                    label:'Date Submit',
-                    name:'RH_Date_Submit__c',
-                    value:profileinformation?.RH_Date_Submit__c ? profileinformation?.RH_Date_Submit__c : 'Not available For Now',
-                    required:true,
-                    ly_md:'6', 
-                    ly_lg:'6'
-                },
-                {
-                    label:'Date Response',
-                    name:'RH_Date_Response__c',
-                    value:profileinformation?.RH_Date_Response__c ? profileinformation?.RH_Date_Response__c : 'Not available For Now',
-                    required:true,
-                    ly_md:'6', 
-                    ly_lg:'6'
-                },
-                {
                     label: this.l.Description,
                     placeholder: this.l.Description,
                     name: 'RH_Description',
@@ -451,6 +453,14 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
                     ly_lg: '6'
                 }
             ];
+            if (profileinformation?.RH_Date_Submit__c != null) {
+                
+                this.formPersonanalInputDetails.push(dateSb);
+            }
+            if (profileinformation?.RH_Date_Response__c != null) {
+                
+                this.formPersonanalInputDetails.push(dateResp);
+            }
             if (profileinformation?.RH_Reason__c != null) {
                 
                 this.formPersonanalInputDetails.push(objNte);
@@ -460,7 +470,7 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
                 this.formPersonanalInputDetails.push(objAns);
             }
         }
-        if (profileinformation?.RecordType.Name == 'Holiday' || profileinformation?.RecordType.Name == 'Permisson') {
+        if (profileinformation?.RecordType.Name == 'Permisson') {
             this.formPersonanalInputDetails = [
 
                 {
@@ -487,21 +497,12 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
                     ly_lg: '6'
                 },
                 {
-                    label: this.l.RequestTypeName,
-                    name: 'RecordT',
-                    required: true,
-                    value: profileinformation?.RecordType?.Name,
-                    readOnly: true,
-                    ly_md: '6',
-                    ly_lg: '6'
-                },
-                {
                     label: this.l.StartDate,
                     placeholder: this.l.StartDate,
                     name: 'RH_StartDate',
                     required: true,
                     value: profileinformation?.RH_Start_date__c,
-                    type: 'Datetime',
+                    type: 'datetime',
                     ly_md: '6',
                     ly_lg: '6',
                     isDatetime: true
@@ -511,26 +512,19 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
                     placeholder: this.l.EndDate,
                     name: 'RH_EndDate',
                     value: profileinformation?.RH_End_date__c,
-                    type: 'Datetime',
+                    type: 'datetime', 
                     ly_md: '6',
                     ly_lg: '6',
                     isDatetime: true
                 },
                 {
-                    label:'Date Submit',
-                    name:'RH_Date_Submit__c',
-                    value:profileinformation?.RH_Date_Submit__c ? profileinformation?.RH_Date_Submit__c : 'Not available For Now',
-                    required:true,
-                    ly_md:'6', 
-                    ly_lg:'6'
-                },
-                {
-                    label:'Date Response',
-                    name:'RH_Date_Response__c',
-                    value:profileinformation?.RH_Date_Response__c ? profileinformation?.RH_Date_Response__c : 'Not available For Now',
-                    required:true,
-                    ly_md:'6', 
-                    ly_lg:'6'
+                    label: this.l.RequestTypeName,
+                    name: 'RecordT',
+                    required: true,
+                    value: profileinformation?.RecordType?.Name,
+                    readOnly: true,
+                    ly_md: '6',
+                    ly_lg: '6'
                 },
                 {
                     label: this.l.Description,
@@ -542,6 +536,91 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
                     ly_lg: '6'
                 }
             ];
+            if (profileinformation?.RH_Date_Submit__c != null) {
+                
+                this.formPersonanalInputDetails.push(dateSb);
+            }
+            if (profileinformation?.RH_Date_Response__c != null) {
+                
+                this.formPersonanalInputDetails.push(dateResp);
+            }
+            if (profileinformation?.RH_Reason__c != null) {
+                
+                this.formPersonanalInputDetails.push(objNte);
+            }
+        }
+        if (profileinformation?.RecordType.Name == 'Holiday') {
+            this.formPersonanalInputDetails = [
+
+                {
+                    label: this.l.AddressedTo,
+                    placeholder: this.l.AddressedTo,
+                    name: 'RH_AddressedTo',
+                    picklist: true,
+                    options: this.addressedRecord,
+                    value: profileinformation?.RH_Addressed_To__r?.Name,
+                    required: false,
+                    ly_md: '6',
+                    ly_lg: '6'
+                },
+                {
+                    label: this.l.Status,
+                    name: 'StatusRequest',
+                    required: true,
+                    value: profileinformation?.Rh_Status__c,
+                    placeholder: this.l.Status,
+                    readOnly: true,
+                    maxlength: 255,
+                    type: 'email',
+                    ly_md: '6',
+                    ly_lg: '6'
+                },
+                {
+                    label: this.l.StartDate,
+                    placeholder: this.l.StartDate,
+                    name: 'RH_StartDate',
+                    required: true,
+                    value: stDate,
+                    type:'text',
+                    ly_md: '6',
+                    ly_lg: '6',
+                },
+                {
+                    label: this.l.EndDate,
+                    placeholder: this.l.EndDate,
+                    name: 'RH_EndDate',
+                    value: enDate, 
+                    type:'text',
+                    ly_md: '6',
+                    ly_lg: '6',
+                },
+                {
+                    label: this.l.RequestTypeName,
+                    name: 'RecordT',
+                    required: true,
+                    value: profileinformation?.RecordType?.Name,
+                    readOnly: true,
+                    ly_md: '6',
+                    ly_lg: '6'
+                },
+                {
+                    label: this.l.Description,
+                    placeholder: this.l.Description,
+                    name: 'RH_Description',
+                    value: profileinformation?.RH_Description__c,
+                    required: true,
+                    ly_md: '6',
+                    ly_lg: '6'
+                }
+            ];
+            if (profileinformation?.RH_Date_Submit__c != null) {
+                
+                this.formPersonanalInputDetails.push(dateSb);
+            }
+            if (profileinformation?.RH_Date_Response__c != null) {
+                
+                this.formPersonanalInputDetails.push(dateResp);
+            }
             if (profileinformation?.RH_Reason__c != null) {
                 
                 this.formPersonanalInputDetails.push(objNte);
@@ -659,7 +738,7 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
                 }
             ];
         }
-        if (profileinformation?.RecordType.Name == 'Holiday' || profileinformation?.RecordType.Name == 'Permisson') {
+        if (profileinformation?.RecordType.Name == 'Permisson') {
             this.formPersonanalInputClone = [
 
                 {
@@ -728,6 +807,73 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
                 }
             ];
         }
+        if (profileinformation?.RecordType.Name == 'Holiday') {
+            this.formPersonanalInputClone = [
+
+                {
+                    label: this.l.AddressedTo,
+                    placeholder: this.l.AddressedTo,
+                    name: 'RH_AddressedTo',
+                    picklist: true,
+                    options: this.addressedRecord,
+                    value: profileinformation?.RH_Addressed_To__r?.Id,
+                    required: false,
+                    ly_md: '6',
+                    ly_lg: '6'
+                },
+                {
+                    label: this.l.Status,
+                    name: 'StatusRequest',
+                    required: true,
+                    value: profileinformation?.Rh_Status__c,
+                    placeholder: this.l.Status,
+                    readOnly: true,
+                    maxlength: 255,
+                    type: 'email',
+                    ly_md: '6',
+                    ly_lg: '6'
+                },
+                {
+                    label: this.l.RequestTypeName,
+                    name: 'RecordT',
+                    required: true,
+                    value: profileinformation?.RecordType?.Name,
+                    readOnly: true,
+                    ly_md: '6',
+                    ly_lg: '6'
+                },
+                {
+                    label: this.l.Description,
+                    placeholder: this.l.Description,
+                    name: 'RH_Description',
+                    value: profileinformation?.RH_Description__c,
+                    className: 'textarea',
+                    type: 'textarea',
+                    required: true,
+                    ly_md: '6',
+                    ly_lg: '6'
+                },
+                {
+                    label: this.l.StartDate,
+                    placeholder: this.l.StartDate,
+                    name: 'RH_StartDate',
+                    required: true,
+                    value: profileinformation?.RH_Start_date__c,
+                    type: 'Date',
+                    ly_md: '6',
+                    ly_lg: '6',
+                },
+                {
+                    label: this.l.EndDate,
+                    placeholder: this.l.EndDate,
+                    name: 'RH_EndDate',
+                    value: profileinformation?.RH_End_date__c,
+                    type: 'Date',
+                    ly_md: '6',
+                    ly_lg: '6',
+                }
+            ];
+        }
 
     }
 
@@ -771,6 +917,10 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
     }
 
     getAllRecordType(){
+        isBaseUsers()
+            .then(res => {
+                this.isBase = res;
+            })
         getAllRecordType()
             .then(result => {
                 this.allRecType = result.map(plValue => {
@@ -781,12 +931,14 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
                 });
                 result.forEach(plValue => {
                     if(plValue.Name != 'Explanation'){
-                        this.optionsRecord.push(
-                           {
-                                label: plValue.Name,
-                                value: plValue.Id
-                            }
-                        ) ;
+                        if(plValue.Name != 'Complain'  || !this.isBase){
+                            this.optionsRecord.push(
+                                {
+                                    label: plValue.Name,
+                                    value: plValue.Id
+                                }
+                            );
+                        }
                     }
                 });
                 this.optionsRecordList = result;
@@ -899,14 +1051,14 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
                 this.isExplanation = false;
                 this.isComplain = false;
                 this.requestType = 'Holiday';
-                this.buildformPermHoli();
+                this.buildformHoli();
             }
             if (op.Id == this.typeId && op.Name == 'Permisson') {
                 this.isPermHoli = true;
                 this.isExplanation = false;
                 this.isComplain = false;
                 this.requestType = 'Permisson';
-                this.buildformPermHoli();
+                this.buildformPerm();
             }
         })
     }
@@ -1079,7 +1231,7 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
             let currentDate = new Date(dateVar.getTime() + dateVar.getTimezoneOffset() * 60000).toISOString();
             console.log(currentDate);
             if (currentDate > this.emp.RH_StartDate || this.emp.RH_StartDate > this.emp.RH_EndDate) {
-                this.showToast('error', 'Error', 'Take another date');
+                this.showToast('error', 'Error', 'The Start date must be earlier than to End date and greather than current date');
             } else {
                 this.natureOpt = 'cloned';
                 this.createRequest();
@@ -1101,7 +1253,7 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
             let currentDate = new Date(dateVar.getTime() + dateVar.getTimezoneOffset() * 60000).toISOString();
             console.log(currentDate);
             if (currentDate > this.emp.RH_StartDate || this.emp.RH_StartDate > this.emp.RH_EndDate) {
-                this.showToast('error', 'Error', 'Take another date');
+                this.showToast('error', 'Error', 'The Start date must be earlier than to End date and greather than current date');
             } else {
                 this.natureOpt = 'cloned and send';
                 this.createRequest();
@@ -1126,7 +1278,7 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
             let currentDate = new Date(dateVar.getTime() + dateVar.getTimezoneOffset() * 60000).toISOString();
             console.log(currentDate);
             if (currentDate > this.emp.RH_StartDate || this.emp.RH_StartDate > this.emp.RH_EndDate) {
-                this.showToast('error', 'Error', 'Take another date');
+                this.showToast('error', 'Error', 'The Start date must be earlier than to End date and greather than current date');
             } else {
                 this.natureOpt = 'edited and send';
                 this.createRequest();
@@ -1151,7 +1303,7 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
             let currentDate = new Date(dateVar.getTime() + dateVar.getTimezoneOffset() * 60000).toISOString();
             console.log(currentDate);
             if (currentDate > this.emp.RH_StartDate || this.emp.RH_StartDate > this.emp.RH_EndDate) {
-                this.showToast('error', 'Error', 'Take another date');
+                this.showToast('error', 'Error', 'The Start date must be earlier than to End date and greather than current date');
             } else {
                 this.natureOpt = 'edited';
                 this.createRequest();
@@ -1174,7 +1326,7 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
             let currentDate = new Date(dateVar.getTime() + dateVar.getTimezoneOffset() * 60000).toISOString();
             console.log(currentDate);
             if (currentDate > this.emp.RH_StartDate || this.emp.RH_StartDate > this.emp.RH_EndDate) {
-                this.showToast('error', 'Error', 'Take another date');
+                this.showToast('error', 'Error', 'The Start date must be earlier than to End date and greather than current date');
             } else {
                 this.natureOpt = 'created';
                 this.createRequest();
@@ -1197,7 +1349,7 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
             let currentDate = new Date(dateVar.getTime() + dateVar.getTimezoneOffset() * 60000).toISOString();
             console.log(currentDate);
             if (currentDate > this.emp.RH_StartDate || this.emp.RH_StartDate > this.emp.RH_EndDate) {
-                this.showToast('error', 'Error', 'Take another date');
+                this.showToast('error', 'Error', 'The Start date must be earlier than to End date and greather than current date');
             } else {
                 this.natureOpt = 'created and send';
                 this.createRequest();
@@ -1351,7 +1503,7 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
             }
         ]
     }
-    buildformPermHoli() {
+    buildformPerm() {
         // this.lastFieldInputsPermHoli = [
         this.lastFieldInputsAll = [
             {
@@ -1399,6 +1551,56 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
             }
         ]
     }
+
+    buildformHoli() {
+        // this.lastFieldInputsPermHoli = [
+        this.lastFieldInputsAll = [
+            {
+                label: 'Addressed To',
+                placeholder: 'Select',
+                name: 'RH_AddressedTo',
+                picklist: true,
+                options: this.addressedRecord,
+                value: '',
+                required: true,
+                ly_md: '6',
+                ly_lg: '6'
+            },
+            {
+                label: 'Description',
+                placeholder: 'type here',
+                name: 'RH_Description',
+                className: 'textarea',
+                maxlength: 25000,
+                type: 'textarea',
+                value: '',
+                required: true,
+                ly_md: '6',
+                ly_lg: '6'
+            },
+            {
+                label: 'Start date',
+                placeholder: 'Select',
+                name: 'RH_StartDate',
+                value: '',
+                required: true,
+                type: 'Date',
+                ly_md: '6',
+                ly_lg: '6'
+            },
+            {
+                label: 'End date',
+                placeholder: 'Select',
+                name: 'RH_EndDate',
+                value: '',
+                required: true,
+                type: 'Date',
+                ly_md: '6',
+                ly_lg: '6'
+            }
+        ]
+    }
+
     buildformExplanation() {
         // this.lastFieldInputsExplanation = [
         this.lastFieldInputsAll = [

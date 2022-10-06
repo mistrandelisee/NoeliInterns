@@ -1,0 +1,1123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.2">
+  <file original="Salesforce" source-language="en_US" target-language="fr" translation-type="metadata" datatype="xml">
+    <body>
+      <trans-unit id="PicklistValue.Project__c.Status.Active">
+        <source>Active</source>
+        <target>Actif</target>
+      </trans-unit>
+      <trans-unit id="PicklistValue.Project__c.Status.Closed">
+        <source>Closed</source>
+        <target>Fermé</target>
+      </trans-unit>
+      <trans-unit id="PicklistValue.Project__c.Status.Draft">
+        <source>Draft</source>
+        <target>Brouillon</target>
+      </trans-unit>
+      <trans-unit id="PicklistValue.RH_WorkGroup__c.RH_Status.Activated">
+        <source>Activated</source>
+        <target>Activé</target>
+      </trans-unit>
+      <trans-unit id="PicklistValue.RH_WorkGroup__c.RH_Status.Desactived">
+        <source>Desactived</source>
+        <target>Désactivé</target>
+      </trans-unit>
+      <trans-unit id="PicklistValue.RH_WorkGroup__c.RH_Status.Draft">
+        <source>Draft</source>
+        <target>Brouillon</target>
+      </trans-unit>
+      <trans-unit id="PicklistValue.RH_Request__c.Rh_Status.Approved">
+        <source>Approved</source>
+        <target>Approuvée</target>
+      </trans-unit>
+      <trans-unit id="PicklistValue.RH_Request__c.Rh_Status.Draft">
+        <source>Draft</source>
+        <target>Brouillon</target>
+      </trans-unit>
+      <trans-unit id="PicklistValue.RH_Request__c.Rh_Status.Rejected">
+        <source>Rejected</source>
+        <target>Rejetée</target>
+      </trans-unit>
+      <trans-unit id="PicklistValue.RH_Request__c.Rh_Status.Submited">
+        <source>Submited</source>
+        <target>Soumis</target>
+      </trans-unit>
+      <trans-unit id="PicklistValue.RH_Accomplishment__c.RH_Status.Active">
+        <source>Active</source>
+        <target>Actif</target>
+      </trans-unit>
+      <trans-unit id="PicklistValue.RH_Accomplishment__c.RH_Status.Draft">
+        <source>Draft</source>
+        <target>Brouillon</target>
+      </trans-unit>
+      <trans-unit id="PicklistValue.RH_Invoice__c.RH_Currency_Code.EUR">
+        <source>EUR</source>
+        <target>EUR</target>
+      </trans-unit>
+      <trans-unit id="PicklistValue.RH_Invoice__c.RH_Currency_Code.USD">
+        <source>USD</source>
+        <target>USD</target>
+      </trans-unit>
+      <trans-unit id="PicklistValue.RH_Invoice__c.RH_Currency_Code.XAF">
+        <source>XAF</source>
+        <target>FCFA</target>
+      </trans-unit>
+      <trans-unit id="PicklistValue.RH_Invoice_Item__c.RH_Currency_Code.EUR">
+        <source>EUR</source>
+        <target>EUR</target>
+      </trans-unit>
+      <trans-unit id="PicklistValue.RH_Invoice_Item__c.RH_Currency_Code.USD">
+        <source>USD</source>
+        <target>USD</target>
+      </trans-unit>
+      <trans-unit id="PicklistValue.RH_Invoice_Item__c.RH_Currency_Code.XAF">
+        <source>XAF</source>
+        <target>FCFA</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_ADDAttachment">
+        <source>ADD Attachment</source>
+        <target>Ajouter une pièce jointe</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_About">
+        <source>About</source>
+        <target>À propos de</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_AboutMe">
+        <source>About Me</source>
+        <target>À propos de moi</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_AboutMePlc">
+        <source>Say Something About you!</source>
+        <target>Dites quelque chose à propos de vous!</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_Accomplishments">
+        <source>Accomplishments (#NB)</source>
+        <target>Réalisations (#NB)</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_Account">
+        <source>Account</source>
+        <target>Compte</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_AccountInfoTitle">
+        <source>Company Informations</source>
+        <target>Informations sur l'entreprise</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_Activate">
+        <source>Activate</source>
+        <target>Activer</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_Activity">
+        <source>Activity</source>
+        <target>Activité</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_Add">
+        <source>Add</source>
+        <target>Ajouter</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_AddLines">
+        <source>Add Items</source>
+        <target>Ajouter des elements</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_AddNewEvent">
+        <source>Add New Event</source>
+        <target>Ajouter un nouvel événement</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_AddNews">
+        <source/>
+        <target>Ajouter des nouvelles</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_AddorRemoveProject">
+        <source>Add or Remove members to the Project</source>
+        <target>Ajouter ou supprimer des membres au projet</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_AddressedCc">
+        <source>Addressed Cc</source>
+        <target>Cc adressé</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_AddressedTo">
+        <source>Addressed To</source>
+        <target>To adressé</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_AlreadyTranslate">
+        <source>Already translate  in:</source>
+        <target>Déjà traduit en :</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_Approve">
+        <source>Approve</source>
+        <target>Approuver</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_Approved">
+        <source>Approved</source>
+        <target>Apprové</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_Approver">
+        <source>Approver</source>
+        <target>Approbateur</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_AssignTo">
+        <source>Asign To</source>
+        <target>Affecter à</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_AssignToPh">
+        <source>Select member</source>
+        <target>Sélectionnez un membre</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_AvaibleMembers">
+        <source>Avaible Members</source>
+        <target>Membres disponibles</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_Back">
+        <source>Back</source>
+        <target>Retour</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_Birthday">
+        <source>Birthday</source>
+        <target>Date d'anniversaire</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_BirthdayPlc">
+        <source>Enter Birthday</source>
+        <target>Entrez votre date d'anniversaire</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_Cancel">
+        <source>Cancel</source>
+        <target>Annuler</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_Cap">
+        <source>Cap</source>
+        <target>Casquette</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_CapPlc">
+        <source>Cap Number</source>
+        <target>Entrez le Cap Number</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_Change">
+        <source>Change</source>
+        <target>Changer</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_ChangePassword">
+        <source>Change Password</source>
+        <target>Changer le mot de passe</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_ChangePasswordTitle">
+        <source>Change Password</source>
+        <target>Changer le mot de passe</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_City">
+        <source>City</source>
+        <target>Ville</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_CityPlc">
+        <source>Enter Current City</source>
+        <target>Entrez la ville actuelle</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_Civico">
+        <source>Civico</source>
+        <target>Numéro de rue</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_CivicoPlc">
+        <source>Numero</source>
+        <target>Entrer un numéro</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_Clonerequest">
+        <source>Clone request</source>
+        <target>Clonner la requete</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_Close">
+        <source>Close</source>
+        <target>Fermer</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_Come">
+        <source>Submit by</source>
+        <target>Soumettre par</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_Company">
+        <source>Company</source>
+        <target>Compagnie</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_CompanyName">
+        <source>Name</source>
+        <target>Nom</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_ComplainOn">
+        <source>Complain On</source>
+        <target>Se plaindre de</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_ConfigTitle">
+        <source>News configuration</source>
+        <target>Paramétrage des actualités</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_ContactName">
+        <source>Contact Name</source>
+        <target>Nom du contact</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_Copyright">
+        <source>© Copyright (#NB) - Noeli.com</source>
+        <target>© Copyright (#NB) - Noeli.com</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_CreatedDate">
+        <source>Created Date</source>
+        <target>Date de création</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_Createrequest">
+        <source>Create request</source>
+        <target>Créer une demande</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_Currency">
+        <source>Currency</source>
+        <target>Devise</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_CurrentPassword">
+        <source>Current Password</source>
+        <target>Mot de passe actuel</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_CurrentPasswordPlc">
+        <source>Enter Current Password</source>
+        <target>Entrer le mot de passe actuel</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_Date">
+        <source>Date</source>
+        <target>Date</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_DateLb">
+        <source>Date</source>
+        <target>Date</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_DatePlc">
+        <source>Enter Your Date</source>
+        <target>Entrez votre date</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_Delete">
+        <source>Delete</source>
+        <target>Effacer</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_DeleteFile">
+        <source>Delete File</source>
+        <target>Supprimer le fichier</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_DeleteNews_Confirm">
+        <source>Are you sure you want to delete this News?</source>
+        <target>Voulez-vous vraiment supprimer cette actualité?</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_DeleteNews_Title">
+        <source>Confirm Deletion</source>
+        <target>Confirmer la suppression</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_Deleterequest">
+        <source>Delete request</source>
+        <target>Supprimer la demande</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_Description">
+        <source>Description</source>
+        <target>La description</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_DescriptionPlc">
+        <source>Enter Your Description</source>
+        <target>Entrez votre description</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_Disable">
+        <source>Disable</source>
+        <target>Désactiver</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_Download">
+        <source>Download</source>
+        <target>Télécharger</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_DownloadAttachment">
+        <source>Download Attachment file</source>
+        <target>Télécharger le fichier joint</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_Draft">
+        <source>Draft</source>
+        <target>Brouillon</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_Duration_mins">
+        <source>Duration (Minutes)</source>
+        <target>Durée (minutes)</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_Edit">
+        <source>Edit</source>
+        <target>Modifier</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_EditMembers">
+        <source>Edit Members</source>
+        <target>Modifier les membres</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_Editrequest">
+        <source>Edit request</source>
+        <target>Modifier la demande</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_Email">
+        <source>Email Address</source>
+        <target>Adresse e-mail</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_EmailPlc">
+        <source>Enter Email Address</source>
+        <target>Entrer l'adresse e-mail</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_End">
+        <source>End</source>
+        <target>Fin</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_EndDate">
+        <source>End date</source>
+        <target>Date de fin</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_EndDatePlc">
+        <source>Enter the End date</source>
+        <target>Entrez la date de fin</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_English">
+        <source>English</source>
+        <target>Anglais</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_Entries">
+        <source>Entries</source>
+        <target>Entrées</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_ErrorId">
+        <source>Error about Id of userRole</source>
+        <target>Erreur concernant l'ID de userRole</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_EvenApproved">
+        <source>This event has been already approved !</source>
+        <target>Cet événement a déjà été approuvé !</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_EvenDeletionS">
+        <source>Event Delete Successfully!!</source>
+        <target>Supprimer l'événement avec succès !</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_EvenSendSuccess">
+        <source>Event Send Successfully !!</source>
+        <target>Événement envoyé avec succès !</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_EvenUpdateS">
+        <source>Event Update Successfully !!</source>
+        <target>Mise à jour de l'événement réussie !</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_EvenUpdateSS">
+        <source>Event Update Successfully and send to CEO !!</source>
+        <target>Mise à jour de l'événement réussie et envoyée au PDG !</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_EventA">
+        <source>This event has been already shared !</source>
+        <target>Cet événement a déjà été partagé !</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_EventDetails">
+        <source>Event Details</source>
+        <target>Détails de l'évènement</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_EventSubS">
+        <source>Event Submitted Successfully</source>
+        <target>Événement soumis avec succès !</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_ExportPDF">
+        <source>Export PDF</source>
+        <target>Exporter PDF</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_ExportXLS">
+        <source>Export XLSX</source>
+        <target>Exporter XLSX</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_FileDeleteSuccessfully">
+        <source>File Delete Successfully !!</source>
+        <target>Fichier supprimé avec succès !</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_FileName">
+        <source>File Name</source>
+        <target>Nom de fichier</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_FileUpdate">
+        <source>The file has not been updated</source>
+        <target>Le fichier n'a pas été mis à jour</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_FilterAccomplishment">
+        <source>Filter Accomplishment</source>
+        <target>Filtrer les réalisations</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_FilterRequest">
+        <source>Filter Request</source>
+        <target>Filtrer les demande</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_FilterTitle">
+        <source>Filter the news</source>
+        <target>Filtrer les actualités</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_FirstName">
+        <source>First Name</source>
+        <target>Prénom</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_FirstNamePlc">
+        <source>Enter First Name</source>
+        <target>Entrez votre prénom</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_Freeze">
+        <source>Freeze</source>
+        <target>Gel</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_French">
+        <source>French</source>
+        <target>Français</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_From">
+        <source>From</source>
+        <target>De</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_Group">
+        <source>Group</source>
+        <target>Groupe</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_GroupeMember">
+        <source>The Groupe Member are</source>
+        <target>Les membres du groupe sont</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_Industry">
+        <source>Industry</source>
+        <target>Industrie</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_InfoDate">
+        <source>Your end date cannot be less than start date !</source>
+        <target>Votre date de fin ne peut pas être inférieure à la date de début !</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_Interval">
+        <source>Set Interval</source>
+        <target>Définir l'intervalle</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_IntervalPlc">
+        <source>Enter Interval</source>
+        <target>Entrez l'intervalle</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_InvalidField">
+        <source>The field Is not valid</source>
+        <target>Le champ n'est pas valide</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_IsPublic">
+        <source>Is Public</source>
+        <target>Est publique</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_Italian">
+        <source>Italian</source>
+        <target>Italien</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_LastName">
+        <source>Last Name</source>
+        <target>Nom de famille</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_LastNamePlc">
+        <source>Enter Last Name</source>
+        <target>Entrer le nom de famille</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_Leader">
+        <source>Leader Name</source>
+        <target>Nom du chef</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_Link">
+        <source>Link</source>
+        <target>Lien</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_ManageTask">
+        <source>Manage Task</source>
+        <target>Gérer la tâche</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_Manager">
+        <source>Manager</source>
+        <target>Gestionnaire</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_Name">
+        <source>Name</source>
+        <target>Nom</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_NamePlc">
+        <source>Enter Name</source>
+        <target>Entrez le nom</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_New">
+        <source>New</source>
+        <target>Nouveau</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_NewPassword">
+        <source>New Password</source>
+        <target>Nouveau mot de passe</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_NewPasswordPlc">
+        <source>Enter New Password</source>
+        <target>Entrez un nouveau mot de passe</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_NewProject">
+        <source>New Project</source>
+        <target>Nouveau projet</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_NewsActivated">
+        <source>the news has been successfully activated</source>
+        <target>la nouvelle a été activée avec succès</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_NewsDeactivated">
+        <source>the news has been successfully deactivated</source>
+        <target>les nouvelles ont été désactivées avec succès</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_NewsDelete">
+        <source>the news has been successfully deleted</source>
+        <target>les nouvelles ont été supprimées avec succès</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_Next">
+        <source>Next</source>
+        <target>Suivant</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_Note">
+        <source>Reason</source>
+        <target>Raison</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_NotePlc">
+        <source>Insert a note</source>
+        <target>Insérer une note</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_Number">
+        <source>Number</source>
+        <target>Numéro</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_NumberOfEmployees">
+        <source>Number Of Employees</source>
+        <target>Nombre d'employés</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_OrderBy">
+        <source>sort By</source>
+        <target>Trier par</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_OrderOn">
+        <source>As</source>
+        <target>Comme</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_Owner">
+        <source>Owner</source>
+        <target>Propriétaire</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_PermissionDelete">
+        <source>Are you sure to want to delete it ?</source>
+        <target>Êtes-vous sûr de vouloir le supprimer ?</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_PermissionRejected">
+        <source>Are you sure to want to reject it ?</source>
+        <target>Êtes-vous sûr de vouloir le supprimer ?</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_Phone">
+        <source>Phone</source>
+        <target>Téléphoner</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_PhonePlc">
+        <source>Enter Phone Number</source>
+        <target>Entrez le numéro de téléphone</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_Priority">
+        <source>Priority</source>
+        <target>Priorité</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_Project">
+        <source>Project</source>
+        <target>Projet</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_ProjectDetails">
+        <source>Project Details</source>
+        <target>détails du projet</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_ProjectMembers">
+        <source>Project Members</source>
+        <target>Membres du projet</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_PromoteBaseUser">
+        <source>Mark As Team Leader</source>
+        <target>Marquer comme chef d'équipe</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_Quantity">
+        <source>Quantity</source>
+        <target>Quantité</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_Rate">
+        <source>Rate</source>
+        <target>Évaluer</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_Reject">
+        <source>Reject</source>
+        <target>Rejeter</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_RejectFail">
+        <source>You cannot rejected an event already approved</source>
+        <target>Vous ne pouvez pas rejeter un événement déjà approuvé</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_RepeatPassword">
+        <source>Repeat Password</source>
+        <target>Répéter le mot de passe</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_RepeatPasswordPlc">
+        <source>Enter Repeat Password</source>
+        <target>Entrez le mot de passe de répétition</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_RequestTypeName">
+        <source>Request Type</source>
+        <target>type de demande</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_Reset">
+        <source>Reset</source>
+        <target>Réinitialiser</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_ResetPassword">
+        <source>Reset Password</source>
+        <target>réinitialiser le mot de passe</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_RightAccess">
+        <source>You no longer have the right to modify the event !</source>
+        <target>Vous n'avez plus le droit de modifier l'événement !</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_RightDeletion">
+        <source>You don\ t have right to deletion !!</source>
+        <target>Vous n'avez pas le droit de suppression !</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_Role">
+        <source>Role</source>
+        <target>Rôle</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_RolePlc">
+        <source>Select Role</source>
+        <target>Sélectionnez un rôle</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_Save">
+        <source>Save</source>
+        <target>sauvegarder</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_SaveAndActive">
+        <source>Save And Active</source>
+        <target>Enregistrer et activer</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_SaveAndSend">
+        <source>Save And Send</source>
+        <target>Enregistrer et envoyer</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_SaveConfiguration">
+        <source>Your configuration has been successfully saved</source>
+        <target>Votre configuration a été enregistrée avec succès</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_SaveNew">
+        <source>Save &amp; New</source>
+        <target>Enregistrer et nouveau</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_SaveandSubmited">
+        <source>Save and Submit</source>
+        <target>Enregistrer et envoyer</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_SelectLang">
+        <source>Select your language</source>
+        <target>choisissez votre langue</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_SelectedMembers">
+        <source>Selected Members</source>
+        <target>Membres sélectionnés</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_Send">
+        <source>Send</source>
+        <target>Envoyer</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_SendEvent">
+        <source>You should sent event before delete</source>
+        <target>Vous devez envoyer l'événement avant de le supprimer</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_Sendrequest">
+        <source>Send request</source>
+        <target>Envoyer une demande</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_Start">
+        <source>Start</source>
+        <target>Commencer</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_StartDate">
+        <source>Start date</source>
+        <target>Date de début</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_StartDatePlc">
+        <source>Enter the Start date</source>
+        <target>Entrez la date de début</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_Status">
+        <source>Status</source>
+        <target>Statut</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_StatusPlc">
+        <source>Select one status</source>
+        <target>Sélectionnez un statut</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_Submit">
+        <source>Submit</source>
+        <target>Soumettre</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_Submited">
+        <source>Submited</source>
+        <target>Soumis</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_Submiter">
+        <source>Submit By</source>
+        <target>Envoyer par</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_SuccessEven">
+        <source>Event Add Successfully but Not send to CEO!!</source>
+        <target>L'événement a été ajouté avec succès mais n'a pas été envoyé au PDG !</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_SucessEvenS">
+        <source>Event Add Successfully And send to CEO !!</source>
+        <target>Événement ajouté avec succès et envoyé au PDG !</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_Supervisor">
+        <source>Supervisor</source>
+        <target>Superviseur</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_Task">
+        <source>Add Task</source>
+        <target>Ajouter une tâche</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_TaskDescr">
+        <source>Enter your Task Description</source>
+        <target>Entrez votre description de tâche</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_TaskList">
+        <source>Task</source>
+        <target>Tâche</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_TaskPh">
+        <source>Enter your Task Name</source>
+        <target>Entrez votre nom de tâche</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_Title">
+        <source>Title</source>
+        <target>Titre</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_TitlePlc">
+        <source>Enter Your Title</source>
+        <target>Entrez votre titre</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_To">
+        <source>To</source>
+        <target>À</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_ToastEvent1">
+        <source>Sorry you no longer have right deleted</source>
+        <target>Désolé vous n'avez plus le droit de supprimer</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_ToastInfoEvent2">
+        <source>Your end date cannot be less than start date !</source>
+        <target>Votre date de fin ne peut pas être inférieure à la date de début !</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_Translate">
+        <source>Translate</source>
+        <target>Traduire</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_Update">
+        <source>Update</source>
+        <target>Mise à jour</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_UpdateAndSend">
+        <source>Update And Send</source>
+        <target>Mettre à jour et envoyer</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_UpdateEvent">
+        <source>Update Event</source>
+        <target>Événement de mise à jour</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_UpdateNews">
+        <source>the news has been successfully Update</source>
+        <target>la nouvelle a été mise à jour avec succès</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_UpdateNewsError">
+        <source>The record has not been updated</source>
+        <target>L'enregistrement n'a pas été mis à jour</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_UploadFile">
+        <source>Upload File</source>
+        <target>Téléverser un fichier</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_UserProfileTitle">
+        <source>User Informations</source>
+        <target>Informations utilisateur</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_Username">
+        <source>Username</source>
+        <target>Nom d'utilisateur</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_UsernamePlc">
+        <source>Enter Username</source>
+        <target>Saisissez votre nom d'utilisateur</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_Visibility">
+        <source>Public ?</source>
+        <target>Public?</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_Website">
+        <source>Website</source>
+        <target>Site Internet</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_YearStarted">
+        <source>Year Started</source>
+        <target>Année de début</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_action_confirm">
+        <source>Action Confirmation</source>
+        <target>Confirmation des actions</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_addfield">
+        <source>Field Adjusted</source>
+        <target>Ajusté sur le terrain</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_amount">
+        <source>Amount</source>
+        <target>Montant</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_approvalTitle">
+        <source>APPROVAL ACTION</source>
+        <target>ACTION D'APPROBATION</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_create_inv_item">
+        <source>Create Invoice Item</source>
+        <target>Créer un article de facture</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_create_item">
+        <source>Create Line</source>
+        <target>Créer une ligne</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_delete_invoiceItem_confirm">
+        <source>Are you sure you want to delete this invoice Items</source>
+        <target>Êtes-vous sûr de vouloir supprimer cette facture Articles</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_delete_invoice_confirm">
+        <source>Are you sure you want to delete this invoice</source>
+        <target>Voulez-vous vraiment supprimer cette facture ?</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_delete_sheet_confirm">
+        <source>Are you sure you want to delete this sheet?</source>
+        <target>Voulez-vous vraiment supprimer cette feuille ?</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_delete_sheetitem_confirm">
+        <source>Are you sure you want to delete this sheet entry?</source>
+        <target>Voulez-vous vraiment supprimer cette entrée de feuille ?</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_disable_confirm">
+        <source>Are you sure you want to disable this User?</source>
+        <target>Voulez-vous vraiment désactiver cet utilisateur ?</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_edit_inv_item">
+        <source>Edit Invoice Item</source>
+        <target>Modifier l'article de facture</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_employee">
+        <source>Employee</source>
+        <target>Employée</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_employeePc">
+        <source>Select an Employee</source>
+        <target>Sélectionnez un employé</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_endTime">
+        <source>End Time</source>
+        <target>Heure de fin</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_errorOp">
+        <source>Something goes wrong</source>
+        <target>Quelque chose ne va pas</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_invoice_to">
+        <source>Invoice To</source>
+        <target>Facturer à</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_invoice_toPlc">
+        <source>Search client</source>
+        <target>Rechercher un client</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_item_deatis">
+        <source>Line details</source>
+        <target>Détails de la ligne</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_label">
+        <source>Field Label</source>
+        <target>Étiquette de champ</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_leadedGroups">
+        <source>Leaded Groups (#NB)</source>
+        <target>Groupes dirigés (#NB)</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_leadedProjects">
+        <source>Leaded Projects (#NB)</source>
+        <target>Projets menés (#NB)</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_moreInfo">
+        <source>More Informations</source>
+        <target>Plus d'informations</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_myleadedGroups">
+        <source>My Leaded Groups (#NB)</source>
+        <target>Mes groupes dirigés (#NB)</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_myleadedProjects">
+        <source>My Leaded Projects (#NB)</source>
+        <target>Mes projets menés (#NB)</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_myprojects">
+        <source>My Projects (#NB)</source>
+        <target>Mes projets (#NB)</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_mytimesheets">
+        <source>My Timesheets (#NB)</source>
+        <target>Mes feuilles de travail (#NB)</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_new_account">
+        <source>New Client Account</source>
+        <target>Nouveau compte client</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_new_invoice">
+        <source>New Invoice</source>
+        <target>Nouvelle facture</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_new_ressource">
+        <source>New Ressource</source>
+        <target>Nouvelle ressource</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_noTimesheet">
+        <source>No timesheet founded</source>
+        <target>Aucune feuille de travail trouvée</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_noTimesheetItems">
+        <source>No Timesheet Items found for this timesheet. Use the Add times Action to add items</source>
+        <target>Aucune activité. Utilisez l'action Ajouter des éléments  pour ajouter des activités</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_noinvoiceItems">
+        <source>No Invoice Items found for this Invoice. Use the Add times Action to add items</source>
+        <target>Aucun élément de facture trouvé pour cette facture. Utilisez l'action Ajouter des elements pour ajouter des éléments de facturtions</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_ok_confirm">
+        <source>Yes I m sure</source>
+        <target>Oui</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_po">
+        <source>Po</source>
+        <target>Po</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_projects">
+        <source>Projects (#NB)</source>
+        <target>Projets (#NB)</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_recordNotFounded">
+        <source>record Not Found</source>
+        <target>Aucun enregistrement  trouvé</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_reset_confirm">
+        <source>Are you sure you want to reset this user Password?</source>
+        <target>Voulez-vous vraiment réinitialiser le mot de passe de cet utilisateur ?</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_ressource">
+        <source>Ressource</source>
+        <target>Ressource</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_ressourcePlc">
+        <source>Select a Ressource</source>
+        <target>Sélectionnez une ressource</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_rmvfield">
+        <source>Field removed</source>
+        <target>Champ supprimé</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_sdi">
+        <source>SDI</source>
+        <target>SDI</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_sdiPlc">
+        <source>sdi</source>
+        <target>Entrez votre SDI</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_selectPlc">
+        <source>Select an option</source>
+        <target>Sélectionner une option</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_showDetails">
+        <source>Show details</source>
+        <target>Afficher les détails</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_startTime">
+        <source>Start Time</source>
+        <target>Heure de début</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_succesDelete">
+        <source>record Deleted succesfully</source>
+        <target>enregistrement supprimé avec succès</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_successOp">
+        <source>Succes operation</source>
+        <target>Opération réussie</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_test_Language">
+        <source>English</source>
+        <target>Anglais</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_timesheetHeaderTitle">
+        <source>timesheet Header Title</source>
+        <target>Feuille de Travail</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_timesheetItemsHeaderTitle">
+        <source>timesheet Items Header Title</source>
+        <target>Activites</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_timesheets">
+        <source>Timesheets (#NB)</source>
+        <target>Feuilles de travail (#NB)</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_total_dur_h">
+        <source>Total Duration In Hours</source>
+        <target>Durée totale en heures</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_total_dur_mins">
+        <source>Total Duration In Minutes</source>
+        <target>Durée totale en minutes</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_total_free_dur_h">
+        <source>Total Free Duration In Hours</source>
+        <target>Durée totale gratuite en heures</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_total_free_dur_mins">
+        <source>Total Free Duration In Minutes</source>
+        <target>Durée totale gratuite en minutes</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_total_work_dur_h">
+        <source>Total Working Duration In Hours</source>
+        <target>Durée totale de travail en heures</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_total_work_dur_mins">
+        <source>Total Working Duration In Minutes</source>
+        <target>Durée totale de travail en minutes</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_userEditHlp">
+        <source>Edit user details</source>
+        <target>Modifier les détails de l'utilisateur</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_userEditMoreHlp">
+        <source>Edit additionnal information about you  check each time you edit an information. then save all…</source>
+        <target>Modifiez les informations supplémentaires vous concernant à chaque fois que vous modifiez une information. puis enregistrez tout…</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_userInfoHlp">
+        <source>View user details</source>
+        <target>Afficher les détails de l'utilisateur</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_userMoreInfoHlp">
+        <source>More details</source>
+        <target>Plus de détails</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_value">
+        <source>Field Value</source>
+        <target>Valeur du champ</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_warn_period_confict">
+        <source>Start date must before end date</source>
+        <target>La date de début doit être antérieure à la date de fin</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_warn_weekend">
+        <source>Please Select a weekday !!!</source>
+        <target>Veuillez sélectionner un jour de la semaine !</target>
+      </trans-unit>
+      <trans-unit id="CustomLabel.rh_warningOp">
+        <source>Warning</source>
+        <target>Avertissement</target>
+      </trans-unit>
+    </body>
+  </file>
+</xliff>

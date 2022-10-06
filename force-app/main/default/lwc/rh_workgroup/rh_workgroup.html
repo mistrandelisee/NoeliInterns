@@ -14,8 +14,12 @@
                 oncreategroup={handleCreategroup}> 
             </c-rh_group_createbutton>
         </template>
+        <div class="slds-m-top_x-small">
+            <c-rh_filter onsubmit={handleSubmitFilter} field-details={filterInputs}></c-rh_filter>
+        </div>
         <c-rh_group_list
-         ondetailgroupe={handleDetailGroup} > </c-rh_group_list> 
+         ondetailgroupe={handleDetailGroup} 
+         liste-group={listeGroup}> </c-rh_group_list> 
     </template>
 
     <template if:true={isVisibleDetailgroup}> 

@@ -9,8 +9,8 @@ public without sharing class RH_groupController {
     }
 
     @AuraEnabled
-    public static RH_WorkGroup__c createGroupe(String name, String description, String Leader, String id){
-        RH_WorkGroup__c groupe =  new RH_WorkGroup__c(Id=id, RH_Description__c=description, RH_Team_Leader__c=Leader, Name=name, RH_Status__c='Draft'); 
+    public static RH_WorkGroup__c createGroupe(String name, String description, String Leader, String id, String statut){
+        RH_WorkGroup__c groupe =  new RH_WorkGroup__c(Id=id, RH_Description__c=description, RH_Team_Leader__c=Leader, Name=name, RH_Status__c=statut); 
         upsert groupe;
         return groupe;  
     }
@@ -101,6 +101,7 @@ public without sharing class RH_groupController {
         }
         return mapName;
     }
+
     @AuraEnabled
     public static Map<String, Object> updateGroupMember(List<String> listId, String id ){
         Map<String, Object> mapName = new Map<String, Object>();
@@ -121,4 +122,41 @@ public without sharing class RH_groupController {
             return mapName;
     }
 
+    @AuraEnabled
+    public static Map<String, Object> InitFilter(){
+        Map<String, Object> mapReturn = new Map<String, Object>();
+        mapReturn.put('error',false);
+        try {
+            mapReturn.put('Picklists',RH_Utility.getPickListOptions(new List<String> {'RH_Status__c'},'RH_WorkGroup__c')); 
+            mapReturn.putAll(RH_Utility.checkRole()); 
+            mapReturn.put('Ok',true);
+        } catch(Exception e) {
+            System.debug(e.getMessage());
+            mapReturn.put('error',true);
+            mapReturn.put('msg',e.getMessage());
+            mapReturn.put('e',e);
+        }
+        return mapReturn;
+    }
+
+    public class GroupFilterWrapper {
+        @AuraEnabled public String searchText{get;set;}
+        @AuraEnabled public String status{get;set;}
+        @AuraEnabled public String orderBy{get;set;}
+        @AuraEnabled public String orderOn{get;set;}
+    }
+
+    @AuraEnabled
+    public static Map<String,Object>  getFilteredGrp(String filterTxt){
+        Map<String, Object> mapReturn = new Map<String, Object>();
+        try {
+            GroupFilterWrapper filter= (GroupFilterWrapper) JSON.deserialize(filterTxt, GroupFilterWrapper.class); 
+            mapReturn=RH_WorkGroup_Query.getFilteredGroup(filter);
+        } catch (Exception e) {
+            mapReturn.put('error', e);
+            throw new AuraHandledException(e.getMessage()+ e.getStackTraceString());
+
+        }
+        return mapReturn;
+    }
 }

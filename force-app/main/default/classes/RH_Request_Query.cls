@@ -82,12 +82,14 @@ public class RH_Request_Query {
             }
         }
         if(String.isNotBlank(status)){
-            if(check){
-                query+= 'AND Rh_Status__c =:status ';
-            }else{
-                query+= 'WHERE '+queryWhere+'AND Rh_Status__c =:status ';
-                check = true;
-            }
+            if(status != 'All'){
+                if(check){
+                    query+= 'AND Rh_Status__c =:status ';
+                }else{
+                    query+= 'WHERE '+queryWhere+'AND Rh_Status__c =:status ';
+                    check = true;
+                }
+            } 
         }
         if(dateFrom != null){
             if(check){
@@ -106,7 +108,7 @@ public class RH_Request_Query {
                 check = true;
             }
         }
-        if(check){
+        if(check || status == 'All'){
             query+= 'ORDER BY CreatedDate DESC';
             system.debug(query);
             return Database.query(query);

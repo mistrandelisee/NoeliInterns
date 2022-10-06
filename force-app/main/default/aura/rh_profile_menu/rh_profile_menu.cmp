@@ -1,6 +1,7 @@
 <aura:component implements="forceCommunity:profileMenuInterface" access="global" controller="rh_mainController">
     <aura:attribute name="options" type="Object[]" default="[]"/>
     <aura:attribute name="Username" type="String" description="user nick name" default="" />
+    <aura:attribute name="UserId" type="String"  default="" />
     <aura:handler name="init" value="{!this}" action="{!c.onInit}" />
     <div class="container-menu slds-p-left_small">
         <lightning:avatar variant="circle" size="x-small" src="" fallbackIconName="standard:user" alternativeText="Account User"/>

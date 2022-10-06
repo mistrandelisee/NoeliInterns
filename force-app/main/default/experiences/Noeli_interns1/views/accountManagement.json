@@ -1,20 +1,20 @@
 {
-  "appPageId" : "63386af7-5e97-4223-9920-6456bad66e85",
+  "appPageId" : "b66b8655-4217-43a3-88b7-8256d61f02ee",
   "componentName" : "siteforce:sldsOneColLayout",
-  "id" : "3b71bafb-f41b-4e3b-a3e9-58d984e3954a",
+  "id" : "afe01872-69fb-42bf-8794-72e9957e8cd9",
   "label" : "Account Management",
   "regions" : [ {
-    "id" : "0d290c9d-148f-4881-ac9a-9d8ad5824c0f",
+    "id" : "c1e3f1da-1e2b-41db-93e4-6320a2321596",
     "regionName" : "header",
     "type" : "region"
   }, {
     "components" : [ {
       "componentAttributes" : {
         "tabsetConfig" : {
-          "UUID" : "c655893a-c2c7-4a36-ab7f-dbab98f99d48",
+          "UUID" : "f88db545-4068-43ce-a4cb-45c38cf67b41",
           "activeTab" : "tab1",
           "tabs" : [ {
-            "UUID" : "8ba04b22-5660-4f16-8a72-a158adbdd0f8",
+            "UUID" : "1a77973a-2d69-48b4-b136-c1df0086f398",
             "allowGuestUser" : false,
             "locked" : false,
             "seedComponents" : [ {
@@ -32,7 +32,7 @@
             "tabKey" : "tab1",
             "tabName" : "Members"
           }, {
-            "UUID" : "6bf05819-2baf-4c0d-a717-6fa5a556e50c",
+            "UUID" : "23d6c192-4299-41ba-8ef6-83703e8f1816",
             "allowGuestUser" : false,
             "locked" : false,
             "seedComponents" : [ {
@@ -48,7 +48,7 @@
         }
       },
       "componentName" : "forceCommunity:tabset",
-      "id" : "c655893a-c2c7-4a36-ab7f-dbab98f99d48",
+      "id" : "f88db545-4068-43ce-a4cb-45c38cf67b41",
       "regions" : [ {
         "components" : [ {
           "componentAttributes" : {
@@ -61,11 +61,11 @@
             "showRowNumbers" : false
           },
           "componentName" : "forceCommunity:relatedList",
-          "id" : "07d02c0d-1b96-4c4d-9693-f35053499266",
+          "id" : "ecd72ed3-8d23-4723-b929-82d18dfda7f9",
           "renditionMap" : { },
           "type" : "component"
         } ],
-        "id" : "8ba04b22-5660-4f16-8a72-a158adbdd0f8",
+        "id" : "1a77973a-2d69-48b4-b136-c1df0086f398",
         "regionLabel" : "Members",
         "regionName" : "tab1",
         "renditionMap" : { },
@@ -76,11 +76,11 @@
             "recordId" : "{!CurrentUser.accountId}"
           },
           "componentName" : "forceCommunity:accountBrandRecord",
-          "id" : "14557e8c-c457-4238-8b25-5515b7860325",
+          "id" : "b6752c2e-40f7-4d39-b4d9-c4fced56da19",
           "renditionMap" : { },
           "type" : "component"
         } ],
-        "id" : "6bf05819-2baf-4c0d-a717-6fa5a556e50c",
+        "id" : "23d6c192-4299-41ba-8ef6-83703e8f1816",
         "regionLabel" : "Branding",
         "regionName" : "tab2",
         "renditionMap" : { },
@@ -90,11 +90,11 @@
       "renditionMap" : { },
       "type" : "component"
     } ],
-    "id" : "c1a87e5b-246c-49c0-a53a-d3e71ce0dac8",
+    "id" : "5c5d8322-26ae-4fd1-9546-e4ec499ee316",
     "regionName" : "content",
     "type" : "region"
   }, {
-    "id" : "fb0619fc-9e11-4d4a-af53-379a7d62ff65",
+    "id" : "715ec456-73ca-4779-8c2c-07fad71d62ad",
     "regionName" : "footer",
     "type" : "region"
   }, {
@@ -105,11 +105,11 @@
         "title" : "Account Management"
       },
       "componentName" : "forceCommunity:seoAssistant",
-      "id" : "778fd48f-e07f-4d80-ab55-2b83119cb729",
+      "id" : "8231d1c9-04c0-4b5d-8e3e-7dd709dedae5",
       "renditionMap" : { },
       "type" : "component"
     } ],
-    "id" : "c79c6516-d632-43d8-b3bc-16f1410ba0f9",
+    "id" : "d33e33f6-95bd-4d2a-9f36-51ec85480bc8",
     "regionName" : "sfdcHiddenRegion",
     "type" : "region"
   } ],

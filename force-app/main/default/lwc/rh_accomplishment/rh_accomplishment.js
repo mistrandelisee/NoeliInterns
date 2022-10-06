@@ -49,7 +49,8 @@ export default class Rh_accomplishment extends NavigationMixin(LightningElement)
     fieldsToShow={
         Statut: 'Statut',
         date: 'Date',
-        Submiter: 'Submit by'
+        Submiter: 'Submit by',
+        Description: 'Description'
     };
 
     statusOptions = [
@@ -159,7 +160,7 @@ export default class Rh_accomplishment extends NavigationMixin(LightningElement)
             let objetRep = {};
             objetRep = {
                 "date": elt?.RH_Date__c,
-                "Submiter":  elt.RH_Submiter__r?.Name.length>25? elt.RH_Submiter__r?.Name.slice(0, 25) +'...': elt.RH_Submiter__r?.Name,
+                "Description":  elt.RH_Description__c.length>30? elt.RH_Description__c.slice(0, 30) +'...': elt.RH_Description__c,
                 "id" : elt.Id,
                 icon:"utility:education",
                 
@@ -210,7 +211,7 @@ export default class Rh_accomplishment extends NavigationMixin(LightningElement)
                     let objetRep = {};
                     objetRep = {
                         "date": elt?.RH_Date__c,
-                        "Submiter": elt.RH_Submiter__r?.Name.length>25? elt.RH_Submiter__r?.Name.slice(0, 25) +'...': elt.RH_Submiter__r?.Name,
+                        "Description":  elt.RH_Description__c.length>30? elt.RH_Description__c.slice(0, 30) +'...': elt.RH_Description__c,
                         "id" : elt.Id,
                         icon:"utility:education",
                         
