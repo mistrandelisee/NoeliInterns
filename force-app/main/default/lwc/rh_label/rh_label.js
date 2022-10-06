@@ -259,6 +259,11 @@ import Civico from '@salesforce/label/c.rh_Civico';
 import Currency from '@salesforce/label/c.rh_Currency';
 import CivicoPlc from '@salesforce/label/c.rh_CivicoPlc';
 import delete_confirm from '@salesforce/label/c.rh_delete_confirm';
+import error_memberMsg from '@salesforce/label/c.rh_errorMemberMsg';
+import error_memberMsg_Alternativ from '@salesforce/label/c.rh_errorMemberMsg_alternativ';
+
+
+import error_memberMsg_Alternativ from '@salesforce/label/c.rh_newTimesheet';
 
 const Address = 'Address';
 const Street = 'Street';
@@ -545,6 +550,8 @@ const labels = {
     DueDate:'Due Date',
     descriptionFields:'Description Display Fields',
     Subject:'Subject',
+    error_memberMsg,
+    error_memberMsg_Alternativ,
 };
 
 export { labels }
