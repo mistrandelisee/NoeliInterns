@@ -262,19 +262,27 @@ import delete_confirm from '@salesforce/label/c.rh_delete_confirm';
 import error_memberMsg from '@salesforce/label/c.rh_errorMemberMsg';
 import error_memberMsg_Alternativ from '@salesforce/label/c.rh_errorMemberMsg_alternativ';
 
+import new_timesheet from '@salesforce/label/c.rh_newTimesheet';
+import DueDate from '@salesforce/label/c.rh_DueDate';
+import descriptionFields from '@salesforce/label/c.rh_descriptionDisplayField';
+import Subject from '@salesforce/label/c.rh_subject';
+import activatedQst from '@salesforce/label/c.rh_activated';
 
-import error_memberMsg_Alternativ from '@salesforce/label/c.rh_newTimesheet';
+// import Address from '@salesforce/label/c.rh_Address';
+import Street from '@salesforce/label/c.rh_Street';
+import Country from '@salesforce/label/c.rh_Country';
+import Province from '@salesforce/label/c.rh_Province';
+import PostalCode from '@salesforce/label/c.rh_PostalCode';
+import Language from '@salesforce/label/c.rh_Language';
+import addUser from '@salesforce/label/c.rh_AddUser';
 
-const Address = 'Address';
-const Street = 'Street';
-const Country = 'Country';
-const Province = 'Province';
-const PostalCode = 'Postal Code';
-const Language = 'Language';
 
 const labels = {
+    addUser,
+    new_timesheet,
     Add,
-    Address,
+    activatedQst,
+    Address:'address',
     Accomplishments,
     Edit,
     Street,
@@ -547,9 +555,9 @@ const labels = {
     Currency,
     CivicoPlc,
     delete_confirm,
-    DueDate:'Due Date',
-    descriptionFields:'Description Display Fields',
-    Subject:'Subject',
+    DueDate,
+    descriptionFields,
+    Subject,
     error_memberMsg,
     error_memberMsg_Alternativ,
 };
