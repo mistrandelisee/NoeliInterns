@@ -1,5 +1,6 @@
 import { api, LightningElement } from 'lwc';
 
+import recordNotFounded from '@salesforce/label/c.rh_recordNotFounded';
 export default class Rh_list extends LightningElement {
     @api
     cssClass;
@@ -14,7 +15,7 @@ export default class Rh_list extends LightningElement {
     @api
     records;
     @api
-    noRecordsLabel='No records found';
+    noRecordsLabel=recordNotFounded;
     @api
     typeIllustration='fish';
     @api

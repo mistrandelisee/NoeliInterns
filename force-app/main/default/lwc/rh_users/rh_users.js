@@ -30,12 +30,7 @@ const FROM_PARENT='FROM_PARENT';
 export default class Rh_users extends NavigationMixin(LightningElement) {
 
 l={...labels,
-Name: 'Name',
-srchNamePlc: 'Search by name',
-From:'From',
-To:'To',
-OrderBy:'sort By',
-selectPlc:'Select an option',
+srchNamePlc: '',
 }
 Status=[];
 roles=[];
@@ -52,10 +47,10 @@ currUser={};
 keysFields={accountName:'ok'};
 keysLabels={
     accountName:this.l.Company, FirstName: this.l.FirstName, 
-    RHRolec:this.l.Role,Email:this.l.Email,
+    RoleLabel:this.l.Role,Email:this.l.Email,
 };
 fieldsToShow={
-    FirstName:'',Email:'', RHRolec:'ok', 
+    FirstName:'',Email:'', RoleLabel:'ok', 
     accountName:'ok',
    
 };

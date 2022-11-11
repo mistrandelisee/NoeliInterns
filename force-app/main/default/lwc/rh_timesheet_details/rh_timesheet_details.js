@@ -854,7 +854,7 @@ export default class Rh_timesheet_details extends NavigationMixin(LightningEleme
         let projetElt;
         if (this.isEntryReadOnly) {
             projetElt={
-                label:'Activity',
+                label:this.l.Activity,
                 name:'ProjectId', 
                 value: this.sheetItem?.Project,
                 required:true,
@@ -867,7 +867,7 @@ export default class Rh_timesheet_details extends NavigationMixin(LightningEleme
             };
         }else{
             projetElt={
-                label:'Activity',
+                label:this.l.Activity,
                 name:'ProjectId',
                 picklist: true,
                 options: this.myProjects,

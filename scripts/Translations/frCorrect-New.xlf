@@ -1,0 +1,1809 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.2">
+    <file original="Salesforce" source-language="en_US" target-language="fr" translation-type="metadata" datatype="xml">
+        <body>
+            <trans-unit id="PicklistValue.Standard.timeSheetStatus.Approved" maxwidth="255" size-unit="char">
+                <source>Approved</source>
+                <target>Approuvé</target>
+            </trans-unit>
+            <trans-unit id="PicklistValue.Contact.RH_Role.Base User" maxwidth="255" size-unit="char">
+                <source>Base User</source>
+                <target>Employé</target>
+            </trans-unit>
+            <trans-unit id="PicklistValue.Contact.RH_Role.CEO" maxwidth="255" size-unit="char">
+                <source>CEO</source>
+                <target>PDG</target>
+            </trans-unit>
+            <trans-unit id="PicklistValue.Contact.RH_Role.Ressource Manager" maxwidth="255" size-unit="char">
+                <source>Ressource Manager</source>
+                <target>Gestionnaire de ressources</target>
+            </trans-unit>
+            <trans-unit id="PicklistValue.Contact.RH_Role.Team Leader" maxwidth="255" size-unit="char">
+                <source>Team Leader</source>
+                <target>Chef d'équipe</target>
+            </trans-unit>
+            <trans-unit id="PicklistValue.Contact.RH_Status.Active" maxwidth="255" size-unit="char">
+                <source>Active</source>
+                <target>Actif</target>
+            </trans-unit>
+            <trans-unit id="PicklistValue.Contact.RH_Status.Banned" maxwidth="255" size-unit="char">
+                <source>Banned</source>
+                <target>Banni</target>
+            </trans-unit>
+            <trans-unit id="PicklistValue.Contact.RH_Status.Draft" maxwidth="255" size-unit="char">
+                <source>Draft</source>
+                <target>Nouveau</target>
+            </trans-unit>
+            <trans-unit id="PicklistValue.Contact.RH_Status.Frozen" maxwidth="255" size-unit="char">
+                <source>Frozen</source>
+                <target>Sanctionné</target>
+            </trans-unit>
+            <trans-unit id="PicklistValue.RH_Request__c.Rh_Status.Submited">
+                <source>Submited</source>
+                 <target>En attente</target>
+            </trans-unit>
+            <trans-unit id="PicklistValue.Event__c.Status.Approved" maxwidth="255" size-unit="char">
+                <source>Approved</source>
+                <target>Publié</target>
+            </trans-unit>
+            <trans-unit id="PicklistValue.Event__c.Status.Draft" maxwidth="255" size-unit="char">
+                <source>Draft</source>
+                 <target>Nouveau</target>
+            </trans-unit>
+            <trans-unit id="PicklistValue.Event__c.Status.Rejected" maxwidth="255" size-unit="char">
+                <source>Rejected</source>
+                <target>Annulé</target>
+            </trans-unit>
+            <trans-unit id="PicklistValue.Event__c.Status.Submitted" maxwidth="255" size-unit="char">
+                <source>Submitted</source>
+                <target>En attente</target>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_ADDAttachment" maxwidth="1000" size-unit="char">
+                <source>ADD Attachment</source>
+                <target>Ajouter une pi&#232;ce jointe</target>
+                <note>rh_ADDAttachment</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_About" maxwidth="1000" size-unit="char">
+                <source>About</source>
+                <target>&#192; propos de</target>
+                <note>rh_About</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_AboutMe" maxwidth="1000" size-unit="char">
+                <source>About Me</source>
+                <target>&#192; propos de moi</target>
+                <note>rh_AboutMe</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_AboutMePlc" maxwidth="1000" size-unit="char">
+                <source>Say Something About you!</source>
+                <target>Dites quelque chose &#224; propos de vous!</target>
+                <note>rh_AboutMePlc</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_AccomplishmentDetails" maxwidth="1000" size-unit="char">
+                <source>Accomplishment Details</source>
+                <target>D&#233;tails R&#233;alisation</target>
+                <note>rh AccomplishmentDetails</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_Accomplishments" maxwidth="1000" size-unit="char">
+                <source>Accomplishments (#NB)</source>
+                <target>R&#233;alisations (#NB)</target>
+                <note>rh_Accomplishments</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_Account" maxwidth="1000" size-unit="char">
+                <source>Account</source>
+                <target>Compte</target>
+                <note>rh_Account</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_AccountInfoTitle" maxwidth="1000" size-unit="char">
+                <source>Company Informations</source>
+                <target>Informations sur l&apos;entreprise</target>
+                <note>rh_AccountInfoTitle</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_AccountPlc" maxwidth="1000" size-unit="char">
+                <source>Select Account</source>
+                <target>S&#233;lectionnez un compte</target>
+                <note>rh_AccountPlc</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_Activate" maxwidth="1000" size-unit="char">
+                <source>Activate</source>
+                <target>Activer</target>
+                <note>rh_Activate</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_Activity" maxwidth="1000" size-unit="char">
+                <source>Activity</source>
+                <target>Activit&#233;</target>
+                <note>rh_Activity</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_Add" maxwidth="1000" size-unit="char">
+                <source>Add</source>
+                <target>Ajouter</target>
+                <note>rh_Add</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_AddGroupMember" maxwidth="1000" size-unit="char">
+                <source>add group member</source>
+                <target>Ajouter un membre</target>
+                <note>rh_AddGroupMember</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_AddLines" maxwidth="1000" size-unit="char">
+                <source>Add Items</source>
+                <target>Ajouter des elements</target>
+                <note>rh_AddLines</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_AddNewEvent" maxwidth="1000" size-unit="char">
+                <source>Add New Event</source>
+                <target>Ajouter un nouvel &#233;v&#233;nement</target>
+                <note>rh_AddNewEvent</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_AddNews" maxwidth="1000" size-unit="char">
+                <source>&quot;Add News&quot;</source>
+                <target>Ajouter des nouvelles</target>
+                <note>rh_AddNews</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_AddUser" maxwidth="1000" size-unit="char">
+                <source>Add User</source>
+                <target>Ajouter l&apos;utilisateur</target>
+                <note>rh_AddUser</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_AddorRemoveProject" maxwidth="1000" size-unit="char">
+                <source>Add or Remove members to the Project</source>
+                <target>Ajouter ou supprimer des membres au projet</target>
+                <note>rh_AddorRemoveProject</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_AddressedCc" maxwidth="1000" size-unit="char">
+                <source>Addressed Cc</source>
+                <target>Cc adress&#233;</target>
+                <note>rh_AddressedCc</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_AddressedTo" maxwidth="1000" size-unit="char">
+                <source>Addressed To</source>
+                <target>To adress&#233;</target>
+                <note>rh_AddressedTo</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_All" maxwidth="1000" size-unit="char">
+                <source>All</source>
+                <target>Tout</target>
+                <note>rh All</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_AlreadyTranslate" maxwidth="1000" size-unit="char">
+                <source>Already translate  in:</source>
+                <target>D&#233;j&#224; traduit en&#160;:</target>
+                <note>rh_AlreadyTranslate</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_AnnualPerformance" maxwidth="1000" size-unit="char" outOfDate="true">
+                <source>Annual performance</source>
+                <target>Performance annuelle</target>
+                <note>Annual performance</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_Answer" maxwidth="1000" size-unit="char">
+                <source>Answer</source>
+                <target>R&#233;ponse</target>
+                <note>rh Answer</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_Approve" maxwidth="1000" size-unit="char">
+                <source>Approve</source>
+                <target>Approuver</target>
+                <note>rh_Approve</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_ApproveRequest" maxwidth="1000" size-unit="char">
+                <source>Approve request</source>
+                <target>Approuver la demande</target>
+                <note>rh ApproveRequest</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_Approved" maxwidth="1000" size-unit="char">
+                <source>Approved</source>
+                <target>Approuv&#233;e</target>
+                <note>rh_Approved</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_Approver" maxwidth="1000" size-unit="char">
+                <source>Approver</source>
+                <target>Approbateur</target>
+                <note>rh_Approver</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_April" maxwidth="1000" size-unit="char">
+                <source>April</source>
+                <target>Avril</target>
+                <note>April</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_AprilAbbr" maxwidth="1000" size-unit="char">
+                <source>Apr</source>
+                <target>Avr</target>
+                <note>April</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_AssignTo" maxwidth="1000" size-unit="char">
+                <source>Asign To</source>
+                <target>Affecter &#224;</target>
+                <note>rh_AssignTo</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_AssignToPh" maxwidth="1000" size-unit="char">
+                <source>Select member</source>
+                <target>S&#233;lectionnez un membre</target>
+                <note>rh_AssignToPh</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_August" maxwidth="1000" size-unit="char">
+                <source>August</source>
+                <target>Ao&#251;t</target>
+                <note>August</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_AugustAbbr" maxwidth="1000" size-unit="char" outOfDate="true">
+                <source>Aug</source>
+                <target>Ao&#251;</target>
+                <note>August</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_AvaibleMembers" maxwidth="1000" size-unit="char">
+                <source>Avaible Members</source>
+                <target>Membres disponibles</target>
+                <note>rh_AvaibleMembers</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_Back" maxwidth="1000" size-unit="char">
+                <source>Back</source>
+                <target>Retour</target>
+                <note>rh_Back</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_BackToAccomplishment" maxwidth="1000" size-unit="char">
+                <source>Back To Accomplishment</source>
+                <target>Retour Aux R&#233;alisations</target>
+                <note>rh BackToAccomplishment</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_BackToGroup" maxwidth="1000" size-unit="char">
+                <source>Back to Groups</source>
+                <target>Retourner aux groupes</target>
+                <note>rh_BackToGroup</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_Birthday" maxwidth="1000" size-unit="char">
+                <source>Birthday</source>
+                <target>Date d&apos;anniversaire</target>
+                <note>rh_Birthday</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_BirthdayPlc" maxwidth="1000" size-unit="char">
+                <source>Enter Birthday</source>
+                <target>Entrez votre date d&apos;anniversaire</target>
+                <note>rh_BirthdayPlc</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_Cancel" maxwidth="1000" size-unit="char">
+                <source>Cancel</source>
+                <target>Annuler</target>
+                <note>rh_Cancel</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_Cap" maxwidth="1000" size-unit="char">
+                <source>Cap</source>
+                <target>Casquette</target>
+                <note>rh_Cap</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_CapPlc" maxwidth="1000" size-unit="char">
+                <source>Cap Number</source>
+                <target>Entrez le Cap Number</target>
+                <note>rh_CapPlc</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_Change" maxwidth="1000" size-unit="char">
+                <source>Change</source>
+                <target>Changer</target>
+                <note>rh_Change</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_ChangePassword" maxwidth="1000" size-unit="char">
+                <source>Change Password</source>
+                <target>Changer le mot de passe</target>
+                <note>rh_ChangePassword</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_ChangePasswordTitle" maxwidth="1000" size-unit="char">
+                <source>Change Password</source>
+                <target>Changer le mot de passe</target>
+                <note>rh_ChangePasswordTitle</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_City" maxwidth="1000" size-unit="char">
+                <source>City</source>
+                <target>Ville</target>
+                <note>rh_City</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_CityPlc" maxwidth="1000" size-unit="char">
+                <source>Enter Current City</source>
+                <target>Entrez la ville actuelle</target>
+                <note>rh_CityPlc</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_Civico" maxwidth="1000" size-unit="char">
+                <source>Civico</source>
+                <target>Num&#233;ro de rue</target>
+                <note>rh_Civico</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_CivicoPlc" maxwidth="1000" size-unit="char">
+                <source>Numero</source>
+                <target>Entrer un num&#233;ro</target>
+                <note>rh_CivicoPlc</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_Clonerequest" maxwidth="1000" size-unit="char">
+                <source>Clone request</source>
+                <target>Clonner la requete</target>
+                <note>rh_Clonerequest</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_Close" maxwidth="1000" size-unit="char">
+                <source>Close</source>
+                <target>Fermer</target>
+                <note>rh_Close</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_Come" maxwidth="1000" size-unit="char">
+                <source>Submit by</source>
+                <target>Soumettre par</target>
+                <note>rh_Come</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_Company" maxwidth="1000" size-unit="char">
+                <source>Company</source>
+                <target>Compagnie</target>
+                <note>rh_Company</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_CompanyName" maxwidth="1000" size-unit="char">
+                <source>Name</source>
+                <target>Nom</target>
+                <note>rh_CompanyName</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_ComplainOn" maxwidth="1000" size-unit="char">
+                <source>Complain On</source>
+                <target>Se plaindre de</target>
+                <note>rh_ComplainOn</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_ConfigTitle" maxwidth="1000" size-unit="char">
+                <source>News configuration</source>
+                <target>Param&#233;trage des actualit&#233;s</target>
+                <note>rh_ConfigTitle</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_Confirm" maxwidth="1000" size-unit="char">
+                <source>Confirm</source>
+                <target>Confirmer</target>
+                <note>rh Confirm</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_ContactName" maxwidth="1000" size-unit="char">
+                <source>Contact Name</source>
+                <target>Nom du contact</target>
+                <note>rh_ContactName</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_Copyright" maxwidth="1000" size-unit="char">
+                <source>&#169; Copyright (#NB) - Noeli.com</source>
+                <target>&#169; Copyright (#NB) - Noeli.com</target>
+                <note>rh_Copyright</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_Country" maxwidth="1000" size-unit="char">
+                <source>Country</source>
+                <target>Pays</target>
+                <note>rh_Country</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_CreatedDate" maxwidth="1000" size-unit="char">
+                <source>Created Date</source>
+                <target>Date de cr&#233;ation</target>
+                <note>rh_CreatedDate</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_Createrequest" maxwidth="1000" size-unit="char">
+                <source>Create request</source>
+                <target>Cr&#233;er une demande</target>
+                <note>rh_Createrequest</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_Currency" maxwidth="1000" size-unit="char">
+                <source>Currency</source>
+                <target>Devise</target>
+                <note>rh_Currency</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_CurrentPassword" maxwidth="1000" size-unit="char">
+                <source>Current Password</source>
+                <target>Mot de passe actuel</target>
+                <note>rh_CurrentPassword</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_CurrentPasswordPlc" maxwidth="1000" size-unit="char">
+                <source>Enter Current Password</source>
+                <target>Entrer le mot de passe actuel</target>
+                <note>rh_CurrentPasswordPlc</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_Date" maxwidth="1000" size-unit="char">
+                <source>Date</source>
+                <target>Date</target>
+                <note>rh_Date</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_DateLb" maxwidth="1000" size-unit="char">
+                <source>Date</source>
+                <target>Date</target>
+                <note>rh_DateLb</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_DatePlc" maxwidth="1000" size-unit="char">
+                <source>Enter Your Date</source>
+                <target>Entrez votre date</target>
+                <note>rh_DatePlc</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_Deactivated" maxwidth="1000" size-unit="char">
+                <source>Deactivated</source>
+                <target>Desactiver</target>
+                <note>rh_Deactivated</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_December" maxwidth="1000" size-unit="char">
+                <source>December</source>
+                <target>D&#233;cembre</target>
+                <note>December</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_DecemberAbbr" maxwidth="1000" size-unit="char">
+                <source>Dec</source>
+                <target>D&#233;c</target>
+                <note>December</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_Delete" maxwidth="1000" size-unit="char">
+                <source>Delete</source>
+                <target>Effacer</target>
+                <note>rh_Delete</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_DeleteFile" maxwidth="1000" size-unit="char">
+                <source>Delete File</source>
+                <target>Supprimer le fichier</target>
+                <note>rh_DeleteFile</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_DeleteNews_Confirm" maxwidth="1000" size-unit="char">
+                <source>Are you sure you want to delete this News?</source>
+                <target>Voulez-vous vraiment supprimer cette actualit&#233;?</target>
+                <note>rh_DeleteNews_Confirm</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_DeleteNews_Title" maxwidth="1000" size-unit="char">
+                <source>Confirm Deletion</source>
+                <target>Confirmer la suppression</target>
+                <note>rh_DeleteNews_Title</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_Deleterequest" maxwidth="1000" size-unit="char">
+                <source>Delete request</source>
+                <target>Supprimer la demande</target>
+                <note>rh_Deleterequest</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_Description" maxwidth="1000" size-unit="char">
+                <source>Description</source>
+                <target>La description</target>
+                <note>rh_Description</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_DescriptionPlc" maxwidth="1000" size-unit="char">
+                <source>Enter Your Description</source>
+                <target>Entrez votre description</target>
+                <note>rh_DescriptionPlc</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_Disable" maxwidth="1000" size-unit="char">
+                <source>Disable</source>
+                <target>D&#233;sactiver</target>
+                <note>rh_Disable</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_Download" maxwidth="1000" size-unit="char">
+                <source>Download</source>
+                <target>T&#233;l&#233;charger</target>
+                <note>rh_Download</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_DownloadAttachment" maxwidth="1000" size-unit="char">
+                <source>Download Attachment file</source>
+                <target>T&#233;l&#233;charger le fichier joint</target>
+                <note>rh_DownloadAttachment</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_Draft" maxwidth="1000" size-unit="char">
+                <source>Draft</source>
+                <target>Brouillon</target>
+                <note>rh_Draft</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_DueDate" maxwidth="1000" size-unit="char">
+                <source>Due Date</source>
+                <target>Date de l&apos;echeance</target>
+                <note>rh_DueDate</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_Duration_mins" maxwidth="1000" size-unit="char">
+                <source>Duration (Minutes)</source>
+                <target>Dur&#233;e (minutes)</target>
+                <note>rh_Duration_mins</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_Edit" maxwidth="1000" size-unit="char">
+                <source>Edit</source>
+                <target>Modifier</target>
+                <note>rh_Edit</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_EditAccomplishment" maxwidth="1000" size-unit="char">
+                <source>Edit Accomplishment</source>
+                <target>Modifier La R&#233;alisation</target>
+                <note>rh EditAccomplishment</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_EditAddresseCC" maxwidth="1000" size-unit="char">
+                <source>Edit Address cc</source>
+                <target>Editer l&apos;Adresse en CC</target>
+                <note>rh_EditAddresseCC</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_EditMembers" maxwidth="1000" size-unit="char">
+                <source>Edit Members</source>
+                <target>Modifier les membres</target>
+                <note>rh_EditMembers</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_Editrequest" maxwidth="1000" size-unit="char">
+                <source>Edit request</source>
+                <target>Modifier la demande</target>
+                <note>rh_Editrequest</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_Email" maxwidth="1000" size-unit="char">
+                <source>Email Address</source>
+                <target>Adresse e-mail</target>
+                <note>rh_Email</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_EmailPlc" maxwidth="1000" size-unit="char">
+                <source>Enter Email Address</source>
+                <target>Entrer l&apos;adresse e-mail</target>
+                <note>rh_EmailPlc</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_End" maxwidth="1000" size-unit="char">
+                <source>End</source>
+                <target>Fin</target>
+                <note>rh_End</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_EndDate" maxwidth="1000" size-unit="char">
+                <source>End date</source>
+                <target>Date de fin</target>
+                <note>rh_EndDate</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_EndDateError" maxwidth="1000" size-unit="char">
+                <source>End Date must be grater Than Start Date</source>
+                <target>La date de fin doit etre superieure a la date de debut</target>
+                <note>rh_EndDateError</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_EndDatePlc" maxwidth="1000" size-unit="char">
+                <source>Enter the End date</source>
+                <target>Entrez la date de fin</target>
+                <note>rh_EndDatePlc</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_English" maxwidth="1000" size-unit="char">
+                <source>English</source>
+                <target>Anglais</target>
+                <note>rh_English</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_Entries" maxwidth="1000" size-unit="char">
+                <source>Entries</source>
+                <target>Entr&#233;es</target>
+                <note>rh_Entries</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_ErrorId" maxwidth="1000" size-unit="char">
+                <source>Error about Id of userRole</source>
+                <target>Erreur concernant l&apos;ID de userRole</target>
+                <note>rh_ErrorId</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_EvenApproved" maxwidth="1000" size-unit="char">
+                <source>This event has been already approved !</source>
+                <target>Cet &#233;v&#233;nement a d&#233;j&#224; &#233;t&#233; approuv&#233; !</target>
+                <note>rh_EvenApproved</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_EvenDeletionS" maxwidth="1000" size-unit="char">
+                <source>Event Delete Successfully!!</source>
+                <target>Supprimer l&apos;&#233;v&#233;nement avec succ&#232;s&#160;!</target>
+                <note>rh_EvenDeletionS</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_EvenSendSuccess" maxwidth="1000" size-unit="char">
+                <source>Event Send Successfully !!</source>
+                <target>&#201;v&#233;nement envoy&#233; avec succ&#232;s&#160;!</target>
+                <note>rh_EvenSendSuccess</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_EvenUpdateS" maxwidth="1000" size-unit="char">
+                <source>Event Update Successfully !!</source>
+                <target>Mise &#224; jour de l&apos;&#233;v&#233;nement r&#233;ussie&#160;!</target>
+                <note>rh_EvenUpdateS</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_EvenUpdateSS" maxwidth="1000" size-unit="char">
+                <source>Event Update Successfully and send to CEO !!</source>
+                <target>Mise &#224; jour de l&apos;&#233;v&#233;nement r&#233;ussie et envoy&#233;e au PDG&#160;!</target>
+                <note>rh_EvenUpdateSS</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_EventA" maxwidth="1000" size-unit="char">
+                <source>This event has been already shared !</source>
+                <target>Cet &#233;v&#233;nement a d&#233;j&#224; &#233;t&#233; partag&#233; !</target>
+                <note>rh_EventA</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_EventDetails" maxwidth="1000" size-unit="char">
+                <source>Event Details</source>
+                <target>D&#233;tails de l&apos;&#233;v&#232;nement</target>
+                <note>rh_EventDetails</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_EventSubS" maxwidth="1000" size-unit="char">
+                <source>Event Submitted Successfully</source>
+                <target>&#201;v&#233;nement soumis avec succ&#232;s&#160;!</target>
+                <note>rh_EventSubS</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_ExportPDF" maxwidth="1000" size-unit="char">
+                <source>Export PDF</source>
+                <target>Exporter PDF</target>
+                <note>rh_ExportPDF</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_ExportXLS" maxwidth="1000" size-unit="char">
+                <source>Export XLSX</source>
+                <target>Exporter XLSX</target>
+                <note>rh_ExportXLS</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_FebraryAbbr" maxwidth="1000" size-unit="char">
+                <source>Feb</source>
+                <target>F&#233;v</target>
+                <note>Febrary</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_February" maxwidth="1000" size-unit="char">
+                <source>February</source>
+                <target>F&#233;vrier</target>
+                <note>February</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_FileDeleteSuccessfully" maxwidth="1000" size-unit="char">
+                <source>File Delete Successfully !!</source>
+                <target>Fichier supprim&#233; avec succ&#232;s&#160;!</target>
+                <note>rh_FileDeleteSuccessfully</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_FileName" maxwidth="1000" size-unit="char">
+                <source>File Name</source>
+                <target>Nom de fichier</target>
+                <note>rh_FileName</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_FileUpdate" maxwidth="1000" size-unit="char">
+                <source>The file has not been updated</source>
+                <target>Le fichier n&apos;a pas &#233;t&#233; mis &#224; jour</target>
+                <note>rh_FileUpdate</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_FilterAccomplishment" maxwidth="1000" size-unit="char">
+                <source>Filter Accomplishment</source>
+                <target>Filtrer les r&#233;alisations</target>
+                <note>rh_FilterAccomplishment</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_FilterRequest" maxwidth="1000" size-unit="char">
+                <source>Filter Request</source>
+                <target>Filtrer les demande</target>
+                <note>rh_FilterRequest</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_FilterTitle" maxwidth="1000" size-unit="char">
+                <source>Filter the news</source>
+                <target>Filtrer les actualit&#233;s</target>
+                <note>rh_FilterTitle</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_FirstName" maxwidth="1000" size-unit="char">
+                <source>First Name</source>
+                <target>Pr&#233;nom</target>
+                <note>rh_FirstName</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_FirstNamePlc" maxwidth="1000" size-unit="char">
+                <source>Enter First Name</source>
+                <target>Entrez votre pr&#233;nom</target>
+                <note>rh_FirstNamePlc</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_Freeze" maxwidth="1000" size-unit="char">
+                <source>Freeze</source>
+                <target>Gel</target>
+                <note>rh_Freeze</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_French" maxwidth="1000" size-unit="char">
+                <source>French</source>
+                <target>Fran&#231;ais</target>
+                <note>rh_French</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_From" maxwidth="1000" size-unit="char">
+                <source>From</source>
+                <target>De</target>
+                <note>rh_From</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_Group" maxwidth="1000" size-unit="char">
+                <source>Group</source>
+                <target>Groupe</target>
+                <note>rh_Group</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_GroupDetail" maxwidth="1000" size-unit="char">
+                <source>Group Detail</source>
+                <target>Detaille du Groupe</target>
+                <note>rh_GroupDetail</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_GroupeMember" maxwidth="1000" size-unit="char">
+                <source>The Groupe Member are</source>
+                <target>Les membres du groupe sont</target>
+                <note>rh_GroupeMember</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_Industry" maxwidth="1000" size-unit="char">
+                <source>Industry</source>
+                <target>Industrie</target>
+                <note>rh_Industry</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_InfoDate" maxwidth="1000" size-unit="char">
+                <source>Your end date cannot be less than start date !</source>
+                <target>Votre date de fin ne peut pas &#234;tre inf&#233;rieure &#224; la date de d&#233;but !</target>
+                <note>rh_InfoDate</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_Interval" maxwidth="1000" size-unit="char">
+                <source>Set Interval</source>
+                <target>D&#233;finir l&apos;intervalle</target>
+                <note>rh_Interval</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_IntervalPlc" maxwidth="1000" size-unit="char">
+                <source>Enter Interval</source>
+                <target>Entrez l&apos;intervalle</target>
+                <note>rh_IntervalPlc</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_InvalidField" maxwidth="1000" size-unit="char">
+                <source>The field Is not valid</source>
+                <target>Le champ n&apos;est pas valide</target>
+                <note>rh_InvalidField</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_IsPublic" maxwidth="1000" size-unit="char">
+                <source>Is Public</source>
+                <target>Est publique</target>
+                <note>rh_IsPublic</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_Italian" maxwidth="1000" size-unit="char">
+                <source>Italian</source>
+                <target>Italien</target>
+                <note>rh_Italian</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_January" maxwidth="1000" size-unit="char">
+                <source>January</source>
+                <target>Janvier</target>
+                <note>January</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_JanuaryAbbr" maxwidth="1000" size-unit="char">
+                <source>Jan</source>
+                <target>Jan</target>
+                <note>January</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_July" maxwidth="1000" size-unit="char">
+                <source>July</source>
+                <target>Juillet</target>
+                <note>July</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_JulyAbbr" maxwidth="1000" size-unit="char" outOfDate="true">
+                <source>Jul</source>
+                <target>Jui</target>
+                <note>July</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_JunAbbr" maxwidth="1000" size-unit="char" outOfDate="true">
+                <source>Jun</source>
+                <target>Jui</target>
+                <note>June</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_June" maxwidth="1000" size-unit="char">
+                <source>June</source>
+                <target>Juin</target>
+                <note>June</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_Language" maxwidth="1000" size-unit="char">
+                <source>Language</source>
+                <target>Langue</target>
+                <note>rh_Language</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_LastName" maxwidth="1000" size-unit="char">
+                <source>Last Name</source>
+                <target>Nom de famille</target>
+                <note>rh_LastName</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_LastNamePlc" maxwidth="1000" size-unit="char">
+                <source>Enter Last Name</source>
+                <target>Entrer le nom de famille</target>
+                <note>rh_LastNamePlc</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_Leader" maxwidth="1000" size-unit="char">
+                <source>Leader Name</source>
+                <target>Nom du chef</target>
+                <note>rh_Leader</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_Link" maxwidth="1000" size-unit="char">
+                <source>Link</source>
+                <target>Lien</target>
+                <note>rh_Link</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_ManageTask" maxwidth="1000" size-unit="char">
+                <source>Manage Task</source>
+                <target>G&#233;rer la t&#226;che</target>
+                <note>rh_ManageTask</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_Manager" maxwidth="1000" size-unit="char">
+                <source>Manager</source>
+                <target>Gestionnaire</target>
+                <note>rh_Manager</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_ManagerPlc" maxwidth="1000" size-unit="char">
+                <source>Select Project Manager</source>
+                <target>Selectionner le Manager du Projet</target>
+                <note>rh_ManagerPlc</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_March" maxwidth="1000" size-unit="char">
+                <source>March</source>
+                <target>Mars</target>
+                <note>March</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_MarchAbbr" maxwidth="1000" size-unit="char">
+                <source>Mar</source>
+                <target>Mar</target>
+                <note>March</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_May" maxwidth="1000" size-unit="char">
+                <source>May</source>
+                <target>Mai</target>
+                <note>May</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_MayAbbr" maxwidth="1000" size-unit="char">
+                <source>May</source>
+                <target>Mai</target>
+                <note>May</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_MemberFailUpdate" maxwidth="1000" size-unit="char">
+                <source>Update failed</source>
+                <target>Echec de mise a jour</target>
+                <note>rh_MemberFailUpdate</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_MemberSuccesUpdate" maxwidth="1000" size-unit="char">
+                <source>Members Updated Successfully</source>
+                <target>Mise a jour des Membres Reussir</target>
+                <note>rh_MemberSuccesUpdate</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_Name" maxwidth="1000" size-unit="char">
+                <source>Name</source>
+                <target>Nom</target>
+                <note>rh_Name</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_NamePlc" maxwidth="1000" size-unit="char">
+                <source>Enter Name</source>
+                <target>Entrez le nom</target>
+                <note>rh_NamePlc</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_New" maxwidth="1000" size-unit="char">
+                <source>New</source>
+                <target>Nouveau</target>
+                <note>rh_New</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_NewAccomplishment" maxwidth="1000" size-unit="char">
+                <source>New Accomplishment</source>
+                <target>Nouvelle r&#233;alisation</target>
+                <note>rh NewAccomplishment</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_NewGroup" maxwidth="1000" size-unit="char">
+                <source>New Group</source>
+                <target>Nouveau Groupe</target>
+                <note>rh_NewGroup</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_NewPassword" maxwidth="1000" size-unit="char">
+                <source>New Password</source>
+                <target>Nouveau mot de passe</target>
+                <note>rh_NewPassword</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_NewPasswordPlc" maxwidth="1000" size-unit="char">
+                <source>Enter New Password</source>
+                <target>Entrez un nouveau mot de passe</target>
+                <note>rh_NewPasswordPlc</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_NewProject" maxwidth="1000" size-unit="char">
+                <source>New Project</source>
+                <target>Nouveau projet</target>
+                <note>rh_NewProject</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_NewTimesheet" maxwidth="1000" size-unit="char">
+                <source>New Timesheet</source>
+                <target>Nouvelle fiche de temps</target>
+                <note>rh_NewTimesheet</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_NewsActivated" maxwidth="1000" size-unit="char">
+                <source>the news has been successfully activated</source>
+                <target>la nouvelle a &#233;t&#233; activ&#233;e avec succ&#232;s</target>
+                <note>rh_NewsActivated</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_NewsDeactivated" maxwidth="1000" size-unit="char">
+                <source>the news has been successfully deactivated</source>
+                <target>les nouvelles ont &#233;t&#233; d&#233;sactiv&#233;es avec succ&#232;s</target>
+                <note>rh_NewsDeactivated</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_NewsDelete" maxwidth="1000" size-unit="char">
+                <source>the news has been successfully deleted</source>
+                <target>les nouvelles ont &#233;t&#233; supprim&#233;es avec succ&#232;s</target>
+                <note>rh_NewsDelete</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_Next" maxwidth="1000" size-unit="char">
+                <source>Next</source>
+                <target>Suivant</target>
+                <note>rh_Next</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_Note" maxwidth="1000" size-unit="char">
+                <source>Reason</source>
+                <target>Raison</target>
+                <note>rh_Note</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_NotePlc" maxwidth="1000" size-unit="char">
+                <source>Insert a note</source>
+                <target>Ins&#233;rer une note</target>
+                <note>rh_NotePlc</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_November" maxwidth="1000" size-unit="char">
+                <source>November</source>
+                <target>Novembre</target>
+                <note>November</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_NovemberAbbr" maxwidth="1000" size-unit="char">
+                <source>Nov</source>
+                <target>Nov</target>
+                <note>November</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_Number" maxwidth="1000" size-unit="char">
+                <source>Number</source>
+                <target>Num&#233;ro</target>
+                <note>rh_Number</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_NumberOfEmployees" maxwidth="1000" size-unit="char">
+                <source>Number Of Employees</source>
+                <target>Nombre d&apos;employ&#233;s</target>
+                <note>rh_NumberOfEmployees</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_October" maxwidth="1000" size-unit="char">
+                <source>October</source>
+                <target>Octobre</target>
+                <note>October</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_OctoberAbbr" maxwidth="1000" size-unit="char">
+                <source>Oct</source>
+                <target>Oct</target>
+                <note>October</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_OrderBy" maxwidth="1000" size-unit="char">
+                <source>sort By</source>
+                <target>Trier par</target>
+                <note>rh_OrderBy</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_OrderOn" maxwidth="1000" size-unit="char">
+                <source>As</source>
+                <target>Comme</target>
+                <note>rh_OrderOn</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_Owner" maxwidth="1000" size-unit="char">
+                <source>Owner</source>
+                <target>Propri&#233;taire</target>
+                <note>rh_Owner</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_Pending" maxwidth="1000" size-unit="char">
+                <source>Pending</source>
+                <target>En attente</target>
+                <note>Pending</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_PermissionDelete" maxwidth="1000" size-unit="char">
+                <source>Are you sure to want to delete it ?</source>
+                <target>&#202;tes-vous s&#251;r de vouloir le supprimer&#160;?</target>
+                <note>rh_PermissionDelete</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_PermissionRejected" maxwidth="1000" size-unit="char">
+                <source>Are you sure to want to reject it ?</source>
+                <target>&#202;tes-vous s&#251;r de vouloir le supprimer&#160;?</target>
+                <note>rh_PermissionRejected</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_Phone" maxwidth="1000" size-unit="char">
+                <source>Phone</source>
+                <target>T&#233;l&#233;phoner</target>
+                <note>rh_Phone</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_PhonePlc" maxwidth="1000" size-unit="char">
+                <source>Enter Phone Number</source>
+                <target>Entrez le num&#233;ro de t&#233;l&#233;phone</target>
+                <note>rh_PhonePlc</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_PostalCode" maxwidth="1000" size-unit="char">
+                <source>Postal Code</source>
+                <target>Code Postal</target>
+                <note>rh_PostalCode</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_Priority" maxwidth="1000" size-unit="char">
+                <source>Priority</source>
+                <target>Priorit&#233;</target>
+                <note>rh_Priority</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_Project" maxwidth="1000" size-unit="char">
+                <source>Project</source>
+                <target>Projet</target>
+                <note>rh_Project</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_ProjectActivate" maxwidth="1000" size-unit="char">
+                <source>Project activated successfully</source>
+                <target>Projet active avec succes</target>
+                <note>rh_ProjectActivate</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_ProjectDescriptionPlc" maxwidth="1000" size-unit="char">
+                <source>Enter Your Project Description</source>
+                <target>Entrer la Description du Projet</target>
+                <note>rh_ProjectDescriptionPlc</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_ProjectDetails" maxwidth="1000" size-unit="char">
+                <source>Project Details</source>
+                <target>d&#233;tails du projet</target>
+                <note>rh_ProjectDetails</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_ProjectFailedCreate" maxwidth="1000" size-unit="char">
+                <source>Insert failed</source>
+                <target>Echec de Creation</target>
+                <note>rh_ProjectFailedCreate</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_ProjectMembers" maxwidth="1000" size-unit="char">
+                <source>Project Members</source>
+                <target>Membres du projet</target>
+                <note>rh_ProjectMembers</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_ProjectNamePlc" maxwidth="1000" size-unit="char">
+                <source>Enter Your Project Name</source>
+                <target>Entrer le Nom du Projet</target>
+                <note>rh_ProjectNamePlc</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_ProjectSuccesCreated" maxwidth="1000" size-unit="char">
+                <source>Project created Successfully</source>
+                <target>Projet Cree avec succes</target>
+                <note>rh_ProjectSuccesCreated</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_ProjectUpdateSucces" maxwidth="1000" size-unit="char">
+                <source>Project Updated Successfully</source>
+                <target>Projet mise a jour avec succes</target>
+                <note>rh_ProjectUpdateSucces</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_PromoteBaseUser" maxwidth="1000" size-unit="char">
+                <source>Mark As Team Leader</source>
+                <target>Marquer comme chef d&apos;&#233;quipe</target>
+                <note>rh_PromoteBaseUser</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_Province" maxwidth="1000" size-unit="char">
+                <source>Province</source>
+                <target>Province</target>
+                <note>rh_Province</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_Quantity" maxwidth="1000" size-unit="char">
+                <source>Quantity</source>
+                <target>Quantit&#233;</target>
+                <note>rh_Quantity</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_Rate" maxwidth="1000" size-unit="char">
+                <source>Rate</source>
+                <target>&#201;valuer</target>
+                <note>rh_Rate</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_Reject" maxwidth="1000" size-unit="char">
+                <source>Rejected</source>
+                <target>Rejet&#233;e</target>
+                <note>rh_Reject</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_RejectFail" maxwidth="1000" size-unit="char">
+                <source>You cannot rejected an event already approved</source>
+                <target>Vous ne pouvez pas rejeter un &#233;v&#233;nement d&#233;j&#224; approuv&#233;</target>
+                <note>rh_RejectFail</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_RejectRequest" maxwidth="1000" size-unit="char">
+                <source>Reject request</source>
+                <target>Rejeter la demande</target>
+                <note>rh RejectRequest</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_RepeatPassword" maxwidth="1000" size-unit="char">
+                <source>Repeat Password</source>
+                <target>R&#233;p&#233;ter le mot de passe</target>
+                <note>rh_RepeatPassword</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_RepeatPasswordPlc" maxwidth="1000" size-unit="char">
+                <source>Enter Repeat Password</source>
+                <target>Entrez le mot de passe de r&#233;p&#233;tition</target>
+                <note>rh_RepeatPasswordPlc</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_RequestTypeName" maxwidth="1000" size-unit="char">
+                <source>Request Type</source>
+                <target>Type de demande</target>
+                <note>rh_RequestTypeName</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_Reset" maxwidth="1000" size-unit="char">
+                <source>Reset</source>
+                <target>R&#233;initialiser</target>
+                <note>rh_Reset</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_ResetPassword" maxwidth="1000" size-unit="char">
+                <source>Reset Password</source>
+                <target>r&#233;initialiser le mot de passe</target>
+                <note>rh_ResetPassword</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_Responded" maxwidth="1000" size-unit="char">
+                <source>Responded</source>
+                <target>Repondu</target>
+                <note>rh_Responded</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_RespondedDate" maxwidth="1000" size-unit="char">
+                <source>Responded Date</source>
+                <target>Date de Reponse</target>
+                <note>rh_RespondedDate</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_RightAccess" maxwidth="1000" size-unit="char">
+                <source>You no longer have the right to modify the event !</source>
+                <target>Vous n&apos;avez plus le droit de modifier l&apos;&#233;v&#233;nement !</target>
+                <note>rh_RightAccess</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_RightDeletion" maxwidth="1000" size-unit="char">
+                <source>You don\ t have right to deletion !!</source>
+                <target>Vous n&apos;avez pas le droit de suppression !</target>
+                <note>rh_RightDeletion</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_Role" maxwidth="1000" size-unit="char">
+                <source>Role</source>
+                <target>R&#244;le</target>
+                <note>rh_Role</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_RolePlc" maxwidth="1000" size-unit="char">
+                <source>Select Role</source>
+                <target>S&#233;lectionnez un r&#244;le</target>
+                <note>rh_RolePlc</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_Save" maxwidth="1000" size-unit="char">
+                <source>Save</source>
+                <target>sauvegarder</target>
+                <note>rh_Save</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_SaveAndActive" maxwidth="1000" size-unit="char">
+                <source>Save And Active</source>
+                <target>Enregistrer et activer</target>
+                <note>rh_SaveAndActive</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_SaveAndSend" maxwidth="1000" size-unit="char">
+                <source>Save And Send</source>
+                <target>Enregistrer et envoyer</target>
+                <note>rh_SaveAndSend</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_SaveConfiguration" maxwidth="1000" size-unit="char">
+                <source>Your configuration has been successfully saved</source>
+                <target>Votre configuration a &#233;t&#233; enregistr&#233;e avec succ&#232;s</target>
+                <note>rh_SaveConfiguration</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_SaveNew" maxwidth="1000" size-unit="char">
+                <source>Save &amp; New</source>
+                <target>Enregistrer et nouveau</target>
+                <note>rh_SaveNew</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_SaveandSubmited" maxwidth="1000" size-unit="char">
+                <source>Save and Submit</source>
+                <target>Enregistrer et envoyer</target>
+                <note>rh_SaveandSubmited</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_SelectLang" maxwidth="1000" size-unit="char">
+                <source>Select your language</source>
+                <target>choisissez votre langue</target>
+                <note>rh_SelectLang</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_SelectedMembers" maxwidth="1000" size-unit="char">
+                <source>Selected Members</source>
+                <target>Membres s&#233;lectionn&#233;s</target>
+                <note>rh_SelectedMembers</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_Send" maxwidth="1000" size-unit="char">
+                <source>Send</source>
+                <target>Envoyer</target>
+                <note>rh_Send</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_SendEvent" maxwidth="1000" size-unit="char">
+                <source>You should sent event before delete</source>
+                <target>Vous devez envoyer l&apos;&#233;v&#233;nement avant de le supprimer</target>
+                <note>rh_SendEvent</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_Sendrequest" maxwidth="1000" size-unit="char">
+                <source>Send request</source>
+                <target>Envoyer une demande</target>
+                <note>rh_Sendrequest</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_September" maxwidth="1000" size-unit="char">
+                <source>September</source>
+                <target>Septembre</target>
+                <note>September</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_SeptemberAbbr" maxwidth="1000" size-unit="char" outOfDate="true">
+                <source>Sep</source>
+                <target>Sep</target>
+                <note>September</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_Start" maxwidth="1000" size-unit="char">
+                <source>Start</source>
+                <target>Commencer</target>
+                <note>rh_Start</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_StartDate" maxwidth="1000" size-unit="char">
+                <source>Start date</source>
+                <target>Date de d&#233;but</target>
+                <note>rh_StartDate</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_StartDateError" maxwidth="1000" size-unit="char" outOfDate="true">
+                <source>Start Date must be grater or equal than today</source>
+                <target>La date de Debut doit etre superieure ou egale a la date d&apos;aujourdhui</target>
+                <note>rh_StartDateError</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_StartDatePlc" maxwidth="1000" size-unit="char">
+                <source>Enter the Start date</source>
+                <target>Entrez la date de d&#233;but</target>
+                <note>rh_StartDatePlc</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_Status" maxwidth="1000" size-unit="char">
+                <source>Status</source>
+                <target>Statut</target>
+                <note>rh_Status</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_StatusPlc" maxwidth="1000" size-unit="char">
+                <source>Select one status</source>
+                <target>S&#233;lectionnez un statut</target>
+                <note>rh_StatusPlc</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_Street" maxwidth="1000" size-unit="char">
+                <source>Street</source>
+                <target>Rue</target>
+                <note>rh_Street</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_Submit" maxwidth="1000" size-unit="char">
+                <source>Submit</source>
+                <target>Soumettre</target>
+                <note>rh_Submit</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_Submited" maxwidth="1000" size-unit="char">
+                <source>Submited</source>
+                <target>En attente</target>
+                <note>rh_Submited</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_SubmitedDate" maxwidth="1000" size-unit="char">
+                <source>Submitted Date</source>
+                <target>Date de Soumission</target>
+                <note>rh_SubmitedDate</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_Submiter" maxwidth="1000" size-unit="char">
+                <source>Submit By</source>
+                <target>Envoyer par</target>
+                <note>rh_Submiter</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_SuccessEven" maxwidth="1000" size-unit="char">
+                <source>Event Add Successfully but Not send to CEO!!</source>
+                <target>L&apos;&#233;v&#233;nement a &#233;t&#233; ajout&#233; avec succ&#232;s mais n&apos;a pas &#233;t&#233; envoy&#233; au PDG&#160;!</target>
+                <note>rh_SuccessEven</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_SucessEvenS" maxwidth="1000" size-unit="char">
+                <source>Event Add Successfully And send to CEO !!</source>
+                <target>&#201;v&#233;nement ajout&#233; avec succ&#232;s et envoy&#233; au PDG&#160;!</target>
+                <note>rh_SucessEvenS</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_Supervisor" maxwidth="1000" size-unit="char">
+                <source>Supervisor</source>
+                <target>Superviseur</target>
+                <note>rh_Supervisor</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_Task" maxwidth="1000" size-unit="char">
+                <source>Add Task</source>
+                <target>Ajouter une t&#226;che</target>
+                <note>rh_Task</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_TaskDescr" maxwidth="1000" size-unit="char">
+                <source>Enter your Task Description</source>
+                <target>Entrez votre description de t&#226;che</target>
+                <note>rh_TaskDescr</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_TaskList" maxwidth="1000" size-unit="char">
+                <source>Task</source>
+                <target>T&#226;che</target>
+                <note>rh_TaskList</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_TaskPh" maxwidth="1000" size-unit="char">
+                <source>Enter your Task Name</source>
+                <target>Entrez votre nom de t&#226;che</target>
+                <note>rh_TaskPh</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_TheLegend" maxwidth="1000" size-unit="char">
+                <source>The legend</source>
+                <target>La l&#233;gende</target>
+                <note>The Legend</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_Title" maxwidth="1000" size-unit="char">
+                <source>Title</source>
+                <target>Titre</target>
+                <note>rh_Title</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_TitlePlc" maxwidth="1000" size-unit="char">
+                <source>Enter Your Title</source>
+                <target>Entrez votre titre</target>
+                <note>rh_TitlePlc</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_To" maxwidth="1000" size-unit="char">
+                <source>To</source>
+                <target>&#192;</target>
+                <note>rh_To</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_ToastEvent1" maxwidth="1000" size-unit="char">
+                <source>Sorry you no longer have right deleted</source>
+                <target>D&#233;sol&#233; vous n&apos;avez plus le droit de supprimer</target>
+                <note>rh_ToastEvent1</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_ToastInfoEvent2" maxwidth="1000" size-unit="char">
+                <source>Your end date cannot be less than start date !</source>
+                <target>Votre date de fin ne peut pas &#234;tre inf&#233;rieure &#224; la date de d&#233;but&#160;!</target>
+                <note>rh_ToastInfoEvent2</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_Translate" maxwidth="1000" size-unit="char">
+                <source>Translate</source>
+                <target>Traduire</target>
+                <note>rh_Translate</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_Update" maxwidth="1000" size-unit="char">
+                <source>Update</source>
+                <target>Mise &#224; jour</target>
+                <note>rh_Update</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_UpdateAndSend" maxwidth="1000" size-unit="char">
+                <source>Update And Send</source>
+                <target>Mettre &#224; jour et envoyer</target>
+                <note>rh_UpdateAndSend</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_UpdateEvent" maxwidth="1000" size-unit="char">
+                <source>Update Event</source>
+                <target>&#201;v&#233;nement de mise &#224; jour</target>
+                <note>rh_UpdateEvent</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_UpdateNews" maxwidth="1000" size-unit="char">
+                <source>the news has been successfully Update</source>
+                <target>la nouvelle a &#233;t&#233; mise &#224; jour avec succ&#232;s</target>
+                <note>rh_UpdateNews</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_UpdateNewsError" maxwidth="1000" size-unit="char">
+                <source>The record has not been updated</source>
+                <target>L&apos;enregistrement n&apos;a pas &#233;t&#233; mis &#224; jour</target>
+                <note>rh_UpdateNewsError</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_UploadFile" maxwidth="1000" size-unit="char">
+                <source>Upload File</source>
+                <target>T&#233;l&#233;verser un fichier</target>
+                <note>rh_UploadFile</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_UserProfileTitle" maxwidth="1000" size-unit="char">
+                <source>User Informations</source>
+                <target>Informations utilisateur</target>
+                <note>rh_UserProfileTitle</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_Username" maxwidth="1000" size-unit="char">
+                <source>Username</source>
+                <target>Nom d&apos;utilisateur</target>
+                <note>rh_Username</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_UsernamePlc" maxwidth="1000" size-unit="char">
+                <source>Enter Username</source>
+                <target>Saisissez votre nom d&apos;utilisateur</target>
+                <note>rh_UsernamePlc</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_Visibility" maxwidth="1000" size-unit="char">
+                <source>Public ?</source>
+                <target>Public?</target>
+                <note>rh_Visibility</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_Website" maxwidth="1000" size-unit="char">
+                <source>Website</source>
+                <target>Site Internet</target>
+                <note>rh_Website</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_YearStarted" maxwidth="1000" size-unit="char">
+                <source>Year Started</source>
+                <target>Ann&#233;e de d&#233;but</target>
+                <note>rh_YearStarted</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_accomplihmentdeleteMessage" maxwidth="1000" size-unit="char">
+                <source>Are you sure you want to delete this Accomplihment?</source>
+                <target>&#202;tes-vous s&#251;r de vouloir supprimer cette r&#233;alisation ?</target>
+                <note>accomplishmentdeleteMessage</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_action_confirm" maxwidth="1000" size-unit="char">
+                <source>Action Confirmation</source>
+                <target>Confirmation des actions</target>
+                <note>rh_action_confirm</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_activated" maxwidth="1000" size-unit="char">
+                <source>Activate</source>
+                <target>Activer</target>
+                <note>rh_activated</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_addfield" maxwidth="1000" size-unit="char">
+                <source>Field Adjusted</source>
+                <target>Ajust&#233; sur le terrain</target>
+                <note>rh_addfield</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_amount" maxwidth="1000" size-unit="char">
+                <source>Amount</source>
+                <target>Montant</target>
+                <note>rh_amount</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_approvalTitle" maxwidth="1000" size-unit="char">
+                <source>APPROVAL ACTION</source>
+                <target>ACTION D&apos;APPROBATION</target>
+                <note>rh_approvalTitle</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_backToRequestList" maxwidth="1000" size-unit="char">
+                <source>Back to Request List</source>
+                <target>Retour sur la liste des Requetes</target>
+                <note>rh_backToRequestList</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_byMonth" maxwidth="1000" size-unit="char">
+                <source>By month</source>
+                <target>Par mois</target>
+                <note>By month</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_create_inv_item" maxwidth="1000" size-unit="char">
+                <source>Create Invoice Item</source>
+                <target>Cr&#233;er un article de facture</target>
+                <note>rh_create_inv_item</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_create_item" maxwidth="1000" size-unit="char">
+                <source>Create Line</source>
+                <target>Cr&#233;er une ligne</target>
+                <note>rh_create_item</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_deleteRequestConfirm" maxwidth="1000" size-unit="char">
+                <source>Confirm Deletion</source>
+                <target>Confirmer la Suppression</target>
+                <note>rh_deleteRequestConfirm</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_delete_Request_confirm" maxwidth="1000" size-unit="char">
+                <source>are you sure you want to delete?</source>
+                <target>Etes vous sur de vouloir supprimer?</target>
+                <note>rh_delete_Request_confirm</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_delete_confirm" maxwidth="1000" size-unit="char">
+                <source>Are you sure you want to delete this Group?</source>
+                <target>Vous allez supprimer un groupe, operation non reversible! Etes vous sure ?</target>
+                <note>rh_delete_confirm</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_delete_invoiceItem_confirm" maxwidth="1000" size-unit="char">
+                <source>Are you sure you want to delete this invoice Items</source>
+                <target>&#202;tes-vous s&#251;r de vouloir supprimer cette facture Articles</target>
+                <note>rh_delete_invoiceItem_confirm</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_delete_invoice_confirm" maxwidth="1000" size-unit="char">
+                <source>Are you sure you want to delete this invoice</source>
+                <target>Voulez-vous vraiment supprimer cette facture&#160;?</target>
+                <note>rh_delete_invoice_confirm</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_delete_sheet_confirm" maxwidth="1000" size-unit="char">
+                <source>Are you sure you want to delete this sheet?</source>
+                <target>Voulez-vous vraiment supprimer cette feuille&#160;?</target>
+                <note>rh_delete_sheet_confirm</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_delete_sheetitem_confirm" maxwidth="1000" size-unit="char">
+                <source>Are you sure you want to delete this sheet entry?</source>
+                <target>Voulez-vous vraiment supprimer cette entr&#233;e de feuille&#160;?</target>
+                <note>rh_delete_sheetitem_confirm</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_descriptionDisplayField" maxwidth="1000" size-unit="char">
+                <source>Description display Fields</source>
+                <target>Dsecription de l&apos;affichage des champs</target>
+                <note>rh_descriptionDisplayField</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_disable_confirm" maxwidth="1000" size-unit="char">
+                <source>Are you sure you want to disable this User?</source>
+                <target>Voulez-vous vraiment d&#233;sactiver cet utilisateur&#160;?</target>
+                <note>rh_disable_confirm</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_edit_inv_item" maxwidth="1000" size-unit="char">
+                <source>Edit Invoice Item</source>
+                <target>Modifier l&apos;article de facture</target>
+                <note>rh_edit_inv_item</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_employee" maxwidth="1000" size-unit="char">
+                <source>Employee</source>
+                <target>Employ&#233;e</target>
+                <note>rh_employee</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_employeePc" maxwidth="1000" size-unit="char">
+                <source>Select an Employee</source>
+                <target>S&#233;lectionnez un employ&#233;</target>
+                <note>rh_employeePc</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_endTime" maxwidth="1000" size-unit="char">
+                <source>End Time</source>
+                <target>Heure de fin</target>
+                <note>rh_endTime</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_errorMemberMsg" maxwidth="1000" size-unit="char">
+                <source>no available member</source>
+                <target>Aucun memebre disponible</target>
+                <note>rh_errorMemberMsg</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_errorMemberMsg_alternativ" maxwidth="1000" size-unit="char">
+                <source>ajouter des membres en cliquant ici</source>
+                <target>ajouter des membres en cliquant ici</target>
+                <note>rh_errorMemberMsg_alternativ</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_errorOp" maxwidth="1000" size-unit="char">
+                <source>Something goes wrong</source>
+                <target>Quelque chose ne va pas</target>
+                <note>rh_errorOp</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_groupName" maxwidth="1000" size-unit="char">
+                <source>Group Name</source>
+                <target>Nom du Groupe</target>
+                <note>group Name</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_invoice_to" maxwidth="1000" size-unit="char">
+                <source>Invoice To&quot;</source>
+                <target>Facturer &#224;</target>
+                <note>rh_invoice_to</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_invoice_toPlc" maxwidth="1000" size-unit="char">
+                <source>Search client&quot;</source>
+                <target>Rechercher un client</target>
+                <note>rh_invoice_toPlc</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_item_deatis" maxwidth="1000" size-unit="char">
+                <source>Line details</source>
+                <target>D&#233;tails de la ligne</target>
+                <note>rh_item_deatis</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_label" maxwidth="1000" size-unit="char">
+                <source>Field Label</source>
+                <target>&#201;tiquette de champ</target>
+                <note>rh_label</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_leadedGroups" maxwidth="1000" size-unit="char">
+                <source>Leaded Groups (#NB)</source>
+                <target>Groupes dirig&#233;s (#NB)</target>
+                <note>rh_leadedGroups</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_leadedProjects" maxwidth="1000" size-unit="char">
+                <source>Leaded Projects (#NB)</source>
+                <target>Projets men&#233;s (#NB)</target>
+                <note>rh_leadedProjects</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_leaderGroups" maxwidth="1000" size-unit="char">
+                <source>Group Leader</source>
+                <target>Chef du Groupe</target>
+                <note>rh_leaderGroups</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_moreInfo" maxwidth="1000" size-unit="char">
+                <source>More Informations</source>
+                <target>Plus d&apos;informations</target>
+                <note>rh_moreInfo</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_myleadedGroups" maxwidth="1000" size-unit="char">
+                <source>My Leaded Groups (#NB)</source>
+                <target>Mes groupes dirig&#233;s (#NB)</target>
+                <note>rh_myleadedGroups</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_myleadedProjects" maxwidth="1000" size-unit="char">
+                <source>My Leaded Projects (#NB)</source>
+                <target>Mes projets men&#233;s (#NB)</target>
+                <note>rh_myleadedProjects</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_myprojects" maxwidth="1000" size-unit="char">
+                <source>My Projects (#NB)</source>
+                <target>Mes projets (#NB)</target>
+                <note>rh_myprojects</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_mytimesheets" maxwidth="1000" size-unit="char">
+                <source>My Timesheets (#NB)</source>
+                <target>Mes feuilles de travail (#NB)</target>
+                <note>rh_mytimesheets</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_new_account" maxwidth="1000" size-unit="char">
+                <source>New Client Account</source>
+                <target>Nouveau compte client</target>
+                <note>rh_new_account</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_new_invoice" maxwidth="1000" size-unit="char">
+                <source>New Invoice</source>
+                <target>Nouvelle facture</target>
+                <note>rh_new_invoice</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_new_ressource" maxwidth="1000" size-unit="char">
+                <source>New Ressource</source>
+                <target>Nouvelle ressource</target>
+                <note>rh_new_ressource</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_noTimesheet" maxwidth="1000" size-unit="char">
+                <source>No timesheet founded</source>
+                <target>Aucune feuille de travail trouv&#233;e</target>
+                <note>rh_noTimesheet</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_noTimesheetItems" maxwidth="1000" size-unit="char">
+                <source>No Timesheet Items found for this timesheet. Use the Add times Action to add items</source>
+                <target>Aucune activit&#233;. Utilisez l&apos;action Ajouter des &#233;l&#233;ments  pour ajouter des activit&#233;s</target>
+                <note>rh_noTimesheetItems</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_noinvoiceItems" maxwidth="1000" size-unit="char">
+                <source>No Invoice Items found for this Invoice. Use the Add times Action to add items</source>
+                <target>Aucun &#233;l&#233;ment de facture trouv&#233; pour cette facture. Utilisez l&apos;action Ajouter des elements pour ajouter des &#233;l&#233;ments de facturtions</target>
+                <note>rh_noinvoiceItems</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_okConfirm" maxwidth="1000" size-unit="char">
+                <source>Yes</source>
+                <target>Oui</target>
+                <note>rh_okConfirm</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_ok_confirm" maxwidth="1000" size-unit="char">
+                <source>Yes I m sure</source>
+                <target>Oui</target>
+                <note>rh_ok_confirm</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_projectFailedUpdate" maxwidth="1000" size-unit="char">
+                <source>Updated Failed</source>
+                <target>Echec de mise a jour</target>
+                <note>rh_projectFailedUpdate</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_projects" maxwidth="1000" size-unit="char">
+                <source>Projects (#NB)</source>
+                <target>Projets (#NB)</target>
+                <note>rh_projects</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_reason" maxwidth="1000" size-unit="char">
+                <source>Reason</source>
+                <target>Raison</target>
+                <note>rh_reason</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_recordNotFounded" maxwidth="1000" size-unit="char">
+                <source>record Not Found</source>
+                <target>Aucun enregistrement  trouv&#233;</target>
+                <note>rh_recordNotFounded</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_requestDetail" maxwidth="1000" size-unit="char">
+                <source>Request Information</source>
+                <target>Detaille de la Requete</target>
+                <note>rh_requestDetail</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_reset_confirm" maxwidth="1000" size-unit="char">
+                <source>Are you sure you want to reset this user Password?</source>
+                <target>Voulez-vous vraiment r&#233;initialiser le mot de passe de cet utilisateur&#160;?</target>
+                <note>rh_reset_confirm</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_ressourcePlc" maxwidth="1000" size-unit="char">
+                <source>Select a Ressource</source>
+                <target>S&#233;lectionnez une ressource</target>
+                <note>rh_ressourcePlc</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_rmvfield" maxwidth="1000" size-unit="char">
+                <source>Field removed</source>
+                <target>Champ supprim&#233;</target>
+                <note>rh_rmvfield</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_sdiPlc" maxwidth="1000" size-unit="char">
+                <source>sdi</source>
+                <target>Entrez votre SDI</target>
+                <note>rh_sdiPlc</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_selectPlc" maxwidth="1000" size-unit="char">
+                <source>Select an option</source>
+                <target>S&#233;lectionner une option</target>
+                <note>rh_selectPlc</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_showDetails" maxwidth="1000" size-unit="char">
+                <source>Show details</source>
+                <target>Afficher les d&#233;tails</target>
+                <note>rh_showDetails</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_srchNamePlc" maxwidth="1000" size-unit="char">
+                <source>Search by name</source>
+                <target>Rechercher par nom</target>
+                <note>placeholder value</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_startTime" maxwidth="1000" size-unit="char">
+                <source>Start Time</source>
+                <target>Heure de d&#233;but</target>
+                <note>rh_startTime</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_subject" maxwidth="1000" size-unit="char">
+                <source>Subject</source>
+                <target>Sujet</target>
+                <note>rh_subject</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_succesDelete" maxwidth="1000" size-unit="char">
+                <source>record Deleted succesfully</source>
+                <target>enregistrement supprim&#233; avec succ&#232;s</target>
+                <note>rh_succesDelete</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_successOp" maxwidth="1000" size-unit="char">
+                <source>Succes operation</source>
+                <target>Op&#233;ration r&#233;ussie</target>
+                <note>rh_successOp</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_test_Language" maxwidth="1000" size-unit="char">
+                <source>English</source>
+                <target>Anglais</target>
+                <note>rh_test_Language</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_timesheetHeaderTitle" maxwidth="1000" size-unit="char">
+                <source>timesheet Header Title</source>
+                <target>Feuille de Travail</target>
+                <note>rh_timesheetHeaderTitle</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_timesheetItemsHeaderTitle" maxwidth="1000" size-unit="char">
+                <source>timesheet Items Header Title</source>
+                <target>Activites</target>
+                <note>rh_timesheetItemsHeaderTitle</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_timesheets" maxwidth="1000" size-unit="char">
+                <source>Timesheets (#NB)</source>
+                <target>Feuilles de travail (#NB)</target>
+                <note>rh_timesheets</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_total_dur_h" maxwidth="1000" size-unit="char">
+                <source>Total Duration In Hours&quot;</source>
+                <target>Dur&#233;e totale en heures</target>
+                <note>rh_total_dur_h</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_total_dur_mins" maxwidth="1000" size-unit="char">
+                <source>Total Duration In Minutes&quot;</source>
+                <target>Dur&#233;e totale en minutes</target>
+                <note>rh_total_dur_mins</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_total_free_dur_h" maxwidth="1000" size-unit="char">
+                <source>Total Free Duration In Hours&quot;</source>
+                <target>Dur&#233;e totale gratuite en heures</target>
+                <note>rh_total_free_dur_h</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_total_free_dur_mins" maxwidth="1000" size-unit="char">
+                <source>Total Free Duration In Minutes&quot;</source>
+                <target>Dur&#233;e totale gratuite en minutes</target>
+                <note>rh_total_free_dur_mins</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_total_work_dur_h" maxwidth="1000" size-unit="char">
+                <source>Total Working Duration In Hours&quot;</source>
+                <target>Dur&#233;e totale de travail en heures</target>
+                <note>rh_total_work_dur_h</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_total_work_dur_mins" maxwidth="1000" size-unit="char">
+                <source>Total Working Duration In Minutes&quot;</source>
+                <target>Dur&#233;e totale de travail en minutes</target>
+                <note>rh_total_work_dur_mins</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_userEditHlp" maxwidth="1000" size-unit="char">
+                <source>Edit user details</source>
+                <target>Modifier les d&#233;tails de l&apos;utilisateur</target>
+                <note>rh_userEditHlp</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_userEditMoreHlp" maxwidth="1000" size-unit="char">
+                <source>Edit additionnal information about you  check each time you edit an information. then save all...</source>
+                <target>Modifiez les informations suppl&#233;mentaires vous concernant &#224; chaque fois que vous modifiez une information. puis enregistrez tout&#8230;</target>
+                <note>rh_userEditMoreHlp</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_userInfoHlp" maxwidth="1000" size-unit="char">
+                <source>View user details</source>
+                <target>Afficher les d&#233;tails de l&apos;utilisateur</target>
+                <note>rh_userInfoHlp</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_userMoreInfoHlp" maxwidth="1000" size-unit="char">
+                <source>More details</source>
+                <target>Plus de d&#233;tails</target>
+                <note>rh_userMoreInfoHlp</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_value" maxwidth="1000" size-unit="char">
+                <source>Field Value</source>
+                <target>Valeur du champ</target>
+                <note>rh_value</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_viewDetail" maxwidth="1000" size-unit="char">
+                <source>Click to view more details of</source>
+                <target>Cliquez pour voir plus de d&#233;tails sur</target>
+                <note>Click to view more details of</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_warn_period_confict" maxwidth="1000" size-unit="char">
+                <source>Start date must before end date</source>
+                <target>La date de d&#233;but doit &#234;tre ant&#233;rieure &#224; la date de fin</target>
+                <note>rh_warn_period_confict</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_warn_weekend" maxwidth="1000" size-unit="char">
+                <source>Please Select a weekday !!!</source>
+                <target>Veuillez s&#233;lectionner un jour de la semaine !</target>
+                <note>rh_warn_weekend</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_warningOp" maxwidth="1000" size-unit="char">
+                <source>Warning</source>
+                <target>Avertissement</target>
+                <note>rh_warningOp</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_BackToNews" maxwidth="1000" size-unit="char">
+                <source>Back to News</source>
+                <target>Retour aux Notifications</target>
+                <note>rh_BackToNews</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_EditMember" maxwidth="1000" size-unit="char">
+                <source>Edit Member</source>
+                <target>Modifier les Membres</target>
+                <note>Edit Member</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_BaseUser" maxwidth="1000" size-unit="char">
+                <source>Base User</source>
+                <target>Utilisateur de Base</target>
+                <note>rh_BaseUser</note>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_NewUser" maxwidth="1000" size-unit="char">
+                <source>New User</source>
+                <target>Créer Utilisateur</target>
+                <note>rh_NewUser</note>
+            </trans-unit>
+            <trans-unit id="RecordType.RH_Request__c.Complain" maxwidth="80" size-unit="char">
+                <source>Complain</source>
+                <target>Plainte</target>
+            </trans-unit>
+            <trans-unit id="RecordType.RH_Request__c.Explanation" maxwidth="80" size-unit="char">
+                <source>Explanation</source>
+                <target>Explication</target>
+            </trans-unit>
+            <trans-unit id="RecordType.RH_Request__c.Holiday" maxwidth="80" size-unit="char">
+                <source>Holiday</source>
+                <target>Vacance</target>
+            </trans-unit>
+            <trans-unit id="RecordType.RH_Request__c.Permisson" maxwidth="80" size-unit="char">
+                <source>Permisson</source>
+                <target>Permission</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

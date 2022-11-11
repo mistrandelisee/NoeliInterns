@@ -158,7 +158,7 @@
                 <template if:true={cloneMode}>
                     <lightning-card class="custom-card">
                         <h3 slot="title">
-                            <lightning-icon icon-name="utility:edit" size="small" title="edit"
+                            <lightning-icon icon-name="utility:add" size="small" title="edit"
                                 class="slds-p-right_small"></lightning-icon>
                             Clone {requestType}
                         </h3>
@@ -168,7 +168,7 @@
                             <div class="slds-clearfix">
                                 <template if:true={isComplain}>
                                     <div class="slds-float_left">
-                                        <lightning-button variant="brand-outline" label="EDIT ADDRESS CC"
+                                        <lightning-button variant="brand-outline" label={l.EditAddresseCC}
                                             icon-name="utility:Edit" title="Primary action with lighter look"
                                             onclick={openDualBox} class="slds-m-left_x-small"></lightning-button>
                                     </div><br />
@@ -241,7 +241,7 @@
                     </div>
                 </lightning-card>
             </template>
-            <c-rh_back_buttom title="Back to Request List"></c-rh_back_buttom>
+            <c-rh_back_buttom title={l.backToRequestList}></c-rh_back_buttom>
         </template>
     </template>
 </template>

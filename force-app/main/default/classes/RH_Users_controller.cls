@@ -93,7 +93,8 @@ public without sharing class RH_Users_controller {
                     listcon = populateContact(mapContacts.values());
                 }
                 else{
-                    throw new RH_ControllerException('002','No Records Founded');
+                    // throw new RH_ControllerException('002','No Records Founded');
+                    throw new RH_ControllerException('002',label.rh_recordNotFounded);
                 } 
             mapReturn.put('Employes',listcon); 
             mapReturn.put('in',filter); 
@@ -118,9 +119,9 @@ public without sharing class RH_Users_controller {
         try {
             List<RH_Utility.PickOption> OrderBys = new List<RH_Utility.PickOption>();
             OrderBys.add(new RH_Utility.PickOption('None', ''));
-            OrderBys.add(new RH_Utility.PickOption('Created Date', 'CreatedDate'));
-            OrderBys.add(new RH_Utility.PickOption('Name', 'FirstName'));
-            OrderBys.add(new RH_Utility.PickOption('Groups', 'RH_WorkGroup__c'));
+            OrderBys.add(new RH_Utility.PickOption(label.rh_CreatedDate, 'CreatedDate'));
+            OrderBys.add(new RH_Utility.PickOption(label.rh_Name, 'FirstName'));
+            OrderBys.add(new RH_Utility.PickOption(label.rh_Group, 'RH_WorkGroup__c'));
             // OrderBys.add(new RH_Utility.PickOption('Created Date', 'CreatedDate'));
             // List<RH_WorkGroup__c> grps=workGroupQry.getActiveWorkgroups();
             mapReturn.put('OrderBys',OrderBys); 
@@ -307,6 +308,7 @@ public without sharing class RH_Users_controller {
                 mapObj.put('RHUser', con.RH_User__c);
                 mapObj.put('Email', con.Email);
                 mapObj.put('RHRolec', con.RH_Role__c);
+                mapObj.put('RoleLabel', con.get('RoleLabel'));
                 mapObj.put('accountName', con.Account.Name);
                 mapObj.put('FirstName', con.FirstName);
                 mapObj.put('Status', String.isBlank(con.RH_Status__c)?'':con.RH_Status__c.toLowerCase() );

@@ -32,8 +32,8 @@ export default class Rh_user_creation extends NavigationMixin(LightningElement) 
     buildForm(){
         this.formInputs=[
             {
-                label:'Last Name',
-                placeholder:'Enter your Last Name',
+                label:this.l.LastName,
+                placeholder:this.l.LastNamePlc,
                 name:'LastName',
                 value: '',
                 required:true,
@@ -41,8 +41,8 @@ export default class Rh_user_creation extends NavigationMixin(LightningElement) 
                 ly_lg:'6'
             },
             {
-                label:'First Name',
-                placeholder:'Enter your First Name',
+                label:this.l.FirstName,
+                placeholder:this.l.FirstNamePlc,
                 name:'FirstName',
                 value: '',
                 required:false,
@@ -50,18 +50,18 @@ export default class Rh_user_creation extends NavigationMixin(LightningElement) 
                 ly_lg:'6'
             },
             {
-                label:'Email',
-                name:'Email',
+                label:this.l.Email,
+                placeholder:this.l.EmailPlc,
                 required:true,
                 value: '',
-                placeholder:'Email',
+                name:'Email',
                 maxlength:100,
                 type:'email',
                 ly_md:'6', 
                 ly_lg:'6'
             },
             {
-                label:'Role',
+                label:this.l.Role,
                 name:'Role',
                 required:true,
                 picklist: true,
@@ -72,7 +72,7 @@ export default class Rh_user_creation extends NavigationMixin(LightningElement) 
                 ly_lg:'6'
             },
             {
-                label:'Group',
+                label:this.l.Group,
                 name:'wGroup',
                 picklist: true,
                 options: this.groups,
@@ -82,14 +82,14 @@ export default class Rh_user_creation extends NavigationMixin(LightningElement) 
                 ly_lg:'6'
             },
             {
-                label:'Language',
+                label:this.l.Language,
                 name:'Language',
                 picklist: true,
                 // options: this.LANGUAGES,
                 options: [
-                    { label: 'French', value: 'French' },
-                    { label: 'English', value: 'English' },
-                    { label: 'Italian', value: 'Italian' }
+                    { label: this.l.French, value: 'French' },
+                    { label: this.l.English, value: 'English' },
+                    { label: this.l.Italian, value: 'Italian' }
                 ],
                 value: '',
                 maxlength:100,
@@ -97,7 +97,7 @@ export default class Rh_user_creation extends NavigationMixin(LightningElement) 
                 ly_lg:'6'
             },
             {
-                label:'Activate ?',
+                label:this.l.activatedQst,
                 name:'Activated',
                 checked:true,
                 type:'toggle',

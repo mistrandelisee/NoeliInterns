@@ -301,7 +301,7 @@ icon ={...icons}
             {
                 label:this.l.Role,
                 name:'Role',
-                value:this.profileinformation?.contact?.RH_Role__c
+                value:this.profileinformation?.contact?.RoleLabel
             },
             //Group Supervisor
             {

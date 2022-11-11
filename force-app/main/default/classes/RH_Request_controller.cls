@@ -86,6 +86,11 @@ public without sharing class RH_Request_controller {
     public static RecordType getExplanationType(){
         return requestQry.getExplanationType();
     }
+    @AuraEnabled
+    public static Map<String,Object> getStatus(){
+        Map<String,Object> mapReturn = RH_Utility.getPickListOptions(new List<String>{'Rh_Status__c'}, 'RH_Request__c');
+        return mapReturn;
+    }
 
     @AuraEnabled
     public static Map<String,Object> newRequest(String Requestjson){
@@ -281,7 +286,7 @@ public without sharing class RH_Request_controller {
                 updRejet.RH_Reason__c = Reason;
                 updRejet.RH_Note__c = Reason;
             }
-            String notifTitle = updRejet.RecordType.Name + 'Response';
+            String notifTitle = updRejet.RecordType.Name + ' Response';
             update updRejet;
             sendNotifications(updRejet.RH_Description__c,UserInfo.getUserId(),RecordT,'my-request',notifTitle,new List<Id> {updRejet.CreatedById});
         } catch (Exception e) {

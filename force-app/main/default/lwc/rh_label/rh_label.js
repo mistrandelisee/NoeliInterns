@@ -95,6 +95,7 @@ import value from '@salesforce/label/c.rh_value';
 import userInfoHlp from '@salesforce/label/c.rh_userInfoHlp';  
 import userEditHlp from '@salesforce/label/c.rh_userEditHlp';  
 import moreInfo from '@salesforce/label/c.rh_moreInfo';
+import ProjectNamePlc from '@salesforce/label/c.rh_ProjectNamePlc';
 import userMoreInfoHlp from '@salesforce/label/c.rh_userMoreInfoHlp';  
 import userEditMoreHlp from '@salesforce/label/c.rh_userEditMoreHlp';  
 import successOp from '@salesforce/label/c.rh_successOp';
@@ -148,6 +149,7 @@ import UpdateNewsError from '@salesforce/label/c.rh_UpdateNewsError';
 import InvalidField from '@salesforce/label/c.rh_InvalidField';
 import UpdateNews from '@salesforce/label/c.rh_UpdateNews';  
 import FileUpdate from '@salesforce/label/c.rh_FileUpdate';  
+import ManagerPlc from '@salesforce/label/c.rh_ManagerPlc';  
 import DeleteNews_Confirm from '@salesforce/label/c.rh_DeleteNews_Confirm';
 import DeleteNews_Title from '@salesforce/label/c.rh_DeleteNews_Title';  
 import Reset from '@salesforce/label/c.rh_Reset';
@@ -261,12 +263,45 @@ import CivicoPlc from '@salesforce/label/c.rh_CivicoPlc';
 import delete_confirm from '@salesforce/label/c.rh_delete_confirm';
 import error_memberMsg from '@salesforce/label/c.rh_errorMemberMsg';
 import error_memberMsg_Alternativ from '@salesforce/label/c.rh_errorMemberMsg_alternativ';
+import Responded from '@salesforce/label/c.rh_Responded';
+import backToRequestList from '@salesforce/label/c.rh_backToRequestList';
+import EditAddresseCC from '@salesforce/label/c.rh_EditAddresseCC';
+import deleteRequestConfirm from '@salesforce/label/c.rh_deleteRequestConfirm';
+import delete_Request_confirm from '@salesforce/label/c.rh_delete_Request_confirm';
+import okConfirm from '@salesforce/label/c.rh_okConfirm';
+import reason from '@salesforce/label/c.rh_reason';
+import SubmitedDate from '@salesforce/label/c.rh_SubmitedDate';
+import RespondedDate from '@salesforce/label/c.rh_RespondedDate';
+import requestDetail from '@salesforce/label/c.rh_requestDetail';
+import NewAccomplishment from '@salesforce/label/c.rh_NewAccomplishment';
+import EditAccomplishment from '@salesforce/label/c.rh_EditAccomplishment';
+import AccomplishmentDetails from '@salesforce/label/c.rh_AccomplishmentDetails';
+import BackToAccomplishment from '@salesforce/label/c.rh_BackToAccomplishment';
+import Answer from '@salesforce/label/c.rh_Answer';
+import All from '@salesforce/label/c.rh_All';
+import ApproveRequest from '@salesforce/label/c.rh_ApproveRequest';
+import RejectRequest from '@salesforce/label/c.rh_RejectRequest';
+import Confirm from '@salesforce/label/c.rh_Confirm';
 
-import new_timesheet from '@salesforce/label/c.rh_newTimesheet';
+import accomplishmentdeleteMessage from '@salesforce/label/c.rh_accomplihmentdeleteMessage';
+
+import new_timesheet from '@salesforce/label/c.rh_NewTimesheet';
 import DueDate from '@salesforce/label/c.rh_DueDate';
 import descriptionFields from '@salesforce/label/c.rh_descriptionDisplayField';
 import Subject from '@salesforce/label/c.rh_subject';
 import activatedQst from '@salesforce/label/c.rh_activated';
+
+import NewGroup from '@salesforce/label/c.rh_NewGroup';
+import detailGroupName from '@salesforce/label/c.rh_Name';
+import leaderGroup from '@salesforce/label/c.rh_leaderGroups';
+import DescriptionPlcGroup from '@salesforce/label/c.rh_DescriptionPlc';
+import Desactivated from '@salesforce/label/c.rh_Deactivated';
+import GroupDetail from '@salesforce/label/c.rh_GroupDetail';
+import labelGroup from '@salesforce/label/c.rh_label';
+import BackToGroup from '@salesforce/label/c.rh_BackToGroup';
+import AddGroupMember from '@salesforce/label/c.rh_AddGroupMember';
+import srchNamePlc from '@salesforce/label/c.rh_srchNamePlc';
+import groupName from '@salesforce/label/c.rh_groupName';
 
 // import Address from '@salesforce/label/c.rh_Address';
 import Street from '@salesforce/label/c.rh_Street';
@@ -275,10 +310,34 @@ import Province from '@salesforce/label/c.rh_Province';
 import PostalCode from '@salesforce/label/c.rh_PostalCode';
 import Language from '@salesforce/label/c.rh_Language';
 import addUser from '@salesforce/label/c.rh_AddUser';
+import ProjectDescriptionPlc from '@salesforce/label/c.rh_ProjectDescriptionPlc';
+import AccountPlc from '@salesforce/label/c.rh_AccountPlc';
+import StartDateError from '@salesforce/label/c.rh_StartDateError';
+import EndDateError from '@salesforce/label/c.rh_EndDateError';
+import MemberSuccesUpdate from '@salesforce/label/c.rh_MemberSuccesUpdate';
+import MemberFailUpdate from '@salesforce/label/c.rh_MemberFailUpdate';
+import ProjectSuccesCreated from '@salesforce/label/c.rh_ProjectSuccesCreated';
+import ProjectFailedCreate from '@salesforce/label/c.rh_ProjectFailedCreate';
+import ProjectUpdateSucces from '@salesforce/label/c.rh_ProjectUpdateSucces';
+import projectFailedUpdate from '@salesforce/label/c.rh_projectFailedUpdate';
+import ProjectActivate from '@salesforce/label/c.rh_ProjectActivate';
 
 
 const labels = {
     addUser,
+    ProjectNamePlc,
+    MemberFailUpdate,
+    MemberSuccesUpdate,
+    ProjectSuccesCreated,
+    ProjectActivate,
+    projectFailedUpdate,
+    ProjectUpdateSucces,
+    ProjectFailedCreate,
+    EndDateError,
+    ProjectDescriptionPlc,
+    StartDateError,
+    ManagerPlc,
+    AccountPlc,
     new_timesheet,
     Add,
     activatedQst,
@@ -316,7 +375,7 @@ const labels = {
     Title,
     TitlePlc,
     NotePlc,
-
+    recordNotFounded,
     Phone,
     PhonePlc,
     Username,
@@ -560,6 +619,37 @@ const labels = {
     Subject,
     error_memberMsg,
     error_memberMsg_Alternativ,
+    Responded,
+    backToRequestList,
+    EditAddresseCC,
+    deleteRequestConfirm,
+    delete_Request_confirm,
+    okConfirm,
+    reason,
+    SubmitedDate,
+    RespondedDate,
+    requestDetail,
+    NewGroup,
+    detailGroupName,
+    leaderGroup,
+    DescriptionPlcGroup,
+    Desactivated,
+    GroupDetail,
+    labelGroup,
+    BackToGroup,
+    AddGroupMember,
+    NewAccomplishment,
+    AccomplishmentDetails,
+    BackToAccomplishment,
+    accomplishmentdeleteMessage,
+    EditAccomplishment,
+    Answer,
+    All,
+    ApproveRequest,
+    RejectRequest,
+    Confirm,
+    groupName,
+    srchNamePlc,
 };
 
 export { labels }

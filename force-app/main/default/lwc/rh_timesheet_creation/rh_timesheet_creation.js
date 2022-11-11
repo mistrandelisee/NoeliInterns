@@ -21,8 +21,8 @@ const ERROR_VARIANT='error';
 const PAGENAME ='rhtimesheet'
 
 export default class Rh_timesheet_creation extends NavigationMixin(LightningElement) {
-    l={...labels,
-        new_timesheet:'New timesheet'}
+    l={...labels,}
+        // new_timesheet:'New timesheet'}
     DEFAULT_CURRENCY='EUR';
     curriencies=[
         { label: 'EUR', value: 'EUR' },

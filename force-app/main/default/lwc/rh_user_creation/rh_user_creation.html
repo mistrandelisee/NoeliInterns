@@ -2,7 +2,7 @@
     <template if:false={newMode}>
         <div class="slds-clearfix">
             <div class="slds-float_right">
-                <lightning-button variant="brand-outline" label="Add User" icon-name="utility:add" title="Primary action with lighter look" onclick={handleNew} class="slds-m-left_x-small"></lightning-button>
+                <lightning-button variant="brand-outline" label={l.addUser} icon-name="utility:add" title="Primary action with lighter look" onclick={handleNew} class="slds-m-left_x-small"></lightning-button>
             </div>
         </div>
     </template>
@@ -10,7 +10,8 @@
         <lightning-card class="custom-card">
             <h3 slot="title">
                 <lightning-icon icon-name="utility:add" size="small" class="slds-p-right_small"></lightning-icon>
-                New User
+                <!-- New User -->
+                {l.newUser}
             </h3>
             <c-rh_dynamic_form inputs-items={formInputs} ></c-rh_dynamic_form>
             <div class="card-footer" slot="footer">

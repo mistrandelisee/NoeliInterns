@@ -5,17 +5,13 @@ import { labels } from 'c/rh_label';
 import getInvoices from '@salesforce/apex/RH_Invoice_Controller.getInvoices';
 
 import initConfig from '@salesforce/apex/RH_Invoice_Controller.InitFilter';
-import timeSheetCreation from '@salesforce/apex/RH_Timesheet_Controller.timeSheetCreation';
 import { CurrentPageReference } from 'lightning/navigation';
 import { registerListener, unregisterAllListeners,fireEvent } from 'c/pubsub';
 const NEW_ACTION='New';
-const SUCCESS_VARIANT='success';
 const WARNING_VARIANT='warning';
 
 
-const ERROR_VARIANT='error';
-const FROMRESETPWD='ResetPWD';
-const RESET_ACTION='Reset';
+const ERROR_VARIANT='error';                                                                                            
 const SAVE_ACTION='Save';
 
 const ACTIVE_ACTION='active';
@@ -24,22 +20,14 @@ const FREEZE_ACTION='frozen';
 const PROMOTE_ACTION='PromoteBaseUser';
 const CARD_ACTION='stateAction';
 
-const FROM_CHILD='FROM_CHILD';
-const FROM_PARENT='FROM_PARENT';
-
-
-const APPROVE_ACTION='approvato';
-const DRAFT_STATUS='nuovo';
-const DELETE_ACTION='Delete';
-const SUBMIT_ACTION='inviato';
 export default class Rh_invoice extends NavigationMixin(LightningElement) {
    
     l={...labels, 
-        Number: 'Number',
-        From: 'From',
-        To: 'To',
-        OrderBy:'sort By',
-        selectPlc:'Select an option'
+        // Number: 'Number',
+        // From: 'From',
+        // To: 'To',
+        // OrderBy:'sort By',
+        // selectPlc:'Select an option'
     }
 
     @track groups=[];
@@ -53,8 +41,9 @@ export default class Rh_invoice extends NavigationMixin(LightningElement) {
 
     keysFields={TimeSheetNumber:'ok'};
     keysLabels={
-        account:'Invoice To', RH_Po__c:'Po',
-        RH_InvoiceDate__c:'StartDate',RH_DueDate__c:'EndDate',
+        account:this.l.invoice_to, RH_Po__c:this.l.po,
+        RH_InvoiceDate__c:this.l.StartDate
+         ,RH_DueDate__c:this.l.EndDate,
     };
     fieldsToShow={
         
