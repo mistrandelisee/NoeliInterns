@@ -6,12 +6,14 @@ import deleteGroupe from '@salesforce/apex/RH_groupController.deleteGroupe';
 import updateGroupMember from '@salesforce/apex/RH_groupController.updateGroupMember';
 import { registerListener, unregisterAllListeners,fireEvent } from 'c/pubsub';
 import { CurrentPageReference } from 'lightning/navigation';
+import { labels } from 'c/rh_label';
 
 export default class Rh_group_member extends LightningElement {
     @wire(CurrentPageReference) pageRef;
     @track listContact=[];
     @track listContactToInsert=[];
     @track listConts=[];
+    l={...labels}
      contactId;
      contact2Id;
      @api backSource;
@@ -24,14 +26,17 @@ export default class Rh_group_member extends LightningElement {
      listId = [];
 
      handleBack(){
+      this.template.querySelector('c-rh_spinner').start();
        if(this.backSource==='group_create'){
         deleteGroupe({ id: this.groupeId })
           .then(result => {
             console.log('Result', result.result);
             console.log('error then', result.error);
+            this.template.querySelector('c-rh_spinner').stop();
           })
           .catch(error => {
             console.error('Error:', error);
+            this.template.querySelector('c-rh_spinner').stop();
         });
       }
       this.dispatchEvent(new CustomEvent('previouspage'));  
@@ -46,11 +51,15 @@ export default class Rh_group_member extends LightningElement {
           .then(result => {
             console.log('Result', result);
             console.log('groupeId ==', this.groupeId);
-            this.listOption = this.updateListContact(result.listeContact);
-            //this.listId = this.updateId(this.contactMembers);
-            lst = this.updateListContact((this.contactMembers));
-            this.listOption.push(...lst);
-            this.listContact =this.ccsUpdate(result.listeContact,'') ;
+            if(!result?.listeContact?.length > 0){
+              this.dispatchEvent(new CustomEvent('noavailablemember'));
+            }else{
+              this.listOption = this.updateListContact(result.listeContact);
+              //this.listId = this.updateId(this.contactMembers);
+              lst = this.updateListContact((this.contactMembers));
+              this.listOption.push(...lst);
+              this.listContact =this.ccsUpdate(result.listeContact,'') ;
+            }
           })
           .catch(error => {
             console.error('Error:', error);
@@ -130,11 +139,13 @@ export default class Rh_group_member extends LightningElement {
     handleSaveMember(){
        if(this.backSource==='group_create'){
           this.hgroupMember(this.listConts, this.groupeId,'false');
+
        }else{
           this.hupdateGroupMember(this.listConts,this.groupeId,'false');
       }
     }
     hgroupMember(lst,id,statut){
+     // this.template.querySelector('c-rh_spinner').start();
         addGroupMember({ liste:lst , id:id}) 
           .then(result => {
             console.log('Result', result);
@@ -143,6 +154,7 @@ export default class Rh_group_member extends LightningElement {
                 this.hactiveGroupe(id);
             }
             this.dispatchEvent(new CustomEvent('gotodetailgroup', {detail:id}));
+         //   this.template.querySelector('c-rh_spinner').stop();
           })
           .catch(error => {
             console.error('Error:', error);
@@ -169,6 +181,7 @@ export default class Rh_group_member extends LightningElement {
         activeGroupe({ id: id })
           .then(result => {
             console.log('Result', result.groupeId);
+            //this.template.querySelector('c-rh_spinner').stop();
           })
           .catch(error => {
             console.error('Error:', error);
@@ -181,6 +194,7 @@ export default class Rh_group_member extends LightningElement {
     }
 
     hupdateGroupMember(lst,id,statut){
+      this.template.querySelector('c-rh_spinner').start();
       updateGroupMember({ listId: lst, id: id})
       .then(result => {
         console.log('Result', result.result);

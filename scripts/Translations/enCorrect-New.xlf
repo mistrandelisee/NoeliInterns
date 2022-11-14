@@ -2,87 +2,16 @@
 <xliff version="1.2">
     <file original="Salesforce" source-language="en_US" target-language="en_US" translation-type="metadata" datatype="xml">
         <body>
-            <trans-unit id="PicklistValue.Standard.timeSheetStatus.Approved" maxwidth="255" size-unit="char">
-                <source>Approved</source>
-                <target>Approved</target>
-            </trans-unit>
-            <trans-unit id="PicklistValue.Contact.RH_Role.Base User" maxwidth="255" size-unit="char">
-                <source>Base User</source>
-                <target>Worker</target>
-            </trans-unit>
-            <trans-unit id="PicklistValue.Contact.RH_Role.CEO" maxwidth="255" size-unit="char">
-                <source>CEO</source>
-                <target>CEO</target>
-            </trans-unit>
-            <trans-unit id="PicklistValue.Contact.RH_Role.Ressource Manager" maxwidth="255" size-unit="char">
-                <source>Ressource Manager</source>
-                <target>Resource Manager</target>
-            </trans-unit>
-            <trans-unit id="PicklistValue.Contact.RH_Role.Team Leader" maxwidth="255" size-unit="char">
-                <source>Team Leader</source>
-                <target>Team Leader</target>
-            </trans-unit>
-            <trans-unit id="PicklistValue.Contact.RH_Status.Active" maxwidth="255" size-unit="char">
-                <source>Active</source>
-                <target>Active</target>
-            </trans-unit>
-            <trans-unit id="PicklistValue.Contact.RH_Status.Banned" maxwidth="255" size-unit="char">
-                <source>Banned</source>
-                <target>Banned</target>
-            </trans-unit>
-            <trans-unit id="PicklistValue.Contact.RH_Status.Draft" maxwidth="255" size-unit="char">
-                <source>Draft</source>
-                <target>New</target>
-            </trans-unit>
-            <trans-unit id="PicklistValue.Contact.RH_Status.Frozen" maxwidth="255" size-unit="char">
-                <source>Frozen</source>
-                <target>Frozen</target>
-            </trans-unit>
-            <trans-unit id="PicklistValue.RH_Request__c.Rh_Status.Submited">
-                <source>Submited</source>
-                <target>Pending</target>
-            </trans-unit>
-            <trans-unit id="PicklistValue.Event__c.Status.Approved" maxwidth="255" size-unit="char">
-                <source>Approved</source>
-                <target>Published</target>
-            </trans-unit>
-            <trans-unit id="PicklistValue.Event__c.Status.Draft" maxwidth="255" size-unit="char">
-                <source>Draft</source>
-                <target>New</target>
-            </trans-unit>
-            <trans-unit id="PicklistValue.Event__c.Status.Rejected" maxwidth="255" size-unit="char">
-                <source>Rejected</source>
-                <target>Canceled</target>
-            </trans-unit>
-            <trans-unit id="PicklistValue.Event__c.Status.Submitted" maxwidth="255" size-unit="char">
-                <source>Submitted</source>
-                <target>Pending</target>
-            </trans-unit>
-            <trans-unit id="CustomLabel.rh_byMonth" maxwidth="1000" size-unit="char">
-                <source>By month</source>
-                <target>By month</target>
-                <note>By month</note>
-            </trans-unit>
-            <trans-unit id="CustomLabel.rh_TheLegend" maxwidth="1000" size-unit="char">
-                <source>The legend</source>
-                <target>Legend</target>
-                <note>The Legend</note>
-            </trans-unit>
-            <trans-unit id="CustomLabel.rh_warn_period_confict" maxwidth="1000" size-unit="char">
-                <source>Start date must before end date</source>
-                <target>Start date(Time) must before end date(Time)</target>
-                <note>rh_warn_period_confict</note>
-            </trans-unit>
-            <trans-unit id="CustomLabel.rh_warn_weekend" maxwidth="1000" size-unit="char">
-                <source>Please Select a weekday !!!</source>
-                <target>Please select a weekday !</target>
-                <note>rh_warn_weekend</note>
-            </trans-unit>
-            <trans-unit id="CustomLabel.rh_errorMemberMsg_alternativ" maxwidth="1000" size-unit="char">
-                <source>ajouter des membres en cliquant ici</source>
-                <target>Click Here to add members</target>
-                <note>rh_errorMemberMsg_alternativ</note>
-            </trans-unit>
+        <trans-unit id="CustomLabel.rh_Come" maxwidth="1000" size-unit="char">
+            <source>Submit by</source>
+            <target>Submitted by</target>
+            <note>rh_Come</note>
+        </trans-unit>
+        <trans-unit id="CustomLabel.rh_EditAddresseCC" maxwidth="1000" size-unit="char">
+            <source>Edit Address cc</source>
+            <target>Edit CC Addresses</target>
+            <note>rh_EditAddresseCC</note>
+        </trans-unit>
         </body>
     </file>
 </xliff>

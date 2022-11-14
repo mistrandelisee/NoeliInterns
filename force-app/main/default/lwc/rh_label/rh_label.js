@@ -3,6 +3,7 @@ import Accomplishments from '@salesforce/label/c.rh_Accomplishments';
 import Edit from '@salesforce/label/c.rh_Edit';
 import Save from '@salesforce/label/c.rh_Save';
 import New from '@salesforce/label/c.rh_New';
+import Clone from '@salesforce/label/c.rh_Clone';
 import Change from '@salesforce/label/c.rh_Change';
 import Cancel from '@salesforce/label/c.rh_Cancel';
 import ChangePassword from '@salesforce/label/c.rh_ChangePassword';
@@ -175,6 +176,7 @@ import AddNewEvent from '@salesforce/label/c.rh_AddNewEvent';
 import UpdateEvent from '@salesforce/label/c.rh_UpdateEvent';
 import PermissionDelete from '@salesforce/label/c.rh_PermissionDelete';
 import PermissionRejected from '@salesforce/label/c.rh_PermissionRejected';
+import Rejected from '@salesforce/label/c.rh_Reject';
 import EventDetails from '@salesforce/label/c.rh_EventDetails';
 import Download from '@salesforce/label/c.rh_Download';
 import FileName from '@salesforce/label/c.rh_FileName';
@@ -282,6 +284,31 @@ import All from '@salesforce/label/c.rh_All';
 import ApproveRequest from '@salesforce/label/c.rh_ApproveRequest';
 import RejectRequest from '@salesforce/label/c.rh_RejectRequest';
 import Confirm from '@salesforce/label/c.rh_Confirm';
+import Accomplishmentcreated from '@salesforce/label/c.rh_Accomplishmentcreated';
+import AccomplishmentEdited from '@salesforce/label/c.rh_AccomplishmentEdited';
+import AccomplishmentActivated from '@salesforce/label/c.rh_AccomplishmentActivated';
+import AccomplishmentDeleded from '@salesforce/label/c.rh_AccomplishmentDeleded';
+import AddAdresscc from '@salesforce/label/c.rh_AddAdresscc';
+import RequestDeleded from '@salesforce/label/c.rh_RequestDeleded';
+import RequestSend from '@salesforce/label/c.rh_RequestSend';
+import RequestErrorDate from '@salesforce/label/c.rh_RequestErrorDate';
+import RequestCloned from '@salesforce/label/c.rh_RequestCloned';
+import RequestClonedAndSend from '@salesforce/label/c.rh_RequestClonedAndSend';
+import RequestEditedAndSend from '@salesforce/label/c.rh_RequestEditedAndSend';
+import RequestEdited from '@salesforce/label/c.rh_RequestEdited';
+import RequestCreated from '@salesforce/label/c.rh_RequestCreated';
+import RequestCreatedAndSend from '@salesforce/label/c.rh_RequestCreatedAndSend';
+import AskExplanation from '@salesforce/label/c.rh_AskExplanation';
+import ExplanationFrom from '@salesforce/label/c.rh_ExplanationFrom';
+import ExplanationCreated from '@salesforce/label/c.rh_ExplanationCreated';
+import AnsExpSend from '@salesforce/label/c.rh_AnsExpSend';
+import AnsExp from '@salesforce/label/c.rh_AnsExp';
+import RequestRejected from '@salesforce/label/c.rh_RequestRejected';
+import RequestApproved from '@salesforce/label/c.rh_RequestApproved';
+import NewExplanation from '@salesforce/label/c.rh_NewExplanation';
+import RequestNotif from '@salesforce/label/c.rh_requestNotif';
+import RequestNotifRep from '@salesforce/label/c.rh_RequestNotifRep';
+
 
 import accomplishmentdeleteMessage from '@salesforce/label/c.rh_accomplihmentdeleteMessage';
 
@@ -301,6 +328,7 @@ import labelGroup from '@salesforce/label/c.rh_label';
 import BackToGroup from '@salesforce/label/c.rh_BackToGroup';
 import AddGroupMember from '@salesforce/label/c.rh_AddGroupMember';
 import srchNamePlc from '@salesforce/label/c.rh_srchNamePlc';
+import Share from '@salesforce/label/c.rh_share';
 import groupName from '@salesforce/label/c.rh_groupName';
 
 // import Address from '@salesforce/label/c.rh_Address';
@@ -650,6 +678,33 @@ const labels = {
     Confirm,
     groupName,
     srchNamePlc,
+    Accomplishmentcreated,
+    AccomplishmentEdited,
+    AccomplishmentActivated,
+    AccomplishmentDeleded,
+    Clone,
+    AddAdresscc,
+    Share,
+    Rejected,
+    RequestDeleded,
+    RequestSend,
+    RequestErrorDate,
+    RequestCloned,
+    RequestClonedAndSend,
+    RequestEditedAndSend,
+    RequestEdited,
+    RequestCreated,
+    RequestCreatedAndSend,
+    AskExplanation,
+    ExplanationFrom,
+    ExplanationCreated,
+    AnsExpSend,
+    AnsExp,
+    RequestRejected,
+    RequestApproved,
+    NewExplanation,
+    RequestNotif,
+    RequestNotifRep
 };
 
 export { labels }

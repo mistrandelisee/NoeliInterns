@@ -19,7 +19,7 @@ export default class Rh_cards_view extends LightningElement {
     @api ly_md = '4';
     @api ly_lg = '4';
     @api columns = [];
-    @api noRecordsLabel=this.l.rh_recordNotFounded;
+    @api noRecordsLabel=this.l.recordNotFounded;
     get existElements(){
         return this.items && this.items.length > 0 ? true : false;
     }

@@ -25,7 +25,7 @@ public without sharing class RH_groupController {
     }
     @AuraEnabled
     public static RH_WorkGroup__c getGroupe(String id) {
-        RH_WorkGroup__c groupe = [SELECT Name, RH_Team_Leader__c, RH_Description__c, RH_Status__c, RH_Team_Leader__r.Name, RH_Team_Leader__r.RH_user__c, (select id, name, Email, Phone, RH_WorkGroup__c, RH_User__c  FROM RH_GroupMembers__r)
+        RH_WorkGroup__c groupe = [SELECT Name, RH_Team_Leader__c, RH_Description__c, RH_Status__c, RH_Team_Leader__r.Name, RH_Team_Leader__r.RH_user__c, (select id, name, Email, Phone, RH_WorkGroup__c, RH_User__c, MailingStreet, MailingState, MailingCity  FROM RH_GroupMembers__r)
          FROM RH_WorkGroup__c WHERE Id =: id];
          return groupe;
     }

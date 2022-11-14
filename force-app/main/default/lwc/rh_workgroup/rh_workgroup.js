@@ -9,15 +9,15 @@ import getFilteredGrp from '@salesforce/apex/RH_groupController.getFilteredGrp';
 
 
 export default class Rh_workgroup extends NavigationMixin(LightningElement) {
-    l={...labels,
-        Name: 'Group Name',
+    l={...labels}
+     /*   Name: 'Group Name',
         srchNamePlc: 'Search by name',
         From:'From',
         To:'To',
         OrderBy:'sort By',
         selectPlc:'Select an option',
         Tlead : 'Team Lead',
-        }
+        }*/
 
     @wire(CurrentPageReference) pageRef;
     groupeId;
@@ -32,6 +32,7 @@ export default class Rh_workgroup extends NavigationMixin(LightningElement) {
     isVisiblecreate = false;
     isVisibleGroupmember = false;
     isVisibleDetailgroup = false;
+    createUser = false;
     groupe;
     StatusListe=[];
     roles=[];
@@ -44,6 +45,7 @@ export default class Rh_workgroup extends NavigationMixin(LightningElement) {
         orderBy:null,
         orderOn:null,
     }
+    statutMember='';
 
     get isAdmin() { return this.currUser?.isCEO || this.currUser?.isRHUser}
 
@@ -58,8 +60,11 @@ export default class Rh_workgroup extends NavigationMixin(LightningElement) {
     };
 
     handleCreategroup(){
+        this.template.querySelector('c-rh_spinner').start();
         this.isVisible = false;
         this.isVisiblecreate = true;
+        //this.template.querySelector('c-rh_spinner').stop();
+        window.setTimeout(() => {this.template.querySelector('c-rh_spinner').stop(); /*this.isLoading = false;*/}, 2000);
     }
     handleGroupmember(event){
         this.objGroupe = event.detail;
@@ -76,9 +81,9 @@ export default class Rh_workgroup extends NavigationMixin(LightningElement) {
         this.goToPage('rhgroup',{});
     }
     handleDetailGroup(event){
-        this.groupeId = event.detail;
-        console.log('groupeiD parent ' +this.groupeId);
-        this.goToPage('rhgroup',{'recordId': this.groupeId});
+        let thisgroupeId = event.detail;
+        console.log('groupeiD parent ' +thisgroupeId);
+        this.goToPage('rhgroup',{'recordId': thisgroupeId});
         /*this.isVisible = false;
         this.isVisiblecreate = false;
         this.isVisibleGroupmember = false;
@@ -142,18 +147,28 @@ export default class Rh_workgroup extends NavigationMixin(LightningElement) {
         
     }
    handleHomeGroupe(){
-        this.isVisible = true;
+        /*this.isVisible = true;
         this.isVisiblecreate = false;
         this.isVisibleGroupmember = false;
-        this.isVisibleDetailgroup = false;
+        this.isVisibleDetailgroup = false;*/
+        this.goToPage('rhgroup',{});
     } 
-    handleEditMember(){  
+
+    handleEditMember(event){  
+        this.template.querySelector('c-rh_spinner').start();
+        //this.statutMember = this.handleNoAvailablemember(event);
         this.backSource='group_detail';
         this.isVisible = false;
         this.isVisiblecreate = false;
         this.isVisibleGroupmember = true; 
         this.isVisibleDetailgroup = false;
+        /*if(this.statutMember =='noMember'){
+            this.isVisibleGroupmember = false;
+            this.createUser = true;
+        } */
+        this.template.querySelector('c-rh_spinner').stop(); 
     }
+
     dobackbuttom(event){
         unregisterListener('backbuttom', this.dobackbuttom, this);
         console.log('fdgfdgfdgfdfgdgfdgfdg');
@@ -181,14 +196,11 @@ export default class Rh_workgroup extends NavigationMixin(LightningElement) {
         this.isVisibleDetailgroup = true;*/
     }
      filterInputs=[];
-    handleSubmitFilter(){
-
-    }
     
     buildFilter(){
         this.filterInputs=[
             {
-                label:this.l.Name,
+                label:this.l.groupName,
                 placeholder:this.l.srchNamePlc,
                 name:'searchText',
                 value: '',
@@ -242,17 +254,19 @@ export default class Rh_workgroup extends NavigationMixin(LightningElement) {
     }
 
     handleSubmitFilter(event) {
+        this.template.querySelector('c-rh_spinner').start();
         const record=event.detail;
         console.log(`handleSubmitFilter record `, JSON.stringify(record) );
         this.filter={... this.filter ,...record ,
             orderOn: record.orderOn ? 'DESC' : 'ASC'};
         console.log(`handleSubmitFilter this.filter TO CALL `, JSON.stringify(this.filter) );
         
-        this.getSearchGroup();
+        this.getSearchGroup(JSON.stringify(this.filter));
+        //this.template.querySelector('c-rh_spinner').stop();
     }
 
-    getSearchGroup(){
-        getFilteredGrp({filterTxt:JSON.stringify(this.filter)})
+    getSearchGroup(filtre){
+        getFilteredGrp({filterTxt:filtre})
           .then(result => {
             const self = this;
             console.log('Result serach -=-=->', result);
@@ -305,6 +319,7 @@ export default class Rh_workgroup extends NavigationMixin(LightningElement) {
                      });
 
             }
+            this.template.querySelector('c-rh_spinner').stop();
           })
           .catch(error => {
             console.error('Error:', error);
@@ -337,5 +352,14 @@ export default class Rh_workgroup extends NavigationMixin(LightningElement) {
                 return "slds-float_left slds-theme_alt-inverse";
         }
     
+    }
+
+    handleNoAvailablemember(){        
+        this.isVisibleGroupmember = false;
+        this.createUser = true;
+    }
+
+    handleCreateUser(){
+        this.goToPage('rhusers',{action:'New'});
     }
 }

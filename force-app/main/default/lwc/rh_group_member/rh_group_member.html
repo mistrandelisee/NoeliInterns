@@ -1,18 +1,20 @@
 <template>
 
     <div class="slds-var-m-bottom_medium slds-clearfix">
-        <lightning-button variant="brand-outline"  label="Back" class="slds-float_left" onclick={handleBack}></lightning-button>
+        <lightning-button variant="brand-outline"  label={l.Back} class="slds-float_left" onclick={handleBack}></lightning-button>
         <template if:true={statusBoutom}>
-            <lightning-button variant="brand-outline"  label="Save And Active" class="slds-float_right slds-m-left_small" onclick={handleSaveMemberAndActive}> </lightning-button>
+            <lightning-button variant="brand-outline"  label={l.SaveAndActive} class="slds-float_right slds-m-left_small" onclick={handleSaveMemberAndActive}> </lightning-button>
         </template>
-        <lightning-button variant="brand-outline"  label="Save" class="slds-float_right" onclick={handleSaveMember}> </lightning-button>
+        <lightning-button variant="brand-outline"  label={l.Save} class="slds-float_right" onclick={handleSaveMember}> </lightning-button>
     </div>
 
   
-    <c-rh_dual_box source-label="Avaible Members"
-                   selected-label="Selected Members"
+    <c-rh_dual_box source-label={l.AvaibleMembers}
+                   selected-label={l.SelectedMembers}
                    field-level ="Select members to add to the group"
                    options={listOption}
                    values={listId}>  </c-rh_dual_box>
+
+    <c-rh_spinner></c-rh_spinner>
     
 </template>

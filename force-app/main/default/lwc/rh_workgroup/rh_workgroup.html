@@ -7,15 +7,16 @@
             groupe-id={groupeId}
            obj-groupe={objGroupe}> </c-rh_group_create> 
     </template>
-
+    <c-rh_spinner></c-rh_spinner>
     <template if:true={isVisible}>
         <template if:true={createBouton}>
             <c-rh_group_createbutton 
-                oncreategroup={handleCreategroup}> 
+                oncreategroup={handleCreategroup}
+                label={l.NewGroup}> 
             </c-rh_group_createbutton>
         </template>
-        <div class="slds-m-top_x-small">
-            <c-rh_filter onsubmit={handleSubmitFilter} field-details={filterInputs}></c-rh_filter>
+        <div class="slds-m-top_x-small styleSecondaire">
+            <c-rh_filter onsubmit={handleSubmitFilter} onreset={handleSubmitFilter} field-details={filterInputs}></c-rh_filter>
         </div>
         <c-rh_group_list
          ondetailgroupe={handleDetailGroup} 
@@ -40,7 +41,22 @@
         contact-members={contactMembers}
         onhomegroupe={handleHomeGroupe}
         ongotodetailgroup={handlegotodetailgroup}
-        status-group={statusGroup}> </c-rh_group_member> 
+        onnoavailablemember={handleNoAvailablemember}
+        status-group={statusGroup}>
+     </c-rh_group_member> 
+    </template>
+
+    <template if:true={createUser}>
+        <div class="textDisign">
+            <p >{l.error_memberMsg}</p><br/>
+            <p > {l.error_memberMsg_Alternativ} </p>
+        </div>
+        <div class="textDisign2">
+            <c-rh_group_createbutton 
+                 oncreategroup={handleCreateUser}
+                 label={l.AddGroupMember}> 
+             </c-rh_group_createbutton>
+        </div>
     </template>
     
 </template>
