@@ -37,10 +37,7 @@ export default class Rh_Projects extends NavigationMixin(LightningElement) {
     
     inizier={};
     l={...labels,
-        Name: 'Name',
         srchNamePlc: 'Search by name',
-        From:'Start Date',
-        To:'End Date',
         OrderBy:'sort By',
         selectPlc:'Select an option',
         }
@@ -91,7 +88,7 @@ export default class Rh_Projects extends NavigationMixin(LightningElement) {
     @track memberNotSelected = [];
     @track inputsItems = [];
     @track allInitialContacts = [];
-    @track columns = [{label: 'Name',fieldName: 'Name',type: 'button',typeAttributes:{label:{fieldName:'Name'},variant:'base'}},{label: 'Email adress',fieldName: 'Email',type: 'text'}];
+    @track columns = [{label: this.l.Name,fieldName: 'Name',type: 'button',typeAttributes:{label:{fieldName:'Name'},variant:'base'}},{label: this.l.Email,fieldName: 'Email',type: 'text'}];
     @track columnsTask = [
         {label: this.l.AssignTo,fieldName: 'AssignTo',type: 'text'},
         {label: this.l.Description,fieldName: 'Description',type: 'text'},
@@ -124,19 +121,19 @@ export default class Rh_Projects extends NavigationMixin(LightningElement) {
     }
     keysFields={
     StartdDate:this.l.StartDate,
-    Status:this.l.Status,
+    Account:this.l.Account,
 
     Name:this.l.Name,
     };
     keysLabels={
     StartdDate:this.l.StartDate,
-    Status:this.l.Status,
+    Account:this.l.Account,
 
     Name:this.l.Name,
     };
     fieldsToShow={
         StartdDate:this.l.StartDate,
-        Status:this.l.Status,
+        Account:this.l.Account,
     };
 
     
@@ -230,6 +227,7 @@ export default class Rh_Projects extends NavigationMixin(LightningElement) {
                 "EndDate":  result[key].End_Date__c,
                 "Name": result[key].Name,
                 "id" : result[key].Id,
+                "Account" : result[key].RH_Account_ID__r.Name,
                 // icon:"standard:people",
                 icon:this.icon.project,
                 
@@ -522,8 +520,9 @@ setviewsList(items){
                             objName:"Account",
                             placeholder:'Select Account',
                             iconName:"standard:account",
+                            createNewLabel:this.l.new_account,
                             newLabel:"Nuovo",
-                            label:"Account",
+                            label:this.l.Account,
                             objectLabel:'Account',
                             filter:this.inizier?.filter,
                             value: result.project.RH_Account_ID__c,
@@ -536,7 +535,7 @@ setviewsList(items){
                             ly_lg:'6'
                         },
                 {
-                    label:'Status',
+                    label:this.l.Status,
                     placeholder:'',
                     name:'Status',
                     value: result.project.Status__c,
@@ -667,10 +666,10 @@ setviewsList(items){
                     this.showAddMembers= false;
                     this.sfieldId ='create';
                     if(d1 > d2){
-                        this.showToast('error', 'Error', 'Start date must be grater than today');
+                        this.showToast('error', 'Error', this.l.StartDateError);
                     }
                     if(d2.getTime() > d3.getTime()){
-                        this.showToast('error', 'Error', 'End date must be grater than start date');
+                        this.showToast('error', 'Error', this.l.EndDateError);
                     }
                 }else{
                     this.showInsertform = false;
@@ -701,14 +700,14 @@ setviewsList(items){
         .then(result=>{
             window.console.log('after save');
            this.getdetailsProject(this.curentProject);
-           this.showToast('success', 'success !!', 'Members Updated Successfully!!');
+           this.showToast('success', 'success !!', this.l.MemberSuccesUpdate);
             // this.dispatchEvent(toastEvent);
             this.showDetails = true;
             this.showManage= false;
         })
         .catch(error=>{
             // this.error=error.message;
-            this.showToast('error', 'Error', 'Update failed');
+            this.showToast('error', 'Error', this.l.MemberFailUpdate);
             window.console.log('error',this.error);
         })
         .finally(() => {
@@ -730,14 +729,14 @@ setviewsList(items){
         .then(result=>{
             window.console.log('after save');
             this.getAllprojects();
-            this.showToast('success', 'success !!', 'Project created Successfully!!');
+            this.showToast('success', 'success !!', this.l.ProjectSuccesCreated);
             this.goToRequestDetail(result.Id);
             this.showAddMembers= false;
         })
         .catch(error=>{
             // this.error=error.message;
             window.console.log('error',this.error);
-            this.showToast('error', 'Error', 'insert failed');
+            this.showToast('error', 'Error', this.l.ProjectFailedCreate);
         })
         .finally(() => {
             this.startSpinner(false)
@@ -772,13 +771,13 @@ setviewsList(items){
                     window.console.log('after update');
                     window.console.log('result' , result);
                     this.getdetailsProject(this.curentProject);
-                    this.showToast('success', 'success !!', 'Project Updated Successfully!!');
+                    this.showToast('success', 'success !!', this.l.ProjectUpdateSucces);
                     this.showDetails = true;
                     this.showEdit= false;
                 })
                 .catch(error=>{
                     // this.error=error.message;
-                    this.showToast('error', 'Error', 'Update failed');
+                    this.showToast('error', 'Error', this.l.projectFailedUpdate);
                     window.console.log('error',this.error);
                 })
                 .finally(() => {
@@ -866,7 +865,7 @@ setviewsList(items){
         this.inputsItems = [
                         {
                             label:this.l.Name,
-                            placeholder:'Enter your Project Name',
+                            placeholder:this.l.ProjectNamePlc,
                             name:'Name',
                             type:'text',
                             required:true,
@@ -876,10 +875,10 @@ setviewsList(items){
                         {
                             name:ACCOUNT_NAME_FIELD,
                             objName:"Account",
-                            placeholder:'Select Account',
+                            placeholder:this.l.AccountPlc,
                             iconName:"standard:account",
                             newLabel:"Nuovo",
-                            label:"Account",
+                            label:this.l.Account,
                             objectLabel:'Account',
                             filter:this.inizier?.filter,
                             // selectName:'',
@@ -895,7 +894,7 @@ setviewsList(items){
                         
                         {
                             label:this.l.StartDate,
-                            placeholder:'Enter Start date',
+                            placeholder:this.l.StartDatePlc,
                             name:'Startdate',
                             type:'date',
                             required:true,
@@ -904,7 +903,7 @@ setviewsList(items){
                         },
                         {
                             label:this.l.EndDate,
-                            placeholder:'Enter End date',
+                            placeholder:this.l.EndDatePlc,
                             name:'Enddate',
                             type:'date',
                             ly_md:'12', 
@@ -912,7 +911,7 @@ setviewsList(items){
                         },
                         {
                             label:this.l.Manager,
-                            placeholder:'select Project Manager',
+                            placeholder:this.l.ManagerPlc,
                             name:'Manager',
                             picklist: true,
                             options:option,
@@ -922,7 +921,7 @@ setviewsList(items){
                         },
                         {
                             label:this.l.Description,
-                            placeholder:'Enter your Project Description',
+                            placeholder:this.l.ProjectDescriptionPlc,
                             name:'Description',
                             type:'textarea',
                             ly_md:'12', 
@@ -1153,12 +1152,13 @@ setviewsList(items){
         const record=event.detail;
         
         this.tabReq = this.tabReqfilter;
+        console.log('-->', this.tabReq);
         console.log(`handleSubmitFilter record `, JSON.stringify(record) );
         console.log(`this.tabReq `, this.tabReq);
         record.searchText ? this.tabReq = this.tabReq.filter(element =>((element.Name).toUpperCase()).includes(record.searchText.toUpperCase())) : this.tabReq;
-        record.startDate ? this.tabReq = this.tabReq.filter(element =>element.StartdDate ==  record.startDate) : this.tabReq;
+        record.startDate ? this.tabReq = this.tabReq.filter(element =>element.StartdDate >= record.startDate) : this.tabReq;
         record.status ? this.tabReq = this.tabReq.filter(element =>element.Status ==  record.status) : this.tabReq;
-        record.EndDate ? this.tabReq = this.tabReq.filter(element =>element.EndDate ==  record.EndDate) : this.tabReq;
+        record.EndDate ? this.tabReq = this.tabReq.filter(element =>element.EndDate >=  record.EndDate) : this.tabReq;
         }).catch((error)=>{
             console.log(`Handling error as we received ${error}`);
         });
@@ -1182,7 +1182,7 @@ setviewsList(items){
         .then(result => {
             window.console.log('after Activate');
             this.getdetailsProject(this.curentProject);
-            this.showToast('success', 'success !!', 'Project created Successfully!!');
+            this.showToast('success', 'success !!', this.l.ProjectActivate);
             this.goToRequestDetail(result.Id);
             // this.showAddMembers= false;
         })
@@ -1244,7 +1244,7 @@ setviewsList(items){
     doCreateAccount(){
         this.accountInputs=[
             {
-                label:this.l.accountName,
+                label:this.l.Name,
                 placeholder:this.l.accountNamePlc,
                 name:'Name',
                 value: '',

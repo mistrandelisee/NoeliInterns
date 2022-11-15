@@ -1,7 +1,8 @@
 import { api, LightningElement, track, wire } from 'lwc';
+import { labels } from 'c/rh_label';
 
 export default class Rh_datatable_component extends LightningElement {
-    isLoading;
+    ;
     @api items = [];
     startIndex = 0;
     lastIndex = 0;
@@ -10,14 +11,19 @@ export default class Rh_datatable_component extends LightningElement {
     sortedBy;
     @api hideExport;
     @api pageSize = 15;
-
+    @api noRecordsLabel='';
     @api columns = [];
 
     @api statutRowNumber=false;
     @api resizeColumn=false;
-
+    l={
+        noRecordsLabel: this.noRecordsLabel || labels.recordNotFounded 
+    }
     get existElements(){
         return this.items && this.items.length > 0 ? true : false;
+    }
+    get isEmptyList(){
+        return ! this.items && !this.isLoading;
     }
     get showPagination(){
         return (this.existElements && this.items.length > this.pageSize ) ? true : false;

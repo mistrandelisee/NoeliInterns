@@ -28,6 +28,7 @@ export default class Rh_user_creation extends NavigationMixin(LightningElement) 
     record;
     listgroup=[];
     userfield ={};
+    // newMode = true;
     @wire(CurrentPageReference) pageRef;
     buildForm(){
         this.formInputs=[
@@ -119,6 +120,20 @@ export default class Rh_user_creation extends NavigationMixin(LightningElement) 
         
         ]
     }
+
+    
+    newMode = false;
+
+    // get newMode(){
+    //          if(this.getUrlParamValue(window.location.href, 'action') == NEW_ACTION){
+    //              //return  
+    //              this.action==NEW_ACTION;
+    //              return true;
+    //          }else{
+    //              return false;
+    //          }
+    // }
+
     //navigation Page
     goToPage(pagenname,state={}) {
         let states=state; 
@@ -167,10 +182,19 @@ export default class Rh_user_creation extends NavigationMixin(LightningElement) 
     }
     
     connectedCallback(){
+
         console.log('teste');
+
         // this.buildForm();
         //this.getActiveWorkgroupse();
+
+        if(this.getUrlParamValue(window.location.href, 'action') == NEW_ACTION){
+            this.newMode = true;
+            this.fillDataForm();
+        }
+
     }
+
     callApexSave(input){
         this.startSpinner(true)
         userCreation({ contactJson: JSON.stringify(input) })
@@ -199,36 +223,64 @@ export default class Rh_user_creation extends NavigationMixin(LightningElement) 
     }
 
 
-    get newMode(){
-        return this.action==NEW_ACTION;
-    }
-    handleNew(){
-       this.startSpinner(true)
-        initConfig()
-          .then(result => {
-            console.log('Result INIT CONF');
-            console.log(result);
-            if (!result.error && result.Ok) {
-                this.groups = result.Groups?.map(function(g) { return {label:g.Name,value:g.Id}});
-                this.roles = result.Picklists?.RH_Role__c;
-                this.buildForm();
+    fillDataForm(){
+        this.startSpinner(true)
+         initConfig()
+           .then(result => {
+             console.log('Result INIT CONF');
+             console.log(result);
+             if (!result.error && result.Ok) {
+                 this.groups = result.Groups?.map(function(g) { return {label:g.Name,value:g.Id}});
+                 this.roles = result.Picklists?.RH_Role__c;
+                 this.buildForm();
+                 this.action=NEW_ACTION;
+             }else{
+                 this.showToast(WARNING_VARIANT,'ERROR', result.msg);
+             }
+           })
+           .catch(error => {
+             console.error('Error:', error);
+         }).finally(() => {
+             this.startSpinner(false)
+         });
+     }
+    
+     handleNew(){
+    //    this.startSpinner(true)
+    //     initConfig()
+    //       .then(result => {
+    //         console.log('Result INIT CONF');
+    //         console.log(result);
+    //         if (!result.error && result.Ok) {
+    //             this.groups = result.Groups?.map(function(g) { return {label:g.Name,value:g.Id}});
+    //             this.roles = result.Picklists?.RH_Role__c;
+    //             this.buildForm();
                 this.action=NEW_ACTION;
                 this.callParent(this.action,{});
-            }else{
-                this.showToast(WARNING_VARIANT,'ERROR', result.msg);
-            }
-          })
-          .catch(error => {
-            console.error('Error:', error);
-        }).finally(() => {
-            this.startSpinner(false)
-        });
+        //     }else{
+        //         this.showToast(WARNING_VARIANT,'ERROR', result.msg);
+        //     }
+        //   })
+        //   .catch(error => {
+        //     console.error('Error:', error);
+        // }).finally(() => {
+        //     this.startSpinner(false)
+        // });
     }
+
+    getUrlParamValue(url, key) {
+        return new URL(url).searchParams.get(key);
+    }
+
     handleCancel(){
+        this.newMode = false;
         this.action='';
         this.callParent(this.action,{});
+        window.history.back();
     }
+
     handleSave(evt){
+        this.newMode = false;
         let record={};
         let result= this.save();
         if (result.isvalid) {
@@ -255,6 +307,7 @@ export default class Rh_user_creation extends NavigationMixin(LightningElement) 
         console.log(`>>>>>>>>>>>>obj `, obj );
         return  {isvalid,obj};
     }
+
     callParent(actionName,data){
         var actionEvt =new CustomEvent('action',
          {detail: { action : actionName,data }}

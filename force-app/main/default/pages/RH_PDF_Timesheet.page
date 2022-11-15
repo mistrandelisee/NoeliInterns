@@ -96,35 +96,31 @@
         <div>
             <table class="tab1">
                 <tr>
-                    <th>Name:</th>
+                    <th>{!$Label.rh_Name}:</th>
                     <td><apex:outputText value="{!accountList.Name}"/></td>
                 </tr>
                 <tr>
-                    <th>Phone:</th>
+                    <th>{!$Label.rh_Phone}:</th>
                     <td><apex:outputText value="{!accountList.phone}"/></td>
                 </tr>
                 <tr>
-                    <th>Type:</th>
-                    <td><apex:outputText value="{!accountList.Type}"/></td>
-                </tr>
-                <tr>
-                    <th>Website:</th>
+                    <th>{!$Label.rh_Website}:</th>
                     <td><apex:outputText value="{!accountList.website}"/></td>
                 </tr>           
             </table>
         </div>
 
         <div class="t1">
-            <p class="pp">TimeSheet Information {!sheet.timesheetNumber}</p>
+            <p class="pp">{!$Label.rh_timesheetHeaderTitle}:  {!sheet.timesheetNumber}</p>
         </div>
         <table class="tab3">
-            <tr><th>Status :</th>
+            <tr><th>{!$Label.rh_Status}:</th>
                 <td><apex:outputText value="{!sheet.Status}"/></td>
                 </tr>
-            <tr><th>Duration :</th>
+            <tr><th>{!$Label.rh_total_dur_h}:</th>
                 <td><apex:outputText value="{!sheet.Duration}"/></td>
                 </tr>
-            <tr><th>Start Date :</th>
+            <tr><th>{!$Label.rh_StartDate}:</th>
                 <td>
                     <apex:outputText value="{0, date, d MMMM yyyy hh:mm a}">
                         <apex:param value="{!DATETIMEVALUE(sheet.StartDate)}" />
@@ -132,24 +128,24 @@
                 </td>
                 </tr>
             <tr>
-                <th>Owner Name</th>
-                <td><apex:outputText value="{!accountList.owner}"/></td>
+                <th>{!$Label.rh_Owner}: </th>
+                <td><apex:outputText value="{!sheet.OwnerName}"/></td>
             </tr>
             </table>
         <div class="tab2">
             <table style="width:100%" class="table1" >
                 <thead>
                         <th >
-                            Project Name
+                            {!$Label.rh_Activity}
                         </th>
                         <th >
-                            Duration(Minutes)
+                            {!$Label.rh_Duration_mins}
                         </th>
                         <th>
-                            Start Date
+                            {!$Label.rh_StartDate}
                         </th>
                         <th >
-                            End Date
+                            {!$Label.rh_EndDate}
                         </th>
                 
                 </thead>

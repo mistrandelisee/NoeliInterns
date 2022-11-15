@@ -26,7 +26,7 @@ public  class RH_Timesheet_Query {
     public List<TimeSheet> getTimeSheet(String timesheetId) {
         return [SELECT Id,TimeSheetNumber,TotalDurationInHours,TotalDurationInMinutes,TimeSheetEntryCount, EndDate, StartDate,toLabel(Status) StatusLabel,Status,OwnerId,Owner.Name,RH_NoteApprover__c,
         RH_Total_Free_Duration_Minutes__c,	RH_Total_Free_Duration_Hours__c, RH_Name__c,       
-        RH_Submiter__r.Account.Name,RH_Submiter__r.Account.Phone,RH_Submiter__r.Account.Type,RH_Submiter__r.Account.Website,RH_Submiter__r.Account.Owner.Name ,
+        RH_Submiter__r.Account.Name,RH_Submiter__r.Account.Phone,RH_Submiter__r.Account.Type,RH_Submiter__r.Account.Website,RH_Submiter__r.Account.Owner.Name ,RH_Submiter__r.Name,
                 RH_Approver__r.Account.Name,RH_Approver__r.Name,RH_Approver__r.RH_User__c ,
                 (SELECT Id,Subject,TimeSheetEntryNumber, Description,DurationInMinutes, RH_Project__c,RH_Project__r.Name, StartTime, EndTime,Status,CreatedDate,TimeSheetId,RH_Optional__c FROM TimeSheetEntries) FROM TimeSheet WHERE Id =:timesheetId];
     }

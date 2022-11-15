@@ -22,6 +22,7 @@ const WARNING_VARIANT='warning';
 const ERROR_VARIANT='error';
 export default class Rh_invoice_creation extends NavigationMixin(LightningElement) {
     l={...labels,
+        Number:'Number'
     }
     DEFAULT_CURRENCY='EUR';
     curriencies=[

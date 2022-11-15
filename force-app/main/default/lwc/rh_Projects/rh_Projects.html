@@ -80,18 +80,18 @@
                 <template if:true={isVisible}>
                     <template if:false={isClosed}>
                         <template if:true={isActivate}>
-                            <lightning-button variant="brand-outline" label={l.Close} icon-name={icon.Add} class="slds-float_right slds-m-right_medium"  onclick={handleActive} data-id="Close" style="margin-left: 10px;"></lightning-button>
+                            <lightning-button variant="brand-outline" label={l.Close} icon-name={icon.close} class="slds-float_right slds-m-right_medium"  onclick={handleActive} data-id="Close" style="margin-left: 10px;"></lightning-button>
                         </template>
                     </template>
                     <template if:false={isActivate}>
                         <template if:true={isClosed}>
-                            <lightning-button variant="brand-outline" label={l.Activate} icon-name={icon.Add} class="slds-float_right slds-m-right_medium"  onclick={handleActive} data-id="Active" style="margin-left: 10px;"></lightning-button>
+                            <lightning-button variant="brand-outline" label={l.Activate} icon-name={icon.approve} class="slds-float_right slds-m-right_medium"  onclick={handleActive} data-id="Active" style="margin-left: 10px;"></lightning-button>
                     
                         </template>
                     </template>
                     <template if:false={isActivate}>
                         <template if:false={isClosed}>
-                            <lightning-button variant="brand-outline" label={l.Activate} icon-name={icon.Add} class="slds-float_right slds-m-right_medium"  onclick={handleActive} data-id="Active" style="margin-left: 10px;"></lightning-button>
+                            <lightning-button variant="brand-outline" label={l.Activate} icon-name={icon.approve} class="slds-float_right slds-m-right_medium"  onclick={handleActive} data-id="Active" style="margin-left: 10px;"></lightning-button>
                     
                         </template>
                     </template>
@@ -252,7 +252,7 @@
                 </lightning-card>
             </div>
             <div class="slds-clearfix">
-                <lightning-button variant="brand-outline" label="Back" icon-name="utility:arrow_left" class="slds-float_left" onclick={handleBackToDetails}></lightning-button>
+                <lightning-button variant="brand-outline" label={l.Back} icon-name="utility:arrow_left" class="slds-float_left" onclick={handleBackToDetails}></lightning-button>
             </div>
         </template>
 
