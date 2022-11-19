@@ -7,5 +7,11 @@
     --frozenColor:#62f70cfe;
 }
 .marginTop{
-    margin-top:-32px;
+    margin-top:-5px;
+}
+.soloStyle{
+    margin-top:-16px;margin-bottom: -16px; border-top: 2px solid orange; border-bottom: 2px solid orange;
+}
+.layoutStyle{
+    margin-top: -68px;margin-right: -27px;
 }

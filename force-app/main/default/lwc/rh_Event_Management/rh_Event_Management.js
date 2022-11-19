@@ -3,7 +3,7 @@ import getRelatedFilesByRecordId from '@salesforce/apex/RH_EventController.getRe
 import getMyEventManager from '@salesforce/apex/RH_EventController.getMyEventManager';
 import getPicklistStatus from '@salesforce/apex/RH_EventController.getPicklistStatus';
 import changeEventStatus from '@salesforce/apex/RH_EventController.changeEventStatus';
-import getInfBaseUser from '@salesforce/apex/RH_EventController.getInfBaseUsers';
+import getInfOfAllUsers from '@salesforce/apex/RH_EventController.getInfOfAllUsers';
 import getEventEdite from '@salesforce/apex/RH_EventController.getEventEdite';
 import sendNotif from '@salesforce/apex/RH_EventController.sendNotifications';
 import getEventInfo from '@salesforce/apex/RH_EventController.getEventInfos';
@@ -31,7 +31,8 @@ export default class rh_Event_Management extends  NavigationMixin(LightningEleme
     showComponentBase = true;
     showComponentDetailsForBaseUser = false;
     showComponentDetails = false;
-    visible = true;
+    visibleReject = false;
+    visibleDelete = false
     displayButton = false;
     displayButtonCEO = false;
     showModalDelete = false;
@@ -109,6 +110,7 @@ export default class rh_Event_Management extends  NavigationMixin(LightningEleme
             console.log('@@wiredatas--> ' , result);
             const self=this;
             result.forEach(elt => { 
+                console.log('elt-->',elt);
             let objetRep = {};
             let str = elt.Description__c;
             if(str?.length>30) str = str?.substring(0,30);
@@ -132,7 +134,7 @@ export default class rh_Event_Management extends  NavigationMixin(LightningEleme
             const badge={
                 name: 'badge', 
                 class:self.classStyle(elt?.Status__c),
-                label: elt?.Status__c
+                label: elt?.StatusLabel
             }
             console.log('@@@@@@@@  badge  --> ' , badge);
             objetRep.addons={badge};
@@ -194,7 +196,7 @@ export default class rh_Event_Management extends  NavigationMixin(LightningEleme
         this.initDefault();
         this.optionsStatus();
         this.getInfoUser();
-        this.getInfoBaseUser();
+        this.getInfOfAllUsers();
     }
     handleSubmitFilter(event) {
         const record=event.detail;
@@ -296,7 +298,7 @@ export default class rh_Event_Management extends  NavigationMixin(LightningEleme
                         newobj.Description=obj.Description__c;
                         newobj.StartDate= obj.Start_Dates__c.split('T')[0]+'  à '+ obj.Start_Dates__c.split('T')[1].substring(0,5); 
                         newobj.EndDate= obj.End_Dates__c.split('T')[0]+'  à '+obj.End_Dates__c.split('T')[1].substring(0,5);
-                        newobj.Status=obj.Status__c;
+                        newobj.Status=obj.StatusLabel;
                     return newobj;
                 });
                 this.data = this.eventinformationEdite;
@@ -403,8 +405,8 @@ export default class rh_Event_Management extends  NavigationMixin(LightningEleme
             console.error('error',err)
         })
     }
-    getInfoBaseUser(){
-        getInfBaseUser({}).then(result =>{
+    getInfOfAllUsers(){
+        getInfOfAllUsers({}).then(result =>{
             if (result.error) {
                 console.error(result.msg);
             }else{
@@ -415,8 +417,8 @@ export default class rh_Event_Management extends  NavigationMixin(LightningEleme
             console.error('error',err)
         })
     }
-    sendNotification(event){
-        if (event.detail.action=='Share'){
+    sendNotification(event){debugger
+        if (event.detail.action==this.label.Share){
             this.eventId = this.getUrlParamValue(window.location.href, 'recordId');
             console.log('eventId --> ' ,this.eventId);
             this.getEventInformation(this.eventId);
@@ -424,7 +426,7 @@ export default class rh_Event_Management extends  NavigationMixin(LightningEleme
 
     }
     handleRejectEvent(event){
-        if (event.detail.action=='Yes I m sure'){
+        if (event.detail.action==this.label.ok_confirm){
             this.changeEventStatus(this.eventId);
             this.closeModalRejected();
         }
@@ -456,15 +458,15 @@ export default class rh_Event_Management extends  NavigationMixin(LightningEleme
     handlepredeleteEvent(event){
         this.eventId = event.currentTarget.getAttribute("data-id");
         console.log('eid----->', this.eventId);
-        this.visible = true;
+        this.visibleDelete = true;
         this.showModalDelete = true;
     }
-    handleprerejectEvent(event){
-        if (event.detail.action=='Rejected'){
+    handleprerejectEvent(event){debugger
+        if (event.detail.action==this.label.Rejected){
             this.eventId = this.getUrlParamValue(window.location.href, 'recordId');
             // this.eventId = event.currentTarget.getAttribute("data-id");
             console.log('eventId --> ' ,this.eventId);
-            this.visible = false;
+            this.visibleReject = true;
             this.showModalDelete = true;
         }
     }
@@ -475,7 +477,7 @@ export default class rh_Event_Management extends  NavigationMixin(LightningEleme
         },500);
     }
     closeModalDelete(event){
-        if (event.detail.action=='Cancel'){
+        if (event.detail.action==this.label.Cancel){
             this.showModalDelete = false;
         }
     }
@@ -499,18 +501,19 @@ export default class rh_Event_Management extends  NavigationMixin(LightningEleme
                         console.log('@@User data --> ' , result);
                         for(let i=0; i<result.length; i++){
                             if(result[i].UserRole.Name=='Base User'){
+                                console.log('@@ Je suis dans le if --> ');
                                 sendNotif({strBody:desc, pgRefId:evId, strTargetId:result[i].Id, strTitle:name, setUserIds:result[i].Id})
-                                    .then(result =>{
-                                        if (result?.error) {
-                                            console.error(result?.msg);
-                                        }else{
-                                            console.log('@@@ IDUSER --> ' , result[i].Id);
-                                            console.log('event--> ' , result);
-                                            this.showToast('Success', 'Success', this.label.EventSubS);
-                                        }
-                                    }).catch(err =>{
-                                        console.error('error',err)
-                                    })
+                                .then(result =>{
+                                    if (result?.error) {
+                                        console.error(result?.msg);
+                                    }else{
+                                        console.log('@@@ IDUSER --> ' , result[i].Id);
+                                        console.log('event--> ' , result);
+                                        this.showToast('Success', 'Success', this.label.EventSubS);
+                                    }
+                                }).catch(err =>{
+                                    console.error('error',err)
+                                })
                             }
                         }
                     })
@@ -543,10 +546,12 @@ export default class rh_Event_Management extends  NavigationMixin(LightningEleme
             }else{
                 console.log('@@@EventInfo--> ' , result[0]);
                 console.log('@@@evenName--> ' , result[0].Name + ' @@@evenDescription--> '+ result[0].Description__c);
+                console.log('@@@ IdBaseUser--> ' , this.IdBaseUser);
                 const setUserIds = [];
                 for(let i=0; i<this.IdBaseUser.length; i++){
                     setUserIds.push(this.IdBaseUser[i].Id);
                 }
+                //setUserIds.push(this.IdBaseUser);
                 setUserIds.push(this.idUser);
                 console.log('setUserIds --> ' ,setUserIds);
                 console.log('userinfo--> ' , this.idUser);
@@ -562,6 +567,7 @@ export default class rh_Event_Management extends  NavigationMixin(LightningEleme
                             console.log('event--> ' , result);
                             this.showToast('Success', 'Success', this.label.EventSubS);
                             this.getEventManager()//refresh list
+                            window.location.reload();
                         }
                     }).catch(err =>{
                         console.error('error',err)
@@ -572,7 +578,6 @@ export default class rh_Event_Management extends  NavigationMixin(LightningEleme
         }).catch(err =>{
             console.error('error',err);
         })
-        window.location.reload();
     }
     showToast(variant, title, message){
         let toast=this.template.querySelector('c-rh_toast');
@@ -583,7 +588,7 @@ export default class rh_Event_Management extends  NavigationMixin(LightningEleme
         this.showComponentDetails = true;
     }
     closeComponentDetails(event){
-        if (event.detail.action=='Back'){
+        if (event.detail.action==this.label.Back){
             this.recordId = undefined;
             this.goToEventDetail(this.recordId);
             this.getEventManager();
@@ -595,9 +600,9 @@ export default class rh_Event_Management extends  NavigationMixin(LightningEleme
         {   
             variant:"brand-outline",
             
-            label:"Back",
-            name:'Back',
-            title:"Back",
+            label:this.label.Back,
+            name:this.label.Back,
+            title:this.label.Back,
             iconName:this.icon.Back,
         }
     ]
@@ -605,9 +610,9 @@ export default class rh_Event_Management extends  NavigationMixin(LightningEleme
         {   
             variant:"brand-outline",
             
-            label:"Rejected",
-            name:'Rejected',
-            title:"Rejected",
+            label:this.label.Rejected,
+            name:this.label.Rejected,
+            title:this.label.Rejected,
             iconName:this.icon.close,
         }
     ]
@@ -615,9 +620,9 @@ export default class rh_Event_Management extends  NavigationMixin(LightningEleme
         {   
             variant:"brand-outline",
             
-            label:"Share",
-            name:'Share',
-            title:"Share",
+            label:this.label.Share,
+            name:this.label.Share,
+            title:this.label.Share,
             iconName:this.icon.Share,
         }
     ]
@@ -625,8 +630,8 @@ export default class rh_Event_Management extends  NavigationMixin(LightningEleme
         {   
             variant:"brand-outline",
             label:this.label.ok_confirm,
-            name:'Yes I m sure',
-            title:"Yes I m sure",
+            name:this.label.ok_confirm,
+            title:this.label.ok_confirm,
             iconName:this.icon.approve,
         }
     ]
@@ -634,8 +639,8 @@ export default class rh_Event_Management extends  NavigationMixin(LightningEleme
         {   
             variant:"brand-outline",
             label:this.label.Cancel,
-            name:'Cancel',
-            title:"Cancel",
+            name:this.label.Cancel,
+            title:this.label.Cancel,
             iconName:this.icon.close,  
         }
     ]
