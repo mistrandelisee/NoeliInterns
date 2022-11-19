@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.2">
+    <file original="Salesforce" source-language="en_US" target-language="it" translation-type="metadata" datatype="xml">
+        <body>
+
+            <trans-unit id="CustomLabel.rh_AddressedTo">
+                <source>Addressed To</source>
+                <target>Indirizzato a</target>
+              </trans-unit>
+              <trans-unit id="CustomLabel.rh_From">
+                <source>From</source>
+                <target>Dal</target>
+              </trans-unit>
+              <trans-unit id="CustomLabel.rh_To">
+                <source>To</source>
+                <target>Al</target>
+              </trans-unit>
+              <trans-unit id="CustomLabel.rh_ComplainOn">
+                <source>Complain On</source>
+                <target>Lamentarsi di</target>
+              </trans-unit>
+              <trans-unit id="CustomLabel.rh_AddAdresscc" maxwidth="1000" size-unit="char">
+                  <source>Add Address CC</source>
+                  <target>Aggiungere indirizzo CC</target>
+                  <note>rh AddAdresscc</note>
+              </trans-unit>
+              <trans-unit id="CustomLabel.rh_Send">
+                <source>Send</source>
+                <target>Invia</target>
+              </trans-unit>
+              
+              <trans-unit id="CustomLabel.rh_NewExplanation">
+                <source>New Explanation</source>
+                <target>Nuova spiegazione</target>
+              </trans-unit>
+              <trans-unit id="CustomLabel.rh_requestDetail" maxwidth="1000" size-unit="char">
+                  <source>Request Information</source>
+                  <target>Dettagli della richiesta</target>
+                  <note>rh_requestDetail</note>
+              </trans-unit>
+              <trans-unit id="CustomLabel.rh_AnsExp" maxwidth="1000" size-unit="char">
+                  <source>Answer Explanation</source>
+                  <target>Risposta</target>
+                  <note>rh AnsExp</note>
+              </trans-unit>
+              <trans-unit id="CustomLabel.rh_Back">
+                <source>Back</source>
+                <target>Ritorno</target>
+              </trans-unit>
+              <trans-unit id="CustomLabel.rh_ExplanationFrom" maxwidth="1000" size-unit="char">
+                  <source>Explanation From</source>
+                  <target>Spiegazione di</target>
+                  <note>rh ExplanationFrom</note>
+              </trans-unit>
+              <trans-unit id="CustomLabel.rh_endTime" maxwidth="1000" size-unit="char">
+                  <source>End Time</source>
+                  <target>Ora di fine</target>
+                  <note>rh_endTime</note>
+              </trans-unit>
+              <trans-unit id="CustomLabel.rh_Approve" maxwidth="1000" size-unit="char">
+                  <source>Approve</source>
+                  <target>Approva</target>
+                  <note>rh_Approve</note>
+              </trans-unit>
+              <trans-unit id="CustomLabel.rh_timesheetHeaderTitle">
+                <source>timesheet Header Title</source>
+                <target>Scheda attività</target>
+              </trans-unit>
+              <trans-unit id="CustomLabel.rh_timesheetItemsHeaderTitle">
+                <source>timesheet Items Header Title</source>
+                <target>Attività</target>
+              </trans-unit>
+              <trans-unit id="CustomLabel.rh_Come" maxwidth="1000" size-unit="char">
+                  <source>Submit by</source>
+                  <target>Inviato da</target>
+                  <note>rh_Come</note>
+              </trans-unit>
+              <trans-unit id="CustomLabel.rh_Update" maxwidth="1000" size-unit="char">
+                  <source>Update</source>
+                  <target>Aggiorna</target>
+                  <note>rh_Update</note>
+              </trans-unit>
+              <trans-unit id="CustomLabel.rh_EvenUpdateS" maxwidth="1000" size-unit="char">
+                  <source>Event Update Successfully !!</source>
+                  <target>L'evento è stato aggiornato con successo</target>
+                  <note>rh_EvenUpdateS</note>
+              </trans-unit>
+              <trans-unit id="CustomLabel.rh_EvenUpdateSS" maxwidth="1000" size-unit="char">
+                  <source>Event Update Successfully and send to CEO !!</source>
+                  <target>L'evento è stato aggiornato e inviato per l'approvazione con successo</target>
+                  <note>rh_EvenUpdateSS</note>
+              </trans-unit>
+              <trans-unit id="CustomLabel.rh_Edit" maxwidth="1000" size-unit="char">
+                  <source>Edit</source>
+                  <target>Modifica</target>
+                  <note>rh_Edit</note>
+              </trans-unit>
+              <trans-unit id="CustomLabel.rh_PermissionDelete" maxwidth="1000" size-unit="char">
+                  <source>Are you sure to want to delete it ?</source>
+                  <target>&#200; sicuro di volerlo eliminare questo?</target>
+                  <note>rh_PermissionDelete</note>
+              </trans-unit>
+              <trans-unit id="CustomLabel.rh_PermissionRejected" maxwidth="1000" size-unit="char">
+                  <source>Are you sure to want to reject it ?</source>
+                  <target>&#200; sicuro di volerlo rifiutare questo?</target>
+                  <note>rh_PermissionRejected</note>
+              </trans-unit>
+              <trans-unit id="CustomLabel.rh_share" maxwidth="1000" size-unit="char">
+                  <source>Share</source>
+                  <target>Condiviso</target>
+                  <note>rh_share</note>
+              </trans-unit>
+              <trans-unit id="CustomLabel.rh_EventSubS" maxwidth="1000" size-unit="char">
+                  <source>Event Submitted Successfully</source>
+                  <target>Evento &#232; stato condiviso con successo!</target>
+                  <note>rh_EventSubS</note>
+              </trans-unit>
+              <trans-unit id="CustomLabel.rh_FilterAccomplishment" maxwidth="1000" size-unit="char">
+                  <source>Filter Accomplishment</source>
+                  <target>Filtrare le realizzazioni</target>
+                  <note>rh_FilterAccomplishment</note>
+              </trans-unit>
+              <trans-unit id="CustomLabel.rh_BackToAccomplishment" maxwidth="1000" size-unit="char">
+                  <source>Back To Accomplishment</source>
+                  <target>Torna alle realizzazioni</target>
+                  <note>rh BackToAccomplishment</note>
+              </trans-unit>
+              <trans-unit id="CustomLabel.rh_Activate" maxwidth="1000" size-unit="char">
+                  <source>Activate</source>
+                  <target>Attiva</target>
+                  <note>rh_Activate</note>
+              </trans-unit>
+              <trans-unit id="CustomLabel.rh_FirstName" maxwidth="1000" size-unit="char">
+                  <source>First Name</source>
+                  <target>Nome</target>
+                  <note>rh_FirstName</note>
+              </trans-unit>
+              <trans-unit id="CustomLabel.rh_Email" maxwidth="1000" size-unit="char">
+                  <source>Email Address</source>
+                  <target>E-mail</target>
+                  <note>rh_Email</note>
+              </trans-unit>
+              <trans-unit id="CustomLabel.rh_NumberOfEmployees" maxwidth="1000" size-unit="char">
+                  <source>Number Of Employees</source>
+                  <target>Numero di impiegati</target>
+                  <note>rh_NumberOfEmployees</note>
+              </trans-unit>
+              <trans-unit id="CustomLabel.rh_About" maxwidth="1000" size-unit="char">
+                  <source>About</source>
+                  <target>Bio</target>
+                  <note>rh_About</note>
+              </trans-unit>
+              <trans-unit id="CustomLabel.rh_Birthday" maxwidth="1000" size-unit="char">
+                  <source>Birthday</source>
+                  <target>Data di nascita</target>
+                  <note>rh_Birthday</note>
+              </trans-unit>
+              <trans-unit id="CustomLabel.rh_PromoteBaseUser" maxwidth="1000" size-unit="char">
+                  <source>Mark As Team Leader</source>
+                  <target>Promuovere come Team Lead</target>
+                  <note>rh_PromoteBaseUser</note>
+              </trans-unit>
+              <trans-unit id="CustomLabel.rh_Disable" maxwidth="1000" size-unit="char">
+                  <source>Disable</source>
+                  <target>disattiva</target>
+                  <note>rh_Disable</note>
+              </trans-unit>
+              <trans-unit id="CustomLabel.rh_showDetails" maxwidth="1000" size-unit="char">
+                  <source>Show details</source>
+                  <target>Dettagli</target>
+                  <note>rh_showDetails</note>
+              </trans-unit>
+              <trans-unit id="CustomLabel.rh_disable_confirm" maxwidth="1000" size-unit="char">
+                  <source>Are you sure you want to disable this User?</source>
+                  <target>&#200; sicuro di voler disabilitare questo Utente?</target>
+                  <note>rh_disable_confirm</note>
+              </trans-unit>
+              <trans-unit id="CustomLabel.rh_groupName" maxwidth="1000" size-unit="char">
+                  <source>Group Name</source>
+                  <target>Nome del gruppo</target>
+                  <note>group Name</note>
+              </trans-unit>
+              <trans-unit id="CustomLabel.rh_Leader" maxwidth="1000" size-unit="char">
+                  <source>Leader Name</source>
+                  <target>Team lead</target>
+                  <note>rh_Leader</note>
+              </trans-unit>
+              <trans-unit id="CustomLabel.rh_invoice_to" maxwidth="1000" size-unit="char">
+                  <source>Invoice To&quot;</source>
+                  <target>Cliente</target>
+                  <note>rh_invoice_to</note>
+              </trans-unit>
+              <trans-unit id="CustomLabel.rh_descriptionDisplayField" maxwidth="1000" size-unit="char">
+                  <source>Description display Fields</source>
+                  <target>Descrizione dei campi di visualizzazione</target>
+                  <note>rh_descriptionDisplayField</note>
+              </trans-unit>
+              <trans-unit id="CustomLabel.rh_Rate" maxwidth="1000" size-unit="char">
+                  <source>Rate</source>
+                  <target>Costo</target>
+                  <note>rh_Rate</note>
+              </trans-unit>
+              <trans-unit id="CustomLabel.rh_Number" maxwidth="1000" size-unit="char">
+                  <source>Number</source>
+                  <target>Numero</target>
+                  <note>rh_Number</note>
+              </trans-unit>
+              <trans-unit id="CustomLabel.rh_delete_invoiceItem_confirm" maxwidth="1000" size-unit="char">
+                  <source>Are you sure you want to delete this invoice Items</source>
+                  <target>&#200; sicuro di voler eliminare questa elemento</target>
+                  <note>rh_delete_invoiceItem_confirm</note>
+              </trans-unit>
+              <trans-unit id="CustomLabel.rh_delete_invoice_confirm" maxwidth="1000" size-unit="char">
+                  <source>Are you sure you want to delete this invoice</source>
+                  <target>&#200; sicuro di voler eliminare questa fattura</target>
+                  <note>rh_delete_invoice_confirm</note>
+              </trans-unit>
+              <trans-unit id="CustomLabel.rh_new_account" maxwidth="1000" size-unit="char">
+                  <source>New Client Account</source>
+                  <target>Nuovo conto cliente</target>
+                  <note>rh_new_account</note>
+              </trans-unit>
+              <trans-unit id="CustomLabel.rh_Civico" maxwidth="1000" size-unit="char">
+                  <source>Civico</source>
+                  <target>Civico</target>
+                  <note>rh_Civico</note>
+              </trans-unit>
+              <trans-unit id="CustomLabel.rh_DeleteNews_Confirm" maxwidth="1000" size-unit="char">
+                  <source>Are you sure you want to delete this News?</source>
+                  <target>Sei sicuro di voler eliminare questa notizie?</target>
+                  <note>rh_DeleteNews_Confirm</note>
+              </trans-unit>
+              <trans-unit id="CustomLabel.rh_NewPassword" maxwidth="1000" size-unit="char">
+                  <source>New Password</source>
+                  <target>Nuova password</target>
+                  <note>rh_NewPassword</note>
+              </trans-unit>
+              <trans-unit id="CustomLabel.rh_userEditMoreHlp">
+                <source>Edit additionnal information about you  check each time you edit an information. then save all…</source>
+                <target>Modifica informazioni aggiuntive su di te, controlla ogni volta che modifichi un'informazione.Poi salva tutto…</target>
+              </trans-unit>
+              <trans-unit id="CustomLabel.rh_Change" maxwidth="1000" size-unit="char">
+                  <source>Change</source>
+                  <target>Modifica</target>
+                  <note>rh_Change</note>
+              </trans-unit>
+            
+              <trans-unit id="CustomLabel.rh_Submiter" maxwidth="1000" size-unit="char">
+                <source>Submit By</source>
+                <target>Proprietario</target>
+                <note>rh_Submiter</note>
+            </trans-unit>
+
+
+            </body>
+
+    </file>
+</xliff>

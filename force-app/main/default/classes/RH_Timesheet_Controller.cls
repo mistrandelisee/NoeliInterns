@@ -5,7 +5,7 @@ public without sharing class RH_Timesheet_Controller {
     private static RH_WorkGroup_Query workGroupQry = RH_WorkGroup_Query.getInstance();
     private static RH_Timesheet_Query timesheetQry = RH_Timesheet_Query.getInstance();
     private static RH_TimeSheetEntry_Query timeSheetEntryQry = RH_TimeSheetEntry_Query.getInstance();
-    
+    private static final  RH_Settings__c cs = RH_Settings__c.getOrgDefaults();
     @AuraEnabled 
     public static Map<String,Object>  timeSheetCreation(String sheetJson){
         Map<String, Object> mapReturn = new Map<String, Object>();
@@ -50,7 +50,7 @@ public without sharing class RH_Timesheet_Controller {
         List<TimeSheet> mytodaySheets = timesheetQry.getUserTodayTimeSheets(myUserId);
         if (!myTodaySheets.isEmpty()){
             mapReturn.put('myTodaySheets',myTodaySheets);
-            throw new RH_ControllerException('002','Exisisting TimeSheet On this period');
+            throw new RH_ControllerException('002',label.rh_ExistingSheet);
         }   
     }
 
@@ -60,9 +60,9 @@ public without sharing class RH_Timesheet_Controller {
         mapReturn.put('error',false);
         try {
             List<RH_Utility.PickOption> OrderBys = new List<RH_Utility.PickOption>();
-            OrderBys.add(new RH_Utility.PickOption('None', ''));
-            OrderBys.add(new RH_Utility.PickOption('Created Date', 'CreatedDate'));
-            OrderBys.add(new RH_Utility.PickOption('Number', 'TimeSheetNumber'));
+            OrderBys.add(new RH_Utility.PickOption(label.rh_None, ''));
+            OrderBys.add(new RH_Utility.PickOption(label.rh_CreatedDate, 'CreatedDate'));
+            OrderBys.add(new RH_Utility.PickOption(label.rh_Number, 'TimeSheetNumber'));
             // OrderBys.add(new RH_Utility.PickOption('Groups', 'RH_WorkGroup__c'));
             // OrderBys.add(new RH_Utility.PickOption('Created Date', 'CreatedDate'));
             // List<RH_WorkGroup__c> grps=workGroupQry.getActiveWorkgroups();
@@ -113,7 +113,7 @@ public without sharing class RH_Timesheet_Controller {
                 mapReturn.put('TimeSheetEntry',myTimeSheetEntry);
             }else{
                 mapReturn.put('myOverlaps',myOverlaps);
-                throw new RH_ControllerException('002','There is an overlapas');
+                throw new RH_ControllerException('002',label.rh_Overlap);
                 
             } 
             mapReturn.put('Ok',true); 
@@ -297,7 +297,7 @@ public without sharing class RH_Timesheet_Controller {
             if (String.isBlank(con?.RH_WorkGroup__r.RH_Team_Leader__c)){
 
                 if (!RH_Constans.CONTACT_ROLE_CEO.equalsIgnoreCase(Role) || !RH_Constans.CONTACT_ROLE_TL.equalsIgnoreCase(Role) ) {
-                    throw new RH_ControllerException('002','You don\'t have a Team Leader! Contact your Administrator for Help');
+                    throw new RH_ControllerException('002',label.rh_MissingTeamLeader);
                 }
                
                 
@@ -331,6 +331,7 @@ public without sharing class RH_Timesheet_Controller {
             List<Project__c> freeProjects = projectQry.getFreeProjects();
             Contact userContact=userContacts[0];
             mapReturn.put('userContact', userContact); 
+            mapReturn.put('config', getAdditionnalConfig(System.today()));
             mapReturn.put('Projects', userContact.Projects__r); 
             mapReturn.put('freeActivities', freeProjects); 
             mapReturn.put('ProjectsLeaded', userContact.Projects_Leaded__r); 
@@ -343,12 +344,21 @@ public without sharing class RH_Timesheet_Controller {
         }  
         return mapReturn;
     }
-    
+
+    private static  Map<String, Object> getAdditionnalConfig(Date currentDate){
+        Map<String, Object> mapReturn = new Map<String, Object>();
+        Integer END_OF_DAY=cs.RH_endHour__c!=null ? cs.RH_endHour__c.intValue() : 20;
+        Integer START_OF_DAY=cs.RH_startHour__c!=null ? cs.RH_startHour__c.intValue() : 7;
+        mapReturn.put('END_OF_DAY', END_OF_DAY); 
+        mapReturn.put('START_OF_DAY', START_OF_DAY); 
+        return mapReturn;
+    }
+
     @AuraEnabled
     public static String generatedPDF(String listId){
         String fileContent = createPDF(listId);
         return fileContent;
-}
+    }
 
 
     // retrieve the content of the Pdf File

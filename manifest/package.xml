@@ -1,9 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Package xmlns="http://soap.sforce.com/2006/04/metadata">
 	<types>
-		<members>fr</members>
-		<members>it</members>
-		<name>Translations</name>
+		<members>TimeSheetEntry.Type</members>
+		<name>CustomField</name>
 	</types>
 	<version>55.0</version>
 </Package>

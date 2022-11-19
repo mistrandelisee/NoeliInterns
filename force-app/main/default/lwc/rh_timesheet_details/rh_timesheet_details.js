@@ -672,6 +672,7 @@ export default class Rh_timesheet_details extends NavigationMixin(LightningEleme
         this.startSpinner(true);
         obj.TimeSheetId=this.recordId;
         obj.Id=this.sheetItem?.Id;
+        var error=false;
         timeSheetEntryCreation({ entryJson: JSON.stringify(obj) })
           .then(result => {
             console.log('Result', result);
@@ -679,13 +680,14 @@ export default class Rh_timesheet_details extends NavigationMixin(LightningEleme
                 this.handleCreateEntryApexFinishOK(result,todo);
             }else{
                 this.showToast(WARNING_VARIANT,this.l.warningOp, result.msg);
+                error=true;
             }
           })
           .catch(error => {
             console.error('Error:', error);
             this.showToast(ERROR_VARIANT,this.l.warningOp, error);
         }).finally(() => {
-            if (todo.action!='SAVE_NEW') {this.startSpinner(false)}
+            if (todo.action!='SAVE_NEW' || error) {this.startSpinner(false)}
             
         });
     }
@@ -741,6 +743,7 @@ export default class Rh_timesheet_details extends NavigationMixin(LightningEleme
     }
     handleCancel(){
         this.action='';
+        this.reloadPage();
     }
     handleSaveNew(evt){
         this.doSave({action:'SAVE_NEW'})

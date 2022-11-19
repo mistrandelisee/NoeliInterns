@@ -21,7 +21,7 @@ const icons = {
     exportPdf: 'utility:pdf_ext',
     exportXls: 'utility:pdf_ext',
     approve: 'utility:check',
-    reject: 'utility:reject',
+    reject: 'utility:error',
     chevrondown : 'utility:chevrondown',
     chevronup : 'utility:chevronup',
     
@@ -35,7 +35,7 @@ const icons = {
     user_info_edit: 'standard:employee_job_position',
     more_info: 'action:contact_list',
     ban:'utility:resource_absence',
-    promote:'utility:level_up',
+    promote:'utility:watchlist',
 
     ///Event Icon
     Download: 'utility:download',

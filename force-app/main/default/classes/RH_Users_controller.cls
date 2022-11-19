@@ -118,7 +118,7 @@ public without sharing class RH_Users_controller {
         mapReturn.put('error',false);
         try {
             List<RH_Utility.PickOption> OrderBys = new List<RH_Utility.PickOption>();
-            OrderBys.add(new RH_Utility.PickOption('-', ''));
+            OrderBys.add(new RH_Utility.PickOption(label.rh_None, ''));
             OrderBys.add(new RH_Utility.PickOption(label.rh_CreatedDate, 'CreatedDate'));
             OrderBys.add(new RH_Utility.PickOption(label.rh_Name, 'FirstName'));
             OrderBys.add(new RH_Utility.PickOption(label.rh_Group, 'RH_WorkGroup__c'));

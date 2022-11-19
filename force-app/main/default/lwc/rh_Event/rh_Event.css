@@ -50,5 +50,12 @@
     color: red;
 }
 .marginTop{
-  margin-top:-50px;
+  margin-top:-16px;
+}
+
+.layoutStyle{
+  margin-top: -68px;margin-right: -27px;
+}
+.filterStyle{
+  margin-top: 25px;margin-left: 29px;margin-right: 15px;
 }

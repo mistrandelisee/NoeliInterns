@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.2">
+    <file original="Salesforce" source-language="en_US" target-language="it" translation-type="metadata" datatype="xml">
+        <body>
+            <trans-unit id="CustomLabel.rh_None">
+                <source>None</source>
+                <target>Nessun</target>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_ExistingSheet">
+                <source>Exisisting TimeSheet On this period</source>
+                <target>Foglio di presenza esistente Su questo periodo</target>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_Overlap">
+                <source>There is an overlap</source>
+                <target>C &#232; una sovrapposizione </target>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_MissingTeamLeader">
+                <source>You do not have a Team Leader! Contact your Administrator for Help.</source>
+                <target>Non avete un caposquadra! Contattare l amministratore per chiedere aiuto.</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

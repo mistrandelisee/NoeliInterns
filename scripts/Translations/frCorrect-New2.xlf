@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xliff version="1.2">
+    <file original="Salesforce" source-language="en_US" target-language="fr" translation-type="metadata" datatype="xml">
+        <body>
+            <trans-unit id="CustomLabel.rh_None">
+                <source>None</source>
+                <target>Aucun</target>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_ExistingSheet">
+                <source>Exisisting TimeSheet On this period</source>
+                <target>Il existe une feuille de travail travail en cette periode</target>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_Overlap">
+                <source>There is an overlap</source>
+                <target>Il existe un chevauchement</target>
+            </trans-unit>
+            <trans-unit id="CustomLabel.rh_MissingTeamLeader">
+                <source>You do not have a Team Leader! Contact your Administrator for Help.</source>
+                <target>Vous n'avez pas de Team Lead ! Contactez votre administrateur pour obtenir de l aide.</target>
+            </trans-unit>
+        </body>
+    </file>
+</xliff>

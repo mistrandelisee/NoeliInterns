@@ -7,7 +7,7 @@
     <summaryFilterItems>
         <field>TimeSheetEntry.Type</field>
         <operation>equals</operation>
-        <value>Optional</value>
+        <value>Free</value>
     </summaryFilterItems>
     <summaryForeignKey>TimeSheetEntry.TimeSheetId</summaryForeignKey>
     <summaryOperation>sum</summaryOperation>

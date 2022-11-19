@@ -10,8 +10,8 @@ public with sharing class RH_Invoice_Controller {
         mapReturn.put('error',false);
         try {
             List<RH_Utility.PickOption> OrderBys = new List<RH_Utility.PickOption>();
-            OrderBys.add(new RH_Utility.PickOption('None', ''));
-            OrderBys.add(new RH_Utility.PickOption('Created Date', 'CreatedDate'));
+            OrderBys.add(new RH_Utility.PickOption(label.rh_None, ''));
+            OrderBys.add(new RH_Utility.PickOption(label.rh_CreatedDate, 'CreatedDate'));
             // OrderBys.add(new RH_Utility.PickOption('Number', 'TimeSheetNumber'));
             // OrderBys.add(new RH_Utility.PickOption('Groups', 'RH_WorkGroup__c'));
             // OrderBys.add(new RH_Utility.PickOption('Created Date', 'CreatedDate'));

@@ -6,6 +6,8 @@ import updateAndSendEven from '@salesforce/apex/RH_EventController.updateAndSend
 import getPicklistStatus from '@salesforce/apex/RH_EventController.getPicklistStatus';
 import saveAndSendEvent from '@salesforce/apex/RH_EventController.saveAndSendEvent';
 import getLatestEvents from '@salesforce/apex/RH_EventController.getEventList';
+import filterRequest from '@salesforce/apex/RH_EventController.filterRequest';
+import saveEventApex from '@salesforce/apex/RH_EventController.saveEventApex';
 import sendNotif from '@salesforce/apex/RH_EventController.sendNotifications';
 import getEventEdite from '@salesforce/apex/RH_EventController.getEventEdite';
 import getIdUserCEO from '@salesforce/apex/RH_EventController.getIdUserCEO';
@@ -30,16 +32,8 @@ const TeamLeader = 'Team Leader';
 const RhManager = 'RH Manager';
 const HumanResourceManagment = 'Human Resource Managment';
 const RoleCEO = 'CEO';
+const GroupLeader = 'Group Leader';
 export default class Rh_Event extends  NavigationMixin(LightningElement) {
-    l={...labels,
-        //searchText:null,
-        Name: 'Name',
-        srchNamePlc: 'Search by name',
-        From:'From',
-        To:'To',
-        OrderBy:'sort By',
-        selectPlc:'Select an option',
-        };
     icon={...icons};
     label={...labels};
 
@@ -77,6 +71,7 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
     evId_ForFile;
     state;
     error;
+    resObj={};
     _eventData = {};
     strEventData;
     strUpdatEven;
@@ -86,6 +81,7 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
     azerty=[];
     @track filterInputs=[];
     contentDocIdList = [];
+    @track inputFormFilter = [];
     filesList =[];
     filesLists = [];
     @track datas = [];
@@ -168,14 +164,15 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
         EndDate: 'End Date',
         // Status:'Status'
     };
-    get filterReady(){ return this.filterInputs?.length >0}
+    get filterReady(){ return this.inputFormFilter?.length >0}
     getNewEventList(){
         this.datas=[];
         getLatestEvents()
         .then(result =>{
             console.log('@@wiredatas--> ' , result);
             const self=this;
-            result.forEach(elt => { 
+            result.forEach(elt => {
+            console.log('elt-->',elt);
             let objetRep = {};
             let str = elt.Description__c;
             if(str?.length>30) str = str?.substring(0,30);
@@ -185,7 +182,7 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
                 "ContactName": elt.Contact_Id__r?.Name,
                 "StartDate" : elt.Start_Dates__c?.split('T')[0],
                 "EndDate" : elt.End_Dates__c?.split('T')[0],
-                "Status" : elt.Status__c,
+                "Status" : elt.StatusLabel,
                 "Description" :  str,
 
                 icon: this.icon.user, 
@@ -199,7 +196,7 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
             const badge={
                 name: 'badge', 
                 class:self.classStyle(elt?.Status__c),
-                label: elt?.Status__c
+                label: elt?.StatusLabel
             }
             console.log('@@@@@@@@  badge  --> ' , badge);
             objetRep.addons={badge};
@@ -247,6 +244,7 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
             state: states
         });
     }
+
     getUrlParamValue(url, key) {
         return new URL(url).searchParams.get(key);
     }
@@ -275,6 +273,7 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
                 this.StatusList = result;
                 console.log('StatusList-->', this.StatusList);
                 this.buildFilter();
+                this.buildFormFilter();
             })
             .catch(err => {
                 console.error('error',err);
@@ -331,15 +330,94 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
         
         ];
     }
-
+    buildFormFilter(){
+        this.inputFormFilter=[
+            {
+                label: this.label.Name,
+                placeholder: this.label.SearchByName,
+                type: 'Test',
+                required:false,
+                ly_md:'3', 
+                ly_lg:'3'
+            },
+            {
+                label:this.label.Status,
+                placeholder: this.label.Status,
+                name:'status',
+                picklist: true,
+                options: this.StatusList,
+                ly_md:'3', 
+                ly_lg:'3'
+            },
+            {
+                label:this.label.From,
+                placeholder:this.label.From,
+                name:'From',
+                required:false,
+                type: 'Date',
+                ly_md: '3',
+                ly_lg: '3',
+            },
+            {
+                label:this.label.To,
+                placeholder:this.label.To,
+                name:'To',
+                required:false,
+                type: 'Date',
+                ly_md: '3',
+                ly_lg: '3',
+            }];
+    }
     handleSubmitFilter(event) {
-        const record=event.detail;
-        console.log(`handleSubmitFilter record `, JSON.stringify(record) );
-        console.log(`this.datas `, this.datas);
-        record.searchText ? this.datas = this.datas.filter(element =>((element.EventName).toUpperCase()) == (record.searchText.toUpperCase())) : this.datas;
-        record.startDate ? this.datas = this.datas.filter(element =>element.StartDate ==  record.startDate) : this.datas;
-        record.status ? this.datas = this.datas.filter(element =>element.Status ==  record.status) : this.datas;
-        record.EndDate ? this.datas = this.datas.filter(element =>element.EndDate ==  record.EndDate) : this.datas;   
+        this.datas=[];
+        let name= event.detail.searchText;
+        let status= event.detail.status;
+        let startDate= event.detail.startDate;
+        let endDate = event.detail.EndDate;
+        console.log('handleSubmitFilter record', JSON.stringify(event.detail) );
+        this.startSpinner(true);
+        filterRequest({name:name,status:status,startDate:startDate,endDate:endDate})
+        .then(result =>{
+            console.log('@@@result --> ', result );
+            const self=this;
+            result.forEach(elt => {
+            console.log('elt-->',elt);
+            let objetRep = {};
+            let str = elt.Description__c;
+            if(str?.length>30) str = str?.substring(0,30);
+            objetRep = {
+                "id" : elt.Id,
+                "EventName": elt.Name,
+                "ContactName": elt.Contact_Id__r?.Name,
+                "StartDate" : elt.Start_Dates__c?.split('T')[0],
+                "EndDate" : elt.End_Dates__c?.split('T')[0],
+                "Status" : elt.StatusLabel,
+                "Description" :  str,
+
+                icon: this.icon.user, 
+                title: elt.Name,
+                class: elt.Status__c=='Rejected'? 'banned': elt.Status__c=='Submitted'? 'frozen': 'active',
+                keysFields:self.keysFields,
+                keysLabels:self.keysLabels,
+                fieldsToShow:self.fieldsToShow,
+            }
+            console.log('@@@@@objectReturn', objetRep);
+            const badge={
+                name: 'badge', 
+                class:self.classStyle(elt?.Status__c),
+                label: elt?.StatusLabel
+            }
+            console.log('@@@@@@@@  badge  --> ' , badge);
+            objetRep.addons={badge};
+            this.datas.push(objetRep);
+            }); 
+            this.setviewsList( this.datas);
+            console.log('@@@@@@@@wiredatas--> ' , this.datas);
+        }).catch(error => {
+            console.error('Error:', error);
+        }).finally(() => {
+           this.startSpinner(false)
+        });
     }
 
     senNotification(evId){
@@ -350,7 +428,11 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
             for(let i=0; i<result.length; i++){
                 console.log('@@@ All IDUSER --> ' , result[i].Id);
                 console.log('@@@ UserRole.Name --> ' , result[i].UserRole.Name);
-                if(result[i].UserRole.Name==RoleCEO || result[i].UserRole.Name==HumanResourceManagment || result[i].UserRole.Name==RhManager || result[i].UserRole.Name==TeamLeader){
+                if(result[i].UserRole.Name==RoleCEO || result[i].UserRole.Name==HumanResourceManagment  
+                                                    || result[i].UserRole.Name==RhManager 
+                                                    || result[i].UserRole.Name==TeamLeader 
+                                                    || result[i].UserRole.Name==GroupLeader){
+
                     console.log('@@@ IDUSER CEO --> ' , result[i].Id);
                     let name = this.data_Event[0].Name;
                     let desc = this.data_Event[0].Description__c;
@@ -364,8 +446,9 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
                                 this.showToast('Success', 'Success', this.label.successOp);
                             }
                         }).catch(err =>{
+                            console.log('event-->   error');
                             console.error('error',err);
-                            this.showToast('error', 'error', this.label.errorOp);
+                            //this.showToast('error', 'error', this.label.errorOp);
                         })
                 }
             }
@@ -397,8 +480,6 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
 
     doSaveSucces(isSave){
         this.showToast('Success', 'Success !!', this.label.SuccessEven);
-        //this.getNewEventList();
-        //this.closeComponentEdit();
         this.goToEventDetail(this.recordId);
         window.console.log('result ===> ', result);
     }
@@ -537,8 +618,6 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
                 saveEven({ objEven: this._eventData, eId: this.evId_ForFile})
                 .then(result => {
                     console.log('&&&& &&&& result ---> ', result);
-                    // this.getNewEventList();
-                    // this.closeComponentEdit();
                     this.goToEventDetail(result[0].Id);
                     window.console.log('result ===> ', result);
                     this.showToast('Success', 'Success !!',  this.label.SuccessEven);
@@ -558,8 +637,6 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
                 saveEven({ objEven: this._eventData, eId: this.evId_ForFile})
                 .then(result => {
                     console.log('&&&& &&&& result ---> ', result);
-                    // this.getNewEventList();
-                    // this.closeComponentEdit();
                     this.goToEventDetail(result[0].Id);
                     window.console.log('result ===> ', result);
                     this.showToast('Success', 'Success !!',  this.label.SuccessEven);
@@ -588,8 +665,6 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
                     if(this._evId){
                         this.senNotification(this._evId);
                     }
-                    // this.getNewEventList();
-                    // this.closeComponentEdit();
                     this.goToEventDetail(result[0].Id);
                     this.showToast('Success', 'success !!', this.label.SucessEvenS);
                 })
@@ -629,37 +704,156 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
         }
     }
     handleSaveEvent(){debugger
-        // this.doSave(true,this.bool);
-        if(this.bool==true){
-            this.handleBeforeSave();
-            setTimeout(()=>{
-                this.checkIdOfFileBeforeSaveOrBeforeUpdate();
-                this.checkDataEventBeforeSave();
-            },1000);
-        }else{
-            this.handleBeforeSave();
-            setTimeout(()=>{
-                this.checkDataEventBeforeSave();
-            },2000);
-        }
+        this.handleSaveEventNew();
            
     }
-    //-----------------florent start--------------
-    handleSaveAndSendEvent(){
-        if(this.bool==true){
-            this.handleBeforeSave();
-            setTimeout(()=>{
-                this.checkIdOfFileBeforeSaveOrBeforeUpdate();
-                this.checkDataEventBeforeSaveAndSend();
-            },1000);
-        }else{
-            this.handleBeforeSave();
-            setTimeout(()=>{
-                this.checkDataEventBeforeSaveAndSend();
-            },1000);
+
+    handleSaveEventNew(){
+        if (this.handleSave()) {
+            this.EventData.Id=this.recordId;
+            this.EventData.Status='Draft';
+            console.log('EventData.Id---> ', this.EventData.Id);
+            console.log('EventData---> ', this.EventData);
+            this.handleSaveApex(this.EventData);
         }
+        
+           
+    }
+    handleSaveApexFinishDraft(){
+        this.showToast('Success', 'success !!', this.label.SucessEvenS);
+        this.goToEventDetail(this._evId);
+        this.startSpinner(false);
+    }
+    handleSaveApexFinishUpdDraft(){
+        this.backToDetails();
+        this.showToast('success', 'success !!', this.label.EvenUpdateS);
+        this.startSpinner(false);
+    }
+    handleSaveApexFinishSubmit(result){
+        this.data_Event=[result]
+        console.log('[result] --> ', this.data_Event);
+        this.senNotificationNew(this._evId);
+    }
+    handleSaveApexFinishUpdSubmit(result){
+        this.data_Event=[result];
+        console.log('@@ result ---> ', this.data_Event);
+        this.senNotificationNew(this._evId,'upd');
+    }
+    handleSaveApex(obj,from=''){debugger
+        console.log('3--> obj', obj);
+        this.startSpinner(true);
+        saveEventApex({ objEven: JSON.stringify(obj)})
+        .then(result => {
+            console.log('### result handleSaveApex----->', result);
+            this._evId = result.Id;
+            console.log('result _evId---> ', this._evId);
+            switch (from) {
+                case 'updDraft': //udte qnd send updDraft
+                    this.handleSaveApexFinishUpdDraft(result);
+                    break;
+                case 'Ss': // sqve qnd send
+                    this.handleSaveApexFinishSubmit(result);
+                    break;
+                case 'updSub':
+                    this.handleSaveApexFinishUpdSubmit(result);
+                break;
+                default:
+                    this.handleSaveApexFinishDraft();
+                    break;
+            }
+            
+        })
+        .catch(error => {
+            this.error = error.message;
+            this.showToast('error', 'Error', this.label.FieldsError);
+            //this.startSpinner(false);
+        })
+        .finally(()=>{
+            this.startSpinner(false);
+        });
+    }
+    handleSave(){
+        this.EventData={};
+        let ret = this.template.querySelector('c-rh_dynamic_form').save();
+        if (ret.isvalid) {
+            const record=ret.obj;
+            this.EventData=record;
+            console.log('### EventData----->', JSON.stringify(this.EventData));
+           
+            if (record.StartDate > record.EndDate ){
+                this.showToast('info', 'Toast Info', this.label.ToastInfoEvent2);
+            }else{
+                this.EventData={ ...this.EventData , hasfile:this.bool,
+                    fileObj:{  base64:this.fileData?.base64, filename:this.fileData?.filename}
+                    };
+                var jsonEventData = JSON.stringify(this.EventData);
+                this.strEventData = jsonEventData;
+                return this.EventData;
+            }
+            
+        }
+        return null
+    }
+    senNotificationNew(evId,from='00'){
+        console.log('@@senNotification User evId --> ' , evId);
+        getIdUserCEO({})
+        .then(result =>{
+            console.log('@@senNotification User data --> ' , result);
+            for(let i=0; i<result.length; i++){
+                console.log('@@@ All IDUSER --> ' , result[i].Id);
+                console.log('@@@ UserRole.Name --> ' , result[i].UserRole.Name);
+                if(result[i].UserRole.Name==RoleCEO || result[i].UserRole.Name==HumanResourceManagment 
+                                                    || result[i].UserRole.Name==RhManager 
+                                                    || result[i].UserRole.Name==TeamLeader){
+                    console.log('@@@ IDUSER CEO --> ' , result[i].Id);
+                    console.log('@@@ data_Event --> ' , this.data_Event);
+                    let name = this.data_Event[0].Name;
+                    let desc = this.data_Event[0].Description__c;
+                    console.log('@@@ status || desc --> ' , name +' || '+ desc);
+                    sendNotif({strBody:desc, pgRefId:evId, strTargetId:result[i].Id, strTitle:name, setUserIds:result[i].Id})
+                        .then(result =>{
+                            if (result?.error) {
+                                console.error(result?.msg);
+                            }else{
+                                console.log('event-->   Success');
+                                if(from=='upd'){
+                                    this.showToast('success', 'success !!', this.label.EvenUpdateSS);
+                                }else{
+                                    this.showToast('Success', 'Success', this.label.successOp);
+                                }
+                                setTimeout(() => {
+                                    this.goToEventDetail(evId);
+                                }, 1000);
+                                
+                            }
+                        }).catch(err =>{
+                            console.log('event-->   error');
+                            console.error('error',err);
+                            //this.showToast('error', 'error', this.label.errorOp);
+                        }).finally(()=>{
+                            this.startSpinner(false);
+                        });
+                }
+            }
+        })
+        .catch(err =>{
+            console.error('error',err);
+            this.showToast('error', 'error', this.label.ErrorId);
+            this.startSpinner(false);
+        })
     }
 
+    handleSaveAndSendEvent(){
+        this.handleSaveAndSendEventNew()
+    }
+    handleSaveAndSendEventNew(){
+        if (this.handleSave()) {
+            this.EventData.Id=this.recordId;
+            this.EventData.Status='Submitted';
+
+            this.handleSaveApex(this.EventData,'Ss');
+        }
+    }
     closeComponentEdit(){
         this.showComponentBase = true;
         this.showComponentDetails = false;
@@ -674,12 +868,6 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
         this.showComponentBase = false;
         this.showComponentEdit = false;
         this.isUpdate = false;
-        // if (event.detail.action=='Back'){
-        // this.showComponentDetails = true;
-        // this.showComponentBase = false;
-        // this.showComponentEdit = false;
-        // this.isUpdate = false;
-        // }
     }
     backToPreviousComponent(){
         this.recordId = undefined;
@@ -691,7 +879,7 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
         this.isUpdate = false;
     }
     closeComponentDetails(event){
-        if (event.detail.action=='Back'){
+        if (event.detail.action==this.label.Back){
         this.recordId = undefined;
         this.goToEventDetail(this.recordId);
         this.getNewEventList();
@@ -703,133 +891,60 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
     }
     //-----------------florent end--------------
     handleSendEvent(event){
-        if (event.detail.action=='Send'){
-            this.startSpinner(true);
-            this.recordId = this.getUrlParamValue(window.location.href, 'recordId');
-            console.log('eid----->', this.recordId);
-            sendEvent({evId: this.recordId})
-            .then(result => {
-                console.log('result ---> ', result);
-                this.data_Event = result;
-                this._evId = result[0].Id;
-                console.log('result _evId---> ', this._evId);
-                if(this._evId){
-                    this.senNotification(this._evId);
-                }
-                // this.getNewEventList();
-                // this.closeComponentEdit();
-                this.goToEventDetail(result[0].Id);
-                this.showToast('success', 'success !!', this.label.EvenSendSuccess);
-            })
-            .catch(error =>{
-                this.error = error.message;
-                this.showToast('error', 'Error', this.label.AddFailed);
-            })
+        sendEvent({evId : this.recordId})
+        .then(result => {
+            this.resObj=result[0]
+            console.log('resObj --> ', this.resObj);
+            this._evId = result[0].Id;
+            console.log('this._evId--> ', this._evId);
+            this.handleSaveApexFinishUpdSubmit(this.resObj);
+            // const obj={};
+            // obj.Id=this.recordId;
+            // obj.Name= result[0].Name;
+            // obj.Description= result[0].Description__c;
+            // obj.StartDate= result[0].Start_Dates__c;
+            // obj.EndDate= result[0].End_Dates__c;
+            // obj.Status='Submitted';
+            // this.handleSaveApex(obj,'updSub');
+        })
+        .catch(error => {
+            console.error(error.msg);
+        });
+        //this.handleSendEventNew();
+    }
+    handleSendEventNew(){
+        this.EventData.Id=this.recordId;
+        this.EventData.Status='Submitted';
+        console.log('EventData', this.EventData);
+        this.handleSaveApex(this.EventData,'updSub');
+    }
+    handleUpdateEvent(){debugger
+        this.handleUpdateEventNew()
+    }
+    handleUpdateEventNew(){
+        if (this.handleSave()) {
+            this.EventData.Id=this.recordId;
+            this.EventData.Status='Draft';
+            console.log('EventData.Id---> ', this.EventData.Id);
+            console.log('EventData---> ', this.EventData);
+            this.handleSaveApex(this.EventData,'updDraft');
         }
     }
-    // handleCancelSave(){
-    //     this.startSpinner(true);
-    //     if(this.state==''){
-    //         console.log('@@@ --->  TRUE', this.evId_ForFile);
-    //         cancelEven({eId: this.evId_ForFile})
-    //         .then(result => {
-    //             console.log('result ---> ', result);
-    //             this.getNewEventList();
-    //             this.closeComponentEdit();
-    //             window.console.log('result ===> ', result);
-    //         })
-    //         .catch(error => {
-    //             this.error = error.message;
-    //             this.showToast('error', 'Error', this.label.AddFailed);
-    //         });
-            
-    //     }else if(this.error=='error'){
-    //         this.showToast('error', 'Error', this.label.AddFailed);
-    //     }
-    // }
-    checkDataEventBeforeUpdate(){
-        if(this.fileId){
-            this.handleClick();
-            if(this.messageOfUpdate=='Event has been already sent'){
-                this.showToast('info', 'Toast Info', this.label.EvenApproved);
-                
-                this.backToDetails();
-            }
-            else{
-                // this.closeComponentUpdate();
-                this.backToDetails();
-                this.showToast('success', 'success !!', this.label.EvenUpdateS);
-            }
-        }else{
-            if(this.messageOfUpdate=='Event has been already sent'){
-                this.showToast('info', 'Toast Info', this.label.EvenApproved);
-                
-                this.backToDetails();
-            }
-            else{
-                // this.closeComponentUpdate();
-                this.backToDetails();
-                this.showToast('success', 'success !!', this.label.EvenUpdateS);
-            } 
-        }
+    handleUpdateAndSendEvent(){debugger
+        this.handleUpdateAndSendEventNew();  
     }
-    handleUpdateEvent(){
-        console.log('bool1 bool1---> ', this.bool1);
-        if(this.bool1==true){
-            this.handleBeforeUpdate();
-            setTimeout(()=>{
-                this.checkIdOfFileBeforeSaveOrBeforeUpdate();
-                this.checkDataEventBeforeUpdate();
-            },1000);
-        }else{
-            this.handleBeforeUpdate();
-            setTimeout(()=>{
-                this.checkDataEventBeforeUpdate();
-            },1000);
+    handleUpdateAndSendEventNew(){debugger
+        if (this.handleSave()) {
+            this.EventData.Id=this.recordId;
+            this.EventData.Status='Submitted';
+            window.console.log('EventData.Id', this.EventData.Id);
+            window.console.log('EventData', this.EventData);
+            this.handleSaveApex(this.EventData,'updSub');
         }
-    }
-    checkDataEventBeforeUpdateAndSendEvent(){
-        window.console.log('fileId ===> fileId', this.fileId);
-        if(this.fileId){
-            this.handleClick();
-            window.console.log('Id ===> id', this._evId);
-            if(this._evId){
-                console.log('Id ===> true');
-                this.senNotification(this._evId);
-            }
-            setTimeout(()=>{
-                this.backToDetails();
-                this.showToast('success', 'success !!', this.label.EvenUpdateSS);
-            },1000);
-        }else{
-            window.console.log('Id2 ===> id2', this._evId);
-            if(this._evId){
-                console.log('Id2 ===>  true');
-                this.senNotification(this._evId);
-            }
-            setTimeout(()=>{
-                this.backToDetails();
-                this.showToast('success', 'success !!', this.label.EvenUpdateSS);
-            },500);
-        }
-    }
-    handleUpdateAndSendEvent(){
-        if(this.bool1==true){
-            this.handleBeforeUpdateAndSendEvent();
-            setTimeout(()=>{
-                this.checkIdOfFileBeforeSaveOrBeforeUpdate();
-                this.checkDataEventBeforeUpdateAndSendEvent();
-            },1000);
-        }else{
-            this.handleBeforeUpdateAndSendEvent();
-            setTimeout(()=>{
-                this.checkDataEventBeforeUpdateAndSendEvent();
-            },1000);
-        }    
     }
 
     handledeleteEvent(event){debugger
-        if (event.detail.action=='Yes I m sure'){
+        if (event.detail.action==this.label.ok_confirm){
             this.startSpinner(true);
             this.recordId = this.getUrlParamValue(window.location.href, 'recordId');
             console.log('eid----->', this.recordId);
@@ -866,8 +981,8 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
     closeModalAfterDelete(){
         this.showModalDelete=false;
     }
-    closeModalDelete(event){
-        if (event.detail.action=='Cancel'){
+    closeModalDelete(event){debugger
+        if (event.detail.action==this.label.Cancel){
             this.showModalDelete=false;
         }
     }
@@ -899,7 +1014,7 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
             if (result.error) {
                 console.error(result.msg);
                 this.showToast('error', 'error', this.label.errorOp);
-                }else{
+            }else{
                     console.log('result --> ' , result);
                     let status = result[0].Status__c;
                     let creatById = result[0].Contact_Id__c;
@@ -912,10 +1027,11 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
                             this.displayButton = true;
                             this.hidenButton = true;
                             if(status=='Rejected'){
+                                this.showComponentDetails = true;
                                 this.hidenButton = false;
                                 this.displayButton = false;
                                 this.displayButton2 = true;
-                                console.log('event --> ' , result);
+                                console.log('event 1--> ' , result);
                                 this.data0 = result.map(obj => {
                                     var newobj={};
                                         newobj.Id = obj.Id;
@@ -927,7 +1043,7 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
                                         newobj.Status=obj.Status__c;
                                     return newobj;
                                 });
-                                console.log('data0--->', this.data0);
+                                console.log('data0  1--->', this.data0);
                                 this.eventinformationEdite = result.map(obj => {
                                     var newobj={};
                                         newobj.Id = obj.Id;
@@ -936,7 +1052,7 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
                                         newobj.Description=obj.Description__c;
                                         newobj.StartDate= obj.Start_Dates__c.split('T')[0]+'  à '+ obj.Start_Dates__c.split('T')[1].substring(0,5); 
                                         newobj.EndDate= obj.End_Dates__c.split('T')[0]+'  à '+obj.End_Dates__c.split('T')[1].substring(0,5);
-                                        newobj.Status=obj.Status__c;
+                                        newobj.Status=obj.StatusLabel;
                                     return newobj;
                                 });
                                 this.data = this.eventinformationEdite;
@@ -1019,9 +1135,10 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
                                     console.log('-->',this.filesLists);
                                 });
                             }else if(status=='Submitted'){
+                                this.showComponentDetails = true;
                                 this.hidenButton = false;
                                 this.displayButton = false;
-                                console.log('event --> ' , result);
+                                console.log('event 2--> ' , result);
                                 this.data0 = result.map(obj => {
                                     var newobj={};
                                         newobj.Id = obj.Id;
@@ -1033,7 +1150,7 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
                                         newobj.Status=obj.Status__c;
                                     return newobj;
                                 });
-                                console.log('data0--->', this.data0);
+                                console.log('data0  2--->', this.data0);
                                 this.eventinformationEdite = result.map(obj => {
                                     var newobj={};
                                         newobj.Id = obj.Id;
@@ -1042,7 +1159,7 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
                                         newobj.Description=obj.Description__c;
                                         newobj.StartDate= obj.Start_Dates__c.split('T')[0]+'  à '+ obj.Start_Dates__c.split('T')[1].substring(0,5); 
                                         newobj.EndDate= obj.End_Dates__c.split('T')[0]+'  à '+obj.End_Dates__c.split('T')[1].substring(0,5);
-                                        newobj.Status=obj.Status__c;
+                                        newobj.Status=obj.StatusLabel;
                                     return newobj;
                                 });
                                 this.data = this.eventinformationEdite;
@@ -1125,7 +1242,8 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
                                     console.log('-->',this.filesLists);
                                 });
                             }else{
-                                console.log('event --> ' , result);
+                                this.showComponentDetails = true;
+                                console.log('event 3--> ' , result);
                                 this.data0 = result.map(obj => {
                                     var newobj={};
                                         newobj.Id = obj.Id;
@@ -1137,7 +1255,7 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
                                         newobj.Status=obj.Status__c;
                                     return newobj;
                                 });
-                                console.log('data0--->', this.data0);
+                                console.log('data0  3--->', this.data0);
                                 this.eventinformationEdite = result.map(obj => {
                                     var newobj={};
                                         newobj.Id = obj.Id;
@@ -1146,7 +1264,7 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
                                         newobj.Description=obj.Description__c;
                                         newobj.StartDate= obj.Start_Dates__c.split('T')[0]+'  à '+ obj.Start_Dates__c.split('T')[1].substring(0,5); 
                                         newobj.EndDate= obj.End_Dates__c.split('T')[0]+'  à '+obj.End_Dates__c.split('T')[1].substring(0,5);
-                                        newobj.Status=obj.Status__c;
+                                        newobj.Status=obj.StatusLabel;
                                     return newobj;
                                 });
                                 this.data = this.eventinformationEdite;
@@ -1229,112 +1347,6 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
                                     console.log('-->',this.filesLists);
                                 });
                             }
-                        }else{
-                            this.displayButton = false;
-                            this.hidenButton = false;
-                            console.log('event --> ' , result);
-                            this.data0 = result.map(obj => {
-                                var newobj={};
-                                    newobj.Id = obj.Id;
-                                    newobj.EventName=obj.Name;
-                                    newobj.ContactName=obj.Contact_Id__r.Name;
-                                    newobj.Description=obj.Description__c;
-                                    newobj.StartDate= obj.Start_Dates__c; 
-                                    newobj.EndDate= obj.End_Dates__c;
-                                    newobj.Status=obj.Status__c;
-                                return newobj;
-                            });
-                            console.log('data0--->', this.data0);
-                            this.eventinformationEdite = result.map(obj => {
-                                var newobj={};
-                                    newobj.Id = obj.Id;
-                                    newobj.EventName=obj.Name;
-                                    newobj.ContactName=obj.Contact_Id__r.Name;
-                                    newobj.Description=obj.Description__c;
-                                    newobj.StartDate= obj.Start_Dates__c.split('T')[0]+'  à '+ obj.Start_Dates__c.split('T')[1].substring(0,5); 
-                                    newobj.EndDate= obj.End_Dates__c.split('T')[0]+'  à '+obj.End_Dates__c.split('T')[1].substring(0,5);
-                                    newobj.Status=obj.Status__c;
-                                return newobj;
-                            });
-                            this.data = this.eventinformationEdite;
-                            console.log('eventinformationEdite--->', this.eventinformationEdite);
-                            // this.optionsStatus();
-                            this.eventDetails =[
-                                {
-                                    label: this.label.Name, 
-                                    name:'Name',
-                                    type:'text',
-                                    value:this.eventinformationEdite[0].EventName,
-                                    required:true,
-                                    ly_md:'12', 
-                                    ly_lg:'12'
-                                },
-                                {
-                                    label: this.label.StartDate,
-                                    name:'StartDate',
-                                    type:'datetime',
-                                    value:this.eventinformationEdite[0].StartDate,
-                                    required:true,
-                                    ly_md:'12', 
-                                    ly_lg:'12'
-                                },
-                                {
-                                    label:this.label.Status,
-                                    name:'Status',
-                                    picklist: true,
-                                    value:this.eventinformationEdite[0].Status,
-                                    required:true,
-                                    ly_md:'12', 
-                                    ly_lg:'12'
-                                },
-                                {
-                                    label:this.label.EndDate,
-                                    name:'EndDate',
-                                    type:'datetime',
-                                    value:this.eventinformationEdite[0].EndDate,
-                                    ly_md:'12', 
-                                    ly_lg:'12'
-                                },
-                                {
-                                    label: this.label.Description,
-                                    name:'Description',
-                                    type:'textarea',
-                                    value:this.eventinformationEdite[0].Description,
-                                    ly_md:'12', 
-                                    ly_lg:'12'
-                                },
-                            ];
-                            getRelatedFilesByRecordId({recordId: eventId})
-                            .then(result=>{
-                                console.log('@@@ @@@ @@@ 1 result-->', result);
-                                this.filesList = result.data.map(elt =>{
-                                    var obj = {};
-                                    obj.label = elt.Name,
-                                    obj.value = elt.Name,
-                                    obj.fname = elt.Name,
-                                    obj.conVerId = elt.ContentVersionId,
-                                    obj.docId = elt.ContentDocumentId,
-                                    obj.url = elt.ContentDownloadUrl
-                                    return obj;
-                                })
-                                console.log('@@@ filesList @@@ ===> ',this.filesList);
-                                for(let i=0; i<this.filesList.length; i++){
-                                    this.contentDocId = this.filesList[i].docId;
-                                    this.contentDocIdList.push(this.filesList[i].docId);
-                                }
-                                debugger
-                                console.log('@@@ contentDocId @@@ ===> ', this.contentDocIdList);
-                                let data_t =[];
-                                for(let key2 in result['data2']) {   
-                                    for(let key in result['data']) {
-                                        if(result['data'][key].ContentDocumentId == result['data2'][key2].Id){
-                                            data_t.push({Id:result['data2'][key2].Id, FileName: result['data2'][key2].Title, url: result['data'][key].ContentDownloadUrl});
-                                        }
-                                    }
-                                }
-                                this.filesLists = data_t;
-                                console.log('-->',this.filesLists);
-                            });
                         }
                     })
                     .catch(err =>{
@@ -1350,7 +1362,7 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
             })
     } 
     displayEventData(){
-        console.log('event --> ' , result);
+        console.log('event 5--> ' , result);
         this.data0 = result.map(obj => {
             var newobj={};
                 newobj.Id = obj.Id;
@@ -1359,10 +1371,10 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
                 newobj.Description=obj.Description__c;
                 newobj.StartDate= obj.Start_Dates__c; 
                 newobj.EndDate= obj.End_Dates__c;
-                newobj.Status=obj.Status__c;
+                newobj.Status=obj.StatusLabel;
             return newobj;
         });
-        console.log('data0--->', this.data0);
+        console.log('data0  5--->', this.data0);
         this.eventinformationEdite = result.map(obj => {
             var newobj={};
                 newobj.Id = obj.Id;
@@ -1371,7 +1383,7 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
                 newobj.Description=obj.Description__c;
                 newobj.StartDate= obj.Start_Dates__c.split('T')[0]+'  à '+ obj.Start_Dates__c.split('T')[1].substring(0,5); 
                 newobj.EndDate= obj.End_Dates__c.split('T')[0]+'  à '+obj.End_Dates__c.split('T')[1].substring(0,5);
-                newobj.Status=obj.Status__c;
+                newobj.Status=obj.StatusLabel;
             return newobj;
         });
         this.data = this.eventinformationEdite;
@@ -1512,6 +1524,7 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
                 placeholder: this.label.DescriptionPlc,
                 name:'Description',
                 type:'textarea',
+                required:true,
                 ly_md:'6', 
                 ly_lg:'6'
             },
@@ -1564,6 +1577,7 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
                 name:'Description',
                 type:'textarea',
                 value:this.data0[0].Description,
+                required:true,
                 ly_md:'6', 
                 ly_lg:'6'
             },
@@ -1606,8 +1620,8 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
         }
         reader.readAsDataURL(file)
     }
-    openfileUploadForUpdate(event) { 
-        this.bool1 = true;
+    openfileUploadForUpdate(event) { debugger
+        this.bool = true;
         const file = event.target.files[0]
         var reader = new FileReader()
         reader.onload = () => {
@@ -1666,10 +1680,10 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
     }
     handleOpenComponent() {
         this.showComponentBase = false;
-        this.showComponentDetails = true;
+        //this.showComponentDetails = true;
     }
-    handleEdit(event){
-        if (event.detail.action=='Edit'){
+    handleEdit(event){debugger
+        if (event.detail.action==this.label.Edit){
             this.handleBeforeEdit();
             this.buildformEdit();
             this.showComponentBase = false;
@@ -1677,15 +1691,8 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
             this.isUpdate = true;
         }
     }
-    // handleOpenComponentSave(){ 
-    //     this.showComponentEdit = true;
-    //     this.buildform();
-    //     this.isUpdate = false;
-    //     this.showComponentBase = false;
-    //     this.showAttachement = false;
-    // }
     handleOpenComponentSave(event){
-        if (event.detail.action=='New Event') {
+        if (event.detail.action==this.label.New) {
             this.showComponentEdit = true;
             this.buildform();
             this.isUpdate = false;
@@ -1693,29 +1700,11 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
             this.showAttachement = false;
         }
     }
-    // handleSaveEvent(event){
-    //     if (event.detail.action=='Save') {
-    //         // this.doSave(true,this.bool);
-    //         if(this.bool==true){
-    //             this.handleBeforeSave();
-    //             setTimeout(()=>{
-    //                 this.checkIdOfFileBeforeSaveOrBeforeUpdate();
-    //                 this.checkDataEventBeforeSave();
-    //             },1000);
-    //         }else{
-    //             this.handleBeforeSave();
-    //             this.checkDataEventBeforeSave();
-    //             setTimeout(()=>{
-    //                 this.checkDataEventBeforeSave();
-    //             },1000);
-    //         }
-    //     }
-    // }
     detailsActionsSave=[
         {   variant:"brand-outline",
             class:" slds-var-m-right_medium",
-            label:"New Event",
-            name:'New Event',
+            label:this.label.New,
+            name:this.label.New,
             title:"New",
             iconName:this.icon.Add,
         }
@@ -1724,9 +1713,9 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
     detailsActionsSaveEvent=[
         {   variant:"brand-outline",
             class:" slds-m-right_medium",
-            label:"Save",
-            name:'Save',
-            title:"Save",
+            label:this.label.Save,
+            name:this.label.Save,
+            title:this.label.Save,
             iconName:this.icon.Save,
         }
     ]
@@ -1735,71 +1724,54 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
     detailsSaveAndSendEvent=[
         {   variant:"brand-outline",
             class:" slds-m-right_medium",
-            label:"SaveAndSend",
-            name:'SaveAndSend',
-            title:"SaveAndSend",
+            label:this.label.SaveAndSend,
+            name:this.label.SaveAndSend,
+            title:this.label.SaveAndSend,
             iconName:this.icon.Save,
         }
     ]
     detailsCloseComponentEdit=[
         {   
             variant:"brand-outline",
-            // class:" slds-m-left_medium",
-            
-            label:"Back",
-            name:'Back',
-            title:"Back",
+            label:this.label.Back,
+            name:this.label.Back,
+            title:this.label.Back,
             iconName:this.icon.Back,
         }
     ]
     detailspredeleteEvent=[
         {   
             variant:"brand-outline",
-            // class:" slds-m-left_medium",
-            
             label:this.label.Delete,
-            name:'Delete',
-            title:"Delete",
+            name:this.label.Delete,
+            title:this.label.Delete,
             iconName:this.icon.Delete,
         }
     ]
     detailspreEditEvent=[
         {   
             variant:"brand-outline",
-            // class:" slds-m-left_medium",
-            
             label:this.label.Edit,
-            name:'Edit',
-            title:"Edit",
+            name:this.label.Edit,
+            title:this.label.Edit,
             iconName:this.icon.Edit,
         }
     ]
     detailspreSendEvent=[
         {   
             variant:"brand-outline",
-            // class:" slds-m-left_medium",
-            
             label:this.label.Send,
-            name:'Send',
-            title:"Send",
+            name:this.label.Send,
+            title:this.label.Send,
             iconName:this.icon.submit,
         }
     ]
-    // detailsUpdateEvent=[
-    //     {   variant:"brand-outline",
-    //         class:" slds-m-right_medium",
-    //         label:this.label.Update,
-    //         name:'Update',
-    //         title:"Update",
-    //         iconName:this.icon.Save,
-    //     }
-    // ]
     detailsUpdateAndSendEvent=[
         {   variant:"brand-outline",
             class:" slds-m-right_medium",
             label:this.label.UpdateAndSend,
-            name:'Update And Send',
-            title:"Update And Send",
+            name:this.label.UpdateAndSend,
+            title:this.label.UpdateAndSend,
             iconName:this.icon.Save,
         }
     ]
@@ -1807,8 +1779,8 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
         {   variant:"brand-outline",
             class:" slds-m-right_medium",
             label:this.label.ok_confirm,
-            name:'Yes I m sure',
-            title:"Yes I m sure",
+            name:this.label.ok_confirm,
+            title:this.label.ok_confirm,
             iconName:this.icon.approve,
         }
     ]
@@ -1816,8 +1788,8 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
         {   variant:"brand-outline",
             class:" slds-m-right_medium",
             label:this.label.Cancel,
-            name:'Cancel',
-            title:"Cancel",
+            name:this.label.Cancel,
+            title:this.label.Cancel,
             iconName:this.icon.close,
         }
     ]
@@ -1836,16 +1808,16 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
         this.showComponentEdit = false;
     }
     backToDetails(){
-        location.reload();
         this.showAttachement = false;
         this.showComponentDetails = true;
+        location.reload();
     }
     handleCancelUpdate(){
         this.showAttachement = false;
         this.showComponentEdit = true;
     }
     handlepredeleteEvent(event){
-        if (event.detail.action=='Delete'){
+        if (event.detail.action==this.label.Delete){
             this.showModalDelete=true;
         }
     }

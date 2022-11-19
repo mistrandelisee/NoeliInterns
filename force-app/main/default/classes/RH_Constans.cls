@@ -4,6 +4,8 @@ public  class RH_Constans {
     public static final String RH_CLIENT_ACCOUNT_RT =Schema.SObjectType.Account.getRecordTypeInfosByDeveloperName().get('RH_CLIENT').getRecordTypeId();
     public static final String RH_ACCOUNT_RT =Schema.SObjectType.Account.getRecordTypeInfosByDeveloperName().get('RH').getRecordTypeId();
     public static final String RH_PROJECT_RT =Schema.SObjectType.Project__c.getRecordTypeInfosByDeveloperName().get('Real_Project').getRecordTypeId();
+    public static final String RH_PROJECT_FREE_RT =Schema.SObjectType.Project__c.getRecordTypeInfosByDeveloperName().get('RH_FREE').getRecordTypeId();
+    public static final String RH_PROJECT_EXTRA_RT =Schema.SObjectType.Project__c.getRecordTypeInfosByDeveloperName().get('RH_EXTRA').getRecordTypeId();
     public static final String RH_PROFILE_NAME ='Custom Identity User';
     public static final String ORG_NAME =String.isNotBlank(cs.RH_Org_Name__c)?cs.RH_Org_Name__c: 'rh-dev';
     public static final String ACTIVATED_WORKGROUP_STATUS ='Activated';
