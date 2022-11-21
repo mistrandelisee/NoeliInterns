@@ -1,6 +1,11 @@
 .form-section{
     padding: 10px;
 }
+
+.form-section{
+    --lwc-sizeMedium: 400px;
+}
+
 lightning-input, lightning-combobox,lightning-textarea{
     --lwc-brandAccessibleActive: #2A2E43;
     --lwc-colorTextIconDefault: #2166f3;

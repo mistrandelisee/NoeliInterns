@@ -205,6 +205,7 @@ import invoice_to from '@salesforce/label/c.rh_invoice_to';
 import invoice_toPlc from '@salesforce/label/c.rh_invoice_toPlc';
 import Entries from '@salesforce/label/c.rh_Entries';
 import Number from '@salesforce/label/c.rh_Number';
+import SearchByName from '@salesforce/label/c.rh_SearchByName';
 import From from '@salesforce/label/c.rh_From';
 import To from '@salesforce/label/c.rh_To';
 import OrderBy from '@salesforce/label/c.rh_OrderBy';
@@ -350,6 +351,10 @@ import ProjectUpdateSucces from '@salesforce/label/c.rh_ProjectUpdateSucces';
 import projectFailedUpdate from '@salesforce/label/c.rh_projectFailedUpdate';
 import ProjectActivate from '@salesforce/label/c.rh_ProjectActivate';
 
+import Request from '@salesforce/label/c.rh_Request';
+import Accomplishment from '@salesforce/label/c.rh_Accomplishment';
+import Event from '@salesforce/label/c.rh_Event';
+
 
 const labels = {
     addUser,
@@ -403,7 +408,6 @@ const labels = {
     Title,
     TitlePlc,
     NotePlc,
-    recordNotFounded,
     Phone,
     PhonePlc,
     Username,
@@ -704,7 +708,11 @@ const labels = {
     RequestApproved,
     NewExplanation,
     RequestNotif,
-    RequestNotifRep
+    RequestNotifRep,
+    Request,
+    Accomplishment,
+    Event,
+    SearchByName
 };
 
 export { labels }

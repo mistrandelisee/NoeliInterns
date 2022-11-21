@@ -16,8 +16,8 @@ export default class Rh_datatable_component extends LightningElement {
 
     @api statutRowNumber=false;
     @api resizeColumn=false;
-    l={
-        noRecordsLabel: this.noRecordsLabel || labels.recordNotFounded 
+    get noRecordsLbl(){
+        return this.noRecordsLabel || labels.recordNotFounded 
     }
     get existElements(){
         return this.items && this.items.length > 0 ? true : false;

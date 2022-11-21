@@ -94,7 +94,7 @@ export default class Rh_dynamic_form extends LightningElement {
     }
 
     timer;
-   handleChanged(event){
+    handleChanged(event){
         // this.rendered=false;
         console.log(event.detail.info);
         this.publishChangedEvt({info: event.detail.info , event:event.detail.event});
@@ -140,7 +140,7 @@ export default class Rh_dynamic_form extends LightningElement {
         }
         return false;
     }
-   attachDataListsToTextBox(){
+    attachDataListsToTextBox(){
     const dataLists=this.template.querySelectorAll('[data-type="dataList"]');
     dataLists.forEach(dataList => {
         console.log(`dataList>>> element`);
@@ -153,8 +153,8 @@ export default class Rh_dynamic_form extends LightningElement {
             input.setAttribute("list", dataListId);
         }
     });
-   }
-   attachDataListToTextBox(inputName, dataListName) {
+    }
+    attachDataListToTextBox(inputName, dataListName) {
         const dataList = this.template.querySelector('[data-id="' + dataListName + '"]');
         if (dataList) {
             const dataListId = dataList.id;

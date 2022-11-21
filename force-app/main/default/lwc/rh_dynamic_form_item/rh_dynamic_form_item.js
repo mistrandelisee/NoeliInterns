@@ -1,5 +1,7 @@
 import { api, LightningElement, track } from 'lwc';
 
+const MAX_LENGTH=255;
+
 export default class Rh_dynamic_form_item extends LightningElement {
     @api item;
     @api timeOut;
@@ -40,6 +42,9 @@ export default class Rh_dynamic_form_item extends LightningElement {
     }
     get isLookup(){
         return this.item?.type=='lookup';
+    }
+    get maxLength(){
+        if(this.item?.maxlength){ return this.item.maxlength}else{ return MAX_LENGTH }
     }
     get filter(){ return this.item?.filter || ''}
     get picklist(){ return this.item?.picklist;};
