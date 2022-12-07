@@ -102,7 +102,16 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
         isActive:null,
         orderBy:null,
         orderOn:null,
-    }
+    };
+
+    initialfilter={
+        status:null,
+        startDate:null,
+        endDate:null,
+        isActive:null,
+        orderBy:null,
+        orderOn:null,
+    };
     columns = [
         { label: this.label.FileName, fieldName: 'FileName', type: 'text', sortable: true },
         {
@@ -164,7 +173,18 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
         EndDate: 'End Date',
         // Status:'Status'
     };
-    get filterReady(){ return this.inputFormFilter?.length >0}
+
+    hasRecords;
+
+    get filterReady(){
+        getLatestEvents().then(result => {
+            console.log('#### PIGNOUF =====> '+result != null)
+            this.hasRecords = (result != null) ? true : false; 
+        })
+
+        return this.hasRecords;
+    }
+
     getNewEventList(){
         this.datas=[];
         getLatestEvents()
@@ -284,7 +304,7 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
         this.filterInputs=[
             {
                 label:this.label.Name,
-                placeholder:this.l.srchNamePlc,
+                placeholder:this.label.srchNamePlc,
                 name:'searchText',
                 value: '',
                 ly_md:'3', 
@@ -305,8 +325,8 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
                 ly_lg:'3'
             },
             {
-                label:this.l.From,
-                placeholder:this.l.From,
+                label:this.label.From,
+                placeholder:this.label.From,
                 name:'startDate',
                
                 value: '',
@@ -316,8 +336,8 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
                 ly_lg:'3',
             },
             {
-                label:this.l.To,
-                placeholder:this.l.To,
+                label:this.label.To,
+                placeholder:this.label.To,
                 name:'EndDate',
                
                 value: '',
@@ -335,7 +355,8 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
             {
                 label: this.label.Name,
                 placeholder: this.label.SearchByName,
-                type: 'Test',
+                name:'name',
+                type: 'text',
                 required:false,
                 ly_md:'3', 
                 ly_lg:'3'
@@ -370,15 +391,16 @@ export default class Rh_Event extends  NavigationMixin(LightningElement) {
     }
     handleSubmitFilter(event) {
         this.datas=[];
-        let name= event.detail.searchText;
+        let searchText = event.detail.name;
+        let name= event.detail.name;
         let status= event.detail.status;
         let startDate= event.detail.startDate;
         let endDate = event.detail.EndDate;
         console.log('handleSubmitFilter record', JSON.stringify(event.detail) );
         this.startSpinner(true);
-        filterRequest({name:name,status:status,startDate:startDate,endDate:endDate})
+        filterRequest({searchText:searchText,name:name,status:status,startDate:startDate,endDate:endDate})
         .then(result =>{
-            console.log('@@@result --> ', result );
+            console.log('@@@  result --> ', result );
             const self=this;
             result.forEach(elt => {
             console.log('elt-->',elt);

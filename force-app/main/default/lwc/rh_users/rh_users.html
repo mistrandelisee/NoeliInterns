@@ -12,7 +12,7 @@
                     <template if:true={filterReady}>
                         <lightning-layout-item size="12" class="slds-p-left_small" small-device-size="12" medium-device-size="12" large-device-size="12" >
                             <div class="custom-box">
-                                <c-rh_filter onsubmit={handleSubmitFilter} onreset={handleSubmitFilter} field-details={filterInputs}></c-rh_filter>
+                                <c-rh_filter onsubmit={handleSubmitFilter} onreset={handleSubmitFilter} field-details={filterInputs} simple-field={simpleFilterInput}></c-rh_filter>
                             </div>
                         </lightning-layout-item>
                     </template>

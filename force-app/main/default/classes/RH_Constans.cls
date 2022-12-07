@@ -23,6 +23,7 @@ public  class RH_Constans {
     public static final String test ='test Manager';
     public static final String DEFAULT_CURRENCY ='EUR';
     public  final String DEFAULT_CURRENCY2;
+    public static final List<String> TIMESHEET_PUBLIC_STATUS = new List<String>{'Inviato','approvato'};
     public RH_Constans() {
         DEFAULT_CURRENCY2 ='EUR';
     }

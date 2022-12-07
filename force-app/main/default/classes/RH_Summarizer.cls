@@ -13,7 +13,7 @@ public without sharing class RH_Summarizer implements RH_SummarizeInterface {
         result.put('error', false);
         try {
             String className = String.valueOf(inputs.get(CLASS_KEY));
-            perform(className, inputs);
+            result.put('records', perform(className, inputs));
         } catch(Exception e) {
             result.put('error', true);
             System.debug(e.getMessage()+''+ e.getStackTraceString());
@@ -21,12 +21,13 @@ public without sharing class RH_Summarizer implements RH_SummarizeInterface {
         }
         return result;
     }
-    public static void perform(String className,Map<String,Object> additionalInputs){
+    public static List<AggregateResult> perform(String className,Map<String,Object> additionalInputs){
         mapInputs=new Map<String, Object> (additionalInputs);
         className=String.isBlank(className)? 'RH_Summarizer' : className;
         mapInputs.put(CLASS_KEY,className);
         RH_SummarizeInterface SummarizeInterface = (RH_SummarizeInterface) Type.forName(className).newInstance();
-        List<sObject>  outputList = SummarizeInterface.getSummary(mapInputs);
+        List<AggregateResult> aggs=  SummarizeInterface.getSummary(mapInputs);
+        return aggs;
     }
     public List<AggregateResult> getSummary(Map<String, Object> args) {
         System.debug('get sum '+args);
@@ -70,4 +71,24 @@ public without sharing class RH_Summarizer implements RH_SummarizeInterface {
     public class summarizeException extends Exception {
         
     }
+    /**
+     Map<String, Object> mapinputs = new Map<String, Object>{
+        'GROUPBY'=>'Rh_Status__c',
+        'FIELDS'=>'Rh_Status__c state',
+        'SOBJECT'=>'RH_Request__c',
+        'CONDS'=>''
+     };
+    String jsonStr= JSON.serialize(mapinputs);
+     Map<String, Object> result=RH_Summarizer.getSummaries( jsonStr);
+     System.debug('result== '+result);
+
+
+
+
+
+
+
+
+
+     */
 }

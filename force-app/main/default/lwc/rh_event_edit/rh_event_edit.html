@@ -1,0 +1,19 @@
+<template>
+    <lightning-card class="custom-card">
+        <h3 slot="title">
+            <lightning-icon icon-name="utility:add" size="small" class="slds-p-right_small"></lightning-icon>
+            {editLabel}
+        </h3>
+        <c-rh_dynamic_form inputs-items={inputsItems} ></c-rh_dynamic_form>
+        <div class="card-footer" slot="footer">
+            <div class="slds-clearfix">
+                <div class="slds-float_right">
+                    <lightning-button variant="base" label={label.Cancel} data-action-name="Cancel" title="Cancel" icon-name={icon.close} onclick={handleCancel} class="slds-m-left_x-small"></lightning-button>
+                    <lightning-button variant="base" label={saveLabel} data-action-name="Edit" title="Save" icon-name={icon.Save} onclick={handleSave} class="slds-m-left_medium"></lightning-button>
+                    <lightning-button variant="base" label={label.send} data-action-name="Edit" title="Save And Send" icon-name={icon.Save} onclick={handleSend} class="slds-m-left_medium"></lightning-button>
+                </div>
+            </div>
+            
+        </div>
+    </lightning-card>
+</template>

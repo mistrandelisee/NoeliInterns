@@ -21,7 +21,7 @@ public  class RH_Contact_Query {
                     (SELECT Name,CreatedDate,CreatedBy.Name FROM WorkGroups_Leader__r WHERE RH_Status__c =:RH_Constans.ACTIVATED_WORKGROUP_STATUS ORDER BY CreatedDate DESC),
                     (SELECT RH_Project__r.Name,RH_Project__r.Link__c,RH_Project__r.Start_Date__c,RH_Project__r.Description__c,RH_Project__r.End_Date__c,RH_Project__r.recordType.developerName  FROM Projects__r WHERE RH_Project__r.Is_Effective__c =true  AND (RH_Project__r.recordTypeId=:RH_Constans.RH_PROJECT_RT OR RH_Project__r.recordTypeId=:RH_Constans.RH_PROJECT_EXTRA_RT) ORDER BY CreatedDate DESC),
                     (SELECT Name,Link__c,Start_Date__c,Description__c,End_Date__c  FROM Projects_Leaded__r WHERE Is_Effective__c =true AND recordTypeId=:RH_Constans.RH_PROJECT_RT ORDER BY CreatedDate DESC),
-                    (SELECT Id ,TimeSheetNumber, RH_Name__c FROM RH_TimeSheets__r ORDER BY CreatedDate DESC),
+                    (SELECT Id ,TimeSheetNumber, RH_Name__c FROM RH_TimeSheets__r WHERE  Status IN:RH_Constans.TIMESHEET_PUBLIC_STATUS ORDER BY CreatedDate DESC),
                     (SELECT Id ,Name, RH_Title__c FROM Accomplishments__r WHERE RH_Status__c=:RH_Constans.ACTIVATED_ACCOMPLISHMENT_STATUS AND RH_Visibility__c=true ORDER BY CreatedDate DESC)
                 FROM Contact WHERE Id=:contactId];
     }

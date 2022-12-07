@@ -1,24 +1,68 @@
 <template>
-    <div  class="slds-card">
-        <div class="headerFilter" onclick={handleDisplayFiled}>
+
+    <template if:false={displayFields}>
+
+        <div class="simple-search" style="display: flex; flex-direction: inline;">
+
+            <div class="search-input">
+                <c-rh_dynamic_form inputs-items={_simpleField} time-out={timeOut}>
+                </c-rh_dynamic_form>
+            </div>
+
+            <div class="search-action">
+
+                <div class="submit-action">
+                    <c-rh_actions action-available={simpleFilterAction} onaction={simpleHandleAction}></c-rh_actions>
+                </div>
+
+                <lightning-button-icon 
+                    icon-name="utility:settings" 
+                    variant="brand" 
+                    title="advanced search"
+                    onclick={handleDisplayFiled}>
+                </lightning-button-icon>
+
+            </div>
+
+        </div>
+
+    </template>
+
+
+
+    <!-- <div class="headerFilter" onclick={handleDisplayFiled}>
             <div class="slds-text-heading_medium  slds-m-left_medium">
                 <lightning-icon icon-name={icon.Search} size="small"  variant="inverse"   ></lightning-icon>
                 <span class="slds-m-left_small"> {title} </span>
             </div>   
-        </div>
-        <template if:true={displayFields}>
-            <div class="slds-card__body">
-                <c-rh_dynamic_form inputs-items={fieldDetailsCopy} time-out={timeOut} backcolor={backcolor} ></c-rh_dynamic_form>
-                <div class="slds-m-right_medium">
-                    <c-rh_actions   action-available={filterAction}  onaction={handleActions}></c-rh_actions>
+        </div> -->
+
+    <template if:true={displayFields}>
+
+        <div class="slds-card">
+            <div class="headerFilter" onclick={handleDisplayFiled}>
+                <div class="slds-text-heading_medium  slds-m-left_medium">
+                    <lightning-icon icon-name={icon.Search} size="small" variant="inverse"></lightning-icon>
+                    <span class="slds-m-left_small"> {title} </span>
                 </div>
-                
-            </div> 
+            </div>
+
+            <div class="slds-card__body">
+                <c-rh_dynamic_form inputs-items={fieldDetailsCopy} time-out={timeOut} backcolor={backcolor}>
+                </c-rh_dynamic_form>
+                <div class="slds-m-right_medium">
+                    <c-rh_actions action-available={filterAction} onaction={handleActions}></c-rh_actions>
+                </div>
+
+            </div>
             <footer class="footer">
                 <template for:each={pillList} for:item="pill" for:index="index">
-                        <lightning-pill key={pill.label} label={pill.pillValue}  name={index} onremove={handleRemovePill}></lightning-pill>
+                    <lightning-pill key={pill.label} label={pill.pillValue} name={index} onremove={handleRemovePill}>
+                    </lightning-pill>
                 </template>
             </footer>
-        </template>  
-    </div>  
+        </div>
+
+    </template>
+
 </template>
