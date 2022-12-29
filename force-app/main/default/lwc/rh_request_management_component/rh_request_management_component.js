@@ -13,6 +13,7 @@ import updateAnswerExp from '@salesforce/apex/RH_Request_controller.updateAnswer
 import getRequestByParent from '@salesforce/apex/RH_Request_controller.getRequestByParent';
 import filterRequestToManage from '@salesforce/apex/RH_Request_controller.filterRequestToManage';
 import getAllRecordType from '@salesforce/apex/RH_Request_controller.getAllRecordType';
+import getStatus from '@salesforce/apex/RH_Request_controller.getStatus';
 
 
 export default class Rh_request_management_component extends NavigationMixin(LightningElement) {
@@ -21,6 +22,8 @@ export default class Rh_request_management_component extends NavigationMixin(Lig
     emp;
     l = {...labels};
     @track tabReq = [];
+    @track badge = [];
+    @track badgeChild = [];
     @track recordId;
     @track Description ;
     @track Status ;
@@ -72,48 +75,31 @@ export default class Rh_request_management_component extends NavigationMixin(Lig
     valueComplain;
 
 
-    keysFields={AddressedTo:'ok'};//non used now
-    keysLabels={
-    CreatedDate:'Create date',
-    Statut:'Statut',
-    Type: 'Type',
-    Request:'Request',
+    keysFields = { AddressedTo: 'ok' };//non used now
+    keysLabels = {
+        CreatedDate: this.l.CreatedDate,
+        Statut: 'Statut',
+        Type: this.l.RequestTypeName,
+        Request: 'Request',
 
-    AddressedTo:'Addressed To'
+        AddressedTo: this.l.AddressedTo
     };
-    fieldsToShow={
-        CreatedDate:'Create date',
-        Statut:'Statut',
-        Type: 'Type',
-        AddressedTo:'Addressed To'
+    fieldsToShow = {
+        CreatedDate: this.l.CreatedDate,
+        Statut: 'Statut',
+        Type: this.l.RequestTypeName,
+        AddressedTo: this.l.AddressedTo
     };
+    
 
     statusOptions = [
         {
-            label: 'All',
+            label: this.l.All,
             value: 'All'
-        },
-        {
-            label: 'Approved',
-            value: 'Approved'
-        },
-        {
-            label: 'Draft',
-            value: 'Draft'
-        },
-        {
-            label: 'Rejected',
-            value: 'Rejected'
-        },
-        {
-            label: 'Submited',
-            value: 'Submited'
-        },
-        {
-            label: 'Responded',
-            value: 'Responded'
         }
     ];
+
+    hasRecords;
 
     get hasRecordId(){
         return this.recordId ? true : false;
@@ -129,6 +115,20 @@ export default class Rh_request_management_component extends NavigationMixin(Lig
                     };
                 });
             })
+    }
+
+    getStatus(){
+        getStatus()
+           .then(result => {
+                result.Rh_Status__c.forEach(plValue => {
+                    this.statusOptions.push(
+                        {
+                            label: plValue.label,
+                            value: plValue.value
+                        }
+                    )
+                });
+            });
     }
 
     buildFormFilter(optRecType){
@@ -153,8 +153,8 @@ export default class Rh_request_management_component extends NavigationMixin(Lig
                 ly_lg:'6'
             },
             {
-                label:'From',
-                placeholder:'From',
+                label:this.l.From,
+                placeholder:this.l.From,
                 name:'From',
                 required:false,
                 type: 'Date',
@@ -162,8 +162,8 @@ export default class Rh_request_management_component extends NavigationMixin(Lig
                 ly_lg: '3',
             },
             {
-                label:'To',
-                placeholder:'To',
+                label:this.l.To,
+                placeholder:this.l.To,
                 name:'To',
                 required:false,
                 type: 'Date',
@@ -173,16 +173,22 @@ export default class Rh_request_management_component extends NavigationMixin(Lig
     }
 
     get enableForm() {
-        return this.inputFormFilter?.length>0 ? true : false;
+        filterRequestToManage({ searchText:'', })
+        .then(result => {
+            console.log('#### PIGNOUF =====> '+result != null)
+            this.hasRecords = (result != null) ? true : false; 
+        })
+        return this.hasRecords;
     }
 
     filterRequestToManage(event){
+        let searchText = event.detail.searchText;
         let reqType= event.detail.RequestType;
         let status= event.detail.status;
         let dateFrom= event.detail.From;
         let dateTo = event.detail.To;
         this.startSpinner(true);
-        filterRequestToManage({requestType: reqType, status: status, dateFrom: dateFrom, dateTo: dateTo})
+        filterRequestToManage({searchText:searchText, requestType: reqType, status: status, dateFrom: dateFrom, dateTo: dateTo})
             .then(result => {
                 this.tabReq = [];
                 const self = this;
@@ -201,7 +207,7 @@ export default class Rh_request_management_component extends NavigationMixin(Lig
                     }
 
                     console.log('@@@@@objectReturn' + objetRep);
-                    const badge={name: 'badge', class:self.classStyle(elt?.Rh_Status__c),label: elt?.Rh_Status__c}
+                    const badge={name: 'badge', class:self.classStyle(elt?.Rh_Status__c),label: elt?.Rh_Status}
                     objetRep.addons={badge};
                     this.tabReq.push(objetRep);
                 });
@@ -236,7 +242,7 @@ export default class Rh_request_management_component extends NavigationMixin(Lig
             }
          
                 console.log('@@@@@objectReturn' + objetRep);
-                const badge={name: 'badge', class:self.classStyle(elt?.Rh_Status__c),label: elt?.Rh_Status__c}
+                const badge={name: 'badge', class:self.classStyle(elt?.Rh_Status__c),label: elt?.Rh_Status}
                 objetRep.addons={badge};
                 this.tabReq.push(objetRep);
             });
@@ -250,7 +256,6 @@ export default class Rh_request_management_component extends NavigationMixin(Lig
     }
 
     classStyle(className){
-
         switch(className){
             case 'Approved':
                 return "slds-float_left slds-theme_success";
@@ -344,7 +349,7 @@ export default class Rh_request_management_component extends NavigationMixin(Lig
             if (result.error) {
                 this.showToast('error', 'Error', result.msg);
             } else {
-                this.showToast('success', 'success', 'Explanation have been created and send successfully');
+                this.showToast('success', 'success', this.l.ExplanationCreated);
                 this.goToRequestDetail(this.recordId);
             }
         })
@@ -381,7 +386,7 @@ export default class Rh_request_management_component extends NavigationMixin(Lig
             if (result.error) {
                 this.showToast('error', 'Error', result.msg);
             }else{
-                this.showToast('success', 'success', 'Answer explanation have been send successfully');
+                this.showToast('success', 'success', this.l.AnsExpSend);
                 this.goToRequestDetail(this.recordId);
             }
         }).catch(error => {
@@ -412,11 +417,11 @@ export default class Rh_request_management_component extends NavigationMixin(Lig
             console.log('@@@@result '+result);
             this.resultRecord = result;
             this.statusDetail = result.Rh_Status__c;
-            if(result.RecordType.Name == 'Complain'){
+            if(result.RecordType.DeveloperName == 'Complain'){
                 this.valueComplain = result.RH_Complain_On__r.Id;
                 this.isComplain = true;
             }
-            if(result.RecordType.Name == 'Explanation'){
+            if(result.RecordType.DeveloperName == 'Explanation'){
                 if(!result.RH_Answer__c){
                     this.isExpAns = true;
                 }
@@ -429,6 +434,7 @@ export default class Rh_request_management_component extends NavigationMixin(Lig
                 let tabName = result.Adressedccs__r.map(elt => elt.RH_Contact__r.Name);
                 NameAdressed = tabName.join(',');
             }
+            this.badge=[{name: 'badgeDetail', class: this.classStyle(result.Rh_Status__c),label: result.Rh_Status}];
             this.buildformDetail(this.resultRecord, NameAdressed);
             if (result.Rh_Status__c == 'Rejected' || result.Rh_Status__c == 'Approved') {
                 this.isRejetedOrApproved = true;
@@ -445,11 +451,12 @@ export default class Rh_request_management_component extends NavigationMixin(Lig
         getRequestByParent({requestId : this.recordId})
         .then(result =>{
             if(result){
+                this.badgeChild=[{name: 'badgeDetailChild', class: this.classStyle(result.Rh_Status__c),label: result.Rh_Status}];
                 this.buildFormRequestChild(result);
                 this.isComplain = false;
                 this.isManageExp = true;
                 this.adressExp = result.RH_Addressed_To__r.Name;
-                this.titleExp = 'Explanation To: '+this.adressExp;
+                this.titleExp = this.l.ExplanationFrom+': '+this.adressExp;
             }
         }).catch(error =>{
             console.error(error);
@@ -460,8 +467,8 @@ export default class Rh_request_management_component extends NavigationMixin(Lig
         this.showAnswer = true;
         this.answerForm = [
             {
-                label: 'Answer',
-                placeholder: 'Answer',
+                label: this.l.Answer,
+                placeholder: this.l.Answer,
                 name: 'RH_Answer',
                 className: 'textarea',
                 maxlength: 25000,
@@ -479,6 +486,7 @@ export default class Rh_request_management_component extends NavigationMixin(Lig
         if(this.recordId){
             this.detailPage(this.recordId);
         }else{
+            this.getStatus();
             this.getAllRecordType();
             this.getRequestToManage();
         }
@@ -534,7 +542,12 @@ export default class Rh_request_management_component extends NavigationMixin(Lig
             if (result.error) {
                 this.showToast('error', 'Error', result.msg);
             }else{
-                this.showToast('success', 'success', 'Request have been '+this.emp.StatusRequest+' correctly');
+                if(this.emp.StatusRequest == 'Approved'){
+                    this.showToast('success', 'success', this.l.RequestApproved);
+                }
+                if(this.emp.StatusRequest == 'Rejected'){
+                    this.showToast('success', 'success', this.l.RequestRejected);
+                }
                 this.handleCancelDetail();
             }
         }).catch(error => {
@@ -575,7 +588,7 @@ export default class Rh_request_management_component extends NavigationMixin(Lig
 
     buildFormRequestChild(infosChild){
         let objAns = {
-            label:'Answer',
+            label:this.l.Answer,
             name:'RH_Answer',
             value:infosChild?.RH_Answer__c,
             required:true,
@@ -583,7 +596,7 @@ export default class Rh_request_management_component extends NavigationMixin(Lig
             ly_lg:'12'
         }
         let dateResp = {
-            label:'Responded Date',
+            label:this.l.RespondedDate,
             name:'RH_Date_Response__c',
             value:infosChild?.RH_Date_Response__c,
             required:true,
@@ -600,7 +613,7 @@ export default class Rh_request_management_component extends NavigationMixin(Lig
                 ly_lg:'12'
             },
             {
-                label:'Submited Date',
+                label:this.l.SubmitedDate,
                 name:'RH_Date_Submit__c',
                 value:infosChild?.RH_Date_Submit__c,
                 required:true,
@@ -621,8 +634,17 @@ export default class Rh_request_management_component extends NavigationMixin(Lig
     buildformDetail(profileinformation, adrrName){
 
         console.log('@@@@@RecordType.Name' + profileinformation?.RecordType.Name);
+        let objNte =   {
+            label: profileinformation?.RecordType.DeveloperName == 'Complain' || profileinformation?.RecordType.DeveloperName == 'Explanation' ? this.l.reason : this.l.Note,
+            placeholder: 'Note',
+            name: 'RH_Note',
+            value: profileinformation?.RH_Reason__c,
+            required: true,
+            ly_md: '6',
+            ly_lg: '6'
+        }
         let dateResp = {
-            label:'Responded Date',
+            label:this.l.RespondedDate,
             name:'RH_Date_Response__c',
             value:profileinformation?.RH_Date_Response__c,
             required:true,
@@ -630,16 +652,40 @@ export default class Rh_request_management_component extends NavigationMixin(Lig
             ly_lg:'6'
         }
         let objAns = {
-            label:'Answer',
+            label:this.l.Answer,
             name:'RH_Answer',
             value:profileinformation?.RH_Answer__c,
             required:true,
             ly_md:'12', 
             ly_lg:'12'
         }
-        if(profileinformation?.RecordType.Name == 'Complain'){
+        if(profileinformation?.RecordType.DeveloperName == 'Complain'){
             this.formPersonanalInputDetails=[ 
-                            
+                        
+                        {
+                            label:this.l.RequestTypeName,
+                            name:'RecordT',
+                            required:true,
+                            value:profileinformation?.RecordType?.Name,
+                            ly_md:'6', 
+                            ly_lg:'6'
+                        },
+                        {
+                            label:this.l.Come,
+                            name:'RH_Owner',
+                            value:profileinformation?.CreatedBy.Name,
+                            required:true,
+                            ly_md:'6', 
+                            ly_lg:'6'
+                        },
+                        {
+                            label:this.l.AddressedTo,
+                            name:'RH_AddressedTo',
+                            value:profileinformation?.RH_Addressed_To__r?.Name,
+                            required:false,
+                            ly_md:'6', 
+                            ly_lg:'6'
+                        },
                         {
                             label: this.l.ComplainOn,
                             name: 'ComplainOn',
@@ -649,9 +695,9 @@ export default class Rh_request_management_component extends NavigationMixin(Lig
                             ly_lg:'6'
                         },
                         {
-                            label:this.l.Come,
-                            name:'RH_Owner',
-                            value:profileinformation?.CreatedBy.Name,
+                            label:this.l.SubmitedDate,
+                            name:'RH_Date_Submit__c',
+                            value:profileinformation?.RH_Date_Submit__c,
                             required:true,
                             ly_md:'6', 
                             ly_lg:'6'
@@ -665,33 +711,9 @@ export default class Rh_request_management_component extends NavigationMixin(Lig
                             ly_lg:'6'
                         },
                         {
-                            label:this.l.Status,
-                            name:'StatusRequest',
-                            required:true,
-                            value:profileinformation?.Rh_Status__c,
-                            ly_md:'6', 
-                            ly_lg:'6'
-                        },
-                        {
-                            label:this.l.RequestTypeName,
-                            name:'RecordT',
-                            required:true,
-                            value:profileinformation?.RecordType?.Name,
-                            ly_md:'6', 
-                            ly_lg:'6'
-                        },
-                        {
                             label:this.l.Description,
                             name:'RH_Description',
                             value:profileinformation?.RH_Description__c,
-                            required:true,
-                            ly_md:'6', 
-                            ly_lg:'6'
-                        },
-                        {
-                            label:'Submited Date',
-                            name:'RH_Date_Submit__c',
-                            value:profileinformation?.RH_Date_Submit__c,
                             required:true,
                             ly_md:'6', 
                             ly_lg:'6'
@@ -699,17 +721,21 @@ export default class Rh_request_management_component extends NavigationMixin(Lig
                     ];
                     if (profileinformation?.RH_Date_Response__c != null) {
                 
-                        this.formPersonanalInputDetails.push(dateResp);
+                        this.formPersonanalInputDetails.splice(5, 0, dateResp)
+                    }
+                    if (profileinformation?.RH_Reason__c != null) {
+                
+                        this.formPersonanalInputDetails.push(objNte);
                     }
         }
-        if(profileinformation?.RecordType.Name == 'Explanation'){
+        if(profileinformation?.RecordType.DeveloperName == 'Explanation'){
             this.formPersonanalInputDetails=[
-            
+                
                 {
-                    label:this.l.AddressedTo,
-                    name:'RH_AddressedTo',
-                    value:profileinformation?.RH_Addressed_To__r?.Name,
-                    required:false,
+                    label:this.l.RequestTypeName,
+                    name:'RecordT',
+                    required:true,
+                    value:profileinformation?.RecordType?.Name,
                     ly_md:'6', 
                     ly_lg:'6'
                 },
@@ -722,23 +748,15 @@ export default class Rh_request_management_component extends NavigationMixin(Lig
                     ly_lg:'6'
                 },
                 {
-                    label:this.l.Status,
-                    name:'StatusRequest',
-                    required:true,
-                    value:profileinformation?.Rh_Status__c,
+                    label:this.l.AddressedTo,
+                    name:'RH_AddressedTo',
+                    value:profileinformation?.RH_Addressed_To__r?.Name,
+                    required:false,
                     ly_md:'6', 
                     ly_lg:'6'
                 },
                 {
-                    label:this.l.RequestTypeName,
-                    name:'RecordT',
-                    required:true,
-                    value:profileinformation?.RecordType?.Name,
-                    ly_md:'12', 
-                    ly_lg:'6'
-                },
-                {
-                    label:'Submited Date',
+                    label:this.l.SubmitedDate,
                     name:'RH_Date_Submit__c',
                     value:profileinformation?.RH_Date_Submit__c,
                     required:true,
@@ -755,20 +773,20 @@ export default class Rh_request_management_component extends NavigationMixin(Lig
                 }
             ];
             if (profileinformation?.RH_Date_Response__c != null) {
-                this.formPersonanalInputDetails.splice(5, 0, dateResp)
+                this.formPersonanalInputDetails.splice(4, 0, dateResp)
             }
             if (profileinformation?.RH_Answer__c != null) {
                 
                 this.formPersonanalInputDetails.push(objAns);
             }
         }
-        if(profileinformation?.RecordType.Name == 'Holiday' || profileinformation?.RecordType.Name == 'Permisson'){
+        if(profileinformation?.RecordType.DeveloperName == 'Permisson'){
             this.formPersonanalInputDetails=[ 
                 {
-                    label:this.l.AddressedTo,
-                    name:'RH_AddressedTo',
-                    value:profileinformation?.RH_Addressed_To__r?.Name,
-                    required:false,
+                    label:this.l.RequestTypeName,
+                    name:'RecordT',
+                    required:true,
+                    value:profileinformation?.RecordType?.Name,
                     ly_md:'6', 
                     ly_lg:'6'
                 },
@@ -781,43 +799,37 @@ export default class Rh_request_management_component extends NavigationMixin(Lig
                     ly_lg:'6'
                 },
                 {
-                    label:this.l.Status,
-                    name:'StatusRequest',
-                    required:true,
-                    value:profileinformation?.Rh_Status__c,
-                    ly_md:'6', 
-                    ly_lg:'6'
-                },
-                {
-                    label:this.l.RequestTypeName,
-                    name:'RecordT',
-                    required:true,
-                    value:profileinformation?.RecordType?.Name,
-                    ly_md:'6', 
-                    ly_lg:'6'
-                },
-                {
                     label:this.l.StartDate,
                     name:'RH_StartDate',
                     required:true,
                     value: profileinformation?.RH_Start_date__c,
-                    type:'Datetime',
+                    type:'datetime',
                     ly_md:'6', 
                     ly_lg:'6',
+                    isDatetime: true
                 },
                 {
                     label:this.l.EndDate,
                     name:'RH_EndDate',
                     value: profileinformation?.RH_End_date__c,
-                    type:'Datetime',
+                    type:'datetime',
                     ly_md:'6', 
                     ly_lg:'6',
+                    isDatetime: true
                 },
                 {
-                    label:'Submited Date',
+                    label:this.l.SubmitedDate,
                     name:'RH_Date_Submit__c',
                     value:profileinformation?.RH_Date_Submit__c,
                     required:true,
+                    ly_md:'6', 
+                    ly_lg:'6'
+                },
+                {
+                    label:this.l.AddressedTo,
+                    name:'RH_AddressedTo',
+                    value:profileinformation?.RH_Addressed_To__r?.Name,
+                    required:false,
                     ly_md:'6', 
                     ly_lg:'6'
                 },
@@ -833,7 +845,90 @@ export default class Rh_request_management_component extends NavigationMixin(Lig
             ];
             if (profileinformation?.RH_Date_Response__c != null) {
                 
-                this.formPersonanalInputDetails.splice(7, 0, dateResp)
+                this.formPersonanalInputDetails.splice(5, 0, dateResp)
+            }
+            if (profileinformation?.RH_Reason__c != null) {
+                
+                this.formPersonanalInputDetails.push(objNte);
+            }
+        }
+
+        if(profileinformation?.RecordType.DeveloperName == 'Holiday'){
+            let std = new Date(profileinformation?.RH_Start_date__c);
+            let stmonth = std.getMonth()+1 > 9 ? std.getMonth()+1 : '0'+(std.getMonth()+1); 
+            let stdat = std.getDate() > 9 ? std.getDate() : '0'+std.getDate();
+            let stDate = std.getFullYear()+'-'+stmonth+'-'+stdat;
+            let end = new Date(profileinformation?.RH_End_date__c);
+            let enmonth = end.getMonth()+1 > 9 ? end.getMonth()+1 : '0'+(end.getMonth()+1); 
+            let endat = end.getDate() > 9 ? end.getDate() : '0'+end.getDate();
+            let enDate = end.getFullYear()+'-'+enmonth+'-'+endat;
+            this.formPersonanalInputDetails=[ 
+                {
+                    label:this.l.RequestTypeName,
+                    name:'RecordT',
+                    required:true,
+                    value:profileinformation?.RecordType?.Name,
+                    ly_md:'6', 
+                    ly_lg:'6'
+                },
+                {
+                    label:this.l.Come,
+                    name:'RH_Owner',
+                    value:profileinformation?.CreatedBy.Name,
+                    required:true,
+                    ly_md:'6', 
+                    ly_lg:'6'
+                },
+                {
+                    label:this.l.StartDate,
+                    name:'RH_StartDate',
+                    required:true,
+                    value: stDate,
+                    type:'text',
+                    ly_md:'6', 
+                    ly_lg:'6',
+                },
+                {
+                    label:this.l.EndDate,
+                    name:'RH_EndDate',
+                    value: enDate,
+                    type:'text',
+                    ly_md:'6', 
+                    ly_lg:'6',
+                },
+                {
+                    label:this.l.SubmitedDate,
+                    name:'RH_Date_Submit__c',
+                    value:profileinformation?.RH_Date_Submit__c,
+                    required:true,
+                    ly_md:'6', 
+                    ly_lg:'6'
+                },
+                {
+                    label:this.l.AddressedTo,
+                    name:'RH_AddressedTo',
+                    value:profileinformation?.RH_Addressed_To__r?.Name,
+                    required:false,
+                    ly_md:'6', 
+                    ly_lg:'6'
+                },
+                {
+                    label:this.l.Description,
+                    placeholder:this.l.Description,
+                    name:'RH_Description',
+                    value:profileinformation?.RH_Description__c,
+                    required:true,
+                    ly_md:'6', 
+                    ly_lg:'6'
+                }
+            ];
+            if (profileinformation?.RH_Date_Response__c != null) {
+                
+                this.formPersonanalInputDetails.splice(5, 0, dateResp)
+            }
+            if (profileinformation?.RH_Reason__c != null) {
+                
+                this.formPersonanalInputDetails.push(objNte);
             }
         }
         
@@ -870,8 +965,8 @@ export default class Rh_request_management_component extends NavigationMixin(Lig
     buildRejetForm(){
         this.fieldForRejet = [
             {
-                label:'Note',
-                placeholder:'Type Here',
+                label:this.l.Note,
+                placeholder:this.l.Note,
                 name:'RH_Reason',
                 className:'textarea',
                 maxlength:25000,

@@ -1,5 +1,6 @@
 <template>
     <c-rh_toast auto-close-time="6000"></c-rh_toast>
+    
     <template if:true={isNew}>
         <div if:true={showSpinner}>
             <div class="spinnerHolder">
@@ -8,10 +9,11 @@
         </div>
         <template if:false={isAllFields}>
             <c-rh_dynamic_form inputs-items={firstFieldInputs} oninputchanged={handlechge}></c-rh_dynamic_form>
+            
             <div class="card-footer" slot="footer">
                 <div class="slds-clearfix">
                     <div class="slds-float_right">
-                        <lightning-button variant="base" label="Cancel" data-action-name={l.Cancel} title="Cancel"
+                        <lightning-button variant="base" label={l.Cancel} data-action-name={l.Cancel} title="Cancel"
                             icon-name="utility:close" onclick={handleCancel} class="slds-m-left_x-small">
                         </lightning-button>
                         <!-- <lightning-button variant="base" label="Next"   onclick={handleNext} class="slds-m-left_medium"></lightning-button> -->
@@ -31,7 +33,7 @@
                 <h3 slot="title">
                     <lightning-icon icon-name="utility:add" alternative-text="New note" size="small">
                     </lightning-icon>
-                     New {requestType}
+                    {l.New} {requestType}
                 </h3>
                 <!-- <template if:true={isComplain}> -->
                 <c-rh_dynamic_form inputs-items={lastFieldInputsAll}></c-rh_dynamic_form>
@@ -44,7 +46,7 @@
                         <div class="slds-clearfix">
                             <template if:true={isComplain}>
                                 <div class="slds-float_left">
-                                    <lightning-button variant="brand-outline" label="ADD ADDRESS CC"
+                                    <lightning-button variant="brand-outline" label={l.AddAdresscc}
                                         icon-name="utility:add" title="Primary action with lighter look"
                                         onclick={openDualBox} class="slds-m-left_x-small"></lightning-button>
                                 </div><br />
@@ -52,7 +54,7 @@
 
                             <div if:true={isOpenDualBox}>
                                 <!-- <template if:true={isOpenDualBox}>  -->
-                                <c-rh_dual_box source-label="Avaible Members" selected-label="Selected Members"
+                                <c-rh_dual_box source-label={l.AvaibleMembers} selected-label={l.SelectedMembers}
                                     field-level="Select members to add to the group" options={addressedRecord} values="">
                                 </c-rh_dual_box>
                             </div>
@@ -121,7 +123,7 @@
                     <c-rh_filter title={l.FilterRequest} field-details={inputFormFilter} onsubmit={filterRequest} onreset={getRequest}></c-rh_filter>
                 </template> 
             </div>
-            <c-rh_cards_view page-size="6" items={tabReq} onrowselected={handleCardAction}></c-rh_cards_view>
+            <c-rh_cards_view page-size="9" items={tabReq} onrowselected={handleCardAction} ly_xs = "12" ly_md = "6" ly_lg = "4"></c-rh_cards_view>
         </template>
         <template if:true={hasRecordId}>
             <template if:false={editMode}>
@@ -151,8 +153,8 @@
                         </div>
                     </div>
                     <div class="slds-p-around_medium profile_user_info">
-                        <c-rh_display_fields title={requestType} iconsrc="utility:people" column="2"
-                            output-fields={formPersonanalInputDetails}></c-rh_display_fields>
+                        <c-rh_display_fields title={requestType}  column="2"
+                            output-fields={formPersonanalInputDetails} badges={badge}></c-rh_display_fields>
                     </div>
                 </template>
                 <template if:true={cloneMode}>
@@ -160,7 +162,7 @@
                         <h3 slot="title">
                             <lightning-icon icon-name="utility:add" size="small" title="edit"
                                 class="slds-p-right_small"></lightning-icon>
-                            Clone {requestType}
+                            {l.Clone} {requestType}
                         </h3>
                         <!-- <c-rh_dynamic_form inputs-items={lastFieldInputsAll}></c-rh_dynamic_form> -->
                         <c-rh_dynamic_form inputs-items={formPersonanalInputClone}></c-rh_dynamic_form>
@@ -176,7 +178,7 @@
     
                                 <div if:true={isOpenDualBox}>
                                     <!-- <template if:true={isOpenDualBox}>  -->
-                                    <c-rh_dual_box source-label="Avaible Members" selected-label="Selected Members"
+                                    <c-rh_dual_box source-label={l.AvaibleMembers} selected-label={l.SelectedMembers}
                                         field-level="Select members to add to the group" options={addressedRecord} values={listContsValue}>
                                     </c-rh_dual_box>
                                 </div>
@@ -205,7 +207,7 @@
                     <h3 slot="title">
                         <lightning-icon icon-name="utility:edit" size="small" title="edit" class="slds-p-right_small">
                         </lightning-icon>
-                        Edit {requestType}
+                        {l.Edit} {requestType}
                     </h3>
                     <!-- <c-rh_dynamic_form inputs-items={lastFieldInputsAll}></c-rh_dynamic_form> -->
                     <c-rh_dynamic_form inputs-items={formPersonanalInputClone}></c-rh_dynamic_form>
@@ -213,7 +215,7 @@
                         <div class="slds-clearfix">
                             <template if:true={isComplain}>
                                 <div class="slds-float_left">
-                                    <lightning-button variant="brand-outline" label="EDIT ADDRESS CC"
+                                    <lightning-button variant="brand-outline" label={l.EditAddresseCC}
                                         icon-name="utility:Edit" title="Primary action with lighter look"
                                         onclick={openDualBox} class="slds-m-left_x-small"></lightning-button>
                                 </div><br />
@@ -221,7 +223,7 @@
 
                             <div if:true={isOpenDualBox}>
                                 <!-- <template if:true={isOpenDualBox}>  -->
-                                <c-rh_dual_box source-label="Avaible Members" selected-label="Selected Members"
+                                <c-rh_dual_box source-label={l.AvaibleMembers} selected-label={l.SelectedMembers}
                                     field-level="Select members to add to the group" options={addressedRecord} values={listContsValue}>
                                 </c-rh_dual_box>
                             </div>

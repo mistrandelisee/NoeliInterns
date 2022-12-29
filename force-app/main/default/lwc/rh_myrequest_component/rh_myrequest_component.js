@@ -19,26 +19,6 @@ const columns = [
     { label: 'Role', fieldName: 'Role' },
 ];
 
-const EDIT_ACTION = 'Edit';
-const SUCCESS_VARIANT = 'success';
-const WARNING_VARIANT = 'warning';
-
-
-const ERROR_VARIANT = 'error';
-const FROMRESETPWD = 'ResetPWD';
-const RESET_ACTION = 'Reset';
-const SAVE_ACTION = 'Save';
-
-const ACTIVE_ACTION = 'active';
-const DISABLE_ACTION = 'banned';
-const FREEZE_ACTION = 'frozen';
-const PROMOTE_ACTION = 'PromoteBaseUser';
-
-const FROM_CHILD = 'FROM_CHILD';
-const FROM_PARENT = 'FROM_PARENT';
-const CARD_ACTION = 'stateAction';
-const OK_DISABLE = 'OK_DISABLEX';
-const OK_FREEZE = 'OK_FREEZE';
 
 export default class Rh_myrequest_component extends NavigationMixin(LightningElement) {
     @wire(CurrentPageReference) pageRef;
@@ -54,6 +34,7 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
     @track Start_date;
     @track isNew = false;
     @track isAllFields = false;
+    @track badge = [];
     optionsRecord = [];
     @track optionsRecordList = [];
     @track firstFieldInputs = [];
@@ -87,6 +68,7 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
     allRecType = [];
     isBase;
     natureOpt;
+    okDelete;
     todo;
 
     keysFields = { AddressedTo: 'ok' };//non used now
@@ -112,11 +94,19 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
         }
     ];
 
+    hasRecords;
+
     get hasRecordId() {
         return this.recordId ? true : false;
     }
+    
     get enableForm() {
-        return this.inputFormFilter?.length>0 ? true : false;
+        filterRequest({ searchText:'', })
+        .then(result => {
+            console.log('#### PIGNOUF =====> '+result != null)
+            this.hasRecords = (result != null) ? true : false; 
+        })
+        return this.hasRecords;
     }
 
     buildFormFilter(optRecType){
@@ -164,12 +154,13 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
     //     getReq({data,errr}){
     //         console.log('@@@@@objectReturn');
     filterRequest(event){
+        let searchText = event.detail.searchText;
         let reqType= event.detail.RequestType;
         let status= event.detail.status;
         let dateFrom= event.detail.From;
         let dateTo = event.detail.To;
         this.startSpinner(true);
-        filterRequest({requestType: reqType, status: status, dateFrom: dateFrom, dateTo: dateTo})
+        filterRequest({searchText:searchText, requestType: reqType, status: status, dateFrom: dateFrom, dateTo: dateTo})
             .then(result => {
                 this.tabReq = [];
                 const self = this;
@@ -181,7 +172,6 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
                         "AddressedTo": elt.RH_Addressed_To__r?.Name,
                         "Type": elt.RecordType.Name,
                         "id": elt.Id,
-                        icon: "standard:people",
 
                         title: elt?.Name,
                         keysFields: self.keysFields,
@@ -218,7 +208,6 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
                         "AddressedTo": elt.RH_Addressed_To__r?.Name,
                         "Type": elt.RecordType.Name,
                         "id": elt.Id,
-                        icon: "standard:people",
 
                         title: elt?.Name,
                         keysFields: self.keysFields,
@@ -231,7 +220,6 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
                     objetRep.addons={badge};
                     this.tabReq.push(objetRep);
                 });
-                // this.refreshTable(this.tabReq); 
                 this.setviewsList(this.tabReq)
             }).catch(error => {
                 console.error('Error:', error);
@@ -271,11 +259,15 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
 
     buildformDetail(profileinformation, addrName) {
         let std = new Date(profileinformation?.RH_Start_date__c);
-        let stDate = std.getFullYear()+'-'+(std.getMonth()+1)+'-'+std.getDate();
+        let stmonth = std.getMonth()+1 > 9 ? std.getMonth()+1 : '0'+(std.getMonth()+1); 
+        let stdat = std.getDate() > 9 ? std.getDate() : '0'+std.getDate();
+        let stDate = std.getFullYear()+'-'+stmonth+'-'+stdat;
         let end = new Date(profileinformation?.RH_End_date__c);
-        let enDate = end.getFullYear()+'-'+(end.getMonth()+1)+'-'+end.getDate();
+        let enmonth = end.getMonth()+1 > 9 ? end.getMonth()+1 : '0'+(end.getMonth()+1); 
+        let endat = end.getDate() > 9 ? end.getDate() : '0'+end.getDate();
+        let enDate = end.getFullYear()+'-'+enmonth+'-'+endat;
         let objNte =   {
-            label: profileinformation?.RecordType.Name == 'Complain' || profileinformation?.RecordType.Name == 'Explanation' ? this.l.reason : this.l.Note,
+            label: profileinformation?.RecordType.DeveloperName == 'Complain' || profileinformation?.RecordType.DeveloperName == 'Explanation' ? this.l.reason : this.l.Note,
             placeholder: 'Note',
             name: 'RH_Note',
             value: profileinformation?.RH_Reason__c,
@@ -310,8 +302,8 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
             ly_lg:'6'
         }
 
-        console.log('@@@@@RecordType.Name' + profileinformation?.RecordType.Name);
-        if (profileinformation?.RecordType.Name == 'Complain') {
+        console.log('@@@@@RecordType.Name' + profileinformation?.RecordType.DeveloperName);
+        if (profileinformation?.RecordType.DeveloperName == 'Complain') {
             
             this.formPersonanalInputDetails = [
 
@@ -326,21 +318,11 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
                     ly_lg: '6'
                 },
                 {
-                    label: this.l.AddressedCc,
-                    placeholder: this.l.AddressedCc,
-                    name: 'RH_AddressedCc',
+                    label: this.l.RequestTypeName,
+                    name: 'RecordT',
                     required: true,
-                    value: addrName,
-                    ly_md: '6',
-                    ly_lg: '6'
-                },
-                {
-                    label: this.l.ComplainOn,
-                    placeholder: this.l.ComplainOn,
-                    name: 'ComplainOn',
-                    type:'text',
-                    value: profileinformation?.RH_Complain_On__r?.Name,
-                    required: false,
+                    value: profileinformation?.RecordType.Name,
+                    readOnly: true,
                     ly_md: '6',
                     ly_lg: '6'
                 },
@@ -357,11 +339,21 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
                     ly_lg: '6'
                 },
                 {
-                    label: this.l.RequestTypeName,
-                    name: 'RecordT',
+                    label: this.l.ComplainOn,
+                    placeholder: this.l.ComplainOn,
+                    name: 'ComplainOn',
+                    type:'text',
+                    value: profileinformation?.RH_Complain_On__r?.Name,
+                    required: false,
+                    ly_md: '6',
+                    ly_lg: '6'
+                },
+                {
+                    label: this.l.AddressedCc,
+                    placeholder: this.l.AddressedCc,
+                    name: 'RH_AddressedCc',
                     required: true,
-                    value: profileinformation?.RecordType?.Name,
-                    readOnly: true,
+                    value: addrName,
                     ly_md: '6',
                     ly_lg: '6'
                 },
@@ -388,7 +380,7 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
                 this.formPersonanalInputDetails.push(objNte);
             }
         }
-        if (profileinformation?.RecordType.Name == 'Explanation') {
+        if (profileinformation?.RecordType.DeveloperName == 'Explanation') {
             this.formPersonanalInputDetails = [
 
                 {
@@ -403,6 +395,15 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
                     ly_lg: '6'
                 },
                 {
+                    label: this.l.RequestTypeName,
+                    name: 'RecordT',
+                    required: true,
+                    value: profileinformation?.RecordType.Name,
+                    readOnly: true,
+                    ly_md: '12',
+                    ly_lg: '6'
+                },
+                {
                     label: this.l.Status,
                     name: 'StatusRequest',
                     required: true,
@@ -412,15 +413,6 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
                     maxlength: 255,
                     type: 'email',
                     ly_md: '6',
-                    ly_lg: '6'
-                },
-                {
-                    label: this.l.RequestTypeName,
-                    name: 'RecordT',
-                    required: true,
-                    value: profileinformation?.RecordType?.Name,
-                    readOnly: true,
-                    ly_md: '12',
                     ly_lg: '6'
                 },
                 {
@@ -450,7 +442,7 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
                 this.formPersonanalInputDetails.push(objAns);
             }
         }
-        if (profileinformation?.RecordType.Name == 'Permisson') {
+        if (profileinformation?.RecordType.DeveloperName == 'Permisson') {
             this.formPersonanalInputDetails = [
 
                 {
@@ -465,6 +457,15 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
                     ly_lg: '6'
                 },
                 {
+                    label: this.l.RequestTypeName,
+                    name: 'RecordT',
+                    required: true,
+                    value: profileinformation?.RecordType.Name,
+                    readOnly: true,
+                    ly_md: '6',
+                    ly_lg: '6'
+                },
+                {
                     label: this.l.Status,
                     name: 'StatusRequest',
                     required: true,
@@ -473,6 +474,15 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
                     readOnly: true,
                     maxlength: 255,
                     type: 'email',
+                    ly_md: '6',
+                    ly_lg: '6'
+                },
+                {
+                    label: this.l.Description,
+                    placeholder: this.l.Description,
+                    name: 'RH_Description',
+                    value: profileinformation?.RH_Description__c,
+                    required: true,
                     ly_md: '6',
                     ly_lg: '6'
                 },
@@ -496,24 +506,6 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
                     ly_md: '6',
                     ly_lg: '6',
                     isDatetime: true
-                },
-                {
-                    label: this.l.RequestTypeName,
-                    name: 'RecordT',
-                    required: true,
-                    value: profileinformation?.RecordType?.Name,
-                    readOnly: true,
-                    ly_md: '6',
-                    ly_lg: '6'
-                },
-                {
-                    label: this.l.Description,
-                    placeholder: this.l.Description,
-                    name: 'RH_Description',
-                    value: profileinformation?.RH_Description__c,
-                    required: true,
-                    ly_md: '6',
-                    ly_lg: '6'
                 }
             ];
             if (profileinformation?.RH_Date_Submit__c != null) {
@@ -529,7 +521,7 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
                 this.formPersonanalInputDetails.push(objNte);
             }
         }
-        if (profileinformation?.RecordType.Name == 'Holiday') {
+        if (profileinformation?.RecordType.DeveloperName == 'Holiday') {
             this.formPersonanalInputDetails = [
 
                 {
@@ -544,6 +536,15 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
                     ly_lg: '6'
                 },
                 {
+                    label: this.l.RequestTypeName,
+                    name: 'RecordT',
+                    required: true,
+                    value: profileinformation?.RecordType.Name,
+                    readOnly: true,
+                    ly_md: '6',
+                    ly_lg: '6'
+                },
+                {
                     label: this.l.Status,
                     name: 'StatusRequest',
                     required: true,
@@ -552,6 +553,15 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
                     readOnly: true,
                     maxlength: 255,
                     type: 'email',
+                    ly_md: '6',
+                    ly_lg: '6'
+                },
+                {
+                    label: this.l.Description,
+                    placeholder: this.l.Description,
+                    name: 'RH_Description',
+                    value: profileinformation?.RH_Description__c,
+                    required: true,
                     ly_md: '6',
                     ly_lg: '6'
                 },
@@ -573,24 +583,6 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
                     type:'text',
                     ly_md: '6',
                     ly_lg: '6',
-                },
-                {
-                    label: this.l.RequestTypeName,
-                    name: 'RecordT',
-                    required: true,
-                    value: profileinformation?.RecordType?.Name,
-                    readOnly: true,
-                    ly_md: '6',
-                    ly_lg: '6'
-                },
-                {
-                    label: this.l.Description,
-                    placeholder: this.l.Description,
-                    name: 'RH_Description',
-                    value: profileinformation?.RH_Description__c,
-                    required: true,
-                    ly_md: '6',
-                    ly_lg: '6'
                 }
             ];
             if (profileinformation?.RH_Date_Submit__c != null) {
@@ -611,7 +603,7 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
     buildformClone(profileinformation) {
 
         console.log('@@@@@RecordType.Name' + profileinformation?.RecordType.Name);
-        if (profileinformation?.RecordType.Name == 'Complain') {
+        if (profileinformation?.RecordType.DeveloperName == 'Complain') {
             this.formPersonanalInputClone = [
 
                 {
@@ -640,7 +632,7 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
                     label: this.l.RequestTypeName,
                     name: 'RecordT',
                     required: true,
-                    value: profileinformation?.RecordType?.Name,
+                    value: profileinformation?.RecordType.Name,
                     readOnly: true,
                     ly_md: '6',
                     ly_lg: '6'
@@ -658,7 +650,7 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
                 }
             ];
         }
-        if (profileinformation?.RecordType.Name == 'Explanation') {
+        if (profileinformation?.RecordType.DeveloperName == 'Explanation') {
             this.formPersonanalInputClone = [
 
                 {
@@ -676,7 +668,7 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
                     label: this.l.RequestTypeName,
                     name: 'RecordT',
                     required: true,
-                    value: profileinformation?.RecordType?.Name,
+                    value: profileinformation?.RecordType.Name,
                     readOnly: true,
                     ly_md: '12',
                     ly_lg: '6'
@@ -694,7 +686,7 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
                 }
             ];
         }
-        if (profileinformation?.RecordType.Name == 'Permisson') {
+        if (profileinformation?.RecordType.DeveloperName == 'Permisson') {
             this.formPersonanalInputClone = [
 
                 {
@@ -712,7 +704,7 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
                     label: this.l.RequestTypeName,
                     name: 'RecordT',
                     required: true,
-                    value: profileinformation?.RecordType?.Name,
+                    value: profileinformation?.RecordType.Name,
                     readOnly: true,
                     ly_md: '6',
                     ly_lg: '6'
@@ -751,7 +743,7 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
                 }
             ];
         }
-        if (profileinformation?.RecordType.Name == 'Holiday') {
+        if (profileinformation?.RecordType.DeveloperName == 'Holiday') {
             this.formPersonanalInputClone = [
 
                 {
@@ -769,7 +761,7 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
                     label: this.l.RequestTypeName,
                     name: 'RecordT',
                     required: true,
-                    value: profileinformation?.RecordType?.Name,
+                    value: profileinformation?.RecordType.Name,
                     readOnly: true,
                     ly_md: '6',
                     ly_lg: '6'
@@ -876,8 +868,8 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
                     };
                 });
                 result.forEach(plValue => {
-                    if(plValue.Name != 'Explanation'){
-                        if(plValue.Name != 'Complain'  || !this.isBase){
+                    if(plValue.DeveloperName != 'Explanation'){
+                        if(plValue.DeveloperName != 'Complain'  || !this.isBase){
                             this.optionsRecord.push(
                                 {
                                     label: plValue.Name,
@@ -894,15 +886,12 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
 
     handleChangeValue() {
         this.isNew = true;
-        //this.getRecordType();
         this.buildform();
     }
 
     handleCancel() {
-        this.isNew = false;
-        // window.location.reload();
+        this.isNew = false
     }
-
     handleNext() {
         this.isAllFields = true;
         this.openNext();
@@ -922,11 +911,13 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
     }
 
     handleDeleteValue() {
+        this.okDelete = '';
         this.startSpinner(true);
         deleteRequest({ requestId: this.recordId })
             .then(result => {
                 if (result == 'OK') {
-                    this.showToast('success', 'success', 'Request has been deleted successfully');
+                    console.log('recordDelete',this.recordId)
+                    this.showToast('success', 'success', this.l.RequestDeleded);
                     // this.getRequest();
                     this.handleCancelDetail();
                 } else {
@@ -949,7 +940,7 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
                         value: plValue.Id
                     };
                 });
-                if(this.resultRecord.RecordType.Name == 'Complain'){
+                if(this.resultRecord.RecordType.DeveloperName == 'Complain'){
                     this.allContact = result.complainOn.map(plValue => {
                         return {
                             label: plValue.Name,
@@ -958,7 +949,7 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
                     });
                 }
                 this.buildformClone(this.resultRecord);
-                this.requestType = this.resultRecord?.RecordType?.Name;
+                this.requestType = this.resultRecord?.RecordType.Name;
             }).catch(error => {
                 console.error('Error:', error);
             });
@@ -976,34 +967,25 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
     openNext() {
         this.optionsRecordList.forEach(op => {
             console.log('@@@@@objectMap' + op);
-            if (op.Id == this.typeId && op.Name == 'Complain') {
+            if (op.Id == this.typeId && op.DeveloperName == 'Complain') {
                 this.isComplain = true;
                 this.isExplanation = false;
                 this.isPermHoli = false;
-                this.requestType = 'Complain';
-               // this.getAllContact();
-               
+                this.requestType = op.Name;
                 this.buildformComplain();
             }
-            if (op.Id == this.typeId && op.Name == 'Explanation') {
-                this.isExplanation = true;
-                this.isComplain = false;
-                this.isPermHoli = false;
-                this.requestType = 'Explanation';
-                this.buildformExplanation();
-            }
-            if (op.Id == this.typeId && op.Name == 'Holiday') {
+            if (op.Id == this.typeId && op.DeveloperName == 'Holiday') {
                 this.isPermHoli = true;
                 this.isExplanation = false;
                 this.isComplain = false;
-                this.requestType = 'Holiday';
+                this.requestType = op.Name;
                 this.buildformHoli();
             }
-            if (op.Id == this.typeId && op.Name == 'Permisson') {
+            if (op.Id == this.typeId && op.DeveloperName == 'Permisson') {
                 this.isPermHoli = true;
                 this.isExplanation = false;
                 this.isComplain = false;
-                this.requestType = 'Permisson';
+                this.requestType = op.Name;
                 this.buildformPerm();
             }
         })
@@ -1022,7 +1004,7 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
                 this.resultRecord = result;
                 this.typeId = result.RecordTypeId;
                 this.statusDetail = result.Rh_Status__c;
-                if(result.RecordType.Name == 'Complain'){
+                if(result.RecordType.DeveloperName == 'Complain'){
                     this.isComplain = true;
                 }
                 let NameAdressed;
@@ -1031,8 +1013,9 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
                     let tabName = result.Adressedccs__r.map(elt => elt.RH_Contact__r.Name);
                     NameAdressed = tabName.join(',');
                 }
+                this.badge=[{name: 'badgeDetail', class: this.classStyle(result.Rh_Status__c),label: result.Rh_Status}];
                 this.buildformDetail(this.resultRecord, NameAdressed);
-                this.requestType = result?.RecordType?.Name;
+                this.requestType = result?.RecordType.Name;
                 if (result.Rh_Status__c == 'Draft') {
                     this.isDraft = true;
                 } else {
@@ -1058,28 +1041,22 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
     }
     
     handleCardActionPop(event) {
-        this.todo = OK_DISABLE;
+        this.okDelete = 'DELETE';
         let text = '';
         const Actions = []
         const extra = { style: 'width:20vw;' };
         text = this.l.delete_Request_confirm;
         extra.title = this.l.deleteRequestConfirm;
         extra.style += '--lwc-colorBorder: var(--bannedColor);';
-        Actions.push(this.createAction("brand-outline", this.l.okConfirm, OK_DISABLE, 'Yes', "utility:close", 'slds-m-left_x-small'));
+        Actions.push(this.createAction("brand-outline", this.l.okConfirm, this.okDelete, 'Yes', "action:approval", 'slds-m-left_x-small'));
         this.ShowModal(true, text, Actions, extra);
 
     }
     doModalAction(event) {
         console.log('doModalAction in user view ', JSON.stringify(event.action));
         switch (event.action) {
-            case OK_DISABLE:
+            case this.okDelete:
                 this.handleDeleteValue();
-                break;
-            case OK_FREEZE:
-                // this.doUpdateStatus(this.actionRecord,OK_FREEZE)
-                break;
-            default:
-                this.todo = '';
                 break;
         }
         this.ShowModal(false, null, []);//close modal any way
@@ -1125,7 +1102,7 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
         updateRequest({ requestId: this.recordId})
             .then(result => {
                 if (result == 'OK') {
-                    this.showToast('success', 'success', 'Request has been send successfully');
+                    this.showToast('success', 'success', this.l.RequestSend);
                     // this.getRequest();
                     // this.handleCancelDetail();
                     this.goToRequestDetail(this.recordid);
@@ -1149,7 +1126,7 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
                         value: plValue.Id
                     };
                 });
-                if(this.resultRecord.RecordType.Name == 'Complain'){
+                if(this.resultRecord.RecordType.DeveloperName == 'Complain'){
                     this.allContact = result.complainOn.map(plValue => {
                         return {
                             label: plValue.Name,
@@ -1158,7 +1135,7 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
                     });
                 }
                 this.buildformClone(this.resultRecord);
-                this.requestType = this.resultRecord?.RecordType?.Name;
+                this.requestType = this.resultRecord?.RecordType.Name;
             }).catch(error => {
                 console.error('Error:', error);
             });
@@ -1179,9 +1156,9 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
             let currentDate = new Date(dateVar.getTime() + dateVar.getTimezoneOffset() * 60000).toISOString();
             console.log(currentDate);
             if (currentDate > this.emp.RH_StartDate || this.emp.RH_StartDate > this.emp.RH_EndDate) {
-                this.showToast('error', 'Error', 'The Start date must be earlier than to End date and greather than current date');
+                this.showToast('error', 'Error', this.l.RequestErrorDate);
             } else {
-                this.natureOpt = 'cloned';
+                this.natureOpt = this.l.RequestCloned;
                 this.createRequest();
             }
         } else {
@@ -1202,9 +1179,9 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
             let currentDate = new Date(dateVar.getTime() + dateVar.getTimezoneOffset() * 60000).toISOString();
             console.log(currentDate);
             if (currentDate > this.emp.RH_StartDate || this.emp.RH_StartDate > this.emp.RH_EndDate) {
-                this.showToast('error', 'Error', 'The Start date must be earlier than to End date and greather than current date');
+                this.showToast('error', 'Error', this.l.RequestErrorDate);
             } else {
-                this.natureOpt = 'cloned and send';
+                this.natureOpt = this.l.RequestClonedAndSend;
                 this.createRequest();
             }
         } else {
@@ -1227,9 +1204,9 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
             let currentDate = new Date(dateVar.getTime() + dateVar.getTimezoneOffset() * 60000).toISOString();
             console.log(currentDate);
             if (currentDate > this.emp.RH_StartDate || this.emp.RH_StartDate > this.emp.RH_EndDate) {
-                this.showToast('error', 'Error', 'The Start date must be earlier than to End date and greather than current date');
+                this.showToast('error', 'Error', this.l.RequestErrorDate);
             } else {
-                this.natureOpt = 'edited and send';
+                this.natureOpt = this.l.RequestEditedAndSend;
                 this.createRequest();
             }
         } else {
@@ -1252,9 +1229,9 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
             let currentDate = new Date(dateVar.getTime() + dateVar.getTimezoneOffset() * 60000).toISOString();
             console.log(currentDate);
             if (currentDate > this.emp.RH_StartDate || this.emp.RH_StartDate > this.emp.RH_EndDate) {
-                this.showToast('error', 'Error', 'The Start date must be earlier than to End date and greather than current date');
+                this.showToast('error', 'Error', this.l.RequestErrorDate);
             } else {
-                this.natureOpt = 'edited';
+                this.natureOpt = this.l.RequestEdited;
                 this.createRequest();
             }
         } else {
@@ -1275,9 +1252,9 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
             let currentDate = new Date(dateVar.getTime() + dateVar.getTimezoneOffset() * 60000).toISOString();
             console.log(currentDate);
             if (currentDate > this.emp.RH_StartDate || this.emp.RH_StartDate > this.emp.RH_EndDate) {
-                this.showToast('error', 'Error', 'The Start date must be earlier than to End date and greather than current date');
+                this.showToast('error', 'Error', this.l.RequestErrorDate);
             } else {
-                this.natureOpt = 'created';
+                this.natureOpt = this.l.RequestCreated;
                 this.createRequest();
             }
         } else {
@@ -1298,9 +1275,9 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
             let currentDate = new Date(dateVar.getTime() + dateVar.getTimezoneOffset() * 60000).toISOString();
             console.log(currentDate);
             if (currentDate > this.emp.RH_StartDate || this.emp.RH_StartDate > this.emp.RH_EndDate) {
-                this.showToast('error', 'Error', 'The Start date must be earlier than to End date and greather than current date');
+                this.showToast('error', 'Error', this.l.RequestErrorDate);
             } else {
-                this.natureOpt = 'created and send';
+                this.natureOpt = this.l.RequestCreatedAndSend;
                 this.createRequest();
             }
         } else {
@@ -1337,7 +1314,7 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
                 if (result.error) {
                     this.showToast('error', 'Error', result.msg);
                 } else {
-                    this.showToast('success', 'success', 'Request has been '+this.natureOpt+' successfully');
+                    this.showToast('success', 'success', this.natureOpt);
                     // this.handleCancelDetail();
                     this.goToRequestDetail(result.RequestUser.Id);
                     // this.tabReq = [];
@@ -1389,8 +1366,8 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
     buildform() {
         this.firstFieldInputs = [
             {
-                label: 'Type of Request',
-                placeholder: 'Select type',
+                label: this.l.RequestTypeName,
+                placeholder: this.l.RequestTypeName,
                 name: 'TypeOfRequest',
                 picklist: true,
                 options: this.optionsRecord,
@@ -1406,8 +1383,8 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
         // this.lastFieldInputsComplain = [
         this.lastFieldInputsAll = [
             {
-                label: 'Addressed To',
-                placeholder: 'Select',
+                label: this.l.AddressedTo,
+                placeholder: this.l.AddressedTo,
                 name: 'RH_AddressedTo',
                 picklist: true,
                 options: this.addressedRecord,
@@ -1428,8 +1405,8 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
             //     ly_lg: '6'
             // },
             {
-                label: 'Complain On',
-                placeholder: 'Select',
+                label: this.l.ComplainOn,
+                placeholder: this.l.ComplainOn,
                 name: 'ComplainOn',
                 picklist: true,
                 options: this.allContact,
@@ -1439,8 +1416,8 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
                 ly_lg: '6'
             },
             {
-                label: 'Description',
-                placeholder: 'type here',
+                label: this.l.Description,
+                placeholder: this.l.Description,
                 name: 'RH_Description',
                 className: 'textarea',
                 maxlength: 25000,
@@ -1456,8 +1433,8 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
         // this.lastFieldInputsPermHoli = [
         this.lastFieldInputsAll = [
             {
-                label: 'Addressed To',
-                placeholder: 'Select',
+                label: this.l.AddressedTo,
+                placeholder: this.l.AddressedTo,
                 name: 'RH_AddressedTo',
                 picklist: true,
                 options: this.addressedRecord,
@@ -1467,8 +1444,8 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
                 ly_lg: '6'
             },
             {
-                label: 'Description',
-                placeholder: 'type here',
+                label: this.l.Description,
+                placeholder: this.l.Description,
                 name: 'RH_Description',
                 className: 'textarea',
                 maxlength: 25000,
@@ -1479,8 +1456,8 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
                 ly_lg: '6'
             },
             {
-                label: 'Start date',
-                placeholder: 'Select',
+                label: this.l.StartDate,
+                placeholder: this.l.StartDate,
                 name: 'RH_StartDate',
                 value: '',
                 required: true,
@@ -1489,8 +1466,8 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
                 ly_lg: '6'
             },
             {
-                label: 'End date',
-                placeholder: 'Select',
+                label: this.l.EndDate,
+                placeholder: this.l.EndDate,
                 name: 'RH_EndDate',
                 value: '',
                 required: true,
@@ -1505,8 +1482,8 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
         // this.lastFieldInputsPermHoli = [
         this.lastFieldInputsAll = [
             {
-                label: 'Addressed To',
-                placeholder: 'Select',
+                label: this.l.AddressedTo,
+                placeholder: this.l.AddressedTo,
                 name: 'RH_AddressedTo',
                 picklist: true,
                 options: this.addressedRecord,
@@ -1516,8 +1493,8 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
                 ly_lg: '6'
             },
             {
-                label: 'Description',
-                placeholder: 'type here',
+                label: this.l.Description,
+                placeholder: this.l.Description,
                 name: 'RH_Description',
                 className: 'textarea',
                 maxlength: 25000,
@@ -1528,8 +1505,8 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
                 ly_lg: '6'
             },
             {
-                label: 'Start date',
-                placeholder: 'Select',
+                label: this.l.StartDate,
+                placeholder: this.l.StartDate,
                 name: 'RH_StartDate',
                 value: '',
                 required: true,
@@ -1538,8 +1515,8 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
                 ly_lg: '6'
             },
             {
-                label: 'End date',
-                placeholder: 'Select',
+                label: this.l.EndDate,
+                placeholder: this.l.EndDate,
                 name: 'RH_EndDate',
                 value: '',
                 required: true,
@@ -1555,8 +1532,8 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
         this.lastFieldInputsAll = [
 
             {
-                label: this.l.adressedTo,
-                placeholder: 'Select',
+                label: this.l.AddressedTo,
+                placeholder: this.l.AddressedTo,
                 name: 'RH_AddressedTo',
                 picklist: true,
                 options: this.addressedRecord,
@@ -1578,7 +1555,7 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
             },
             {
                 label: this.l.Description,
-                placeholder: 'type here',
+                placeholder: this.l.Description,
                 name: 'RH_Description',
                 className: 'textarea',
                 maxlength: 25000,
