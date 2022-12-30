@@ -1,4 +1,4 @@
-public without sharing class RH_Timesheet_Controller {
+public without sharing class RH_Timesheet_Controller  implements RH_SummarizeInterface{
     private static RH_User_Query userQry = RH_User_Query.getInstance();
     private static RH_Project_Query projectQry = RH_Project_Query.getInstance();
     private static RH_Contact_Query contactQry = RH_Contact_Query.getInstance();
@@ -6,6 +6,50 @@ public without sharing class RH_Timesheet_Controller {
     private static RH_Timesheet_Query timesheetQry = RH_Timesheet_Query.getInstance();
     private static RH_TimeSheetEntry_Query timeSheetEntryQry = RH_TimeSheetEntry_Query.getInstance();
     private static final  RH_Settings__c cs = RH_Settings__c.getOrgDefaults();
+    public static Map<String,Object> StatusMapping = new Map<String, String>();
+    public static Map<String,Object> LabelMapping = new Map<String, String>();
+    private static String STATUSKEY='Status';
+    
+    private static final String APPROVE_STATUS='approvato';
+    private static final String REJECT_STATUS='Reject';
+    private static final String SUBMITTED_STATUS='inviato';
+    private static final String OPEN_STATUS='nuovo';
+/**
+const APPROVE_ACTION='approvato';
+const REJECT_ACTION='Reject';
+const DRAFT_STATUS='nuovo';
+const SUBMITTED_STATUS='inviato';
+ * case 'approvato':
+                return "slds-float_left slds-theme_success";
+            case 'nuovo':
+                return "slds-float_left slds-theme_info";
+            case 'inviato':
+                return "slds-float_left .slds-theme_warning";
+            case 'reject':
+                return "slds-float_left slds-theme_error";
+            default:
+                return "slds-float_left slds-badge_inverse";
+ */
+    // private static String ROLEKEY='RH_Role__c';
+    static{
+
+        RH_Constans cons= RH_Constans.getAllConstants();
+        StatusMapping= new Map<String, Object>{
+            STATUSKEY.toLowerCase()=> new Map<String, String>{
+                                APPROVE_STATUS.toLowerCase()=> ' slds-theme_success ',
+                                SUBMITTED_STATUS.toLowerCase()=> ' slds-theme_warning ',
+                                OPEN_STATUS.toLowerCase()=> ' slds-theme_info ',
+                                REJECT_STATUS.toLowerCase()=> ' slds-theme_error '
+                            }
+        };
+        // String valueKey='Value'+fieldName;
+        Map<String, Object> picklists=RH_Utility.getPickListOptions(new List<String> {/*ROLEKEY,*/STATUSKEY},'TimeSheet');
+        LabelMapping= new Map<String, Object>{
+            STATUSKEY.toLowerCase()=> (Map<String, String>)picklists.get('ValueStatus')/*,
+            // ROLEKEY.toLowerCase()=> (Map<String, String>)picklists.get('')*/
+        };
+        // System.debug(picklists);
+    }
     @AuraEnabled 
     public static Map<String,Object>  timeSheetCreation(String sheetJson){
         Map<String, Object> mapReturn = new Map<String, Object>();
@@ -126,6 +170,78 @@ public without sharing class RH_Timesheet_Controller {
         return mapReturn;
     }
 
+    
+    public List<AggregateResult> getSummary(Map<String, Object> args) {
+        String myUserId=UserInfo.getUserId();
+        // Contact currentContact = RH_Utility.getCurentContact(); 
+        // String recordTypeId=RH_Constans.RH_CONTACT_RT;
+        // String AccountId=currentContact.AccountId; 
+        System.debug('get sum '+args);
+        String groupByStr = String.valueOf(args.get(RH_Summarizer.GROUPBY_KEY));
+        String fieldsStr = String.valueOf(args.get(RH_Summarizer.FIELDS_KEY));
+        String conditionStr =null;
+        /*String Role=currentContact.RH_Role__c;
+        Boolean isAdmin=(RH_Constans.CONTACT_ROLE_CEO.equalsIgnoreCase(Role) || RH_Constans.CONTACT_ROLE_RH.equalsIgnoreCase(Role));
+        String addConds= isAdmin ? '' : 'AND RH_Status__c=\''+String.escapeSingleQuotes(RH_Constans.ACTIVATED_CONTACT_STATUS)+'\'';*///when not admin ,sumarize only activated
+        // String addConds='';1
+        conditionStr =' OwnerId != \''+String.escapeSingleQuotes(myUserId) +'\'';//+String.escapeSingleQuotes(recordTypeId) +'\' AND AccountId=\''+String.escapeSingleQuotes(AccountId) +'\' AND '+groupByStr+'!=Null '+addConds;
+        String sobj = String.valueOf(args.get(RH_Summarizer.OBJECT_KEY));
+        return RH_Summarizer.defauftSummirise(groupByStr,fieldsStr,conditionStr,sobj);
+    } 
+    public List<RH_Summarizer.summaryWrapper> formatAggregate(List<AggregateResult> aggs,Map<String, Object> args){
+        String groupByStr = String.valueOf(args.get(RH_Summarizer.GROUPBY_KEY));
+        String fieldsStr = String.valueOf(args.get(RH_Summarizer.FIELDS_KEY));
+        String conditionStr= String.valueOf(args.get(RH_Summarizer.CONDITIONS_KEY));
+        String sobj = String.valueOf(args.get(RH_Summarizer.OBJECT_KEY));
+        String alias=groupByStr;// by default
+        List<RH_Summarizer.summaryWrapper> sumaries = new List<RH_Summarizer.summaryWrapper>();
+        Integer i=0; 
+        Integer total=0; 
+        for (AggregateResult agg : aggs) {
+            RH_Summarizer.summaryWrapper swrap= new RH_Summarizer.summaryWrapper();
+            String name=(String) agg.get(alias);
+            swrap.label= getLabelMapping(groupByStr,name);
+            swrap.value = (Integer) agg.get('sum');
+            swrap.Key = name;
+            swrap.className= getClassMapping(groupByStr,name);
+            total= total + ( swrap.value!=Null?  swrap.value : 0); 
+            sumaries.add(swrap);
+            i=i+1;
+        }
+        /*RH_Summarizer.summaryWrapper allSum= new RH_Summarizer.summaryWrapper();
+        allSum.label='ALL';
+        allSum.value = total;
+        allSum.Key = 'ALL';
+        sumaries.add(allSum);*/
+
+        return sumaries;
+    }
+    // RH_Users_controller.getClassMapping('rh_status__c', 'Active');
+    public static String getClassMapping(String field, String Value){
+        field= field?.toLowerCase();
+        value= value?.toLowerCase();
+        string cx=' defaut slds-theme_info ';
+        Map<String,String> cxMapping=(Map<String,String>) StatusMapping.get(field);
+
+        if (cxMapping != null) {
+            cx= cxMapping.get(value); 
+        }
+        System.debug('@@@@@@field---> '+field+' Value---> '+Value+' cx---> '+cx);
+        return cx;
+    }
+    public static String getLabelMapping(String field, String Value){
+        field= field?.toLowerCase();
+        value= value?.toLowerCase();
+        string lb=Value;
+        Map<String,String> lbMapping=(Map<String,String>) LabelMapping.get(field);
+
+        if (lbMapping != null) {
+            // System.debug('lbMapping ' + lbMapping);
+            lb= lbMapping.get(value); 
+        }
+        System.debug('@@@@@@field---> '+field+' Value---> '+Value+' cx---> '+lb);
+        return lb;
+    }
     /*
     @AuraEnabled 
     public static Map<String,Object>  getTimeSheets(String userId){
