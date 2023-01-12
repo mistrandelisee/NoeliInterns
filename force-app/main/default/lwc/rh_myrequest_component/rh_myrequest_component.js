@@ -65,6 +65,10 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
     @track isOpenDualBox=false;
     @track listConts=[];
     @track listContsValue=[];
+    adds={
+        areMine: true
+    }
+    statusSelected;
     allRecType = [];
     isBase;
     natureOpt;
@@ -159,6 +163,41 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
         let status= event.detail.status;
         let dateFrom= event.detail.From;
         let dateTo = event.detail.To;
+        // this.startSpinner(true);
+        this.handleSearch({searchText,reqType,status,dateFrom,dateTo});
+        /*filterRequest({searchText:searchText, requestType: reqType, status: status, dateFrom: dateFrom, dateTo: dateTo})
+            .then(result => {
+                this.tabReq = [];
+                const self = this;
+                result.forEach(elt => {
+                    let objetRep = {};
+                    objetRep = {
+                        "Request": elt?.RH_Description__c,
+                        "CreatedDate": (new Date(elt.CreatedDate)).toLocaleString(),
+                        "AddressedTo": elt.RH_Addressed_To__r?.Name,
+                        "Type": elt.RecordType.Name,
+                        "id": elt.Id,
+
+                        title: elt?.Name,
+                        keysFields: self.keysFields,
+                        keysLabels: self.keysLabels,
+                        fieldsToShow: self.fieldsToShow,
+                    }
+
+                    console.log('@@@@@objectReturn' + objetRep);
+                    const badge={name: 'badge', class:self.classStyle(elt?.Rh_Status__c),label:elt?.Rh_Status}
+                    objetRep.addons={badge};
+                    this.tabReq.push(objetRep);
+                });
+                // this.refreshTable(this.tabReq); 
+                this.setviewsList(this.tabReq)
+            }).catch(error => {
+                console.error('Error:', error);
+            }).finally(() => {
+               this.startSpinner(false)
+            });*/
+    }
+    handleSearch({searchText,reqType,status,dateFrom,dateTo}){
         this.startSpinner(true);
         filterRequest({searchText:searchText, requestType: reqType, status: status, dateFrom: dateFrom, dateTo: dateTo})
             .then(result => {
@@ -183,6 +222,7 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
                     const badge={name: 'badge', class:self.classStyle(elt?.Rh_Status__c),label:elt?.Rh_Status}
                     objetRep.addons={badge};
                     this.tabReq.push(objetRep);
+                    this.statusSelected=status;
                 });
                 // this.refreshTable(this.tabReq); 
                 this.setviewsList(this.tabReq)
@@ -256,7 +296,17 @@ export default class Rh_myrequest_component extends NavigationMixin(LightningEle
         let cardsView = this.template.querySelector('c-rh_cards_view');
         cardsView?.setDatas(items);
     }
-
+    handleClickOnPill(event){
+        const info = event.detail;
+        console.log('data >>', info, ' \n name ', info?.name);
+        const name = info?.name;
+        // this.resetFilter()
+        // const  filter ={...this.filter}
+        const  filter ={}
+        filter[name] = info?.data?.value;
+        
+        this.handleSearch(filter);
+    }
     buildformDetail(profileinformation, addrName) {
         let std = new Date(profileinformation?.RH_Start_date__c);
         let stmonth = std.getMonth()+1 > 9 ? std.getMonth()+1 : '0'+(std.getMonth()+1); 

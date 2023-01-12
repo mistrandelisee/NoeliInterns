@@ -1,3 +1,12 @@
+:host{
+  color:#626575;
+  --primaryColor: #001639;
+  --secondaryColor: #9735e1;
+  --warningColor: #c1a60e;
+  --bannedColor:#e41d0b;
+  --frozenColor:#dbe133fe;
+}
+
 .slds-modal__content {
     overflow: visible;
     overflow-y: visible;
@@ -26,15 +35,7 @@
     box-shadow: 0 0 20px rgba(250, 0, 20, 0.4);
   }
 
-  :host{
-    color:#626575;
-    --primaryColor: #001639;
-    --secondaryColor: rgb(3 45 96);
-    --warningColor: #c1a60e;
-    --bannedColor:#e41d0b;
-    --frozenColor:#f8a202fe;
-    --greenedColor:#69ff05;
-}
+  
 
 .card{
     height: 250px;

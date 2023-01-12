@@ -14,7 +14,7 @@
 }
 
 .submit-action {
-    background-color: var(--primaryColor, #9735e1);
+    background-color: var(--primaryColor, transparent);
     margin-left: -30px;
     border-radius: 0px 4px 4px 0px;
     padding: 0px;

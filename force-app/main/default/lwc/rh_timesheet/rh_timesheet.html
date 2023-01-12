@@ -1,5 +1,5 @@
 <template>
-    
+    <!-- <c-rh_recap field-name="Status" object-name="TimeSheet"></c-rh_recap> -->
     <template if:false={hasrecordid}>
         <template if:true={showNew}>
             <template if:true={hasDetailsActions} >
@@ -10,6 +10,10 @@
                    </div>
                 </lightning-layout-item>
             </template>
+            <lightning-layout-item size="12" padding="around-small" small-device-size="12" medium-device-size="12" large-device-size="12" >
+                <!--   adds={adds}-->
+                <c-rh_sum_list onaction={handleClickOnPill} selected-key={statusSelected} filter-key="status" sobject="TimeSheet" field="Status" d-provider="RH_Timesheet_Controller"  i-clickable></c-rh_sum_list>
+            </lightning-layout-item>
         
             <template if:true={showList}>
                 <template if:true={filterReady}> 

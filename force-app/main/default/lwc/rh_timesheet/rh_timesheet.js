@@ -7,7 +7,7 @@ import { labels } from 'c/rh_label';
 import { icons } from 'c/rh_icons';
 
 import initConfig from '@salesforce/apex/RH_Timesheet_Controller.InitFilter';
-import getTimeSheets from '@salesforce/apex/RH_Timesheet_Controller.getTimeSheets';
+import getTimesheets from '@salesforce/apex/RH_Timesheet_Controller.getTimeSheets';
 // import timeSheetCreation from '@salesforce/apex/RH_Timesheet_Controller.timeSheetCreation';
 import submitTimeSheet from '@salesforce/apex/RH_Timesheet_Controller.submitTimeSheet';
 import deleteTimeSheet from '@salesforce/apex/RH_Timesheet_Controller.deleteTimeSheet';
@@ -47,6 +47,8 @@ export default class Rh_timesheet extends NavigationMixin(LightningElement) {
     sheetsReady;
     Status=[];
     OrderBys=[];
+    statusSelected;
+    hasRecords;
     @track filterInputs=[];
     constants={};
     keysFields={TimeSheetNumber:'ok'};//not used
@@ -69,6 +71,14 @@ export default class Rh_timesheet extends NavigationMixin(LightningElement) {
         orderOn:null,
     };
 
+    initialfilter={
+        status:null,
+        startDate:null,
+        endDate:null,
+        isActive:null,
+        orderBy:null,
+        orderOn:null,
+    };
     
     detailsActions=[
         {   variant:"brand-outline",
@@ -85,12 +95,36 @@ export default class Rh_timesheet extends NavigationMixin(LightningElement) {
     get showNew(){ return this.isMine && (this.action=='' || this.action==NEW_ACTION || this.action==SAVE_ACTION); }
     get showList(){  return this.action=='' || this.action!=NEW_ACTION; }
     get hasDetailsActions(){ return this.detailsActions?.length >0}
-    get filterReady(){ return this.filterInputs?.length >0}
+
+    get filterReady(){ 
+        getTimesheets({filterTxt:JSON.stringify(this.initialfilter)}).then(result =>{
+            console.log('#### PIGNOUF =====> '+result != null)
+            this.hasRecords = (result != null) ? true : false; 
+        })
+
+        return this.hasRecords;
+
+        // return true;
+    }
+    
+
     get isAdmin() { return this.currUser?.isCEO || this.currUser?.isTLeader}
     get isApprover() { return this.isAdmin || this.currUser?.isApprover}
     get hasTimeSheets(){ return this.timeSheets.length >0; }
     get hasrecordid(){ return this.recordId?true:false; }
     
+    resetFilter(){
+        this.filter = {
+          searchText: null,
+          status: null,
+          startDate: null,
+          endDate: null,
+          role: null,
+          isActive: null,
+          orderBy: null,
+          orderOn: null,
+      }
+  }
     
     connectedCallback(){
         registerListener('ModalAction', this.doModalAction, this);
@@ -128,19 +162,33 @@ export default class Rh_timesheet extends NavigationMixin(LightningElement) {
         });
     }
 
-
-    handleSubmitFilter(event){
-        const record=event.detail;
+    handleClickOnPill(event){
+        const info = event.detail;
+        console.log('data >>', info, ' \n name ', info?.name);
+        const name = info?.name;
+        this.resetFilter()
+        const  filter ={...this.filter}
+        // const  filter ={}
+        filter[name] = info?.data?.value;
+        
+        this.handleSearch(filter);
+    }
+    handleSearch(record){
+        // const record=event.detail;
         this.filter={... this.filter ,...record ,
                     orderOn: record.orderOn ? DESC : ASC};
+        this.statusSelected=this.filter.status || this.statusSelected;
         this.getTimesheets();
+    }
+    handleSubmitFilter(event){
+        const record=event.detail;
+        this.handleSearch(record);
     }
 
     getTimesheets(){
         this.timeSheets=[];
         this.startSpinner(true);
-        getTimeSheets({     filterTxt:JSON.stringify(this.filter),
-                            userId:this.userId})
+        getTimesheets({filterTxt:JSON.stringify(this.filter), userId:this.userId})
         .then(result =>{
             this.sheetsReady=true;
             console.log('getTimesheets result ');
@@ -175,7 +223,13 @@ export default class Rh_timesheet extends NavigationMixin(LightningElement) {
                         Actions=Actions.concat(self.buildUserStatusActions(e.Status));
                         Actions=Actions.concat(self.buildUserRoleActions(e.RHRolec));
                     }*/
-                    const badge={name: 'timesheetBadge', class:self.classStyle(e.Status),label: e.StatusLabel}
+                    const mapping=result.classMapping;
+                    let st=(e.Status)? e.Status.toLowerCase():'';
+                    let cx=mapping[st];
+                    
+                    const badge = { name: 'timesheetBadge', class: cx? cx+' slds-float_left ' :self.classStyle(e.Status), label: e.StatusLabel }
+                    
+                    // const badge={name: 'timesheetBadge', class:self.classStyle(e.Status),label: e.StatusLabel}
                     item.addons={badge};
                     if (DRAFT_STATUS.toLowerCase() == e.Status?.toLowerCase()) {//if draft
                         if (self.isMine) {//is mine

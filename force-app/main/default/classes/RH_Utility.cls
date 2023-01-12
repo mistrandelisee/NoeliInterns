@@ -18,10 +18,12 @@ public without sharing class RH_Utility {
 
             List<PickOption> pickOptions = new List<PickOption>();
             Map<String, Object> fieldValueMap = new Map<String, Object>();
+            Map<String, String> valueLabelMap = new Map<String, String>();
             for (Schema.PicklistEntry sple : fieldMap.get(fieldName).getDescribe().getPicklistValues()) {
                 if (sple.isActive()) {
                     PickOption p = new PickOption(sple.getLabel(), sple.getValue());
                     fieldValueMap.put(sple.getLabel(), sple.getValue());
+                    valueLabelMap.put(sple.getValue()?.toLowerCase(), sple.getLabel());
                     pickOptions.add(p);
                 }
             }
@@ -29,6 +31,8 @@ public without sharing class RH_Utility {
             returnMap.put(fieldName, pickOptions);
             String extraKey='Map'+fieldName;
             returnMap.put(extraKey, fieldValueMap);
+            String valueKey='Value'+fieldName;
+            returnMap.put(valueKey, valueLabelMap);
         }
 
         return returnMap;
@@ -53,14 +57,14 @@ public without sharing class RH_Utility {
     @AuraEnabled
     public static Contact getCurentContact() {//always call method in try catch
         Contact userContact=new Contact();
-        List<User> users=userQry.getUserById(Userinfo.getUserId());
+         /*List<User> users=userQry.getUserById(Userinfo.getUserId());
         if (users.isEmpty()) throw new RH_ControllerException('001','Missing User');
         User u=users[0];
         if (String.isBlank(u.RH_ContactId__c)) {
             throw new RH_ControllerException('002','This user is not a link to any RH Contact');
-        }
+        }*/
 
-        List<Contact> userContacts=contactQry.getContactById(u.RH_ContactId__c);
+        List<Contact> userContacts=contactQry.getContactByUserId(Userinfo.getUserId());
         if (userContacts.isEmpty()) throw new RH_ControllerException('002','No RH Contact Founded');
 
          userContact=userContacts[0];
@@ -72,7 +76,7 @@ public without sharing class RH_Utility {
         Map<string,object> mapReturn = new Map<String, Object>();
         mapReturn.put('error', false);
         try {
-            List<User> users=userQry.getUserById(Userinfo.getUserId());
+            /*List<User> users=userQry.getUserById(Userinfo.getUserId());
             if (users.isEmpty()) throw new RH_ControllerException('001','Missing User');
             User u=users[0];
             if (String.isBlank(u.RH_ContactId__c)) {
@@ -82,14 +86,15 @@ public without sharing class RH_Utility {
             mapReturn.put('user', u);
             List<Contact> userContacts=contactQry.getContactById(u.RH_ContactId__c);
             if (userContacts.isEmpty()) throw new RH_ControllerException('002','No RH Contact Founded');
-
-            Contact userContact=userContacts[0];
+            */
+            Contact userContact=getCurentContact();
             String Role=userContact.RH_Role__c;
             mapReturn.put('currentContact', userContact);
             mapReturn.put('isCEO', RH_Constans.CONTACT_ROLE_CEO.equalsIgnoreCase(Role));
             mapReturn.put('isBaseUser', RH_Constans.CONTACT_ROLE_BU.equalsIgnoreCase(Role));
             mapReturn.put('isRHUser', RH_Constans.CONTACT_ROLE_RH.equalsIgnoreCase(Role));
             mapReturn.put('isTLeader', RH_Constans.CONTACT_ROLE_TL.equalsIgnoreCase(Role));
+            mapReturn.put('isAdmin', (RH_Constans.CONTACT_ROLE_CEO.equalsIgnoreCase(Role) || RH_Constans.CONTACT_ROLE_RH.equalsIgnoreCase(Role)));
             }
         catch(RH_ControllerException ce) {
             System.debug('@@@@@@@@@@@@@RH_Utility::checkRole:: RH_ControllerException>> '+ce.getMessage());

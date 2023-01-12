@@ -1,7 +1,14 @@
 <template>
     <c-rh_toast auto-close-time="6000"></c-rh_toast>
-    <c-rh_recap field-name="Rh_Status__c" object-name="RH_Request__c"></c-rh_recap>
+    <!-- <c-rh_recap field-name="Rh_Status__c" object-name="RH_Request__c"></c-rh_recap> -->
     <template if:false={hasRecordId}>
+        <lightning-layout multiple-rows>
+            <lightning-layout-item size="12" padding="around-small" small-device-size="12" medium-device-size="12" large-device-size="12" >
+                <!-- d-provider="RH_EventController" -->
+                <c-rh_sum_list onaction={handleClickOnPill} selected-key={statusSelected} filter-key="status" sobject="RH_Request__c" field="Rh_Status__c" adds={adds} d-provider="RH_Request_controller"  i-clickable></c-rh_sum_list>
+            </lightning-layout-item>
+        </lightning-layout>
+        
         <div class="filterClass">
             <template if:true={enableForm}>
                 

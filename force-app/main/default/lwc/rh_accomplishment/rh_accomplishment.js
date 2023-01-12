@@ -9,6 +9,7 @@ import checkCurrentContact from '@salesforce/apex/RH_Accomplishment_Controller.c
 import deleteAccomplishment from '@salesforce/apex/RH_Accomplishment_Controller.deleteAccomplishment';
 import activateAccomplishment from '@salesforce/apex/RH_Accomplishment_Controller.activateAccomplishment';
 import filterAccomplishment from '@salesforce/apex/RH_Accomplishment_Controller.filterAccomplishment';
+import getStatus from '@salesforce/apex/RH_Accomplishment_Controller.getStatus';
 import uploadFile from '@salesforce/apex/RH_News_controller.uploadFile';
 import updateFile from '@salesforce/apex/RH_News_controller.updateFile';
 import getFileInfos from '@salesforce/apex/RH_FileUploader.getFileInfos';
@@ -19,6 +20,7 @@ import { fireEvent, registerListener, unregisterListener } from 'c/pubsub';
 export default class Rh_accomplishment extends NavigationMixin(LightningElement) {
 
     @track itemCard = [];
+    @track badge = [];
     @track newForm = false;
     @track recordId;
     @track isDraft=false;
@@ -34,6 +36,7 @@ export default class Rh_accomplishment extends NavigationMixin(LightningElement)
     accomInputDetails = [];
     formEditInputs = [];
     newsFileDetails = [];
+    statusOptions = [];
     @wire(CurrentPageReference) pageRef;
     status = 'Draft';
     formInputs=[];
@@ -42,27 +45,17 @@ export default class Rh_accomplishment extends NavigationMixin(LightningElement)
     keysLabels={
         Statut: 'Statut',
         Title: 'Title',
-        Description: 'Description',
-        date: 'Date',
+        Description: this.l.Description,
+        date: this.l.Date,
         Submiter: 'Submit by'
     };
     fieldsToShow={
         Statut: 'Statut',
-        date: 'Date',
+        date: this.l.Date,
         Submiter: 'Submit by',
-        Description: 'Description'
+        Description: this.l.Description
     };
-
-    statusOptions = [
-        {
-            label: 'Draft',
-            value: 'Draft'
-        },
-        {
-            label: 'Active',
-            value: 'Active'
-        }
-    ];
+    hasRecords;
 
     buildForm(){
         this.formInputs=[
@@ -135,6 +128,20 @@ export default class Rh_accomplishment extends NavigationMixin(LightningElement)
             }];
     }
 
+    getStatus(){
+        getStatus()
+           .then(result => {
+                result.RH_Status__c.forEach(plValue => {
+                    this.statusOptions.push(
+                        {
+                            label: plValue.label,
+                            value: plValue.value
+                        }
+                    )
+                });
+            });
+    }
+
     connectedCallback(){
         registerListener('ModalAction', this.doModalAction, this);
         registerListener('backbuttom', this.dobackbuttom, this);
@@ -142,12 +149,23 @@ export default class Rh_accomplishment extends NavigationMixin(LightningElement)
         if(this.recordId){
             this.accomplishDetails(this.recordId); 
         }else{
+            this.getStatus();
             this.getAccomplish();
         }
     }
 
     get hasRecordId(){
         return this.recordId ? true : false;
+    }
+
+    get enableForm() {
+
+        getAccomplishment()
+        .then(result => {
+            this.hasRecords = (result != null) ? true : false; 
+        })
+
+        return this.hasRecords;
     }
 
     getAccomplish(){
@@ -158,13 +176,17 @@ export default class Rh_accomplishment extends NavigationMixin(LightningElement)
             const self=this;
             result.forEach(elt => { 
             let objetRep = {};
+            let description;
+                if(elt.RH_Description__c){
+                    description = elt.RH_Description__c.length>25? elt.RH_Description__c.slice(0, 25) +'...': elt.RH_Description__c;
+                }
             objetRep = {
                 "date": elt?.RH_Date__c,
-                "Description":  elt.RH_Description__c.length>30? elt.RH_Description__c.slice(0, 30) +'...': elt.RH_Description__c,
+                "Description":  description,
                 "id" : elt.Id,
                 icon:"utility:education",
                 
-                title: elt?.RH_Title__c.length>30? elt?.RH_Title__c.slice(0, 30) +'...': elt?.RH_Title__c,
+                title: elt?.RH_Title__c.length>25? elt?.RH_Title__c.slice(0, 25) +'...': elt?.RH_Title__c,
                 keysFields:self.keysFields,
                 keysLabels:self.keysLabels,
                 fieldsToShow:self.fieldsToShow,
@@ -172,19 +194,19 @@ export default class Rh_accomplishment extends NavigationMixin(LightningElement)
             let Actions=[
                 {
                     name:'Delete',
-                    label:'Delete',
+                    label:this.l.Delete,
                     iconName:'action:delete'
                 }
             ];
             if(elt?.RH_Status__c == 'Draft'){
                 Actions.push( {
                     name:'Activate',
-                    label:'Activate',
+                    label:this.l.Activate,
                     iconName:'action:preview'
                 });   
             }
             objetRep.actions = Actions;
-            const badge={name: 'badge', class:self.classStyle(elt?.RH_Status__c),label: elt?.RH_Status__c}
+            const badge={name: 'badge', class:self.classStyle(elt?.RH_Status__c),label: elt?.Rh_Status}
             objetRep.addons={badge};
             this.itemCard.push(objetRep);
             }); 
@@ -198,10 +220,11 @@ export default class Rh_accomplishment extends NavigationMixin(LightningElement)
 
     filterAccomplishment(event){
         this.startSpinner(true);
+        let searchText = event.detail.searchText;
         let title= event.detail.title;
         let status= event.detail.status;
 
-        filterAccomplishment({title: title , status: status })
+        filterAccomplishment({title: title , status: status ,searchText: searchText})
         .then(result => {
             console.log('result', result);
             if(result){
@@ -209,13 +232,17 @@ export default class Rh_accomplishment extends NavigationMixin(LightningElement)
                 const self=this;
                 result.forEach(elt => { 
                     let objetRep = {};
+                    let description;
+                    if(elt.RH_Description__c){
+                        description = elt.RH_Description__c.length>25? elt.RH_Description__c.slice(0, 25) +'...': elt.RH_Description__c;
+                    }
                     objetRep = {
                         "date": elt?.RH_Date__c,
-                        "Description":  elt.RH_Description__c.length>30? elt.RH_Description__c.slice(0, 30) +'...': elt.RH_Description__c,
+                        "Description": description,
                         "id" : elt.Id,
                         icon:"utility:education",
                         
-                        title: elt?.RH_Title__c.length>30? elt?.RH_Title__c.slice(0, 30) +'...': elt?.RH_Title__c,
+                        title: elt?.RH_Title__c.length>25? elt?.RH_Title__c.slice(0, 25) +'...': elt?.RH_Title__c,
                         keysFields:self.keysFields,
                         keysLabels:self.keysLabels,
                         fieldsToShow:self.fieldsToShow,
@@ -223,20 +250,20 @@ export default class Rh_accomplishment extends NavigationMixin(LightningElement)
                     let Actions=[
                         {
                             name:'Delete',
-                            label:'Delete',
+                            label:this.l.Delete,
                             iconName:'action:delete'
                         }
                     ];
                     if(elt?.RH_Status__c == 'Draft'){
                         Actions.push( {
                             name:'Activate',
-                            label:'Activate',
+                            label:this.l.Activate,
                             iconName:'action:preview'
                         });   
                     }
                     objetRep.actions = Actions;
                     console.log(objetRep);
-                    const badge={name: 'badge', class:self.classStyle(elt?.RH_Status__c),label: elt?.RH_Status__c}
+                    const badge={name: 'badge', class:self.classStyle(elt?.RH_Status__c),label: elt?.Rh_Status}
                     objetRep.addons={badge};
                     this.itemCard.push(objetRep);
                 }); 
@@ -351,7 +378,7 @@ export default class Rh_accomplishment extends NavigationMixin(LightningElement)
                     this.recordId=result.myRecord.Id;
                     this.uploadFile(result.myRecord.Id,true);
                     // this.handleCancelDetail();
-                    this.showToast('success', 'Success', 'Accomplishment have been successfuly created');
+                    this.showToast('success', 'Success', this.l.Accomplishmentcreated);
                 }else{
                     getFileInfos({
                         recordId: this.recordId
@@ -361,11 +388,11 @@ export default class Rh_accomplishment extends NavigationMixin(LightningElement)
                         if(ctvId){
                             this.updateFile(ctvId,true);
                             // this.goToRequestDetail(this.recordId);
-                            this.showToast('success', 'Success', 'Accomplishment have been successfuly edited');
+                            this.showToast('success', 'Success', this.l.AccomplishmentEdited);
                         }else{
                             this.uploadFile(result.myRecord.Id,true);
                             // this.goToRequestDetail(this.recordId);
-                            this.showToast('success', 'Success', 'Accomplishment have been successfuly edited');
+                            this.showToast('success', 'Success', this.l.AccomplishmentEdited);
                         }
                     }).catch(e =>{
                         console.error(e)
@@ -435,6 +462,7 @@ export default class Rh_accomplishment extends NavigationMixin(LightningElement)
                 console.log('File info ' +JSON.stringify(res))
                 if (res) {
                     this.newFileData.name= res.data[0]?.Name;
+                    this.badge=[{name: 'badgeDetail', class: this.classStyle(result.RH_Status__c),label: result.Rh_Status}];
                     this.buildFormDetails(result, res.data);
                     this.buildFormEdit(result, res.data);
                 }
@@ -475,23 +503,6 @@ export default class Rh_accomplishment extends NavigationMixin(LightningElement)
                 type:'text',
                 value:detailsInfo?.RH_Title__c,
                 required:true,
-                ly_md:'6', 
-                ly_lg:'6'
-            },
-            {
-                label:this.l.Status,
-                name:'Status',
-                type:'text',
-                value:detailsInfo?.RH_Status__c,
-                required:true,
-                ly_md:'6', 
-                ly_lg:'6'
-            },
-            {
-                label:this.l.IsPublic,
-                name:'visibility',
-                type:'toggle',
-                value:detailsInfo?.RH_Visibility__c,
                 ly_md:'6', 
                 ly_lg:'6'
             },
@@ -618,7 +629,7 @@ export default class Rh_accomplishment extends NavigationMixin(LightningElement)
             }else{
                 this.handleCancelDetail();
             }
-            this.showToast('success', 'Success', 'Accomplishment have been successfuly activated');
+            this.showToast('success', 'Success', this.l.AccomplishmentActivated);
         }).catch(error =>{
             console.error('error',error)
             this.showToast('error', 'Error', error);
@@ -649,7 +660,7 @@ export default class Rh_accomplishment extends NavigationMixin(LightningElement)
         .then(result =>{
             console.log('delete accomplishment --> ' , result);
             this.deleteFiles(idAccom, true);
-            this.showToast('success', 'Success', 'Accomplishment have been successfuly deleded');
+            this.showToast('success', 'Success', this.l.AccomplishmentDeleded);
         }).catch(error =>{
             console.error('error',error)
             this.showToast('error', 'Error', error);
@@ -699,10 +710,10 @@ export default class Rh_accomplishment extends NavigationMixin(LightningElement)
         let Actions=[];
         let text='';
         const extra={style:'width:20vw;'};
-        text='Are you sure you want to delete this Accomplishment?';
-        extra.title='Confirm Deletion';
+        text=this.l.accomplishmentdeleteMessage;
+        extra.title=this.l.deleteRequestConfirm;
         extra.style+='--lwc-colorBorder: var(--bannedColor);';
-        Actions.push(this.createAction("brand-outline","Yes","OK_DELETE","Yes",this.icon.check,'slds-m-left_x-small'));
+        Actions.push(this.createAction("brand-outline",this.l.okConfirm,"OK_DELETE","Yes","action:approval",'slds-m-left_x-small'));
         this.ShowModal(true,text,Actions,extra);
     }
 

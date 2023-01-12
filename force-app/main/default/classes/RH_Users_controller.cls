@@ -1,11 +1,33 @@
-public without sharing class RH_Users_controller {
+public without sharing class RH_Users_controller implements RH_SummarizeInterface{
     private static RH_User_Query userQry = RH_User_Query.getInstance();
     private static RH_Contact_Query contactQry = RH_Contact_Query.getInstance();
     private static RH_WorkGroup_Query workGroupQry = RH_WorkGroup_Query.getInstance();
     
     public static Map<String, String> mapContactToUser = new Map<String, String>();
     static string myconId='';
+    public static Map<String,Object> StatusMapping = new Map<String, String>();
+    public static Map<String,Object> LabelMapping = new Map<String, String>();
+    private static String STATUSKEY='RH_Status__c';
+    private static String ROLEKEY='RH_Role__c';
+    static{
 
+        RH_Constans cons= RH_Constans.getAllConstants();
+        StatusMapping= new Map<String, Object>{
+            STATUSKEY.toLowerCase()=> new Map<String, String>{
+                                cons.LWC_ACTIVE_CONTACT_STATUS.toLowerCase()=> ' slds-theme_success ',
+                                cons.LWC_DRAFT_CONTACT_STATUS.toLowerCase()=> ' slds-theme_alt-inverse ',
+                                cons.LWC_FREEZE_CONTACT_STATUS.toLowerCase()=> ' slds-theme_shade ',
+                                cons.LWC_DISABLE_CONTACT_STATUS.toLowerCase()=> ' slds-theme_error '
+                            }
+        };
+        // String valueKey='Value'+fieldName;
+        Map<String, Object> picklists=RH_Utility.getPickListOptions(new List<String> {ROLEKEY,STATUSKEY},'Contact');
+        LabelMapping= new Map<String, Object>{
+            STATUSKEY.toLowerCase()=> (Map<String, String>)picklists.get('ValueRH_Status__c'),
+            ROLEKEY.toLowerCase()=> (Map<String, String>)picklists.get('ValueRH_Role__c')
+        };
+        // System.debug(picklists);
+    }
     /* Kbrel Add 17/06/2022 
         Change the language of the  community 
      */
@@ -37,6 +59,79 @@ public without sharing class RH_Users_controller {
             'userInfo' => userInfo
         } ;
     }
+    public List<AggregateResult> getSummary(Map<String, Object> args) {
+        Contact currentContact = RH_Utility.getCurentContact(); 
+        String recordTypeId=RH_Constans.RH_CONTACT_RT;
+        String AccountId=currentContact.AccountId; 
+        System.debug('get sum '+args);
+        String groupByStr = String.valueOf(args.get(RH_Summarizer.GROUPBY_KEY));
+        String fieldsStr = String.valueOf(args.get(RH_Summarizer.FIELDS_KEY));
+        String conditionStr =null;
+        String Role=currentContact.RH_Role__c;
+        Boolean isAdmin=(RH_Constans.CONTACT_ROLE_CEO.equalsIgnoreCase(Role) || RH_Constans.CONTACT_ROLE_RH.equalsIgnoreCase(Role));
+        String addConds= isAdmin ? '' : 'AND RH_Status__c=\''+String.escapeSingleQuotes(RH_Constans.ACTIVATED_CONTACT_STATUS)+'\'';//when not admin ,sumarize only activated
+        // String addConds='';1
+        conditionStr =' Id != \''+String.escapeSingleQuotes(currentContact.Id) +'\' AND recordTypeId= \''+String.escapeSingleQuotes(recordTypeId) +'\' AND AccountId=\''+String.escapeSingleQuotes(AccountId) +'\' AND '+groupByStr+'!=Null '+addConds;
+        String sobj = String.valueOf(args.get(RH_Summarizer.OBJECT_KEY));
+        return RH_Summarizer.defauftSummirise(groupByStr,fieldsStr,conditionStr,sobj);
+    } 
+    public List<RH_Summarizer.summaryWrapper> formatAggregate(List<AggregateResult> aggs,Map<String, Object> args){
+        String groupByStr = String.valueOf(args.get(RH_Summarizer.GROUPBY_KEY));
+        String fieldsStr = String.valueOf(args.get(RH_Summarizer.FIELDS_KEY));
+        String conditionStr= String.valueOf(args.get(RH_Summarizer.CONDITIONS_KEY));
+        String sobj = String.valueOf(args.get(RH_Summarizer.OBJECT_KEY));
+        String alias=groupByStr;// by default
+        List<RH_Summarizer.summaryWrapper> sumaries = new List<RH_Summarizer.summaryWrapper>();
+        Integer i=0; 
+        Integer total=0; 
+        for (AggregateResult agg : aggs) {
+            RH_Summarizer.summaryWrapper swrap= new RH_Summarizer.summaryWrapper();
+            String name=(String) agg.get(alias);
+            swrap.label= getLabelMapping(groupByStr,name);
+            swrap.value = (Integer) agg.get('sum');
+            swrap.Key = name;
+            swrap.className= getClassMapping(groupByStr,name);
+            total= total + ( swrap.value!=Null?  swrap.value : 0); 
+            sumaries.add(swrap);
+            i=i+1;
+        }
+        /*RH_Summarizer.summaryWrapper allSum= new RH_Summarizer.summaryWrapper();
+        allSum.label='ALL';
+        allSum.value = total;
+        allSum.Key = 'ALL';
+        sumaries.add(allSum);*/
+
+        return sumaries;
+    }
+    // RH_Users_controller.getClassMapping('rh_status__c', 'Active');
+    public static String getClassMapping(String field, String Value){
+        field= field?.toLowerCase();
+        value= value?.toLowerCase();
+        string cx=' defaut slds-theme_info ';
+        Map<String,String> cxMapping=(Map<String,String>) StatusMapping.get(field);
+
+        if (cxMapping != null) {
+            cx= cxMapping.get(value); 
+        }
+        System.debug('@@@@@@field---> '+field+' Value---> '+Value+' cx---> '+cx);
+        return cx;
+    }
+    public static String getLabelMapping(String field, String Value){
+        field= field?.toLowerCase();
+        value= value?.toLowerCase();
+        string lb=Value;
+        Map<String,String> lbMapping=(Map<String,String>) LabelMapping.get(field);
+
+        if (lbMapping != null) {
+            // System.debug('lbMapping ' + lbMapping);
+            lb= lbMapping.get(value); 
+        }
+        System.debug('@@@@@@field---> '+field+' Value---> '+Value+' cx---> '+lb);
+        return lb;
+    }
+
+
+    
 
 
     @AuraEnabled 
@@ -98,7 +193,7 @@ public without sharing class RH_Users_controller {
                 } 
             mapReturn.put('Employes',listcon); 
             mapReturn.put('in',filter); 
-            // mapReturn.put('users',users); 
+            mapReturn.put('classMapping',StatusMapping.get(STATUSKEY.toLowerCase())); 
             mapReturn.put('Constants',RH_Constans.getAllConstants()); 
 
             mapReturn.putAll(RH_Utility.checkRole()); 
@@ -172,6 +267,7 @@ public without sharing class RH_Users_controller {
             conctactUser.Languages__c=mapInputs.Language;
             conctactUser.RH_Role__c= mapInputs.Role;
             conctactUser.RH_Started_Date__c = mapInputs.startDate;
+            conctactUser.RH_Status__c=RH_Constans.DRAFT_STATUS;
             String grp=mapInputs.wGroup;
             if (String.isNotBlank(grp)) {
                 conctactUser.RH_WorkGroup__c=  grp;

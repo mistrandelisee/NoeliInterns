@@ -55,6 +55,7 @@ export default class Rh_users extends NavigationMixin(LightningElement) {
         accountName: 'ok',
 
     };
+
     filter = {
         searchText: null,
         status: null,
@@ -66,18 +67,18 @@ export default class Rh_users extends NavigationMixin(LightningElement) {
         orderOn: null,
     }
     
-    //simple 
-    simpleFilterInput = [
-        {
-            placeholder: this.l.srchNamePlc,
-            name: 'searchText',
-            type: 'text',
-            value: '',
-            ly_md: '12',
-            ly_xs: '12',
-            ly_lg: '12'
-        }
-    ];
+    initialfilter = {
+        searchText: null,
+        status: null,
+        startDate: null,
+        endDate: null,
+        role: null,
+        isActive: null,
+        orderBy: null,
+        orderOn: null,
+    }
+    statusSelected;
+    roleSelected;
 
     filterInputs = [];
     constants = {};
@@ -124,20 +125,43 @@ export default class Rh_users extends NavigationMixin(LightningElement) {
     detailsActions = [
     ]
     @wire(CurrentPageReference) pageRef;
+// to be cancel
+    get objectPageReference(){
+        return this.pageRef? JSON.stringify(this.pageRef): '';   
+    }
+    
+// end cancel
     action = '';
     isUser;
     actionAvailable = [];
     hasAction;
+    hasRecords;
+    // @track filterReady;
 
     get showNew() { return this.isAdmin && (this.action == '' || this.action == NEW_ACTION || this.action == SAVE_ACTION); }
     get hideView() { return this.action == '' || this.action != NEW_ACTION; }
     get hasDetailsActions() { return this.detailsActions?.length > 0 }
-    get filterReady() { return this.filterInputs?.length > 0 }
+    get filterReady() { 
+        getContacts({ filterTxt: JSON.stringify(this.initialfilter) }).then(result =>{
+            console.log('#### PIGNOUF =====> '+result != null)
+            this.hasRecords = (result != null) ? true : false; 
+        })
+
+        return this.hasRecords;
+    }
     get isAdmin() { return this.currUser?.isCEO || this.currUser?.isRHUser }
     get hasrecordid() { return this.recordId ? true : false; }
 
     connectedCallback() {
+        // to be canceled
+        this.windowLocation=`window location ${window.location.origin}`;
+        console.log(this.windowLocation);
+        console.log('Curent page Information Page'+ JSON.stringify(this.pageRef));
+        console.log('objectPageReference'+this.objectPageReference);
 
+        //end cancel
+
+        // this.filterReady = (this.allEmployees?.length > 0);
 
         if(this.getUrlParamValue(window.location.href, 'action') == NEW_ACTION) {
             this.action = this.getUrlParamValue(window.location.href, 'action');
@@ -188,16 +212,20 @@ export default class Rh_users extends NavigationMixin(LightningElement) {
                 // this.startSpinner(false)
             });
     }
-
     handleSubmitFilter(event) {
-        const record = event.detail;
-        console.log(`handleSubmitFilter record `, JSON.stringify(record));
+        const searchFilter = event.detail;
+        this.handleSearch(searchFilter);
+    }
+    handleSearch(record) {
+       
+        console.log(`handleSearch record `, JSON.stringify(record));
         this.filter = {
             ... this.filter, ...record,
             orderOn: record.orderOn ? 'DESC' : 'ASC'
         };
-        console.log(`handleSubmitFilter this.filter TO CALL `, JSON.stringify(this.filter));
-
+        console.log(`handleSearch this.filter TO CALL `, JSON.stringify(this.filter));
+        this.statusSelected=this.filter.status || this.statusSelected;
+        this.roleSelected=this.filter.role || this.roleSelected;
         this.getAllEmployees();
     }
 
@@ -241,13 +269,19 @@ export default class Rh_users extends NavigationMixin(LightningElement) {
 
 
                     item.actions = Actions;
-                    console.log(`item`);
-                    console.log(item);
-                    const badge = { name: 'badge', class: self.classStyle(e.Status), label: e.statusLabel }
+                    // console.log(`item`);
+                    // console.log(item);
+                    const mapping=result.classMapping;
+                    let st=(e.Status)? e.Status.toLowerCase():'';
+                    let cx=mapping[st];
+                    
+                    const badge = { name: 'badge', class: cx? cx+' slds-float_left ' :self.classStyle(e.Status), label: e.statusLabel }
                     item.addons = { badge };
                     if (isAD || (!isAD && (self.constants.LWC_ACTIVE_CONTACT_STATUS?.toLowerCase() == e.Status?.toLowerCase())))
                         self.allEmployees.push(item);
                 });
+
+                                
                 this.setviewsList(this.allEmployees)
 
                 this.currUser = {
@@ -274,15 +308,37 @@ export default class Rh_users extends NavigationMixin(LightningElement) {
             case 'active':
                 return "slds-float_left slds-theme_success";
             case 'draft':
-                return "slds-float_left slds-theme_info";
+                return "slds-float_left slds-theme_alt-inverse";
             case 'frozen':
                 return "slds-float_left slds-theme_shade";
             case 'banned':
                 return "slds-float_left slds-theme_error";
             default:
-                return "slds-float_left slds-theme_alt-inverse";
+                return "slds-float_left  slds-theme_info";
         }
 
+    }
+    resetFilter(){
+          this.filter = {
+            searchText: null,
+            status: null,
+            startDate: null,
+            endDate: null,
+            role: null,
+            isActive: null,
+            orderBy: null,
+            orderOn: null,
+        }
+    }
+    handleClickOnPill(event){
+        const info = event.detail;
+        console.log('data >>', info, ' \n name ', info?.name);
+        const name = info?.name;
+        this.resetFilter()
+        const  filter ={...this.filter}
+        filter[name] = info?.data?.value;
+        
+        this.handleSearch(filter);
     }
     handleActionNew(event) {
 
@@ -462,29 +518,6 @@ export default class Rh_users extends NavigationMixin(LightningElement) {
 
     buildFilter() {
 
-        //simple
-        // this.simpleFilterInput = [{
-        //     label: this.l.Name,
-        //     placeholder: this.l.srchNamePlc,
-        //     name: 'searchText',
-        //     type: 'text',
-        //     value: '',
-        //     ly_md: '3',
-        //     ly_xs: '6',
-        //     ly_lg: '3'
-        // }];
-
-
-        /*{
-            searchText:null,
-            status:null,
-            startDate:null,
-            endDate:null,
-            role:null,
-            isActive:null,
-            orderBy:null,
-            orderOn:null,
-        }*/
         this.filterInputs = [
             {
                 label: this.l.Name,

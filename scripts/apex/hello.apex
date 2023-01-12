@@ -5,7 +5,7 @@
 // You can also execute the entire file by running the command:
 //     SFDX: Execute Anonymous Apex with Editor Contents
 
-string tempvar = 'Enter_your_name_here';
+/*string tempvar = 'Enter_your_name_here';
 System.debug('Hello World!');
 System.debug('My name is ' + tempvar);
 
@@ -38,3 +38,45 @@ for (RH_Invoice_Item__c item : [SELECT id FROM RH_Invoice_Item__c WHERE RH_descr
     items.add(item);
 }
 update items;
+*/
+
+
+string fieldsStr='Id,Name,Contact_Id__r.Name,Description__c, Start_Dates__c, End_Dates__c,Contact_Id__r.Account.Name';
+string object_name='Event__c';
+
+String query='SELECT '+fieldsStr+' FROM '+object_name+' LIMIT 1';//+' WHERE Id =\''+String.escapeSingleQuotes(recordId) +'\'';
+Sobject record= Database.query(query);
+
+Map<String,String> mapReturn_test = RH_telegramMessageConfigImpl.buildMapping(record, fieldsStr);
+
+// getValue(sObject record, string field)
+// RH_telegramMessageConfigImpl
+
+
+// ''
+String action= 'TG_EVENT_SUBMITTED';
+String recordId= 'a087Q00000O58alQAB';
+String chatId= '518673920';
+RH_telegramMessageConfigImpl impl = new RH_telegramMessageConfigImpl(action,recordId);
+impl.buildMessage(chatId, UserInfo.getUserId());
+RH_Telegram_Utility.sendMessages(impl.messages);
+
+
+for (Integer i = 0; i < 25; i++) {
+    Messaging.SingleEmailMessage mail =  Messaging.renderStoredEmailTemplate('00X7Q000000uHUBUA2', UserInfo.getUserId(), null);
+    if (i==0) {
+        System.debug(mail.getHtmlBody()); 
+    }
+}
+
+
+String action= 'TG_EVENT_SUBMITTED';
+String recordId= 'a087Q00000O58alQAB';
+List<String> uIds = new List<String>{
+    '0057Q000003m1ycQAA',//Mako user Mistrano  base	
+    '518673920'//RH Melissa	
+    };
+RH_telegramMessageConfigImpl.WHOIDKEY='Id';
+RH_telegramMessageConfigImpl.notifyTelegram(action, recordId, uIds);
+
+

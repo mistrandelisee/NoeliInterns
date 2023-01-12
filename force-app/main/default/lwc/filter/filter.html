@@ -1,0 +1,10 @@
+<template > 
+    <div class="container" if:true={picklistData}>
+        <button class="btn" type="button" >All
+            <span class="spa">{all}</span>
+        </button>
+        <button class="btn" type="button" for:each={picklistData} for:item="elt" key={elt.Id}>{elt.label}
+            <span class="spa">{elt.value}</span>
+        </button>
+    </div>
+</template>

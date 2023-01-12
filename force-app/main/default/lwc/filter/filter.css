@@ -1,0 +1,27 @@
+
+.container{
+    width: 100%;
+    background-color: #dee2e6;
+    border-radius: 12px;
+    border: 4px double #0d6efd; 
+} 
+.btn{
+    border-radius: 11px;
+    border: 2px ridge #0dcaf0;
+    font-family: Advent Pro, sans-serif;
+    height: 45px;
+    font-size: 18px;
+    margin-left: 5px;
+}
+button.btn:hover{
+    font-size: 20px;
+    border: 5px ridge rgb(52, 143, 105);
+    background-color: rgba(0, 238, 255, 0.281);
+}
+.spa{
+    text-align: center;
+    margin-left: 11px;
+    font-family: ABeeZee, sans-serif;
+    border-radius: 17px;
+    border: 2px ridge #0dcaf0;
+}

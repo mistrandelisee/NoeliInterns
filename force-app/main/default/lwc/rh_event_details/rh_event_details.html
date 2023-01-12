@@ -1,0 +1,59 @@
+<template>
+    <template if:true={hasInfo}>
+        <lightning-layout multiple-rows>
+            <template if:true={viewMode}>
+                <lightning-layout-item size="12" padding="around-smallx" small-device-size="12" medium-device-size="12" large-device-size="12" >
+                    <div class="custom-box">
+                        <template if:true={hasDetailsActions} >
+                            <lightning-layout-item size="12" padding="around-smallx" small-device-size="12" medium-device-size="12" large-device-size="12">
+                                <div class="custom-box">
+                                   <c-rh_actions  onaction={handleHeaderActions} action-available={headerActions} >  </c-rh_actions>
+                               </div>
+                            </lightning-layout-item>
+                        </template>
+                    </div>
+                </lightning-layout-item>
+                <lightning-layout-item size="12" padding="around-small" small-device-size="12" medium-device-size="12" large-device-size="12" >
+                    <div class="custom-box">
+                        <c-rh_display_fields    title={title}
+                                                iconsrc={icon.Event} column="2" output-fields={eventDetails}
+                                                onaction={handleEventDetails} badges={badge}
+                        ></c-rh_display_fields>
+                    
+                        
+                    </div>
+                </lightning-layout-item>
+
+            </template>
+            <template if:true={editMode}>
+                <c-rh_event_edit event-id={eventId} current-event={currentEvent} onaction={handleActionNew}> </c-rh_event_edit>
+            </template>
+
+            <!-- <template if:false={newLineMode}>
+                <lightning-layout-item size="12" padding="around-smallx" small-device-size="12" medium-device-size="12" large-device-size="12">
+                    <div class="custom-box">
+
+                        <c-rh_datatable_component 
+                            columns={columns} 
+                            items={timesheetEntries}
+                            page-size="20"
+                            statut-row-number
+                            resize-column
+                            onrowselected={handleDataTableAction}>
+                         </c-rh_datatable_component>
+                    </div>
+                </lightning-layout-item>
+            </template> -->
+           
+        </lightning-layout>
+    </template>
+    <template if:true={sheetNotFounded}>
+        <c-rh_illustration message="" title={recordNotFounded} type="fish"></c-rh_illustration>
+    </template>
+    <!-- APPROVAL MODAL -->
+    <template if:true={approval}>
+        <c-rh_dynamic_form_modal title={label.approvalTitle} form-modal-inputs={approvalInputs} onbuttonclicked={handleNote} btn-create={approvalLbl}>
+
+        </c-rh_dynamic_form_modal>
+    </template>
+</template>

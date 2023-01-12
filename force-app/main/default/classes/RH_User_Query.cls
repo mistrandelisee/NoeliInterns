@@ -38,6 +38,19 @@ public  class RH_User_Query {
         query= query+queryWHERE;
         return Database.query(query);
     }
+    public List<User> getInfOfAllUsers(){
+        return getUser();/*[SELECT id, Name,UserRole.Name,RH_ContactId__c FROM User WHERE (UserRole.Name='Human Resource Managment' 
+                                                                        OR UserRole.Name='CEO' 
+                                                                        OR UserRole.Name='Base User'
+                                                                        OR UserRole.Name='RH Manager'
+                                                                        OR UserRole.Name='Team Leader') AND isActive=True];*/
+    }
+    public List<User> getInfOfTeam(){
+        return [SELECT id, Name,UserRole.Name,RH_ContactId__c FROM User WHERE UserRole.Name='Human Resource Managment' 
+                                                                        OR UserRole.Name='CEO' 
+                                                                        OR UserRole.Name='RH Manager'
+                                                                        OR UserRole.Name='Team Leader'];
+    }
     public List<User> getUser(){
         return [SELECT id, Name, Username,RH_ContactId__c,Email FROM User WHERE Profile.Name= :PROFILENAME AND isActive= True];
     }

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+	<types>
+		<members>RH_Constans</members>
+		<members>RH_Logs_Utility</members>
+		<members>RH_Notification_Utility</members>
+		<members>RH_SummarizeInterface</members>
+		<members>RH_TelegramWebService</members>
+		<members>RH_Telegram_Utility</members>
+		<members>RH_Utility</members>
+		<name>ApexClass</name>
+	</types>
+	<types>
+		<members>Contact.RH_tgUserId__c</members>
+		<members>NL_Logs__c.NL_CommunicationDirection__c</members>
+		<members>NL_Logs__c.NL_Communication__c</members>
+		<members>NL_Logs__c.NL_Error__c</members>
+		<members>NL_Logs__c.NL_RecordId__c</members>
+		<members>NL_Logs__c.NL_Request__c</members>
+		<members>NL_Logs__c.NL_Responce__c</members>
+		<members>NL_Logs__c.NL_Service__c</members>
+		<members>NL_Logs__c.NL_Sytems__c</members>
+		<members>RH_Settings__c.NL_SaveLogs__c</members>
+		<members>RH_Settings__c.RH_TelegramBotAPIKey__c</members>
+		<members>RH_TgInteract__c.Interactor__c</members>
+		<members>RH_TgInteract__c.RH_ChatId__c</members>
+		<members>RH_TgInteract__c.RH_Content__c</members>
+		<members>RH_TgInteract__c.RH_Step__c</members>
+		<name>CustomField</name>
+	</types>
+	<types>
+		<members>NL_Logs__c</members>
+		<members>RH_TgInteract__c</members>
+		<name>CustomObject</name>
+	</types>
+	<version>55.0</version>
+</Package>

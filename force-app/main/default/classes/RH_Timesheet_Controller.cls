@@ -14,22 +14,7 @@ public without sharing class RH_Timesheet_Controller  implements RH_SummarizeInt
     private static final String REJECT_STATUS='Reject';
     private static final String SUBMITTED_STATUS='inviato';
     private static final String OPEN_STATUS='nuovo';
-/**
-const APPROVE_ACTION='approvato';
-const REJECT_ACTION='Reject';
-const DRAFT_STATUS='nuovo';
-const SUBMITTED_STATUS='inviato';
- * case 'approvato':
-                return "slds-float_left slds-theme_success";
-            case 'nuovo':
-                return "slds-float_left slds-theme_info";
-            case 'inviato':
-                return "slds-float_left .slds-theme_warning";
-            case 'reject':
-                return "slds-float_left slds-theme_error";
-            default:
-                return "slds-float_left slds-badge_inverse";
- */
+
     // private static String ROLEKEY='RH_Role__c';
     static{
 
@@ -38,7 +23,7 @@ const SUBMITTED_STATUS='inviato';
             STATUSKEY.toLowerCase()=> new Map<String, String>{
                                 APPROVE_STATUS.toLowerCase()=> ' slds-theme_success ',
                                 SUBMITTED_STATUS.toLowerCase()=> ' slds-theme_warning ',
-                                OPEN_STATUS.toLowerCase()=> ' slds-theme_info ',
+                                OPEN_STATUS.toLowerCase()=> ' slds-theme_alt-inverse ',
                                 REJECT_STATUS.toLowerCase()=> ' slds-theme_error '
                             }
         };
@@ -173,18 +158,11 @@ const SUBMITTED_STATUS='inviato';
     
     public List<AggregateResult> getSummary(Map<String, Object> args) {
         String myUserId=UserInfo.getUserId();
-        // Contact currentContact = RH_Utility.getCurentContact(); 
-        // String recordTypeId=RH_Constans.RH_CONTACT_RT;
-        // String AccountId=currentContact.AccountId; 
         System.debug('get sum '+args);
         String groupByStr = String.valueOf(args.get(RH_Summarizer.GROUPBY_KEY));
         String fieldsStr = String.valueOf(args.get(RH_Summarizer.FIELDS_KEY));
         String conditionStr =null;
-        /*String Role=currentContact.RH_Role__c;
-        Boolean isAdmin=(RH_Constans.CONTACT_ROLE_CEO.equalsIgnoreCase(Role) || RH_Constans.CONTACT_ROLE_RH.equalsIgnoreCase(Role));
-        String addConds= isAdmin ? '' : 'AND RH_Status__c=\''+String.escapeSingleQuotes(RH_Constans.ACTIVATED_CONTACT_STATUS)+'\'';*///when not admin ,sumarize only activated
-        // String addConds='';1
-        conditionStr =' OwnerId != \''+String.escapeSingleQuotes(myUserId) +'\'';//+String.escapeSingleQuotes(recordTypeId) +'\' AND AccountId=\''+String.escapeSingleQuotes(AccountId) +'\' AND '+groupByStr+'!=Null '+addConds;
+        conditionStr =' OwnerId = \''+String.escapeSingleQuotes(myUserId) +'\'';//+String.escapeSingleQuotes(recordTypeId) +'\' AND AccountId=\''+String.escapeSingleQuotes(AccountId) +'\' AND '+groupByStr+'!=Null '+addConds;
         String sobj = String.valueOf(args.get(RH_Summarizer.OBJECT_KEY));
         return RH_Summarizer.defauftSummirise(groupByStr,fieldsStr,conditionStr,sobj);
     } 
@@ -242,48 +220,6 @@ const SUBMITTED_STATUS='inviato';
         System.debug('@@@@@@field---> '+field+' Value---> '+Value+' cx---> '+lb);
         return lb;
     }
-    /*
-    @AuraEnabled 
-    public static Map<String,Object>  getTimeSheets(String userId){
-        Map<String, Object> mapReturn = new Map<String, Object>();
-        mapReturn.put('error',false);
-        try {
-            String myUserId=UserInfo.getUserId();
-            userId=String.isBlank(userId) ? myUserId : userId;
-
-            mapReturn.put('TimeSheets',timesheetQry.getUserTimeSheets(userId) ); 
-            
-            mapReturn.put('isMine',myUserId.equalsIgnoreCase(userId));
-            mapReturn.put('Constants',RH_Constans.getAllConstants());  
-            mapReturn.putAll(RH_Utility.checkRole()); 
-            // mapReturn.putAll(RH_Utility.checkRole()); 
-            mapReturn.put('Ok',true); 
-        } catch(Exception e) {
-            System.debug(e.getMessage());
-            mapReturn.put('error',true);
-            mapReturn.put('msg',e.getMessage());
-            mapReturn.put('e',e);
-        }  
-        return mapReturn;
-    }
-
-    @AuraEnabled 
-    public static Map<String,Object>  getTimeSheets(String filterTxt){
-        Map<String, Object> mapReturn = new Map<String, Object>();
-        mapReturn.put('error',false);
-
-        try {
-            
-            mapReturn.put('filterTxt',filterTxt);
-            TimeSheetFilterWrapper filter= (TimeSheetFilterWrapper)JSON.deserialize(filterTxt, TimeSheetFilterWrapper.class);
-            Map<Id, TimeSheet> mapTimesheets = RH_Timesheet_Query.getFilteredTimesheets(Filter);
-
-            list<Timesheet> timesheets = RH_Timesheet_Query.getTim
-
-        } catch (Exception) {
-            
-        }
-    }*/
 
     @AuraEnabled
     public static Map<String,Object> getTimeSheets(String filterTxt, String userId){
@@ -303,6 +239,7 @@ const SUBMITTED_STATUS='inviato';
            
             mapReturn.put('in',filter); 
             mapReturn.put('TimeSheets',mapTimesheets.values()); 
+            mapReturn.put('classMapping',StatusMapping.get(STATUSKEY.toLowerCase())); 
             mapReturn.put('isMine',myUserId.equalsIgnoreCase(userId));
             mapReturn.put('Constants',RH_Constans.getAllConstants());  
             mapReturn.putAll(RH_Utility.checkRole()); 
@@ -521,6 +458,7 @@ const SUBMITTED_STATUS='inviato';
     }  
 
     public class TimesheetFilterWrapper {
+        @AuraEnabled public String searchText{get;set;}
         @AuraEnabled public String status{get;set;}
         @AuraEnabled public Date startDate{get;set;}
         @AuraEnabled public Date endDate{get;set;}

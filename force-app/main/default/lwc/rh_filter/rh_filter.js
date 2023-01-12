@@ -15,10 +15,23 @@ export default class Rh_filter extends LightningElement {
     labelRemove = {};
 
     //simple
-    @api simpleField = [];
+
+    simpleFilterAction = [
+        {
+            name: 'Submit',
+            variant: 'brand',
+            iconName: 'utility:search',
+            title: 'research',
+            class: 'btn-custom'
+        }
+    ];
+
+    advance = this.label.Advancedsearch;
+
+    // @api simpleField = [];
      _simpleField = [
         {
-            placeholder: this.label.srchNamePlc,
+            placeholder: this.label.Search,
             name: 'searchText',
             type: 'text',
             value: '',
@@ -70,10 +83,11 @@ export default class Rh_filter extends LightningElement {
 
 
     //simple
-    @track simpleFieldDetailsCopy = [];
+    // @track simpleFieldDetailsCopy = [];
 
     @track fieldDetailsCopy = [];
 
+    // @track keepSimple = false;
     @api title;
     @api timeOut;
     @api backcolor;
@@ -93,8 +107,12 @@ export default class Rh_filter extends LightningElement {
         }
     ];
 
+    get keepSimple(){
+        return this.fieldDetails.length == 0;
+    }
+
     connectedCallback() {
-        this.simpleFieldDetailsCopy = [...this.simpleField];
+        // this.simpleFieldDetailsCopy = [...this.simpleField];
         this.fieldDetailsCopy = [...this.fieldDetails];
     }
 
@@ -244,21 +262,12 @@ export default class Rh_filter extends LightningElement {
     //     }
     // ];
 
-    simpleFilterAction = [
-        {
-            name: 'Submit',
-            variant: 'brand',
-            iconName: 'utility:search',
-            title: 'research',
-            class: 'btn-custom'
-        }
-    ];
+   
 
     simpleHandleAction(event){
         const action = event.detail.action;
         this.form = this.template.querySelector('c-rh_dynamic_form').save();
         this.labelRemove = {};
-        this.handlePill(this.form?.obj);
         this.publishChangedEvt('submit', this.form?.obj);
     }
 

@@ -74,6 +74,12 @@ export default class Rh_request_management_component extends NavigationMixin(Lig
     allRecType = [];
     valueComplain;
 
+    
+    adds={
+        areMine: false
+    }
+    statusSelected;
+
 
     keysFields = { AddressedTo: 'ok' };//non used now
     keysLabels = {
@@ -180,6 +186,17 @@ export default class Rh_request_management_component extends NavigationMixin(Lig
         })
         return this.hasRecords;
     }
+    handleClickOnPill(event){
+        const info = event.detail;
+        console.log('data >>', info, ' \n name ', info?.name);
+        const name = info?.name;
+        // this.resetFilter()
+        // const  filter ={...this.filter}
+        const  filter ={}
+        filter[name] = info?.data?.value;
+        
+        this.handleSearch(filter);
+    }
 
     filterRequestToManage(event){
         let searchText = event.detail.searchText;
@@ -187,6 +204,9 @@ export default class Rh_request_management_component extends NavigationMixin(Lig
         let status= event.detail.status;
         let dateFrom= event.detail.From;
         let dateTo = event.detail.To;
+        this.handleSearch({searchText,reqType,status,dateFrom,dateTo})
+    }
+    handleSearch({searchText,reqType,status,dateFrom,dateTo}){
         this.startSpinner(true);
         filterRequestToManage({searchText:searchText, requestType: reqType, status: status, dateFrom: dateFrom, dateTo: dateTo})
             .then(result => {
@@ -210,6 +230,7 @@ export default class Rh_request_management_component extends NavigationMixin(Lig
                     const badge={name: 'badge', class:self.classStyle(elt?.Rh_Status__c),label: elt?.Rh_Status}
                     objetRep.addons={badge};
                     this.tabReq.push(objetRep);
+                    this.statusSelected=status;
                 });
                 // this.refreshTable(this.tabReq); 
                 this.setviewsList(this.tabReq)

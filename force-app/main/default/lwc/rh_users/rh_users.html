@@ -1,4 +1,5 @@
 <template>
+    
         <lightning-layout multiple-rows>
             <template if:false={hasrecordid}>
                 <template if:true={showNew}>
@@ -8,11 +9,25 @@
                         </div>
                     </lightning-layout-item>
                 </template>
+    
                 <template if:true={hideView}>
+                    <template if:true={isAdmin}>
+                        <lightning-layout-item size="12" padding="around-small" small-device-size="12" medium-device-size="12" large-device-size="12" >
+                            <c-rh_sum_list onaction={handleClickOnPill} selected-key={statusSelected} filter-key="status" sobject="Contact" field="RH_Status__c"  d-provider="RH_Users_controller" i-clickable></c-rh_sum_list>
+                        </lightning-layout-item>
+                    </template>
+                    <lightning-layout-item size="12" padding="around-small" small-device-size="12" medium-device-size="12" large-device-size="12" >
+                        <c-rh_sum_list onaction={handleClickOnPill} selected-key={roleSelected} filter-key="role" sobject="Contact" field="RH_Role__c" d-provider="RH_Users_controller" i-clickable></c-rh_sum_list>
+                    </lightning-layout-item>
+                    <!-- condition={condition} -->
                     <template if:true={filterReady}>
                         <lightning-layout-item size="12" class="slds-p-left_small" small-device-size="12" medium-device-size="12" large-device-size="12" >
                             <div class="custom-box">
-                                <c-rh_filter onsubmit={handleSubmitFilter} onreset={handleSubmitFilter} field-details={filterInputs} simple-field={simpleFilterInput}></c-rh_filter>
+                                <c-rh_filter 
+                                    onsubmit={handleSubmitFilter} 
+                                    onreset={handleSubmitFilter} 
+                                    field-details={filterInputs}>
+                                </c-rh_filter>
                             </div>
                         </lightning-layout-item>
                     </template>

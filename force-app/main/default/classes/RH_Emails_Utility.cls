@@ -22,23 +22,24 @@ public  class RH_Emails_Utility {
         System.debug('add lists ==> '+ toAddresses );
 
         // initialyse email
-        Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
+        
         EmailTemplate emailT =[SELECT id,name,HtmlValue,subject,description,Body FROM EmailTemplate where DeveloperName='RH_USER_RESET_PWD'];
          System.debug('add EmailTemplate ==> '+ emailT );
-
-        mail.setTemplateId(emailT.Id);
+        Messaging.SingleEmailMessage mail = Messaging.renderStoredEmailTemplate(emailT.Id, userId, null);
+        // mail.setTemplateId(emailT.Id);
         //Flag to false to stop inserting activity history
         mail.setSaveAsActivity(false);
+        // mail.setTargetObjectId(userId);
         //This will not send email to account  
         mail.setTreatTargetObjectAsRecipient(false);
         // String tmpBody=emailT.Body;
         mail.setToAddresses(toAddresses);
-        String subject=emailT.subject;
-        String htmlBody=emailT.HtmlValue;
+        String subject=mail.getSubject();
+        String htmlBody=mail.getHtmlBody();
         htmlBody = htmlBody.replace('$pass', (!String.isBlank(password)) ? password : '');
         htmlBody = htmlBody.replace('$urlToSend', (!String.isBlank(profilePage)) ? profilePage : '');
         
-        String plainBody = emailT.Body;
+        String plainBody = mail.getPlainTextBody();
         plainBody = plainBody.replace('$pass', (!String.isBlank(password)) ? password : '');
         plainBody = plainBody.replace('$urlToSend', (!String.isBlank(profilePage)) ? profilePage : '');
         

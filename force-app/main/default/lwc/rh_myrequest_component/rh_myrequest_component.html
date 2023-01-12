@@ -118,6 +118,10 @@
                         class="slds-m-left_x-small"></lightning-button>
                 </div>
             </div>
+            <lightning-layout-item size="12" padding="around-small" small-device-size="12" medium-device-size="12" large-device-size="12" >
+                <!-- d-provider="RH_EventController" -->
+                <c-rh_sum_list onaction={handleClickOnPill} selected-key={statusSelected} filter-key="status" sobject="RH_Request__c" field="Rh_Status__c" adds={adds} d-provider="RH_Request_controller"  i-clickable></c-rh_sum_list>
+            </lightning-layout-item>
             <div class="filterClass">
                 <template if:true={enableForm}>
                     <c-rh_filter title={l.FilterRequest} field-details={inputFormFilter} onsubmit={filterRequest} onreset={getRequest}></c-rh_filter>

@@ -1,0 +1,9 @@
+<pre>
+Hi {{!User.Name}},
+
+Your request has been approved by {Leader_Name}
+
+<code>[[!Contact_Id__r.Account.Name]]</code>
+
+</pre>
+<a href="{!$Setup.RH_Settings__c.record_page_Link__c}" >More details</a>

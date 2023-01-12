@@ -3,13 +3,15 @@
         <template if:false={hasRecordId}>
             <div class="slds-clearfix">
                 <div class="slds-float_right">
-                    <lightning-button variant="brand-outline" label="New Accomplishment" icon-name={icon.Add} title="Primary action with lighter look" onclick={handleChangeValue} class="slds-m-left_x-small"></lightning-button>
+                    <lightning-button variant="brand-outline" label={l.NewAccomplishment} icon-name={icon.Add} title="Primary action with lighter look" onclick={handleChangeValue} class="slds-m-left_x-small"></lightning-button>
                 </div>
             </div>
             <div class="filterClass">
-                <c-rh_filter title={l.FilterAccomplishment} field-details={inputFormFilter} onsubmit={filterAccomplishment} onreset={getAccomplish}></c-rh_filter>
+                <template if:true={enableForm}>
+                    <c-rh_filter title={l.FilterAccomplishment} field-details={inputFormFilter} onsubmit={filterAccomplishment} onreset={getAccomplish}></c-rh_filter>
+                </template>
             </div>
-            <c-rh_cards_view page-size="6"  items={itemCard} onrowselected={handleCardAction}></c-rh_cards_view>
+            <c-rh_cards_view page-size="9"  items={itemCard} onrowselected={handleCardAction} ly_xs = "12" ly_md = "6" ly_lg = "4"></c-rh_cards_view>
         </template>
         <template if:true={hasRecordId}>
             <template if:false={editMode}>
@@ -26,11 +28,12 @@
                 </div>
                 <div class="slds-p-around_medium profile_user_info">
                     <c-rh_display_fields 
-                    title="Accomplishment Details"
+                    title={l.AccomplishmentDetails}
                     iconsrc="utility:education"
                     column="2"
                     output-fields={accomInputDetails}
                     onaction={handlePreview}
+                    badges={badge}
                     ></c-rh_display_fields>
                 </div>
                 <template if:true={previewFile}>
@@ -41,7 +44,7 @@
                 <lightning-card class="custom-card">
                     <h3 slot="title">
                         <lightning-icon icon-name={icon.Edit} size="small" class="slds-p-right_small"></lightning-icon>
-                        Edit Accomplishment
+                        {l.EditAccomplishment}
                     </h3> 
                     <c-rh_dynamic_form inputs-items={formEditInputs} file-data={newFileData} oninputchanged={handleEditchange}></c-rh_dynamic_form>
                     <div class="card-footer" slot="footer">
@@ -54,14 +57,14 @@
                     </div>
                 </lightning-card>
             </template>
-            <c-rh_back_buttom title="Back To Accomplishment"></c-rh_back_buttom>
+            <c-rh_back_buttom title={l.BackToAccomplishment}></c-rh_back_buttom>
         </template>
     </template>
     <template if:true={newForm}>
         <lightning-card class="custom-card">
             <h3 slot="title">
                 <lightning-icon icon-name={icon.Add} size="small" class="slds-p-right_small"></lightning-icon>
-                New Accomplishment
+                {l.NewAccomplishment}
             </h3> 
             <c-rh_dynamic_form inputs-items={formInputs} file-data={newFileData} oninputchanged={handleEditchange}></c-rh_dynamic_form>
             <div class="card-footer" slot="footer">

@@ -37,7 +37,6 @@ export default class Rh_Projects extends NavigationMixin(LightningElement) {
     
     inizier={};
     l={...labels,
-        srchNamePlc: 'Search by name',
         OrderBy:'sort By',
         selectPlc:'Select an option',
         }
@@ -136,8 +135,17 @@ export default class Rh_Projects extends NavigationMixin(LightningElement) {
         Account:this.l.Account,
     };
 
-    
+    hasRecords;
 
+    get filterReady() {
+    
+        getProjectList().then(result => {
+            this.hasRecords = (result != null);
+        })
+
+        return this.hasRecords;
+    
+    }
 
      getPicklistValues(){
         getPickListValuesIntoList()
@@ -175,7 +183,7 @@ export default class Rh_Projects extends NavigationMixin(LightningElement) {
         checkRole({ })
           .then(result => {
             console.log('Result role --->', result);
-            if(result.isCEO||result.isTLeader) this.isVisible = true;
+            if(result.isCEO||result.isTLeader||result.isRHUser) this.isVisible = true;
           })
           .catch(error => {
             console.log('Error:', error);
@@ -916,6 +924,14 @@ setviewsList(items){
                             picklist: true,
                             options:option,
                             required:true,
+                            ly_md:'12', 
+                            ly_lg:'6'
+                        },
+                        {
+                            label:this.l.Link,
+                            placeholder:'',
+                            name:'Link',
+                            required:false,
                             ly_md:'12', 
                             ly_lg:'6'
                         },

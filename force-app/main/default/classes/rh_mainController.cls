@@ -21,6 +21,10 @@ public without sharing class rh_mainController {
         Map<String, Object> mapReturn = new Map<String, Object>();
         Schema.SObjectType USER_OBJECT = Schema.User.getSObjectType();
         Schema.SObjectType TIMESHEET_OBJECT = Schema.Timesheet.getSObjectType();
+        Schema.SObjectType EVENT_OBJECT = Schema.Event__c.getSObjectType();
+        Schema.SObjectType REQUEST_OBJECT = Schema.RH_Request__c.getSObjectType();
+        Schema.SObjectType ACCOMPLISHMENT_OBJECT = Schema.RH_Accomplishment__c.getSObjectType();
+        Schema.SObjectType INVOICE_OBJECT = Schema.RH_Invoice__c.getSObjectType();
         mapReturn.put('error',false);
         try {
             Id recID=recordId;
@@ -28,6 +32,14 @@ public without sharing class rh_mainController {
                 mapReturn.put('page', '/rhusers');
             }else if(TIMESHEET_OBJECT==recID.getSObjectType() ){
                 mapReturn.put('page', '/rhtimesheet');
+            }else if(EVENT_OBJECT==recID.getSObjectType() ){
+                mapReturn.put('page', '/Event');
+            }else if(REQUEST_OBJECT==recID.getSObjectType() ){
+                mapReturn.put('page', '/request-management');
+            }else if(ACCOMPLISHMENT_OBJECT==recID.getSObjectType() ){
+                mapReturn.put('page', '/accomplishment');
+            }else if(INVOICE_OBJECT==recID.getSObjectType() ){
+                mapReturn.put('page', '/rh-invoices');
             }
 
             else{

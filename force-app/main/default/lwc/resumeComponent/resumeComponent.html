@@ -1,0 +1,8 @@
+<template>
+        <div class="container positionnement">
+            <div for:each={summary} for:item="sum" key={sum.key}>
+                <span class="label"><b>{sum.label}</b></span>
+                <button class="btn slds-theme_success">{sum.value}</button>  
+            </div>
+        </div>
+</template>

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomLabels xmlns="http://soap.sforce.com/2006/04/metadata">
-   
     <labels>
         <fullName>rh_None</fullName>
         <language>en_US</language>
@@ -28,5 +27,13 @@
         <protected>true</protected>
         <shortDescription>rh_MissingTeamLeader</shortDescription>
         <value>You do not have a Team Leader! Contact your Administrator for Help.</value>
+    </labels>
+    <labels>
+        <fullName>rh_All</fullName>
+        <categories>Labels</categories>
+        <language>en_US</language>
+        <protected>true</protected>
+        <shortDescription>rh All</shortDescription>
+        <value>All</value>
     </labels>
 </CustomLabels>

@@ -1,8 +1,52 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Package xmlns="http://soap.sforce.com/2006/04/metadata">
 	<types>
-		<members>TimeSheetEntry.Type</members>
+		<members>RH_Contact_Query</members>
+		<members>RH_EventController</members>
+		<members>RH_Event_Query</members>
+		<members>RH_Notification_Utility</members>
+		<members>RH_User_Query</members>
+		<members>RH_Users_controller</members>
+		<name>ApexClass</name>
+	</types>
+	<types>
+		<members>Event__c.RH_Approver__c</members>
 		<name>CustomField</name>
+	</types>
+	<types>
+		<members>rh_All</members>
+		<name>CustomLabel</name>
+	</types>
+	<types>
+		<members>Public_Access</members>
+		<name>CustomSite</name>
+	</types>
+	<types>
+		<members>rh_Event</members>
+		<members>rh_Event_Management</members>
+		<members>rh_Projects</members>
+		<members>rh_accomplishment</members>
+		<members>rh_display_news</members>
+		<members>rh_event_details</members>
+		<members>rh_event_edit</members>
+		<members>rh_filter</members>
+		<members>rh_groups</members>
+		<members>rh_myrequest_component</members>
+		<members>rh_request_management_component</members>
+		<members>rh_timesheet</members>
+		<members>rh_title</members>
+		<members>rh_user_creation</members>
+		<members>rh_user_view</members>
+		<members>rh_users</members>
+		<name>LightningComponentBundle</name>
+	</types>
+	<types>
+		<members>Public Access Profile</members>
+		<name>Profile</name>
+	</types>
+	<types>
+		<members>telegram_bot</members>
+		<name>RemoteSiteSetting</name>
 	</types>
 	<version>55.0</version>
 </Package>

@@ -1,0 +1,26 @@
+.badge{
+    color: red;
+    --lwc-colorBackgroundToastSuccess:var(--secondaryColor,#9735e1);
+}
+.cursor{
+    cursor: pointer;
+}
+.pending-badge {
+    --sds-c-badge-color-background: orange;
+}
+.isActive{
+    --sds-c-badge-color-border: var(--dxp-g-neutral,#fff);
+    --lwc-borderWidthThin: 2.2px;
+}
+.bg-cus{
+    --lwc-fontSize2: 1rem;
+    height: 2.9rem;
+    -sds-c-badge-color-border: var(--primaryColor,rgb(10, 10, 10));
+    --lwc-borderWidthThin: 1.9px;
+    --lwc-colorBackgroundToastSuccess:var(--secondaryColor,#9735e1);
+}
+.bg-cus:hover{
+    --lwc-fontSize2: 1.5rem;
+    transition-duration: 1s;
+    height: 3.2rem;
+}

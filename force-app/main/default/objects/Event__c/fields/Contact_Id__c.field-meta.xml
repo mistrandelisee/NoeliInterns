@@ -2,9 +2,9 @@
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Contact_Id__c</fullName>
     <externalId>false</externalId>
-    <label>Contact_Id</label>
+    <label>Event Hoder</label>
     <referenceTo>Contact</referenceTo>
-    <relationshipLabel>Events</relationshipLabel>
+    <relationshipLabel>My Events</relationshipLabel>
     <relationshipName>Events</relationshipName>
     <relationshipOrder>0</relationshipOrder>
     <reparentableMasterDetail>false</reparentableMasterDetail>

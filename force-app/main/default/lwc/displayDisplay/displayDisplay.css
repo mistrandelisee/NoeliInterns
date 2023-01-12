@@ -1,0 +1,23 @@
+.container-wrap{
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: wrap !important;
+    justify-content: center;
+}
+
+.newstyle{
+    height: 50px;
+    width: 50px;
+    background: cornflowerblue;
+    color: white;
+    padding: 1.5em 2em; 
+    border-radius: 4em;
+}
+
+.stylemessage{
+    visibility: hidden;
+    background-color: red;
+}
+.newstyle:hover +.stylemessage{
+    visibility:visible;
+}

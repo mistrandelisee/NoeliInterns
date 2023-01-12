@@ -1,32 +1,46 @@
 import { LightningElement, wire, api, track } from 'lwc';
-import getRelatedFilesByRecordId from '@salesforce/apex/RH_EventController.getRelatedFilesByRecordId';
+
+
+import { CurrentPageReference,NavigationMixin } from 'lightning/navigation';
+import { registerListener,unregisterListener, unregisterAllListeners,fireEvent } from 'c/pubsub';
+
 import getMyEventManager from '@salesforce/apex/RH_EventController.getMyEventManager';
 import getPicklistStatus from '@salesforce/apex/RH_EventController.getPicklistStatus';
-import changeEventStatus from '@salesforce/apex/RH_EventController.changeEventStatus';
-import getInfOfAllUsers from '@salesforce/apex/RH_EventController.getInfOfAllUsers';
-import getEventEdite from '@salesforce/apex/RH_EventController.getEventEdite';
-import sendNotif from '@salesforce/apex/RH_EventController.sendNotifications';
-import getEventInfo from '@salesforce/apex/RH_EventController.getEventInfos';
-import getInfUser from '@salesforce/apex/RH_EventController.getInfoUsers';
-import deleteEvent from '@salesforce/apex/RH_EventController.deleteEvent';
-import getIdUser from '@salesforce/apex/RH_EventController.getIdUser';
-import getEvent from '@salesforce/apex/RH_EventController.getEvent';
-import { NavigationMixin } from 'lightning/navigation';
+import getOtherEvents from '@salesforce/apex/RH_EventController.getOtherEvents';
+
 import { icons } from 'c/rh_icons';
 import { labels } from 'c/rh_label';
 
+
+const DELETE_ACTION='Delete';
+const APPROVE_STATUS='Approved';
+const REJECT_STATUS='Rejected';
+const SUBMITTED_STATUS='Submitted';
+const DRAFT_STATUS='Draft'; 
+const SUCCESS_VARIANT='success';
+const WARNING_VARIANT='warning';
+const ERROR_VARIANT='error';
+
+const PAGE_NAME='event-management';
+
 export default class rh_Event_Management extends  NavigationMixin(LightningElement) {
+    @wire(CurrentPageReference) pageRef;
     l={...labels,
         //searchText:null,
-        Name: 'Name',
+        /*Name: 'Name',
         srchNamePlc: 'Search by name',
         From:'From',
         To:'To',
         OrderBy:'sort By',
-        selectPlc:'Select an option',
+        selectPlc:'Select an option',*/
         };
     icon={...icons};
     label={...labels};
+    
+    adds={
+        areMine: false
+    }
+    statusSelected;
 
     showComponentBase = true;
     showComponentDetailsForBaseUser = false;
@@ -53,6 +67,14 @@ export default class rh_Event_Management extends  NavigationMixin(LightningEleme
     filesList =[];
     filesLists = [];
     @track datas = [];
+    filter = {
+        searchText: null,
+        status: null,
+        startDate: null,
+        endDate: null,
+        orderBy: null,
+        orderOn: null,
+    }
 
     columns = [
         { label: this.label.FileName, fieldName: 'FileName', type: 'text', sortable: true },
@@ -88,7 +110,7 @@ export default class rh_Event_Management extends  NavigationMixin(LightningEleme
     };
     keysLabels={
         EventName: this.label.Name, 
-        ContactName: this.label.ContactName,
+        ContactName: this.label.Owner,
         Description: this.label.Description,
         StartDate: this.label.StartDate,
         EndDate: this.label.EndDate,
@@ -97,64 +119,152 @@ export default class rh_Event_Management extends  NavigationMixin(LightningEleme
     fieldsToShow={ 
         // EventName:'Event Name',
         ContactName: 'Contact Name',
-        Description: 'Description',
         StartDate: 'Start Date',
         EndDate: 'End Date',
+        Description: 'Description',
         // Status:'Status'
     };
-    get filterReady(){ return this.filterInputs?.length >0}
-    getEventManager(){
-        this.datas=[];
-        getMyEventManager()
-        .then(result =>{
-            console.log('@@wiredatas--> ' , result);
-            const self=this;
-            result.forEach(elt => { 
-                console.log('elt-->',elt);
-            let objetRep = {};
-            let str = elt.Description__c;
-            if(str?.length>30) str = str?.substring(0,30);
-            objetRep = {
-                "id" : elt.Id,
-                "EventName": elt.Name,
-                "ContactName": elt.Contact_Id__r?.Name,
-                "StartDate" : elt.Start_Dates__c?.split('T')[0],
-                "EndDate" : elt.End_Dates__c?.split('T')[0],
-                "Status" : elt.Status__c,
-                "Description" :  str,
+    
+    hasRecords;
 
-                icon:this.icon.user, 
-                title: elt.Name,
-                class: elt.Status__c=='Approved'? 'frozen': elt.Status__c=='Submitted'? 'banned': 'active',
-                keysFields:self.keysFields,
-                keysLabels:self.keysLabels,
-                fieldsToShow:self.fieldsToShow,
+    get filterReady(){ 
+        return this.hasRecords;
+    }
+    connectedCallback(){
+        this.recordId = this.getUrlParamValue(window.location.href, 'recordId');
+        console.log('@@@@@ Id', this.recordId);
+        if (this.recordId) {
+            console.log('@@@ recordId--> ' , this.recordId);
+            this.goToEventDetail(this.recordId);
+        }else{
+            this.initFilter();
+            this.getEvents(true);
+        }
+    }
+    getEvents(init=false) {
+        console.log(`getEvents this.filter TO CALL `, JSON.stringify(this.filter));
+        this.datas = [];
+        this.startSpinner(true);
+        getOtherEvents({ filterTxt: JSON.stringify(this.filter) }).then(result => {
+            console.log('result @@@ + ' + (result));
+            console.log(result);
+            const self = this;
+            if (!result.error && result.Ok) {
+                //this.constants = result.Constants;
+                /*this.currUser = {
+                    ...result.currentContact,
+                    isCEO: result.isCEO,
+                    isRHUser: result.isRHUser,
+                    isTLeader: result.isTLeader,
+                    isBaseUser: result.isBaseUser,
+                }
+                const isAD = this.isAdmin;*/
+                this.datas = []
+                if (init) {
+                    this.hasRecords = (result.Events != null) && (result.Events?.length > 0);
+                    
+                }
+                result.Events.forEach(function (elt) {
+                    console.log('elt-->',elt);
+                    let objetRep = {};
+                    let str = elt.Description__c;
+                    if(str?.length>30) str = str?.substring(0,30);
+                    objetRep = {
+                        "id" : elt.Id,
+                        "EventName": elt.Name,
+                        "ContactName": elt.Contact_Id__r?.Name,
+                        "StartDate" : elt.Start_Dates__c?.split('T')[0],
+                        "EndDate" : elt.End_Dates__c?.split('T')[0],
+                        "Status" : elt.Status__c,
+                        "Description" :  str,
+        
+                        icon:self.icon.Event, 
+                        title: elt.Name,
+                        class: elt.Status__c=='Approved'? 'frozen': elt.Status__c=='Submitted'? 'banned': 'active',
+                        keysFields:self.keysFields,
+                        keysLabels:self.keysLabels,
+                        fieldsToShow:self.fieldsToShow,
+                    }
+                    console.log('@@@@@objectReturn', objetRep);
+                    const mapping=result.classMapping;
+                    let st=(elt?.Status__c)? elt?.Status__c.toLowerCase():'';
+                    let cx=mapping[st];
+                    const badge={
+                        name: 'badge', 
+                        class:cx? cx+' slds-float_left ' :self.classStyle(elt?.Status__c),
+                        label: elt?.StatusLabel
+                    }
+                    // const badge={
+                    //     name: 'badge', 
+                    //     class:self.classStyle(elt?.Status__c),
+                    //     label: elt?.StatusLabel
+                    // }
+                    console.log('@@@@@@@@  badge  --> ' , badge);
+                    objetRep.addons={badge};
+                    self.datas.push(objetRep);
+                    /*
+                        let item = { ...e };
+                        item.title = e.LastName;
+                        item.icon = "standard:people";
+                        item.class = e.Status;
+
+                        item.keysFields = self.keysFields;
+                        item.keysLabels = self.keysLabels;
+                        item.fieldsToShow = self.fieldsToShow;
+
+                        let Actions = [];
+                        //add status actions
+                        if (isAD) {
+                            Actions = Actions.concat(self.buildUserStatusActions(e.Status));
+                            if ((self.constants.LWC_ACTIVE_CONTACT_STATUS?.toLowerCase() == e.Status?.toLowerCase())) {//
+                                Actions = Actions.concat(self.buildUserRoleActions(e.RHRolec));
+                            }
+                        }
+
+
+                        item.actions = Actions;
+                        console.log(`item`);
+                        console.log(item);
+                        const badge = { name: 'badge', class: self.classStyle(e.Status), label: e.statusLabel }
+                        item.addons = { badge };
+                        if (isAD || (!isAD && (self.constants.LWC_ACTIVE_CONTACT_STATUS?.toLowerCase() == e.Status?.toLowerCase())))
+                            self.allEmployees.push(item);
+                   
+                    */     
+                });
+                this.setviewsList( this.datas);
+                /*this.currUser = {
+                    ...result.currentContact,
+                    isCEO: result.isCEO,
+                    isRHUser: result.isRHUser,
+                    isTLeader: result.isTLeader,
+                    isBaseUser: result.isBaseUser,
+                }*/
+            } else {
+                this.showToast(WARNING_VARIANT, 'ERROR', result.msg);
             }
-            console.log('@@@@@objectReturn', objetRep);
-            const badge={
-                name: 'badge', 
-                class:self.classStyle(elt?.Status__c),
-                label: elt?.StatusLabel
-            }
-            console.log('@@@@@@@@  badge  --> ' , badge);
-            objetRep.addons={badge};
-            this.datas.push(objetRep);
-            }); 
-            this.setviewsList( this.datas);
-            console.log('@@@@@@@@wiredatas--> ' , this.datas);
+        }).catch(e => {
+            this.showToast(ERROR_VARIANT, 'ERROR', e.message);
+            console.error(e);
+        })
+        .finally(() => {
+            this.startSpinner(false);
         })
     }
-    classStyle(className){ 
- 
-        switch(className){ 
-            case 'Approved':
-                return "slds-float_left slds-theme_success";
-            case 'Submitted': 
-                return "slds-float_left slds-theme_warning"; 
-            default: 
-                return "slds-float_left slds-theme_alt-inverse"; 
-        } 
- 
+    
+    classStyle(status){
+        switch(status){
+            case APPROVE_STATUS:
+                return "slds-float_left slds-theme_alt-inverse";
+            case DRAFT_STATUS:
+                return "slds-float_left slds-theme_info";
+            case SUBMITTED_STATUS:
+                return "slds-float_left slds-theme_warning";
+            case REJECT_STATUS:
+                return "slds-float_left slds-theme_error";
+            default:
+                return "slds-float_left slds-theme_info";
+        }
     }
     setviewsList(items){
         let cardsView=this.template.querySelector('c-rh_cards_view');
@@ -169,8 +279,8 @@ export default class rh_Event_Management extends  NavigationMixin(LightningEleme
         }
     }
     goToEventDetail(recordid) {
-        var pagenname ='event-management'; //request page nam
-        let states={'recordId': recordid}; //event.currentTarget.dataset.id , is the recordId of the request
+        var pagenname ='Event'; //request page nam
+        let states={'recordId': recordid,retURL:PAGE_NAME}; //event.currentTarget.dataset.id , is the recordId of the request
         
         this[NavigationMixin.Navigate]({
             type : 'comm__namedPage',
@@ -183,34 +293,62 @@ export default class rh_Event_Management extends  NavigationMixin(LightningEleme
     getUrlParamValue(url, key) {
         return new URL(url).searchParams.get(key);
     }
-    connectedCallback(){
-        this.recordId = this.getUrlParamValue(window.location.href, 'recordId');
-        console.log('@@@@@ Id', this.recordId);
-        if (this.recordId) {
-            console.log('@@@ recordId--> ' , this.recordId);
-            this.handleOpenComponent();
-            this.getEventDetails(this.recordId);
-        }else{
-            this.getEventManager();
-        }
-        this.initDefault();
-        this.optionsStatus();
-        this.getInfoUser();
-        this.getInfOfAllUsers();
+    resetFilter(){
+        this.filter = {
+            searchText: null,
+            status: null,
+            startDate: null,
+            endDate: null,
+            orderBy: null,
+            orderOn: null,
+      }
+  }
+
+    handleClickOnPill(event){
+        const info = event.detail;
+        console.log('data >>', info, ' \n name ', info?.name);
+        const name = info?.name;
+        this.resetFilter()
+        const  filter ={...this.filter}
+        filter[name] = info?.data?.value;
+        
+        this.handleSearch(filter);
     }
     handleSubmitFilter(event) {
-        const record=event.detail;
-        console.log(`handleSubmitFilter record `, JSON.stringify(record) );
-        console.log(`this.datas `, this.datas);
-        record.searchText ? this.datas = this.datas.filter(element =>((element.EventName).toUpperCase()) == (record.searchText.toUpperCase())) : this.datas;
-        record.startDate ? this.datas = this.datas.filter(element =>element.StartDate ==  record.startDate) : this.datas;
-        record.status ? this.datas = this.datas.filter(element =>element.Status ==  record.status) : this.datas;
-        record.EndDate ? this.datas = this.datas.filter(element =>element.EndDate ==  record.EndDate) : this.datas;   
+        const searchFilter = event.detail;
+        console.log('handleSubmitFilter record', JSON.stringify(event.detail) );
+        this.handleSearch(searchFilter);
     }
+    
+    handleSearch(record) {
+        let status= (record.status)? [record.status]:null;
+        record = {...record,status};
+        console.log(`handleSearch record `, JSON.stringify(record));
+        this.filter = {
+            ... this.filter, ...record,
+            orderOn: record.orderOn ? 'DESC' : 'ASC'
+        };
+        console.log(`handleSearch this.filter TO CALL `, JSON.stringify(this.filter));
+        this.statusSelected=(status)? status[0]:this.statusSelected;
+        this.getEvents();
+    }
+    /*handleSubmitFilter(event) {
+        console.log('handleSubmitFilter record', JSON.stringify(event.detail) );
+        let status= (event.detail.status)? [event.detail.status]:null;
+        const record = {...event.detail,status};
+        console.log(`handleSubmitFilter record `, JSON.stringify(record));
+        this.filter = {
+            ... this.filter, ...record,
+            orderOn: record.orderOn ? 'DESC' : 'ASC'
+        };
+        console.log(`handleSubmitFilter this.filter TO CALL `, JSON.stringify(this.filter));
+       
+        this.getEvents();
+    }*/
     handleResetFilter(event) {
-        this.getEventManager();
+        this.getEvents();
     }
-    optionsStatus() {
+    initFilter() {
         getPicklistStatus()
             .then(result => {
                 console.log('@@@ result-->', result);
@@ -273,375 +411,12 @@ export default class rh_Event_Management extends  NavigationMixin(LightningEleme
         
         ];
     }
-    getEventDetails(eventId) {debugger
-        getEvent({evId:eventId})
-        .then(result =>{
-            console.log('@@ result --> ' , result);
-                if(result.Status__c=='Submitted'){
-                    this.displayButton = true;
-                }else{
-                    this.displayButton = false;
-                }
-        })
-        console.log('eventId--> ' , eventId);
-        getEventEdite({evenId: eventId})
-        .then(result =>{
-            if (result.error) {
-                console.error(result.msg);
-            }else{
-                console.log('event --> ' , result);
-                this.eventinformationEdite = result.map(obj => {
-                    var newobj={};
-                        newobj.Id = obj.Id;
-                        newobj.EventName=obj.Name;
-                        newobj.ContactName=obj.Contact_Id__r.Name;
-                        newobj.Description=obj.Description__c;
-                        newobj.StartDate= obj.Start_Dates__c.split('T')[0]+'  à '+ obj.Start_Dates__c.split('T')[1].substring(0,5); 
-                        newobj.EndDate= obj.End_Dates__c.split('T')[0]+'  à '+obj.End_Dates__c.split('T')[1].substring(0,5);
-                        newobj.Status=obj.StatusLabel;
-                    return newobj;
-                });
-                this.data = this.eventinformationEdite;
-                console.log('eventinformationEdite--->', this.eventinformationEdite);
-                this.optionsStatus();
-                this.eventDetails =[
-                    {
-                        label: this.label.Name,
-                        name:'Name',
-                        type:'text',
-                        value:this.eventinformationEdite[0].EventName,
-                        required:true,
-                        ly_md:'12', 
-                        ly_lg:'12'
-                    },
-                    {
-                        label: this.label.StartDate,
-                        name:'StartDate',
-                        type:'date',
-                        value:this.eventinformationEdite[0].StartDate,
-                        required:true,
-                        ly_md:'12', 
-                        ly_lg:'12'
-                    },
-                    {
-                        label: this.label.Status,
-                        name:'Status',
-                        picklist: true,
-                        value:this.eventinformationEdite[0].Status,
-                        required:true,
-                        ly_md:'12', 
-                        ly_lg:'12'
-                    },
-                    {
-                        label: this.label.EndDate,
-                        name:'EndDate',
-                        type:'date',
-                        value:this.eventinformationEdite[0].EndDate,
-                        ly_md:'12', 
-                        ly_lg:'12'
-                    },
-                    {
-                        label: this.label.Description,
-                        name:'Description',
-                        type:'textarea',
-                        value:this.eventinformationEdite[0].Description,
-                        ly_md:'12', 
-                        ly_lg:'12'
-                    },
-                ];
-                getRelatedFilesByRecordId({recordId: eventId})
-                .then(result=>{
-                    console.log('@@@ @@@ @@@ 1 result-->', result);
-                    let data_t =[];
-                    for(let key2 in result['data2']) {   
-                        for(let key in result['data']) {
-                            if(result['data'][key].ContentDocumentId== result['data2'][key2].Id){
-                                data_t.push({Id:result['data2'][key2].Id, FileName: result['data2'][key2].Title, url: result['data'][key].ContentDownloadUrl});
-                            }
-                        }
-                    }
-                    this.filesLists = data_t;
-                    console.log('-->',this.filesLists);
-                });
-            }
-        }).catch(err =>{
-            console.error('error',err)
-        })
-    }
-    handleRowAction( event ) {
-        const actionName = event.detail.action.name;
-        const rowId = event.detail.row.Id;
-        console.log('rowId--> ' , rowId);
-        console.log('actionName--> ' , actionName);
-        switch (actionName) {
-            case 'Download':
-                for(let key in this.filesLists){
-                    if(this.filesLists[key].Id == rowId){
-                        this.handleNavigate(this.filesLists[key].url);
-                    }
-                }
-                break;
-            default:
-        }
-    }
-    handleNavigate(url) {
-        const config = {
-            type: 'standard__webPage',
-            attributes: {
-                url: url
-            }
-        };
-        this[NavigationMixin.Navigate](config);
-      }
-    getInfoUser(){
-        getInfUser({}).then(result =>{
-            if (result.error) {
-                console.error(result.msg);
-            }else{
-                this.idUser = result;
-                console.log('userinfo--> ' , this.idUser);
-            }
-        }).catch(err =>{
-            console.error('error',err)
-        })
-    }
-    getInfOfAllUsers(){
-        getInfOfAllUsers({}).then(result =>{
-            if (result.error) {
-                console.error(result.msg);
-            }else{
-                console.log('BaseUserinfo--> ' , result);
-                this.IdBaseUser = result;
-            }
-        }).catch(err =>{
-            console.error('error',err)
-        })
-    }
-    sendNotification(event){debugger
-        if (event.detail.action==this.label.Share){
-            this.eventId = this.getUrlParamValue(window.location.href, 'recordId');
-            console.log('eventId --> ' ,this.eventId);
-            this.getEventInformation(this.eventId);
-        }
-
-    }
-    handleRejectEvent(event){
-        if (event.detail.action==this.label.ok_confirm){
-            this.changeEventStatus(this.eventId);
-            this.closeModalRejected();
-        }
-    }
-    handledeleteEvent(){debugger
-        let _id = this.eventId;
-        console.log('_id----->', this.eventId);
-        deleteEvent({evid : this.eventId})
-            .then(result => {
-                this.data = result;
-                console.log('result----->', result);
-                console.log('res----->', result[0].Status__c);
-                console.log('Message----->', result[0].Message__c);
-                if(result[0].Status__c=='Submitted' && (result[0].Message__c=='Event do not send')){
-                            this.closeModalDelete();
-                            this.showToast('info', 'Toast Info', this.label.SendEvent);
-                }else if(result[0].Status__c=='Submitted' && (result[0].Message__c=='Right no allowed')){
-                    this.closeModalDelete();
-                    this.showToast('info', 'Toast Info', this.label.RightDeletion);
-                }else{
-                    this.closeModalDelete();
-                    this.showToast('success', 'Success!!', this.label.EvenDeletionS);
-                }
-            })
-            .catch(error => {
-                // TODO Error handling
-            });
-    }
-    handlepredeleteEvent(event){
-        this.eventId = event.currentTarget.getAttribute("data-id");
-        console.log('eid----->', this.eventId);
-        this.visibleDelete = true;
-        this.showModalDelete = true;
-    }
-    handleprerejectEvent(event){debugger
-        if (event.detail.action==this.label.Rejected){
-            this.eventId = this.getUrlParamValue(window.location.href, 'recordId');
-            // this.eventId = event.currentTarget.getAttribute("data-id");
-            console.log('eventId --> ' ,this.eventId);
-            this.visibleReject = true;
-            this.showModalDelete = true;
-        }
-    }
-    closeModalRejected(){
-        this.showModalDelete = false;
-        setTimeout(()=>{
-            window.location.reload();
-        },500);
-    }
-    closeModalDelete(event){
-        if (event.detail.action==this.label.Cancel){
-            this.showModalDelete = false;
-        }
-    }
-    changeEventStatus(evId){debugger
-        console.log('evId -- >' + evId);
-        changeEventStatus({infoId:evId})
-        .then(result =>{
-            if (result.error) {
-                console.error(result.msg);
-            }else{
-                console.log('@@@ Event --> ' , result);
-                this.ContactId = result[0].Contact_Id__c;
-                let desc = result[0].Description__c;
-                let name = result[0].Name;
-                if(result[0].Message__c=='Already approved'){
-                    this.showToast('info', 'Toast Info', this.label.RejectFail);
-                }else if(this.ContactId){
-                    console.log('@@@EventContact--> ' , this.ContactId);
-                    getIdUser({idU: this.ContactId})
-                    .then(result =>{
-                        console.log('@@User data --> ' , result);
-                        for(let i=0; i<result.length; i++){
-                            if(result[i].UserRole.Name=='Base User'){
-                                console.log('@@ Je suis dans le if --> ');
-                                sendNotif({strBody:desc, pgRefId:evId, strTargetId:result[i].Id, strTitle:name, setUserIds:result[i].Id})
-                                .then(result =>{
-                                    if (result?.error) {
-                                        console.error(result?.msg);
-                                    }else{
-                                        console.log('@@@ IDUSER --> ' , result[i].Id);
-                                        console.log('event--> ' , result);
-                                        this.showToast('Success', 'Success', this.label.EventSubS);
-                                    }
-                                }).catch(err =>{
-                                    console.error('error',err)
-                                })
-                            }
-                        }
-                    })
-                    .catch(err =>{
-                        console.error('error',err);
-                    })
-                }
-                console.log('@@@evenName--> ' , result[0].Status__c + ' @@@evenDescription--> '+ result[0].Description__c);
-                const setUserIds = [];
-                for(let i=0; i<this.IdBaseUser.length; i++){
-                    setUserIds.push(this.IdBaseUser[i].Id);
-                }
-                setUserIds.push(this.idUser);
-                console.log('setUserIds --> ' ,this.IdBaseUser);
-                console.log('setUserIds --> ' ,setUserIds);
-                console.log('userinfo--> ' , this.idUser);
-            }
-        })
-        .catch(err =>{
-            console.error('error',err);
-        })
-    }
-    getEventInformation(evId){
-        console.log('evId -- >' + evId);
-        // this.startSpinner(true);
-        getEventInfo({infoId:evId})
-        .then(result =>{
-            if (result.error) {
-                console.error(result.msg);
-            }else{
-                console.log('@@@EventInfo--> ' , result[0]);
-                console.log('@@@evenName--> ' , result[0].Name + ' @@@evenDescription--> '+ result[0].Description__c);
-                console.log('@@@ IdBaseUser--> ' , this.IdBaseUser);
-                const setUserIds = [];
-                for(let i=0; i<this.IdBaseUser.length; i++){
-                    setUserIds.push(this.IdBaseUser[i].Id);
-                }
-                //setUserIds.push(this.IdBaseUser);
-                setUserIds.push(this.idUser);
-                console.log('setUserIds --> ' ,setUserIds);
-                console.log('userinfo--> ' , this.idUser);
-                if(result[0].Message__c && result[0].Message__c=='Already approved'){
-                    this.showToast('info', 'Toast Info', this.label.EventA);
-                }else{
-                    console.log('++++++event++++-->  notification');
-                    sendNotif({strBody:result[0].Description__c, pgRefId:evId, strTargetId:this.idUser, strTitle:result[0].Name, setUserIds:setUserIds})
-                    .then(result =>{
-                        if (result?.error) {
-                            console.error(result?.msg);
-                        }else{
-                            console.log('event--> ' , result);
-                            this.showToast('Success', 'Success', this.label.EventSubS);
-                            this.getEventManager()//refresh list
-                            window.location.reload();
-                        }
-                    }).catch(err =>{
-                        console.error('error',err)
-                    })
-                }
-
-            }
-        }).catch(err =>{
-            console.error('error',err);
-        })
+    
+    startSpinner(b){
+        fireEvent(this.pageRef, 'Spinner', {start:b});
     }
     showToast(variant, title, message){
-        let toast=this.template.querySelector('c-rh_toast');
-        toast?.showToast(variant, title, message);
+         fireEvent(this.pageRef, 'Toast', {variant, title, message});
     }
-    handleOpenComponent() {
-        this.showComponentBase = false;
-        this.showComponentDetails = true;
-    }
-    closeComponentDetails(event){
-        if (event.detail.action==this.label.Back){
-            this.recordId = undefined;
-            this.goToEventDetail(this.recordId);
-            this.getEventManager();
-            this.showComponentBase = true;
-            this.showComponentDetails = false;
-        }
-    }
-    detailsCloseComponentEdit=[
-        {   
-            variant:"brand-outline",
-            
-            label:this.label.Back,
-            name:this.label.Back,
-            title:this.label.Back,
-            iconName:this.icon.Back,
-        }
-    ]
-    detailsPrerejectEvent=[
-        {   
-            variant:"brand-outline",
-            
-            label:this.label.Rejected,
-            name:this.label.Rejected,
-            title:this.label.Rejected,
-            iconName:this.icon.close,
-        }
-    ]
-    detailsSendNotification=[
-        {   
-            variant:"brand-outline",
-            
-            label:this.label.Share,
-            name:this.label.Share,
-            title:this.label.Share,
-            iconName:this.icon.Share,
-        }
-    ]
-    detailsDeleteEvent=[
-        {   
-            variant:"brand-outline",
-            label:this.label.ok_confirm,
-            name:this.label.ok_confirm,
-            title:this.label.ok_confirm,
-            iconName:this.icon.approve,
-        }
-    ]
-    detailsCloseModalDelete=[
-        {   
-            variant:"brand-outline",
-            label:this.label.Cancel,
-            name:this.label.Cancel,
-            title:this.label.Cancel,
-            iconName:this.icon.close,  
-        }
-    ]
+    
 }

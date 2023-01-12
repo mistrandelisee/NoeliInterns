@@ -1,0 +1,12 @@
+<pre>
+Hi<b>{{!User.Name}}</b>,
+
+I'm sorry, but your event was declined by <b>{Leader_Name}</b> because :
+
+<b>[[Description]]</b>.
+
+<code>[[!Contact_Id__r.Account.Name]]</code>
+
+</pre>
+
+<a href="{!$Setup.RH_Settings__c.record_page_Link__c}" >More details</a>

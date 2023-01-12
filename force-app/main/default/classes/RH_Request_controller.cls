@@ -1,8 +1,45 @@
-public without sharing class RH_Request_controller {
+public without sharing class RH_Request_controller implements RH_SummarizeInterface{
     private static RH_Contact_Query contactQry = RH_Contact_Query.getInstance();
     private static RH_User_Query userQry = RH_User_Query.getInstance();
     private static RH_Request_Query requestQry = RH_Request_Query.getInstance();
+    public static Map<String,Object> StatusMapping = new Map<String, String>();
+    public static Map<String,Object> LabelMapping = new Map<String, String>();
+    private static String STATUSKEY='Rh_Status__c';
     
+    private static final String APPROVE_STATUS='Approved';
+    private static final String REJECT_STATUS='Rejected';
+    private static final String SUBMITTED_STATUS='Submited';
+    private static final String RESPONDED_STATUS='Responded';
+    static{
+        RH_Constans cons= RH_Constans.getAllConstants();
+        /**
+         * case 'Approved':
+                return "slds-float_left slds-theme_success";
+            case 'Draft':
+                return "slds-float_left slds-theme_info";
+            case 'Submited':
+                return "slds-float_left slds-theme_warning";
+            case 'Rejected':
+                return "slds-float_left slds-theme_error";
+            default:
+                return "slds-float_left slds-theme_alt-inverse";
+         */
+        StatusMapping= new Map<String, Object>{
+                            STATUSKEY.toLowerCase()=> new Map<String, String>{
+                                APPROVE_STATUS.toLowerCase()=> ' slds-theme_success ',
+                                RH_Constans.DRAFT_STATUS.toLowerCase()=> ' slds-theme_info ',
+                                SUBMITTED_STATUS.toLowerCase()=> ' slds-theme_warning ',
+                                RESPONDED_STATUS.toLowerCase()=> ' slds-theme_alt-inverse  ',
+                                REJECT_STATUS.toLowerCase()=> ' slds-theme_error '
+                            }
+        };
+        // String valueKey='Value'+fieldName;
+        Map<String, Object> picklists=RH_Utility.getPickListOptions(new List<String> {STATUSKEY},'RH_Request__c');
+        LabelMapping= new Map<String, Object>{
+            STATUSKEY.toLowerCase()=> (Map<String, String>)picklists.get('ValueRh_Status__c')
+        };
+        // System.debug(picklists);
+    }
     
      /* Kbrel Add */ 
      @AuraEnabled
@@ -15,9 +52,99 @@ public without sharing class RH_Request_controller {
          return requestQry.getAllMyRequestByYear(year,contactId);        
      }
      /*end*/
+    String conditionMyRequests(String field){
+        String conditionStr = '';
+        conditionStr =' ownerId= \''+String.escapeSingleQuotes(Userinfo.getUserId()) +'\' AND '+field+'!=Null';
+        return conditionStr;
+    }
+    String conditionOthersRequests(Contact currentContact,String field){
+        // String Role=currentContact.RH_Role__c;
+        String AccountId=currentContact.AccountId; 
+        String contactId=currentContact.Id; 
+        
+        // Boolean isAdmin=(RH_Constans.CONTACT_ROLE_CEO.equalsIgnoreCase(Role) || RH_Constans.CONTACT_ROLE_RH.equalsIgnoreCase(Role));
+        // List<String> Status= isAdmin ? new List<String>{SUBMITTED_STATUS,APPROVE_STATUS,REJECT_STATUS} : new List<String>{APPROVE_STATUS};
+        List<String> Status=new List<String>{SUBMITTED_STATUS,APPROVE_STATUS,REJECT_STATUS} ;
+
+        // \''+String.escapeSingleQuotes(Userinfo.getUserId()) +'\' AND '+field+'!=Null';1
+        // conds.add('(Rh_Status__c IN: status)');conds.add('(Contact_Id__r.AccountId=:AccountId)');
+        String conditionStr = '';
+        conditionStr =' RH_Addressed_To__c= \''+ String.escapeSingleQuotes(contactId) +'\' AND Rh_Status__c IN (\''+ String.join(status, '\',\'') +'\') AND '+field+'!=Null';
+        return conditionStr;
+    }
+    public List<AggregateResult> getSummary(Map<String, Object> args) {
+        Contact currentContact = RH_Utility.getCurentContact(); 
+        System.debug('get sum '+args);
+        String groupByStr = String.valueOf(args.get(RH_Summarizer.GROUPBY_KEY));
+        String fieldsStr = String.valueOf(args.get(RH_Summarizer.FIELDS_KEY));
+        String sobj = String.valueOf(args.get(RH_Summarizer.OBJECT_KEY));
+        
+        Boolean areMine = (Boolean) args.get('areMine');//
+        String conditionStr =null;
+        if (areMine) {
+            conditionStr=conditionMyRequests(groupByStr);
+        }else{
+            conditionStr=conditionOthersRequests(currentContact,groupByStr);
+        }
+        return RH_Summarizer.defauftSummirise(groupByStr,fieldsStr,conditionStr,sobj);
+    } 
+    public List<RH_Summarizer.summaryWrapper> formatAggregate(List<AggregateResult> aggs,Map<String, Object> args){
+        String groupByStr = String.valueOf(args.get(RH_Summarizer.GROUPBY_KEY));
+        String fieldsStr = String.valueOf(args.get(RH_Summarizer.FIELDS_KEY));
+        String conditionStr= String.valueOf(args.get(RH_Summarizer.CONDITIONS_KEY));
+        String sobj = String.valueOf(args.get(RH_Summarizer.OBJECT_KEY));
+        String alias=groupByStr;// by default
+        List<RH_Summarizer.summaryWrapper> sumaries = new List<RH_Summarizer.summaryWrapper>();
+        Integer i=0; 
+        Integer total=0; 
+        for (AggregateResult agg : aggs) {
+            RH_Summarizer.summaryWrapper swrap= new RH_Summarizer.summaryWrapper();
+            String name=(String) agg.get(alias);
+            swrap.label= getLabelMapping(groupByStr,name);
+            swrap.value = (Integer) agg.get('sum');
+            swrap.Key = name;
+            swrap.className= getClassMapping(groupByStr,name);
+            total= total + ( swrap.value!=Null?  swrap.value : 0); 
+            sumaries.add(swrap);
+            i=i+1;
+        }
+        /*RH_Summarizer.summaryWrapper allSum= new RH_Summarizer.summaryWrapper();
+        allSum.label='ALL';
+        allSum.value = total;
+        allSum.Key = 'ALL';
+        sumaries.add(allSum);*/
+
+        return sumaries;
+    }
+    // RH_Users_controller.getClassMapping('rh_status__c', 'Active');
+    public static String getClassMapping(String field, String Value){
+        field= field?.toLowerCase();
+        value= value?.toLowerCase();
+        string cx=' defaut ';
+        Map<String,String> cxMapping=(Map<String,String>) StatusMapping.get(field);
+
+        if (cxMapping != null) {
+            cx= cxMapping.get(value); 
+        }
+        System.debug('@@@@@@field---> '+field+' Value---> '+Value+' cx---> '+cx);
+        return cx;
+    }
+    public static String getLabelMapping(String field, String Value){
+        field= field?.toLowerCase();
+        value= value?.toLowerCase();
+        string lb=Value;
+        Map<String,String> lbMapping=(Map<String,String>) LabelMapping.get(field);
+
+        if (lbMapping != null) {
+            // System.debug('lbMapping ' + lbMapping);
+            lb= lbMapping.get(value); 
+        }
+        System.debug('@@@@@@field---> '+field+' Value---> '+Value+' cx---> '+lb);
+        return lb;
+    }
 
     
-    @AuraEnabled
+   @AuraEnabled
     public static List<RH_Request__c> getrequest() {
         return requestQry.getRequest();
     }
@@ -72,10 +199,10 @@ public without sharing class RH_Request_controller {
        return isBase;
     }
 
-    @AuraEnabled
+   /* @AuraEnabled
     public static List<RecordType> getRecordType(){
         return requestQry.getRecordType();
-    }
+    }*/
 
     @AuraEnabled
     public static List<RecordType> getAllRecordType(){
@@ -102,7 +229,7 @@ public without sharing class RH_Request_controller {
             RH_Request__c RequestUser =Requestinfo.getRequest();
             // RequestUser.RH_Status__c = RH_Constans.RH_OPEN;
             mapReturn.put('RequestUser',RequestUser);
-            RequestUser.Name = Schema.SObjectType.RH_Request__c.getRecordTypeInfosById().get(RequestUser.RecordTypeId).getName().substring(0,3).toUpperCase() + Datetime.now().year() + Datetime.now().day() + Datetime.now().minute();
+            RequestUser.Name = Schema.SObjectType.RH_Request__c.getRecordTypeInfosById().get(RequestUser.RecordTypeId).getDeveloperName().substring(0,3).toUpperCase() + Datetime.now().year() + Datetime.now().day() + Datetime.now().minute();
             System.debug('@@@@Name' + RequestUser);
             if (String.isNotBlank(RequestUser.Id)) {
                 update RequestUser;   
@@ -185,7 +312,14 @@ public without sharing class RH_Request_controller {
                 mapReturn.put('valuep',valuep);
                 mapReturn.put('addCc',addCc);
                 mapReturn.put('mapUser',mapUser);
-                sendNotifications(RequestUser.RH_Description__c,UserInfo.getUserId(),RequestUser.id,'request-management',Schema.SObjectType.RH_Request__c.getRecordTypeInfosById().get(RequestUser.RecordTypeId).getName(),valuep);
+                List<User> currentU = userQry.getUserById(UserInfo.getUserId());
+                String notifTitle;
+                if(Schema.SObjectType.RH_Request__c.getRecordTypeInfosById().get(RequestUser.RecordTypeId).getDeveloperName() == 'Complain'){
+                    notifTitle = Schema.SObjectType.RH_Request__c.getRecordTypeInfosById().get(RequestUser.RecordTypeId).getName()+' '+System.Label.rh_From+' '+currentU[0].Name;
+                }else{
+                    notifTitle = System.Label.rh_requestNotif+' '+Schema.SObjectType.RH_Request__c.getRecordTypeInfosById().get(RequestUser.RecordTypeId).getName()+' '+System.Label.rh_From+' '+currentU[0].Name;
+                }
+                sendNotifications(RequestUser.RH_Description__c,UserInfo.getUserId(),RequestUser.id,'request-management',notifTitle,valuep);
             }
             
         } catch(Exception e) {
@@ -231,7 +365,13 @@ public without sharing class RH_Request_controller {
             }
         }
         if(pop=='OK'){
-            sendNotifications(request[0].RH_Description__c,UserInfo.getUserId(),request[0].id,'request-management',request[0].RecordType.Name, valuep);
+            String notifTitle;
+            if(request[0].RecordType.DeveloperName == 'Complain'){
+                notifTitle = request[0].RecordType.Name+' '+System.Label.rh_From+' '+request[0].CreatedBy.Name;
+            }else{
+                notifTitle = System.Label.rh_requestNotif+' '+request[0].RecordType.Name+' '+System.Label.rh_From+' '+request[0].CreatedBy.Name;
+            }
+            sendNotifications(request[0].RH_Description__c,UserInfo.getUserId(),request[0].id,'request-management',notifTitle, valuep);
         }
         return pop;
     }
@@ -247,7 +387,8 @@ public without sharing class RH_Request_controller {
             request.Rh_Status__c = 'Responded';
             request.RH_Answer__c = answer;
             update request;
-            sendNotifications(answer,UserInfo.getUserId(),request.RH_Parent_Request_Id__c,'request-management',request.RecordType.Name,new List<Id> {request.CreatedById});
+            String notifTitle = System.Label.rh_RequestNotifRep+' '+System.Label.rh_requestNotif+' '+request.RecordType.Name;
+            sendNotifications(answer,UserInfo.getUserId(),request.RH_Parent_Request_Id__c,'request-management',notifTitle,new List<Id> {request.CreatedById});
         }catch(Exception e){
             System.debug(e.getMessage());
             mapReturn.put('error',true);
@@ -261,7 +402,6 @@ public without sharing class RH_Request_controller {
     public static string deleteRequest(String requestId){
         RH_Request__c req = requestQry.retreiveRequest(requestId);
         Database.DeleteResult drList = Database.delete(req, false);
-
         if (drList.isSuccess()) {
             return 'OK';
         }else {
@@ -286,9 +426,15 @@ public without sharing class RH_Request_controller {
                 updRejet.RH_Reason__c = Reason;
                 updRejet.RH_Note__c = Reason;
             }
-            String notifTitle = updRejet.RecordType.Name + ' Response';
             update updRejet;
-            sendNotifications(updRejet.RH_Description__c,UserInfo.getUserId(),RecordT,'my-request',notifTitle,new List<Id> {updRejet.CreatedById});
+            String notifTitle;
+            if(updRejet.RecordType.DeveloperName == 'Complain'){
+                notifTitle = System.Label.rh_RequestNotifRep+' '+updRejet.RecordType.Name;
+            }else{
+                notifTitle = System.Label.rh_RequestNotifRep+' '+System.Label.rh_requestNotif+' '+updRejet.RecordType.Name;
+            }
+            updRejet = requestQry.retreiveRequest(RecordT);
+            sendNotifications((String) updRejet.get('Rh_Status'),UserInfo.getUserId(),RecordT,'my-request',notifTitle,new List<Id> {updRejet.CreatedById});
         } catch (Exception e) {
             System.debug(e.getMessage());
             mapReturn.put('error',true);
@@ -299,35 +445,35 @@ public without sharing class RH_Request_controller {
     }
 
     @AuraEnabled
-    public static List<RH_Request__c> filterRequest(String requestType, String status, Datetime dateFrom, Datetime dateTo){
-        return requestQry.filterRequest(requestType, status, dateFrom, dateTo, 0, null, null);   
+    public static List<RH_Request__c> filterRequest(String searchText, String requestType, String status, Datetime dateFrom, Datetime dateTo){
+        return requestQry.filterRequest(searchText, requestType, status, dateFrom, dateTo, 0, null, null);   
     }
 
     @AuraEnabled
-    public static List<RH_Request__c> filterRequestToManage(String requestType, String status, Datetime dateFrom, Datetime dateTo){
+    public static List<RH_Request__c> filterRequestToManage(String searchText, String requestType, String status, Datetime dateFrom, Datetime dateTo){
         List<User> currentUser = userQry.getUserById(UserInfo.getUserId());
         List<RH_AdressedCC__c> adccs = requestQry.getAdressByContact(currentUser[0].RH_ContactId__c);
         List<String> requestIds = new List<String>();
         for(RH_AdressedCC__c add : adccs){
             requestIds.add(add.RH_Request__c);
         }
-        return requestQry.filterRequest(requestType, status, dateFrom, dateTo, 1, currentUser[0].RH_ContactId__c, requestIds);   
+        return requestQry.filterRequest(searchText, requestType, status, dateFrom, dateTo, 1, currentUser[0].RH_ContactId__c, requestIds);   
     }
 
     @AuraEnabled(cacheable=true)
     public static void sendNotifications(String strBody, String strSenderId, String pgRefId, String strTargetId, String strTitle,List<Id> setUserIds) {
-        set<String> setUserId = new set<String>();
+        /*set<String> setUserId = new set<String>();
         for(String s : setUserIds){
             setUserId.add(s);
-        }
+        }*/
         system.debug('@@@@pgRefIdId--->  ' + pgRefId);
         
         // String pgRef = '{ type : "standard__recordPage",attributs :{recordId : 0017Q00000Dck8lQAB ,objectApiName : "Account",actionName : "view"} }' ;
         String pgRef = '{type : \'comm__namedPage\',attributes : {pageName : \''+strTargetId+ '\'},state: {\'recordId\': '+pgRefId+'}}' ;
         system.debug('@@@@pgRef--->  ' + pgRef);
-
+        RH_Notification_Utility.notify(strBody, pgRef,  strTitle, setUserIds);
         // Get the Id for our custom notification type
-        CustomNotificationType notificationType = [SELECT Id, DeveloperName FROM CustomNotificationType WHERE DeveloperName='Request_notification'];
+       /* CustomNotificationType notificationType = [SELECT Id, DeveloperName FROM CustomNotificationType WHERE DeveloperName='Request_notification'];
 
         Messaging.CustomNotification obj = new Messaging.CustomNotification();
         
@@ -348,7 +494,7 @@ public without sharing class RH_Request_controller {
         obj.setBody(strBody);
         
         // send used to send the notification, pass the set of user ids , Group or Queue member
-        obj.send(setUserId);
+        obj.send(setUserId);*/
     }
     
     public class Requestdetailswrapper  {

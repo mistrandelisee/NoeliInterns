@@ -1,9 +1,9 @@
 public without sharing class RH_Summarizer implements RH_SummarizeInterface {
-    private static final String GROUPBY_KEY = 'GROUPBY';
-    private static final String FIELDS_KEY = 'FIELDS';
-    private static final String OBJECT_KEY = 'SOBJECT';
-    private static final String CONDITIONS_KEY = 'CONDS';
-    private static final String CLASS_KEY = 'PROVIDER';
+    public static final String GROUPBY_KEY = 'GROUPBY';
+    public static final String FIELDS_KEY = 'FIELDS';
+    public static final String OBJECT_KEY = 'SOBJECT';
+    public static final String CONDITIONS_KEY = 'CONDS';
+    public static final String CLASS_KEY = 'PROVIDER';
     public static Map<String,Object> mapInputs;
     
     @AuraEnabled
@@ -16,18 +16,20 @@ public without sharing class RH_Summarizer implements RH_SummarizeInterface {
             result.put('records', perform(className, inputs));
         } catch(Exception e) {
             result.put('error', true);
-            System.debug(e.getMessage()+''+ e.getStackTraceString());
-            result.put('message', e.getMessage());
+            String message=e.getMessage()+''+ e.getStackTraceString();
+            System.debug(message);
+            result.put('message', message);
         }
         return result;
     }
-    public static List<AggregateResult> perform(String className,Map<String,Object> additionalInputs){
+    public static List<summaryWrapper> perform(String className,Map<String,Object> additionalInputs){
         mapInputs=new Map<String, Object> (additionalInputs);
         className=String.isBlank(className)? 'RH_Summarizer' : className;
         mapInputs.put(CLASS_KEY,className);
         RH_SummarizeInterface SummarizeInterface = (RH_SummarizeInterface) Type.forName(className).newInstance();
         List<AggregateResult> aggs=  SummarizeInterface.getSummary(mapInputs);
-        return aggs;
+        List<summaryWrapper> sumaries= SummarizeInterface.formatAggregate(aggs, mapInputs);
+        return sumaries;
     }
     public List<AggregateResult> getSummary(Map<String, Object> args) {
         System.debug('get sum '+args);
@@ -68,8 +70,42 @@ public without sharing class RH_Summarizer implements RH_SummarizeInterface {
 
         return aggregateResults;
     }
+    public List<summaryWrapper> formatAggregate(List<AggregateResult> aggs,Map<String, Object> args){
+        String groupByStr = String.valueOf(args.get(GROUPBY_KEY));
+        String fieldsStr = String.valueOf(args.get(FIELDS_KEY));
+        String conditionStr= String.valueOf(args.get(CONDITIONS_KEY));
+        String sobj = String.valueOf(args.get(OBJECT_KEY));
+        String alias=groupByStr;// by default
+        List<summaryWrapper> sumaries = new List<summaryWrapper>();
+        Integer i=0; 
+        Integer total=0; 
+        for (AggregateResult agg : aggs) {
+            summaryWrapper swrap= new summaryWrapper();
+            swrap.label=(String) agg.get(alias);
+            swrap.value = (Integer) agg.get('sum');
+            swrap.Key = (String.isBlank(swrap.label))? sobj+i:swrap.label;
+
+            total= total + ( swrap.value!=Null?  swrap.value : 0); 
+            sumaries.add(swrap);
+            i=i+1;
+        }
+        /*summaryWrapper allSum= new summaryWrapper();
+        allSum.label='ALL';
+        allSum.value = total;
+        allSum.Key = 'ALL';
+        sumaries.add(allSum);*/
+
+        return sumaries;
+    }
     public class summarizeException extends Exception {
         
+    }
+
+    public class summaryWrapper  {
+        @AuraEnabled public string    label;
+        @AuraEnabled public string    key;
+        @AuraEnabled public Integer   value;
+        @AuraEnabled public string    className;
     }
     /**
      Map<String, Object> mapinputs = new Map<String, Object>{

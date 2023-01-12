@@ -1,7 +1,389 @@
-public without sharing class RH_EventController {
+public without sharing class RH_EventController implements RH_SummarizeInterface{
 
     private static RH_Event_Query eventQuery = RH_Event_Query.getInstance();
     private static RH_User_Query userQuery = RH_User_Query.getInstance();
+    private static RH_Contact_Query contactQry = RH_Contact_Query.getInstance();
+    
+    private static final String APPROVE_STATUS='Approved';
+    private static final String REJECT_STATUS='Rejected';
+    private static final String SUBMITTED_STATUS='Submitted';
+    public static Map<String,Object> StatusMapping = new Map<String, String>();
+    public static Map<String,Object> LabelMapping = new Map<String, String>();
+    private static String STATUSKEY='Status__c';
+    static{
+        RH_Constans cons= RH_Constans.getAllConstants();
+        StatusMapping= new Map<String, Object>{
+                            STATUSKEY.toLowerCase()=> new Map<String, String>{
+                                APPROVE_STATUS.toLowerCase()=> ' slds-theme_success ',
+                                RH_Constans.DRAFT_STATUS.toLowerCase()=> ' slds-theme_info ',
+                                SUBMITTED_STATUS.toLowerCase()=> ' slds-theme_warning ',
+                                // RH_Constans.DRAFT_STATUS.toLowerCase()=> ' slds-theme_alt-inverse  ',
+                                REJECT_STATUS.toLowerCase()=> ' slds-theme_error '
+                            }
+        };
+        // String valueKey='Value'+fieldName;
+        Map<String, Object> picklists=RH_Utility.getPickListOptions(new List<String> {STATUSKEY},'Event__c');
+        LabelMapping= new Map<String, Object>{
+            STATUSKEY.toLowerCase()=> (Map<String, String>)picklists.get('ValueStatus__c')
+        };
+        // System.debug(picklists);
+    }
+    // EM 9-12-2022 ----- Start
+    @AuraEnabled 
+    public static Map<String,Object>  getEventDetails(String eventId){
+        Map<String, Object> mapReturn = new Map<String, Object>();
+        mapReturn.put('error',false);
+        try {
+            String myUserId=UserInfo.getUserId();
+            Event__c evt = eventQuery.getEvent(eventId);
+
+            String userId=evt.CreatedById;
+            mapReturn.put('Event',evt); 
+            mapReturn.put('isMine',myUserId.equalsIgnoreCase(userId));
+            mapReturn.put('classMapping',StatusMapping.get(STATUSKEY.toLowerCase())); 
+            mapReturn.putAll(RH_Utility.checkRole()); 
+            mapReturn.put('Ok',true); 
+        } catch(Exception e) {
+            System.debug(e.getMessage());
+            mapReturn.put('error',true);
+            mapReturn.put('msg',e.getMessage());
+            mapReturn.put('e',e);
+        }  
+        return mapReturn;
+    }
+    @AuraEnabled 
+    public static Map<String,Object>  getOtherEvents(String filterTxt){
+        Map<String, Object> mapReturn = new Map<String, Object>();
+        List<Map<String, Object>> listcon = new List<Map<String, Object>>();
+        mapReturn.put('error',false);
+        try {
+            
+            mapReturn.put('filterTxt',filterTxt); 
+            FilterWrapper filter= (FilterWrapper) JSON.deserialize(filterTxt, FilterWrapper.class); 
+
+            Contact currentContact = RH_Utility.getCurentContact(); 
+            String AccountId=currentContact.AccountId; 
+
+            if(filter.status == null || filter.status?.isEmpty()){
+                String Role=currentContact.RH_Role__c;
+                Boolean isAdmin=(RH_Constans.CONTACT_ROLE_CEO.equalsIgnoreCase(Role) || RH_Constans.CONTACT_ROLE_RH.equalsIgnoreCase(Role));
+                List<String> Status= isAdmin ? new List<String>{SUBMITTED_STATUS,APPROVE_STATUS} : new List<String>{APPROVE_STATUS};
+                filter.status = status;
+            }
+            // filter.ownerId=Userinfo.getUserId();
+            List<Event__c> events=eventQuery.getFilteredEvents(filter,AccountId);
+            
+           
+            mapReturn.put('Events',events); 
+            mapReturn.put('in',filter); 
+            mapReturn.put('classMapping',StatusMapping.get(STATUSKEY.toLowerCase())); 
+            // mapReturn.put('users',users); 
+            mapReturn.put('Constants',RH_Constans.getAllConstants()); 
+
+            mapReturn.putAll(RH_Utility.checkRole()); 
+            mapReturn.put('Ok',true); 
+        } catch(Exception e) {
+            System.debug(e.getMessage());
+            mapReturn.put('error',true);
+            mapReturn.put('msg',e.getMessage());
+            mapReturn.put('msgLine',e.getStackTraceString());
+            mapReturn.put('e',e);
+        }  
+        return mapReturn;
+    }
+    String conditionMyEvents(String field){
+        String conditionStr = '';
+        conditionStr =' CreatedById= \''+String.escapeSingleQuotes(Userinfo.getUserId()) +'\' AND '+field+'!=Null';
+        return conditionStr;
+    }
+    String conditionOthersEvents(Contact currentContact,String field){
+        String Role=currentContact.RH_Role__c;
+        String AccountId=currentContact.AccountId; 
+        Boolean isAdmin=(RH_Constans.CONTACT_ROLE_CEO.equalsIgnoreCase(Role) || RH_Constans.CONTACT_ROLE_RH.equalsIgnoreCase(Role));
+        List<String> Status= isAdmin ? new List<String>{SUBMITTED_STATUS,APPROVE_STATUS} : new List<String>{APPROVE_STATUS};
+
+        // \''+String.escapeSingleQuotes(Userinfo.getUserId()) +'\' AND '+field+'!=Null';1
+        // conds.add('(Status__c IN: status)');conds.add('(Contact_Id__r.AccountId=:AccountId)');
+        String conditionStr = '';
+        conditionStr =' Contact_Id__r.AccountId= \''+ String.escapeSingleQuotes(AccountId) +'\' AND Status__c IN (\''+ String.join(status, '\',\'') +'\') AND '+field+'!=Null';
+        return conditionStr;
+    }
+    @AuraEnabled 
+    public static Map<String,Object>  getMyEvents(String filterTxt){
+        Map<String, Object> mapReturn = new Map<String, Object>();
+        List<Map<String, Object>> listcon = new List<Map<String, Object>>();
+        mapReturn.put('error',false);
+        try {
+            
+            mapReturn.put('filterTxt',filterTxt); 
+            FilterWrapper filter= (FilterWrapper) JSON.deserialize(filterTxt, FilterWrapper.class); 
+            filter.ownerId=Userinfo.getUserId();
+            List<Event__c> events=eventQuery.getFilteredEvents(filter,null);
+            
+           
+            mapReturn.put('Events',events); 
+            mapReturn.put('in',filter); 
+            mapReturn.put('classMapping',StatusMapping.get(STATUSKEY.toLowerCase())); 
+            mapReturn.put('Constants',RH_Constans.getAllConstants()); 
+
+            mapReturn.putAll(RH_Utility.checkRole()); 
+            mapReturn.put('Ok',true); 
+        } catch(Exception e) {
+            System.debug(e.getMessage());
+            mapReturn.put('error',true);
+            mapReturn.put('msg',e.getMessage());
+            mapReturn.put('msgLine',e.getStackTraceString());
+            mapReturn.put('e',e);
+        }  
+        return mapReturn;
+    }
+    public List<AggregateResult> getSummary(Map<String, Object> args) {
+        Contact currentContact = RH_Utility.getCurentContact(); 
+        System.debug('get sum '+args);
+        String groupByStr = String.valueOf(args.get(RH_Summarizer.GROUPBY_KEY));
+        String fieldsStr = String.valueOf(args.get(RH_Summarizer.FIELDS_KEY));
+        String sobj = String.valueOf(args.get(RH_Summarizer.OBJECT_KEY));
+        
+        Boolean areMine = (Boolean) args.get('areMine');//
+        String conditionStr =null;
+        if (areMine) {
+            conditionStr=conditionMyEvents(groupByStr);
+        }else{
+            conditionStr=conditionOthersEvents(currentContact,groupByStr);
+        }
+        return RH_Summarizer.defauftSummirise(groupByStr,fieldsStr,conditionStr,sobj);
+    } 
+    public List<RH_Summarizer.summaryWrapper> formatAggregate(List<AggregateResult> aggs,Map<String, Object> args){
+        String groupByStr = String.valueOf(args.get(RH_Summarizer.GROUPBY_KEY));
+        String fieldsStr = String.valueOf(args.get(RH_Summarizer.FIELDS_KEY));
+        String conditionStr= String.valueOf(args.get(RH_Summarizer.CONDITIONS_KEY));
+        String sobj = String.valueOf(args.get(RH_Summarizer.OBJECT_KEY));
+        String alias=groupByStr;// by default
+        List<RH_Summarizer.summaryWrapper> sumaries = new List<RH_Summarizer.summaryWrapper>();
+        Integer i=0; 
+        Integer total=0; 
+        for (AggregateResult agg : aggs) {
+            RH_Summarizer.summaryWrapper swrap= new RH_Summarizer.summaryWrapper();
+            String name=(String) agg.get(alias);
+            swrap.label= getLabelMapping(groupByStr,name);
+            swrap.value = (Integer) agg.get('sum');
+            swrap.Key = name;
+            swrap.className= getClassMapping(groupByStr,name);
+            total= total + ( swrap.value!=Null?  swrap.value : 0); 
+            sumaries.add(swrap);
+            i=i+1;
+        }
+        /*RH_Summarizer.summaryWrapper allSum= new RH_Summarizer.summaryWrapper();
+        allSum.label='ALL';
+        allSum.value = total;
+        allSum.Key = 'ALL';
+        sumaries.add(allSum);*/
+
+        return sumaries;
+    }
+    // RH_Users_controller.getClassMapping('rh_status__c', 'Active');
+    public static String getClassMapping(String field, String Value){
+        field= field?.toLowerCase();
+        value= value?.toLowerCase();
+        string cx=' defaut ';
+        Map<String,String> cxMapping=(Map<String,String>) StatusMapping.get(field);
+
+        if (cxMapping != null) {
+            cx= cxMapping.get(value); 
+        }
+        System.debug('@@@@@@field---> '+field+' Value---> '+Value+' cx---> '+cx);
+        return cx;
+    }
+    public static String getLabelMapping(String field, String Value){
+        field= field?.toLowerCase();
+        value= value?.toLowerCase();
+        string lb=Value;
+        Map<String,String> lbMapping=(Map<String,String>) LabelMapping.get(field);
+
+        if (lbMapping != null) {
+            // System.debug('lbMapping ' + lbMapping);
+            lb= lbMapping.get(value); 
+        }
+        System.debug('@@@@@@field---> '+field+' Value---> '+Value+' cx---> '+lb);
+        return lb;
+    }
+    @AuraEnabled
+    public static Event__c saveEventApex(String objEven) {
+        system.debug('@@@@EventDatas' + objEven);
+        try{
+            eventWrapper evt = (eventWrapper)JSON.deserialize(objEven, eventWrapper.class);
+            User u = userQuery.getUserInfoId();
+            String conId = u.RH_ContactId__c;
+            return saveEvent(evt,conId);
+        }
+        catch(Exception ex) {
+            throw new AuraHandledException(ex.getMessage()+' '+ex.getStackTraceString());
+        }
+    }
+
+    @AuraEnabled
+    public static Event__c sendEventApex(String objEven) {
+        system.debug('@@@@EventDatas' + objEven);
+        try{
+            eventWrapper evt = (eventWrapper)JSON.deserialize(objEven, eventWrapper.class);
+            User u = userQuery.getUserInfoId();
+            String conId = u.RH_ContactId__c;
+            Event__c event= saveEvent(evt,conId);
+            sendEvent(event);
+
+            return event;
+        }
+        catch(Exception ex) {
+            throw new AuraHandledException(ex.getMessage());
+        }
+    }
+    @AuraEnabled 
+    public static void  cancelEvent(String eventId){
+        Event__c ev = new Event__c(Id=eventId);
+        delete ev;
+    }
+    
+    private static Event__c saveEvent(eventWrapper evt,String ownerConId) {
+        system.debug('@@@@ evt -->' + evt);
+        // User u = userQuery.getUserInfoId();
+        // String conId = u.RH_ContactId__c;	
+        Event__c even = evt.buildEvt(ownerConId);
+        system.debug('@@@@ even -->' + even);
+        upsert even;
+
+        if (evt.hasFile) {
+            uploadFile(evt.fileObj.base64, evt.fileObj.filename, even.Id);
+        }
+        
+        return even;
+    }
+    
+    private static void sendEvent(Event__c event) {
+        Event__c evt = eventQuery.getEvent(event.Id);
+        String strBody = String.isBlank(evt.Description__c)? evt.Name : evt.Description__c;
+        String recordId = evt.Id;
+        String strTitle = evt.Name;
+        List<String> receivers = new List<String>();
+        for (Contact rcv : contactQry.getEligibleAdministrator()) {
+            if(String.isNotBlank(rcv.RH_User__c)){
+                receivers.add(rcv.RH_User__c);
+            }
+        }
+        notify(strBody,recordId,strTitle,receivers);
+    }
+    private static void notify(String strBody, String pgRefId,  String strTitle,List<String> setUserIds) {
+        system.debug('@@@@pgRefIdId--->  ' + pgRefId);
+        String pgRef = '{type : \'comm__namedPage\',attributes : {pageName : \'Event\'},state: {\'recordId\': '+pgRefId+'}}' ;
+        system.debug('@@@@pgRef--->  ' + pgRef);
+        RH_Notification_Utility.notify(strBody, pgRef,  strTitle, setUserIds);
+    }
+    @AuraEnabled 
+    public static Event__c approvalEvent(String eventJson){
+        system.debug('@@@@EventDatas' + eventJson);
+        try{
+            Contact con=RH_Utility.getCurentContact();
+            eventWrapper evt = (eventWrapper)JSON.deserialize(eventJson, eventWrapper.class);
+            evt.ApproverId=con.Id;
+            Event__c event= saveEvent(evt,null);
+            if (REJECT_STATUS.equalsIgnoreCase(event.Status__c)) {
+                notifySender(event);
+            }else{
+                if (APPROVE_STATUS.equalsIgnoreCase(event.Status__c)) {
+                    notifyAll(event);
+                } 
+            }
+
+            return event;
+        }
+        catch(Exception ex) {
+            throw new AuraHandledException(ex.getMessage());
+        } 
+    }
+    private static void notifySender(Event__c event) {
+        Event__c evt = eventQuery.getEvent(event.Id);
+        String strBody = label.rh_reason+': '+ (String.isBlank(evt.Message__c)? evt.Description__c : evt.Message__c)+'\n'+label.rh_moreInfo;
+        String recordId = evt.Id;
+        String strTitle = label.rh_Event+ ': ' + evt.Name +'('+label.rh_Reject+')';
+        List<String> receivers = new List<String>();
+        for (User rcv : userQuery.getUserByContactId(evt.Contact_Id__c)) {
+            receivers.add(rcv.Id);
+        }
+        notify(strBody,recordId,strTitle,receivers);
+    }
+    private static void notifyAll(Event__c event) {
+        Event__c evt = eventQuery.getEvent(event.Id);
+        String strBody = (String.isBlank(evt.Description__c) ? (String.isBlank(evt.Message__c)? evt.Name : evt.Message__c) : evt.Description__c)+'\n'+label.rh_moreInfo;
+        String recordId = evt.Id;
+        String strTitle = label.rh_New+ ' ' +label.rh_Event+ ': ' + evt.Name ;
+        List<String> receivers = new List<String>();
+        for (Contact rcv : contactQry.getAllActiveContacts()) {
+            if(String.isNotBlank(rcv.RH_User__c)){
+                receivers.add(rcv.RH_User__c);
+            }
+        }
+        notify(strBody,recordId,strTitle,receivers);
+    }
+
+
+
+    public class FilterWrapper {
+        @AuraEnabled public String searchText{get;set;}
+        @AuraEnabled public String ownerId{get;set;}
+        @AuraEnabled public List<String> status{get;set;}
+        @AuraEnabled public Datetime startDate{get;set;}
+        @AuraEnabled public Datetime endDate{get;set;}
+        @AuraEnabled public String orderBy{get;set;}
+        @AuraEnabled public String orderOn{get;set;}
+    } 
+    
+    public class eventWrapper{
+        public String Name { get; set; }
+        public String Id { get; set; }
+        public String Description { get; set; }
+        public datetime StartDate { get; set; }
+        public datetime EndDate { get; set; }
+        public String Status { get; set; }
+        public String Message { get; set; }
+        public String ApproverId { get; set; }
+        public Boolean hasFile { get; set; }
+        public fileWrapper fileObj { get; set; }
+        public Event__c buildEvt(string conId){
+            Event__c even = new Event__c( );
+            if (String.isNotBlank(this.Name)) {
+                even.Name = this.Name;
+            }
+            if (String.isNotBlank(this.status)) {
+                even.Status__c = this.status;
+            }
+            if (String.isNotBlank(this.Description)) {
+                even.Description__c = this.Description;
+            }
+            if (String.isNotBlank(conId)) {
+                even.Contact_Id__c = conId;
+            }
+            if (this.StartDate!= null) {
+                even.Start_Dates__c =this.StartDate;
+            }
+            if (this.EndDate!= null) {
+                even.End_Dates__c =this.EndDate;
+            }
+            if (String.isNotBlank(Message)) {
+                even.Message__c =this.Message;
+            }
+            if (String.isNotBlank(ApproverId)) {
+                even.RH_Approver__c =this.ApproverId;
+            }
+            even.Id = this.Id;
+            system.debug('@@@@ even IN -->' + even);
+            return even;
+        }
+    }
+    
+    public class fileWrapper{
+        public String base64 { get; set; }
+        public String filename { get; set; }
+    }
+
 
     /*
         @@@@kb Add 
@@ -108,30 +490,7 @@ public without sharing class RH_EventController {
         }
     }
     
-    // @AuraEnabled
-    // public static Event__c createEvent(String objEven) {
-    //     system.debug('@@@@EventDatas' + objEven);
-    //     try{
-    //         wrapperData datas = (wrapperData)JSON.deserialize(objEven, wrapperData.class);
-    //         User u = userQuery.getUserInfoId();
-    //         String conId = u.RH_ContactId__c;	
-    //             Event__c even = new Event__c(
-    //                 Name = datas.Name,
-    //                 Contact_Id__c = conId,
-    //                 Description__c  = datas.Description,
-    //                 Start_Dates__c =datas.StartDate,
-    //                 End_Dates__c =datas.EndDate,
-    //                 Status__c =datas.status
-
-    //             );
-    //             insert even;
-    //             system.debug('@@@@EventDatasReturn' + even);
-    //             return even;
-    //     }
-    //     catch(Exception ex) {
-    //         throw new AuraHandledException(ex.getMessage());
-    //     }
-    // }
+    
     
     @AuraEnabled
     public static Event__c saveEvenWithoutStatus(String objEven) {
@@ -331,15 +690,8 @@ public without sharing class RH_EventController {
     }
     
     @AuraEnabled 
-    public static List<User> getIdUserCEO(){
-        List<Event__c> event = eventQuery.get_EventList();
-        List<String> ids = new List<String>();
-        for(Event__c ev : event){
-            String id = ev.Contact_Id__c;
-            ids.add(id);
-        }
-        system.debug('@@@@ USER---> '+ ids );
-        List<User> u = userQuery.getIdUser(ids);
+    public static List<User> getIdUserCEO(){ 
+        List<User> u = userQuery.getInfOfTeam();
         system.debug('@@@@ USER---> '+ u );
         return u;
     }
@@ -360,18 +712,13 @@ public without sharing class RH_EventController {
             system.debug('@@@@ conId---> '+ conId );
         return conId;
     }
-    
+
     @AuraEnabled
-    public static List<User> getInfBaseUsers() {
-        List<Id> conIds = new List<Id>();
-        List<Event__c> even = eventQuery.get_EventList();
-        for(Event__c e : even){
-            conIds.add(e.Contact_Id__c);
-        }
-        List<User> u = userQuery.getInfoUser(conIds);
-        return u;
+    public static List<User> getInfOfAllUsers() {
+        List<User> us = userQuery.getInfOfAllUsers();
+        return us;
     }
-    
+
     @AuraEnabled
     public static List<Event__c> getEventInfos(String infoId) {
         List<Event__c> even = eventQuery.getEventList(infoId);
@@ -533,4 +880,70 @@ public without sharing class RH_EventController {
     //     system.debug('@@@ ContntDocmnt --->'+ ContntDocmnt);
     //     return ContntDocmnt;
     // }
+    @AuraEnabled
+    public Static List<Event__c> filterRequest(String searchText, String name, String status, Datetime startDate, Datetime endDate){
+
+
+        searchText = String.isNotBlank(searchText) ? searchText : '';
+        String l_name = String.isNotBlank(name) ? '%'+name+'%' : '';
+        String query= 'SELECT Id,Name,Contact_Id__c,Description__c,Start_Dates__c,End_Dates__c,toLabel(Status__c)StatusLabel ,Status__c,Message__c,CreatedBy.UserRole.Name FROM Event__c';
+        Boolean check = false;
+        String currentUser = UserInfo.getUserId();
+        system.debug('query ---> ' + query);
+        system.debug('currentUser--> '+ currentUser);
+
+        if(searchText != null){
+
+            String text = '%'+searchText+'%';
+
+            if(check){
+                query+= ' AND Name LIKE: text';
+            }else{
+                System.debug('### CASE 2 ###');
+                query+= ' WHERE Name LIKE: text' + ' AND CreatedById=:currentUser';
+                check = true;
+            } 
+            
+        }
+
+        if(l_name != null && l_name != ''){
+            if(check){
+                query+= ' AND Name LIKE: l_name';
+            }else{
+                query+= ' WHERE '+' Name LIKE: l_name' + ' AND CreatedById=:currentUser';
+                check = true;
+            }
+        }
+        if(String.isNotBlank(status)){
+            if(check){
+                query+= ' AND Status__c =:status';
+            }else{
+                query+= ' WHERE '+' Status__c =:status' + ' AND CreatedById=:currentUser';
+                check = true;
+            }
+        }
+        if(startDate != null){
+            if(check){
+                query+= ' AND CreatedDate >= :startDate ';
+            }else{
+                query+= ' WHERE '+' CreatedDate >= :startDate ' + ' AND CreatedById=:currentUser';
+                check = true;
+            }
+        }
+        if(endDate != null){
+            Datetime myEndDate = endDate.addDays(1);
+            if(check){
+                query+= ' AND CreatedDate < :myEndDate ';
+            }else{
+                query+= ' WHERE '+' CreatedDate < :myEndDate ' + ' AND CreatedById=:currentUser';
+                check = true;
+            }
+        }
+        if(check){
+            query+= ' ORDER BY CreatedDate DESC';
+            system.debug('### result #####'+query);
+            return Database.query(query);
+        }
+        return null;
+    }
 }

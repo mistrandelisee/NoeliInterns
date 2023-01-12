@@ -25,6 +25,20 @@ public  class RH_Contact_Query {
                     (SELECT Id ,Name, RH_Title__c FROM Accomplishments__r WHERE RH_Status__c=:RH_Constans.ACTIVATED_ACCOMPLISHMENT_STATUS AND RH_Visibility__c=true ORDER BY CreatedDate DESC)
                 FROM Contact WHERE Id=:contactId];
     }
+    public List<Contact> getContactByUserId(String userId) {
+        return [SELECT Name,LastName,AccountId,toLabel(RH_Role__c) RoleLabel,RH_Started_Date__c,RH_Role__c, FirstName,RH_User__c,Email,MailingCity,MailingCountry,MailingStreet,MailingState,MailingPostalCode,Languages__c,RH_Extra_Infos__c ,RH_Number_Groups_Leaded__c,OtherAddress,Birthdate,Phone,Description,RH_Status__c,toLabel(RH_Status__c) statusLabel,
+                    Account.Name,Account.NumberOfEmployees,Account.Website,Account.Phone,Account.Description,Account.YearStarted,Account.Industry,
+                    RH_WorkGroup__r.Name,RH_WorkGroup__r.CreatedDate,RH_WorkGroup__r.RH_Team_Leader__r.Phone,RH_WorkGroup__r.RH_Team_Leader__c,RH_WorkGroup__r.RH_Team_Leader__r.name,RH_WorkGroup__r.RH_Team_Leader__r.RH_User__c,
+                    (SELECT Name,CreatedDate,CreatedBy.Name FROM WorkGroups_Leader__r WHERE RH_Status__c =:RH_Constans.ACTIVATED_WORKGROUP_STATUS ORDER BY CreatedDate DESC),
+                    (SELECT RH_Project__r.Name,RH_Project__r.Link__c,RH_Project__r.Start_Date__c,RH_Project__r.Description__c,RH_Project__r.End_Date__c,RH_Project__r.recordType.developerName  FROM Projects__r WHERE RH_Project__r.Is_Effective__c =true  AND (RH_Project__r.recordTypeId=:RH_Constans.RH_PROJECT_RT OR RH_Project__r.recordTypeId=:RH_Constans.RH_PROJECT_EXTRA_RT) ORDER BY CreatedDate DESC),
+                    (SELECT Name,Link__c,Start_Date__c,Description__c,End_Date__c  FROM Projects_Leaded__r WHERE Is_Effective__c =true AND recordTypeId=:RH_Constans.RH_PROJECT_RT ORDER BY CreatedDate DESC),
+                    (SELECT Id ,TimeSheetNumber, RH_Name__c FROM RH_TimeSheets__r WHERE  Status IN:RH_Constans.TIMESHEET_PUBLIC_STATUS ORDER BY CreatedDate DESC),
+                    (SELECT Id ,Name, RH_Title__c FROM Accomplishments__r WHERE RH_Status__c=:RH_Constans.ACTIVATED_ACCOMPLISHMENT_STATUS AND RH_Visibility__c=true ORDER BY CreatedDate DESC)
+                FROM Contact WHERE RH_User__c=:userId];
+    }
+    public List<Contact> getContactByUserIds(List<String> userIds) {
+        return [SELECT Name, LastName, RH_tgUserId__c,RH_User__c,Email,RH_Status__c FROM Contact WHERE RH_User__c IN:userIds];
+    }
 
     public  List<Contact> getContact(List<String> listcontactId){
         return [SELECT Id, Name, LastName,AccountId,toLabel(RH_Role__c) RoleLabel,RH_Started_Date__c,RH_Role__c, FirstName,RH_User__c,Email,MailingCity,Languages__c,RH_Extra_Infos__c ,RH_Number_Groups_Leaded__c,OtherAddress,Birthdate,Phone,Description,RH_Status__c,toLabel(RH_Status__c) statusLabel,
@@ -161,6 +175,19 @@ public  class RH_Contact_Query {
     public  List<Contact> getBaseUsers(){
         Contact currentContact = RH_Utility.getCurentContact();
         return [SELECT Id,Name,Email,RH_Role__c,RH_Status__c FROM Contact  WHERE RH_Role__c=:RH_Constans.CONTACT_ROLE_BU AND recordTypeId=:RH_Constans.RH_CONTACT_RT AND RH_Status__c=:RH_Constans.ACTIVATED_CONTACT_STATUS AND AccountId=:currentContact.AccountId];
+    }
+    public  List<Contact> getEligibleAdministrator(){
+        Contact currentContact = RH_Utility.getCurentContact();
+        List<string> AD_roles = new List<string>{
+            'CEO','Ressource Manager'
+        };
+        return [ SELECT Id, Name,RH_User__c FROM Contact WHERE RH_Role__c IN :AD_roles AND recordTypeId=:RH_Constans.RH_CONTACT_RT AND RH_Status__c=:RH_Constans.ACTIVATED_CONTACT_STATUS AND AccountId=:currentContact.AccountId];
+    }
+    public  List<Contact> getAllActiveContacts(){
+        Contact currentContact = RH_Utility.getCurentContact();
+        return [SELECT Id,RH_User__c,Email FROM Contact 
+                WHERE recordTypeId=:RH_Constans.RH_CONTACT_RT AND AccountId=:currentContact.AccountId AND 
+                RH_User__r.isActive= True Order by CreatedDate DESC];
     }
 
 }

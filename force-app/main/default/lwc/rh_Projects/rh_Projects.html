@@ -27,7 +27,9 @@
         
         <lightning-layout-item size="12" padding="around-small" small-device-size="12" medium-device-size="12" large-device-size="12">
             <div style="margin-left: 10px;margin-right: 3px;"  class="custom-box">
-                <c-rh_filter onsubmit={handleSubmitFilter} field-details={filterInputs} onreset={handleResetFilter}></c-rh_filter>
+                <template if:true={filterReady}>
+                    <c-rh_filter onsubmit={handleSubmitFilter} field-details={filterInputs} onreset={handleResetFilter}></c-rh_filter>
+                </template>
             </div>
         </lightning-layout-item>
             <lightning-layout-item size="12" padding="around-small" small-device-size="12" medium-device-size="12" large-device-size="12" >

@@ -1,0 +1,16 @@
+<template>
+        <div class="c-container">
+            <lightning-layout horizontal-align="center">
+                <div for:each={summary} for:item="item" key={item.key}>
+                    <lightning-layout-item flexibility="auto" padding="around-small">
+                        <c-rh_sum_item onaction={handleClick} selected-key={selectedKey} i-key={item.key} i-label={item.label} i-value={item.value} i-class={item.className} i-clickable={iClickable} ></c-rh_sum_item>
+                    </lightning-layout-item>
+                </div>
+            </lightning-layout>
+        </div>
+    <!-- <div class="containerx positionnementx">
+        <div for:each={summary} for:item="item" key={item.key}>
+            <c-rh_sum_item i-label={item.label} i-value={item.value} i-class={item.class} i-clickable={item.isClickable} ></c-rh_sum_item>
+        </div>
+    </div> -->
+</template>
