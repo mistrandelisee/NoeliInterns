@@ -197,56 +197,59 @@ public class RH_SeriesCharts_controller {
                  this.percent= allData+' ('+ (allData*100/sumAllData) +'%)';
              }
         } 
+
+
+        
         
         public Map<String,String> getMonth(Integer month){
             Map<String,String> monthValue= new Map<String,String>{};
             switch on month {
                    when 1 {
-                       monthValue.put('currentMonth','January');
+                       monthValue.put('currentMonth',System.Label.rh_January);
                        monthValue.put('monthAbbreviation','Jan');
                    }
                    when 2 {
-                       monthValue.put('currentMonth','February');
+                       monthValue.put('currentMonth',System.Label.rh_February);
                        monthValue.put('monthAbbreviation','Feb');
                    }
                    when 3 {
-                       monthValue.put('currentMonth','March');
+                       monthValue.put('currentMonth',System.Label.rh_March);
                        monthValue.put('monthAbbreviation','Mar');
                    }
                    when 4 {
-                       monthValue.put('currentMonth','April');
+                       monthValue.put('currentMonth',System.Label.rh_April);
                        monthValue.put('monthAbbreviation','Apr');
                    }
                    when 5 {
-                       monthValue.put('currentMonth','May');
+                       monthValue.put('currentMonth',System.Label.rh_May);
                        monthValue.put('monthAbbreviation','May');
                    }
                    when 6 {
-                       monthValue.put('currentMonth','June');
+                       monthValue.put('currentMonth',System.Label.rh_June );
                        monthValue.put('monthAbbreviation','Jun');
                    }
                    when 7 {
-                       monthValue.put('currentMonth','July');
+                       monthValue.put('currentMonth',System.Label.rh_July );
                        monthValue.put('monthAbbreviation','Jul');
                    }
                   when 8 {
-                      monthValue.put('currentMonth','August');
+                      monthValue.put('currentMonth',System.Label.rh_August);
                       monthValue.put('monthAbbreviation','Aug');
                    }
                   when 9 {
-                      monthValue.put('currentMonth','September');
+                      monthValue.put('currentMonth',System.Label.rh_September );
                       monthValue.put('monthAbbreviation','Sep');
                    }
                   when 10 {
-                      monthValue.put('currentMonth','October');
+                      monthValue.put('currentMonth',System.Label.rh_October );
                       monthValue.put('monthAbbreviation','Oct');
                    }
                   when 11 {
-                      monthValue.put('currentMonth','November');
+                      monthValue.put('currentMonth',System.Label.rh_November);
                       monthValue.put('monthAbbreviation','Nov');
                    }
                   when 12 {
-                      monthValue.put('currentMonth','December');
+                      monthValue.put('currentMonth',System.Label.rh_December);
                       monthValue.put('monthAbbreviation','Dec');
                    } 
                 }

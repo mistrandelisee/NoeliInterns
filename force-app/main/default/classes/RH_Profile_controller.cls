@@ -21,7 +21,7 @@ public  class RH_Profile_controller {
             if (users.isEmpty()) throw new RH_ControllerException('001','Missing User');
             User u=users[0];
 
-            System.debug('uder id '+u.RH_ContactId__c);
+            System.debug('user id '+u.RH_ContactId__c);
 
             if (String.isBlank(u.RH_ContactId__c)) {
                 throw new RH_ControllerException('002','This user is not a link to any RH Contact');
@@ -29,14 +29,20 @@ public  class RH_Profile_controller {
             
             mapReturn.put('user', u);
             List<Contact> userContacts=contactQry.getContactById(u.RH_ContactId__c);
+
+            System.debug('@@@@@@@@@@@@@@@@@@@@@userContacts > '+userContacts);
+
+
             if (userContacts.isEmpty()) throw new RH_ControllerException('002','No RH Contact Founded');
 
+            
             Contact userContact=userContacts[0];
             mapReturn.put('contact', userContact);
             mapReturn.put('account', userContact.Account);
             mapReturn.put('myGroup', userContact.RH_WorkGroup__r);
             mapReturn.put('myTeamLeader', userContact.RH_WorkGroup__r.RH_Team_Leader__r);
             mapReturn.put('myLeadedGroups', userContact.WorkGroups_Leader__r);
+
             }
         catch(RH_ControllerException ce) {
             System.debug('@@@@@@@@@@@@@RH_Profile_controller::getMyProfile:: RH_ControllerException>> '+ce.getMessage());
@@ -106,6 +112,7 @@ public  class RH_Profile_controller {
         u.Id=Userinfo.getUserId();
         update u;
     }
+    
     @AuraEnabled
     public static Map<String,Object> UpdateExtraInfo(String recordId,String extraInfo){
         Map<String, Object> mapReturn = new Map<String, Object>();
@@ -125,29 +132,28 @@ public  class RH_Profile_controller {
     }
 
 
-
-
-    @AuraEnabled
+    // @AuraEnabled
     //don\t test
-    public static Map<String,Object> newUser(String contactjson){
-        Map<String, Object> mapReturn = new Map<String, Object>();
-        mapReturn.put('error',false);
-        try {
-            mapReturn.put('input',contactjson);  
-            contactdetailswrapper contactinfo = (contactdetailswrapper) JSON.deserialize(contactjson, contactdetailswrapper.class);
-            contact conctactUser =contactinfo.getcontact();
-            conctactUser.recordTypeId=RH_Constans.RH_CONTACT_RT;
-            mapReturn.put('conctactUser',conctactUser);
-            //insert conctactUser;
-        } catch(Exception e) {
-            System.debug(e.getMessage());
-            mapReturn.put('error',true);
-            mapReturn.put('msg',e.getMessage());
-            mapReturn.put('e',e);
-        }
+    // public static Map<String,Object> newUser(String contactjson){
+    //     Map<String, Object> mapReturn = new Map<String, Object>();
+    //     mapReturn.put('error',false);
+    //     try {
+    //         mapReturn.put('input',contactjson);  
+    //         contactdetailswrapper contactinfo = (contactdetailswrapper) JSON.deserialize(contactjson, contactdetailswrapper.class);
+    //         contact conctactUser =contactinfo.getcontact();
+    //         conctactUser.recordTypeId=RH_Constans.RH_CONTACT_RT;
+    //         mapReturn.put('conctactUser',conctactUser);
+    //         //insert conctactUser;
+    //     } catch(Exception e) {
+    //         System.debug(e.getMessage());
+    //         mapReturn.put('error',true);
+    //         mapReturn.put('msg',e.getMessage());
+    //         mapReturn.put('e',e);
+    //     }
        
-        return mapReturn;
-    }
+    //     return mapReturn;
+    // }
+
     @AuraEnabled
     public static Map<String,Object> changeMyPassword(String changepasswordjson){
         Map<String, Object> mapReturn = new Map<String, Object>();
@@ -172,7 +178,8 @@ public  class RH_Profile_controller {
         }
         return mapReturn;
     }
-       public class contactdetailswrapper  {
+    
+    public class contactdetailswrapper  {
         @AuraEnabled public String LastName;
         @AuraEnabled public String FirstName;
         @AuraEnabled public String Email;
@@ -236,12 +243,14 @@ public  class RH_Profile_controller {
         }
               
         List<Contact> userContacts=contactQry.getContact(listcontactId);
-            if (userContacts.size()>0){
+            
+        if (userContacts.size()>0){
                 listcon = populateContact(userContacts);
-            }else{
-                throw new RH_ControllerException('002','No RH Contact Founded');
-            }      
-            return listcon;
+        }else{
+            throw new RH_ControllerException('002','No RH Contact Founded');
+        }      
+            
+        return listcon;
     }
 
     private static List<ContactWrapper> populateContact(List<Contact> conlist){

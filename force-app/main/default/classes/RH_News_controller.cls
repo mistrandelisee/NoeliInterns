@@ -88,16 +88,16 @@ public class RH_News_controller {
     
 
     @AuraEnabled
-    public static  List<NewsWrapper> filterNews( String name,String description, Boolean isactive) {
+    public static  List<NewsWrapper> filterNews(String searchText, String name,String description, Boolean isactive) {
         Map<string,object> UserRole= RH_Utility.checkRole();
         String currentLang= UserInfo.getLanguage();
         List<News__c> actNews = new List<News__c>();
 
         Boolean isBaseUser= (Boolean) UserRole.get('isBaseUser'); 
         if(isBaseUser){
-            actNews= newsQry.filterNews(name, description, true); 
+            actNews= newsQry.filterNews(searchText, name, description, true); 
         }else {
-            actNews= newsQry.filterNews(name, description, isactive); 
+            actNews= newsQry.filterNews(searchText, name, description, isactive); 
         }
 
         List<NewsWrapper> newsToview = new List<NewsWrapper>();
@@ -310,6 +310,7 @@ public class RH_News_controller {
     }
 
     public class NewsWrapper{
+        @AuraEnabled public String searchText {get; set;}
         @AuraEnabled  public  Boolean isActive { get; set;}
         @AuraEnabled  public  String description { get; set;}
         @AuraEnabled  public String name { get; set;}

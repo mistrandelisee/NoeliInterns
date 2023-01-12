@@ -25,6 +25,7 @@ public without sharing class RH_Invoice_Query {
     }
     public  Map<Id,RH_Invoice__c> getFilteredInvoices(RH_Invoice_Controller.InvoiceFilterWrapper filter){
         
+        String text= String.isNotBlank(filter.searchText) ? '%'+filter.searchText+'%' :'';
         Date startdate=filter.startdate;
         Date enddate=filter.enddate;
         String ordBy=String.isNotBlank(filter.orderBy)?filter.orderBy: ' CreatedDate ' ;
@@ -35,6 +36,9 @@ public without sharing class RH_Invoice_Query {
         
         String queryWhere = ' Where RH_Account_Id__c != Null ';
         
+        if(text != null && text != ''){
+            queryWHERE = queryWHERE + ' AND (Name LIKE: text OR RH_Account_Id__r.Name LIKE: text ) ';
+        }
         
         if(startdate != null){
 			queryWHERE = queryWHERE + ' AND (RH_InvoiceDate__c >= : startdate) ';

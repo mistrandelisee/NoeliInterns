@@ -11,7 +11,7 @@ const NEW_ACTION='New';
 const WARNING_VARIANT='warning';
 
 
-const ERROR_VARIANT='error';                                                                                            
+const ERROR_VARIANT='error';
 const SAVE_ACTION='Save';
 
 const ACTIVE_ACTION='active';
@@ -55,6 +55,13 @@ export default class Rh_invoice extends NavigationMixin(LightningElement) {
     };
 
     filter={
+        startDate:null,
+        endDate:null,
+        orderBy:null,
+        orderOn:null,
+    };
+
+    initialfilter={
         startDate:null,
         endDate:null,
         orderBy:null,
@@ -118,10 +125,19 @@ export default class Rh_invoice extends NavigationMixin(LightningElement) {
     // ]
     @wire(CurrentPageReference) pageRef;
     action='';
+    hasRecords;
+
     get showNew(){ return this.isAdmin && (this.action=='' || this.action==NEW_ACTION || this.action==SAVE_ACTION); }
     get hideView(){  return this.action=='' || this.action!=NEW_ACTION; }
     // get hasDetailsActions(){ return this.detailsActions?.length >0}
-    get filterReady(){ return this.filterInputs?.length >0}
+    get filterReady(){ 
+        getInvoices({filterTxt:JSON.stringify(this.initialfilter)}).then(result =>{
+            console.log('#### PIGNOUF =====> '+result != null)
+            this.hasRecords = (result != null) ? true : false; 
+        })
+
+        return this.hasRecords;
+    }
     get isAdmin() { return this.currUser?.isCEO || this.currUser?.isTLeader}
     get isApprover() { return this.isAdmin || this.currUser?.isApprover}
     get hasInvoices(){ return this.Invoices?.length >0; }

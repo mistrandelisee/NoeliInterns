@@ -40,6 +40,7 @@ public  class RH_Timesheet_Query {
     
     public  Map<Id,TimeSheet> getFilteredTimesheets(RH_Timesheet_Controller.TimeSheetFilterWrapper filter,String UserId){
         
+        String text= String.isNotBlank(filter.searchText) ? '%'+filter.searchText+'%' :'';
         String status=filter.status;
         Date startdate=filter.startdate;
         Date enddate=filter.enddate;
@@ -52,6 +53,10 @@ public  class RH_Timesheet_Query {
         +'StartDate,EndDate,CreatedDate from TimeSheet '; 
         
         String queryWhere = ' Where OwnerId = :userId';
+
+        if(text != null && text != ''){
+            queryWHERE = queryWHERE + ' AND (RH_Name__c LIKE: text OR Status LIKE: text ) ';
+        }
         
         if(String.isNotBlank(status)){
 			queryWHERE = queryWHERE + ' AND (Status =: status) ';

@@ -349,6 +349,7 @@ public with sharing class RH_Invoice_Controller {
     } 
 
     public class InvoiceFilterWrapper {
+        @AuraEnabled public String searchText{get;set;}
         @AuraEnabled public Date startDate{get;set;}
         @AuraEnabled public Date endDate{get;set;}
         @AuraEnabled public String orderBy{get;set;}

@@ -28,13 +28,28 @@ public class RH_News_Query {
         return newsList[0] ;
     }
 
-    public List<News__c> filterNews(String name,String description, Boolean isactive){
+    public List<News__c> filterNews(String searchText, String name,String description, Boolean isactive){
         String currentLang= UserInfo.getLanguage();
         List<String> condition= new List<String>() ;
         
         String query= 'SELECT  Id, Name, Description__c,IsActive__c,Image__c,DescriptionEn__c,DescriptionFr__c,DescriptionIt__c,TitleEn__c,TitleFr__c,TitleIt__c FROM News__c ';
 
-        
+        if(String.isNotBlank(searchText)){
+            String texto ='%'+ searchText +'%';
+            switch on currentLang {
+                when 'it' {
+                    condition.add( ' TitleIt__c LIKE: texto ' ) ;
+                }
+                when 'fr' {
+                    condition.add( ' TitleFr__c LIKE: texto ' ) ;     
+                }
+                when 'en_US' {
+                    condition.add( ' TitleEn__c LIKE: texto ' ) ;    
+                }
+            }
+            
+        } 
+
         if(String.isNotBlank(description)){
             String descr ='%'+ description +'%';
             switch on currentLang {

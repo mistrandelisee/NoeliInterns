@@ -1,7 +1,8 @@
 <template>
     <div class="slds-clearfix">
         <div class="slds-float_right">
-            <lightning-button variant="brand-outline" label="New Group" icon-name="utility:add" class="slds-m-left_x-small" onclick={handleClick}></lightning-button>
+            <lightning-button variant="brand-outline" label={label} icon-name="utility:add" class="slds-m-left_x-small" onclick={handleClick}></lightning-button>
         </div>
     </div>  <!--slds-float_right-->
+    <c-rh_spinner></c-rh_spinner>
 </template>

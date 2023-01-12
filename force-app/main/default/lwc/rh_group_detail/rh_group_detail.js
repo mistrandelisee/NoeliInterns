@@ -37,10 +37,10 @@ export default class Rh_group_detail  extends NavigationMixin(LightningElement) 
     //backSource='group_detail';
 
     @track columns = [
-        { label: 'Label', fieldName: 'Name', type: 'button',typeAttributes:{label:{fieldName:'Name'},variant:'base'} },
-        { label: 'Email', fieldName: 'Email', type: 'email' },
-        { label: 'Phone', fieldName: 'Phone', type: 'phone' },
-        { label: 'Lieu Residence', fieldName: 'quartier' },
+        { label: this.l.Name, fieldName: 'Name', type: 'button',typeAttributes:{label:{fieldName:'Name'},variant:'base'} },
+        { label: this.l.Email, fieldName: 'Email', type: 'email' },
+        { label: this.l.Phone, fieldName: 'Phone', type: 'phone' },
+        { label: this.l.City, fieldName: 'Residence', type:'Name'},
     ];
 
     roleManage(){
@@ -73,7 +73,7 @@ export default class Rh_group_detail  extends NavigationMixin(LightningElement) 
                 console.log('statusGroup in groupDetail', this.statusGroup);
                 this.dispatchEvent(new CustomEvent('contactgroup', {detail: result})); 
                 console.log('contactMembers dans group detail', result.RH_GroupMembers__r);
-              this.data = result?.RH_GroupMembers__r?.length > 0 ? result?.RH_GroupMembers__r :  []; 
+              this.data = result?.RH_GroupMembers__r?.length > 0 ? this.addResidenceOnDataTable(result?.RH_GroupMembers__r) :  []; 
               console.log('data for datable ---> :',this.data);
               this.refreshTable(this.data);
             })
@@ -84,6 +84,20 @@ export default class Rh_group_detail  extends NavigationMixin(LightningElement) 
 
             registerListener('ModalAction', this.doModalAction, this);
     }
+
+    addResidenceOnDataTable(liste){
+        return liste.map(function(item){
+            let mCity = item.MailingCity || '';
+            let mstreet = item.MailingStreet || '';
+            return{
+                RH_User__c:item.RH_User__c,
+                Name: item.Name,
+                Email: item.Email,
+                Phone: item.Phone,
+                Residence: item.MailingCity||''+'  '+ (item.MailingStreet||''),
+            }
+        });
+    }
     refreshTable(data) {
         const dataTableCmp = this.template.querySelector('c-rh_datatable_component');
         if (dataTableCmp) {
@@ -93,6 +107,7 @@ export default class Rh_group_detail  extends NavigationMixin(LightningElement) 
         }
     }
     handleEditMember(){
+        this.template.querySelector('c-rh_spinner').start();
         console.log('groupeId:==>', this.groupeId);
         this.dispatchEvent(new CustomEvent('editmember', {detail: this.groupeId}));
         
@@ -175,7 +190,7 @@ export default class Rh_group_detail  extends NavigationMixin(LightningElement) 
             {
                 name:"Deleted",
                 variant:"brand-outline",
-                label:"Delete",
+                label:this.l.Delete,
                 iconName:"utility:delete",
                 class:"slds-m-left_x-small",
                 pclass :' slds-float_right'
@@ -183,7 +198,7 @@ export default class Rh_group_detail  extends NavigationMixin(LightningElement) 
             {
                 name:"Edited",
                 variant:"brand-outline",
-                label:"Edit",
+                label:this.l.Edit,
                 iconName:"utility:edit",
                 class:"slds-m-left_x-small",
                 pclass :'slds-float_right'
@@ -191,7 +206,7 @@ export default class Rh_group_detail  extends NavigationMixin(LightningElement) 
             {
                 name:"Activated",
                 variant:"brand-outline",
-                label:"Active",
+                label:this.l.Activate,
                 iconName:"utility:add",
                 class:"slds-m-left_x-small",
                 pclass :' slds-float_right'
@@ -202,7 +217,7 @@ export default class Rh_group_detail  extends NavigationMixin(LightningElement) 
             {
                 name:"Deleted",
                 variant:"brand-outline",
-                label:"Delete",
+                label:this.l.Delete,
                 iconName:"utility:delete",
                 class:"slds-m-left_x-small",
                 pclass :' slds-float_right'
@@ -210,7 +225,7 @@ export default class Rh_group_detail  extends NavigationMixin(LightningElement) 
             {
                 name:"Edited",
                 variant:"brand-outline",
-                label:"Edit",
+                label:this.l.Edit,
                 iconName:"utility:edit",
                 class:"slds-m-left_x-small",
                 pclass :' slds-float_right'
@@ -218,7 +233,7 @@ export default class Rh_group_detail  extends NavigationMixin(LightningElement) 
             {
                 name:"Desactived",
                 variant:"brand-outline",
-                label:"Desactive",
+                label:this.l.Desactivated,
                 iconName:"utility:deprecate",
                 class:"slds-m-left_x-small",
                 pclass :' slds-float_right'
@@ -255,17 +270,7 @@ export default class Rh_group_detail  extends NavigationMixin(LightningElement) 
          }
          if(event.detail.action=='Deleted'){
             
-            /*deleteGroupe({ id: this.groupeId })
-              .then(result => {
-                console.log('Result', result.result);
-                this.dispatchEvent(new CustomEvent('homegroupe'));
-              })
-              .catch(error => {
-                console.error('Error:', error);
-            });*/
-
-            //record.Status='this.constants.LWC_DISABLE_CONTACT_STATUS';
-            //this.actionRecord=record;
+            this.actionRecord='Deleted';
             text=this.l.delete_confirm;
             extra.title=this.l.action_confirm;
             extra.style+='--lwc-colorBorder: var(--bannedColor);';
@@ -298,9 +303,9 @@ export default class Rh_group_detail  extends NavigationMixin(LightningElement) 
 
      handleRowAction( event ) {
         console.log('dans le handlerow');
-        // const actionName = event.detail.action.name;
+        let elt = JSON.parse(JSON.stringify(event.detail));
+        console.log('elt >>>:', elt);
         const row = event.detail.row.RH_User__c;
-        console.log('row--> ' , row);
         this.goToUserDetail(row);
     }
  
@@ -331,45 +336,32 @@ export default class Rh_group_detail  extends NavigationMixin(LightningElement) 
      }
 
      doModalAction(event){
-        console.log('doModalAction in user view ', JSON.stringify(event.action));
-        //this.isLoading=true;
-        this.template.querySelector('c-rh_spinner').start();
-        if(event.action=='Deleted'){
-            deleteGroupe({ id: this.groupeId }) 
-              .then(result => {
-                console.log('Result', result.result);
-                this.dispatchEvent(new CustomEvent('homegroupe'));
-                //this.isLoading=false;
+        if (this.actionRecord=='Deleted') {
+            console.log('doModalAction in user view ', JSON.stringify(event.action));
+            //this.isLoading=true;
+            this.template.querySelector('c-rh_spinner').start();
+            if(event.action=='Deleted'){
+                deleteGroupe({ id: this.groupeId }) 
+                .then(result => {
+                    console.log('Result', result.result);
+                    this.dispatchEvent(new CustomEvent('homegroupe'));
+                    //this.isLoading=false;
+                    this.template.querySelector('c-rh_spinner').stop();
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            }else{
                 this.template.querySelector('c-rh_spinner').stop();
-              })
-              .catch(error => {
-                console.error('Error:', error);
-            });
-        }else{
-            this.template.querySelector('c-rh_spinner').stop();
+            }
+
+            this.actionRecord='';
+            this.ShowModal(false,null,[]);//close modal any way
+           
         }
-        /*
-        switch (event.action) {
-            case OK_DISABLE:
-                this.doUpdateStatus(this.actionRecord,OK_DISABLE)
-                this.actionRecord={};
-                break;
-            case OK_FREEZE:
-                this.doUpdateStatus(this.actionRecord,OK_FREEZE)
-                this.actionRecord={};
-                break;
-            case RESETPWD:
-                if (this.actionRecord.action == RESETPWD) {
-                    this.ChangePasswordApex({});
-                    this.actionRecord={};
-                }
-                break;
-            default:
-                this.actionRecord={}; 
-                break;
-        }*/
-        this.ShowModal(false,null,[]);//close modal any way
         event.preventDefault();
+        
+        
     }
 
     createAction(variant,label,name,title,iconName,className){ 

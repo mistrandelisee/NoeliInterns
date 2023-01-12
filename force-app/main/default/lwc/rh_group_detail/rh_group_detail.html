@@ -16,7 +16,7 @@
         <lightning-layout-item size="12" class="slds-p-vertical_medium" padding="ver" small-device-size="12" medium-device-size="12" large-device-size="12">
             <div class="custom-box">
                 <template if:true={detailGroup}>
-                    <c-rh_display_fields title="Group detail" iconsrc="standard:team_member" column="2" 
+                    <c-rh_display_fields title={l.rh_GroupDetail} iconsrc="standard:team_member" column="2" 
                         output-fields={accountFields}
                         onaction={handleUserDetails} 
                         show-header-action>
@@ -29,14 +29,14 @@
   
                 <template if:true={statusEditGroup}>
                     <c-rh_group_create
-                    new-group='Edit group'
+                    new-group={l.Edit}
                     obj-groupe={groupe}
                     groupe-id={groupeId}
-                    label-button='Save' 
+                    label-button={l.Save} 
                     logo="utility:save"
                     onbackto={handleBack}
                     ongroupmember={handleupdategroup}
-                    name="Save"
+                    name={l.Save}
                     status-group={statusGroup}
                     >
                     </c-rh_group_create>
@@ -47,14 +47,14 @@
         <lightning-layout-item size="12" padding="around-smallx" small-device-size="12" medium-device-size="12" large-device-size="12">
             <div class="custom-box">
                 <lightning-card >
-                     <h1 slot="title" class="groupLabel">Group Members</h1> 
+                     <h1 slot="title" class="groupLabel">{l.GroupeMember}</h1> 
                      <template if:true={hasDetailsActions}> 
-                        <lightning-button variant="base" label="Edit" slot="actions" 
+                        <lightning-button variant="base" label={l.EditMembers} slot="actions" 
                             title="Download action with base variant" icon-name="utility:edit" 
                             class="slds-m-left_x-small" onclick={handleEditMember}>
                         </lightning-button>
                     </template>
-                    <div style="height: 300px;">
+                    <div style="height: 300px; color:#9735e1;">
                         <c-rh_datatable_component 
                             columns={columns} 
                             items={data}
@@ -72,5 +72,5 @@
 
     
     
-    <c-rh_back_buttom title="Back to Groups"  ></c-rh_back_buttom>
+    <c-rh_back_buttom title={l.BackToGroup}  ></c-rh_back_buttom>
 </template>

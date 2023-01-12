@@ -45,6 +45,12 @@ export default class Rh_workgroup extends NavigationMixin(LightningElement) {
         orderBy:null,
         orderOn:null,
     }
+    initialfilter={
+        searchText:null,
+        status:null,
+        orderBy:null,
+        orderOn:null,
+    }
     statutMember='';
 
     get isAdmin() { return this.currUser?.isCEO || this.currUser?.isRHUser}
@@ -58,6 +64,19 @@ export default class Rh_workgroup extends NavigationMixin(LightningElement) {
       Name:'ok', leader:'',
       RH_Description__c:'ok',
     };
+
+    hasRecords;
+
+    get filterReady(){
+
+        getFilteredGrp({ filterTxt:JSON.stringify(this.initialfilter) })
+          .then(result => {
+            console.log('#### PIGNOUF =====> '+result != null)
+            this.hasRecords = (result != null) ? true : false; 
+        })
+
+        return this.hasRecords;
+    }
 
     handleCreategroup(){
         this.template.querySelector('c-rh_spinner').start();
@@ -291,30 +310,32 @@ export default class Rh_workgroup extends NavigationMixin(LightningElement) {
                       class: self.classStyle(e.RH_Status__c),
                     }
                     item.addons = {badge: badge}
-      
-                    let Actions=[];
-                    if((e.RH_Status__c==='Desactived')||(e.RH_Status__c==='Draft')){
-                          Actions.push( {   variant:"brand-outline",
-                          class:" slds-m-left_x-small",
-                          label:"Active",
-                          name:'Activated',
-                          title:"Active",
-                          iconName:"utility:add",
-                          // class:"active-item"
-                        })
+                    
+                    if (self.isAdmin){
+                        let Actions=[];
+                        if((e.RH_Status__c==='Desactived')||(e.RH_Status__c==='Draft')){
+                            Actions.push( {   variant:"brand-outline",
+                            class:" slds-m-left_x-small",
+                            label:"Active",
+                            name:'Activated',
+                            title:"Active",
+                            iconName:"utility:add",
+                            // class:"active-item"
+                            })
+                        }
+                        if(e.RH_Status__c==='Activated'){
+                            Actions.push({   variant:"brand-outline",
+                            class:" slds-m-left_x-small",
+                            label:"Desactive",
+                            name:'Desactived',
+                            title:"Active",
+                            iconName:"utility:deprecate",
+                            // class:"active-item"
+                            })
+                        }
+                        item.actions=Actions;
                     }
-                    if(e.RH_Status__c==='Activated'){
-                        Actions.push({   variant:"brand-outline",
-                          class:" slds-m-left_x-small",
-                          label:"Desactive",
-                          name:'Desactived',
-                          title:"Active",
-                          iconName:"utility:deprecate",
-                          // class:"active-item"
-                        })
-                    }
-                
-                    item.actions=Actions;
+
                     return item; 
                      });
 

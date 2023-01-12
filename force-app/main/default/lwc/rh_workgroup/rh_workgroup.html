@@ -16,11 +16,14 @@
             </c-rh_group_createbutton>
         </template>
         <div class="slds-m-top_x-small styleSecondaire">
-            <c-rh_filter onsubmit={handleSubmitFilter} onreset={handleSubmitFilter} field-details={filterInputs}></c-rh_filter>
+            <template if:true={filterReady}>
+                <c-rh_filter onsubmit={handleSubmitFilter} onreset={handleSubmitFilter} field-details={filterInputs}></c-rh_filter>
+            </template>
         </div>
         <c-rh_group_list
          ondetailgroupe={handleDetailGroup} 
-         liste-group={listeGroup}> </c-rh_group_list> 
+         liste-group={listeGroup}
+         is-admin={isAdmin}> </c-rh_group_list> 
     </template>
 
     <template if:true={isVisibleDetailgroup}> 

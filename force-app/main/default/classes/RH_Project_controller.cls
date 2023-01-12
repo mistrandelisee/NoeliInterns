@@ -159,6 +159,7 @@ public without sharing class RH_Project_controller {
             }
             ProjectObj.Start_Date__c = project.Startdate;
             ProjectObj.Project_Manager__c = project.Manager;
+            ProjectObj.Link__c = project.Link;
             if(Isactivate){
                 ProjectObj.Status__c = RH_Constans.ACTIVATED_PROJECT_STATUS;
             } 

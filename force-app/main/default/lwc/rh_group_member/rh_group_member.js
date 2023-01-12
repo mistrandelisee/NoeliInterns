@@ -24,6 +24,7 @@ export default class Rh_group_member extends LightningElement {
      statusBoutom = true;
      listOption = [];
      listId = [];
+     @track showGroupMember;
 
      handleBack(){
       this.template.querySelector('c-rh_spinner').start();
@@ -43,6 +44,7 @@ export default class Rh_group_member extends LightningElement {
    }
 
     connectedCallback(){
+      this.showGroupMember = false;
         let lst=[];
         registerListener('valueMember', this.dovalueMember, this);
         console.log('backSource groupe_member --->', this.backSource);
@@ -51,9 +53,11 @@ export default class Rh_group_member extends LightningElement {
           .then(result => {
             console.log('Result', result);
             console.log('groupeId ==', this.groupeId);
-            if(!result?.listeContact?.length > 0){
+            if(!result?.listeContact?.length > 0 && !this.contactMembers?.length>0){
+              this.showGroupMember = false;
               this.dispatchEvent(new CustomEvent('noavailablemember'));
             }else{
+              this.showGroupMember = true;
               this.listOption = this.updateListContact(result.listeContact);
               //this.listId = this.updateId(this.contactMembers);
               lst = this.updateListContact((this.contactMembers));
@@ -68,7 +72,9 @@ export default class Rh_group_member extends LightningElement {
         this.listId = this.updateId(this.contactMembers || []) ;
         this.listConts = this.listId;
         console.log('Id contactMembers dans group member ==>', this.listId);
-
+        if (this.listId.length >0) {       
+            this.showGroupMember = true;
+        }
         console.log('list id for insert =>:', this.listConts);
         console.log('statusGroup dans group Member ==>', this.statusGroup);
         if(this.statusGroup==='Activated'){

@@ -17,6 +17,16 @@ public class RH_FileUploader {
         }
        
     } 
+    /*List<ContentDistribution> cds = new List<ContentDistribution>();
+    List<ContentDocument> cvs = new List<ContentDocument>();
+    for (ContentDistribution con : [SELECT Id,ContentVersionId
+,    ContentDocumentId, Name
+    FROM ContentDistribution]) {
+        cvs.add(new ContentDocument(Id=con.ContentDocumentId));
+        cds.add(new ContentDistribution(Id=con.Id));
+    }
+    delete cds;
+    delete cvs;*/
     
     
     public static String uploadFile(String base64, String filename, String recordId) {
@@ -51,8 +61,8 @@ public class RH_FileUploader {
         cd.PreferencesAllowOriginalDownload= true;
         
         if (!Test.isRunningTest()) {
-            insert cd;
-            return  [SELECT Id,Name,ContentDownloadUrl,PdfDownloadUrl,ContentVersionId  FROM ContentDistribution WHERE Id = :cd.Id ORDER BY CreatedDate DESC].ContentDownloadUrl;
+           insert cd;
+           return  [SELECT Id,Name,ContentDownloadUrl,PdfDownloadUrl,ContentVersionId  FROM ContentDistribution WHERE Id = :cd.Id ORDER BY CreatedDate DESC].ContentDownloadUrl;
         }
         
         return '';

@@ -2,6 +2,7 @@ import { LightningElement,wire,api } from 'lwc';
 import getLastrequest from '@salesforce/apex/RH_Request_controller.getLastrequest';
 import getLastEventList from '@salesforce/apex/RH_EventController.getMyLastEvent';
 import getMyAccomplishment from '@salesforce/apex/RH_Accomplishment_Controller.getMyAccomplishment';
+import { labels } from 'c/rh_label';
 
 
 import { CurrentPageReference } from 'lightning/navigation';
@@ -12,6 +13,8 @@ import { NavigationMixin } from 'lightning/navigation';
 
 const limitRecord= 8;
 export default class Rh_tabs_resume extends NavigationMixin(LightningElement) {
+    
+    label={...labels}
 
     requests=[]=[];
     events=[];

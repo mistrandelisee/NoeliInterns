@@ -28,10 +28,17 @@ public with sharing class RH_Timesheet_Controller_Test {
 
         list<user> usrList = new list<user>();
 
-        for(integer i=1;i<2;i++){
-            usrList.add(
-                new user(Username='user'+i+'@acme.org',RH_ContactId__c=ct.Id, LastName='Lastname'+i, Alias='alias ', Email='user'+i+'@mail.org', TimeZoneSidKey='Pacific/Apia',LocaleSidKey='eu_ES',EmailEncodingKey='UTF-8', Profile = pf, ProfileId=pf.Id ,LanguageLocaleKey='en_US')
-            );
+        for(integer i=1;i<=2;i++){
+            if(math.mod(i,2) == 0){
+                usrList.add(
+                    new user(Username='user'+i+'@acme.org',RH_ContactId__c=ctc.Id, LastName='Lastname'+i, Alias='alias ', Email='user'+i+'@mail.org', TimeZoneSidKey='Pacific/Apia',LocaleSidKey='eu_ES',EmailEncodingKey='UTF-8', Profile = pf, ProfileId=pf.Id ,LanguageLocaleKey='en_US')
+                );
+            }else {
+                usrList.add(
+                    new user(Username='user'+i+'@acme.org',RH_ContactId__c=ct.Id, LastName='Lastname'+i, Alias='alias ', Email='user'+i+'@mail.org', TimeZoneSidKey='Pacific/Apia',LocaleSidKey='eu_ES',EmailEncodingKey='UTF-8', Profile = pf, ProfileId=pf.Id ,LanguageLocaleKey='en_US')
+                );
+            }
+            
         }
 
         insert usrList;
@@ -168,14 +175,23 @@ public with sharing class RH_Timesheet_Controller_Test {
             Tfw.startDate = Date.today();
             Tfw.endDate = Date.today().addDays(1);
             Tfw.isActive = true;
-            Tfw.orderBy = 'stardate';
+            Tfw.orderBy = null;
             Tfw.orderOn = 'desc';
 
             Map<string, object> timesheetMap = RH_Timesheet_Controller.getTimeSheets(JSON.serialize(Tfw),us.Id);
 
-            system.debug('#### getimesheets Map error msg '+timesheetMap.get('msg'));
+            system.assertEquals(true,timesheetMap.get('Ok'));
         }
         
+    }
+
+    @istest
+    static void getTimesheetsTestFail(){
+        
+        Map<string, object> timesheetMap = RH_Timesheet_Controller.getTimeSheets('JSON.serialize(Tfw)','us.Id');
+
+        system.assertEquals(true,timesheetMap.get('error'));
+
     }
 
     @istest
@@ -320,9 +336,17 @@ public with sharing class RH_Timesheet_Controller_Test {
     @istest
     static void submitTimeSheetTest(){
 
+        contact ctc = [SELECT Id,LastName,RH_User__c FROM contact WHERE LastName ='abak'];
+
         contact ct = [SELECT Id,LastName,RH_User__c FROM contact WHERE LastName ='contactTest'];
 
         user us = [SELECT Id,Username,RH_ContactId__c FROM User WHERE Username = 'user1@acme.org'];
+
+        user us2 = [SELECT Id,Username,RH_ContactId__c FROM User WHERE Username = 'user2@acme.org'];
+
+        ctc.RH_User__c = us2.Id;
+        
+        update ctc;
 
         ct.RH_User__c = us.Id;
 
@@ -344,9 +368,18 @@ public with sharing class RH_Timesheet_Controller_Test {
 
             Map<string, object> submitMap = RH_Timesheet_Controller.submitTimeSheet(tmsht.Id);
             
-            System.debug('### get submit map error msg '+submitMap.get('msg'));
+            system.assertEquals(true,submitMap.get('Ok'));
 
         }
+
+    }
+
+    @istest 
+    static void submitTimeSheetTestFail(){
+       
+        Map<string, object> submitMap = RH_Timesheet_Controller.submitTimeSheet('tmsht.Id');
+            
+        system.assertEquals(true,submitMap.get('error'));
 
     }
 

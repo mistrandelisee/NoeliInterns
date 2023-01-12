@@ -355,6 +355,40 @@ import Request from '@salesforce/label/c.rh_Request';
 import Accomplishment from '@salesforce/label/c.rh_Accomplishment';
 import Event from '@salesforce/label/c.rh_Event';
 
+//search input
+import Search from '@salesforce/label/c.rh_Search';
+import Advancedsearch from '@salesforce/label/c.rh_Advancesearch';
+
+// Community page label
+//import Page_Home from '@salesforce/label/c.rh_Page_Home';
+//Page_Home,
+import Page_My_Request_Page__c from '@salesforce/label/c.rh_Page_My_Request';
+import Page_Request_Management_page__c from '@salesforce/label/c.rh_Page_Request_Management';
+import Page_RHTimeSheet__c from '@salesforce/label/c.rh_Page_RHTimeSheet';
+import Page_Event__c from '@salesforce/label/c.rh_Page_Event';
+import Page_Event_Management__c from '@salesforce/label/c.rh_Page_Event_Management';
+import Page_Accomplishment__c from '@salesforce/label/c.rh_Page_Accomplishment';
+import Page_rhusers__c from '@salesforce/label/c.rh_Page_rhusers';
+import Page_RHGroup__c from '@salesforce/label/c.rh_Page_RHGroup';
+import Page_RHProject__c from '@salesforce/label/c.rh_Page_RHProject';
+import Page_bannerConfiguration__c from '@salesforce/label/c.rh_Page_bannerConfiguration';
+import Page_rhProfile__c from '@salesforce/label/c.rh_Page_rhProfile';
+import Page_rh_Invoices__c from '@salesforce/label/c.rh_Page_rh_Invoices';
+
+//import Page_Sub_Home from '@salesforce/label/c.rh_Page_SubTitle_Home';
+//Page_Sub_Home,
+import Page_Sub_My_Request_Page__c from '@salesforce/label/c.rh_Page_SubTitle_My_Request';
+import Page_Sub_Request_Management_page__c from '@salesforce/label/c.rh_Page_SubTitle_Request_Management';
+import Page_Sub_RHTimeSheet__c from '@salesforce/label/c.rh_Page_SubTitle_RHTimeSheet';
+import Page_Sub_Event__c from '@salesforce/label/c.rh_Page_SubTitle_Event';
+import Page_Sub_Event_Management__c from '@salesforce/label/c.rh_Page_SubTitle_Event_Management';
+import Page_Sub_Accomplishment__c from '@salesforce/label/c.rh_Page_SubTitle_Accomplishment';
+import Page_Sub_rhusers__c from '@salesforce/label/c.rh_Page_SubTitle_rhusers';
+import Page_Sub_RHGroup__c from '@salesforce/label/c.rh_Page_SubTitle_RHGroup';
+import Page_Sub_RHProject__c from '@salesforce/label/c.rh_Page_SubTitle_RHProject';
+import Page_Sub_bannerConfiguration__c from '@salesforce/label/c.rh_Page_SubTitle_bannerConfiguration';
+import Page_Sub_rhProfile__c from '@salesforce/label/c.rh_Page_SubTitle_rhProfile';
+import Page_Sub_rh_Invoices__c from '@salesforce/label/c.rh_Page_SubTitle_rh_Invoices';
 
 const labels = {
     addUser,
@@ -408,6 +442,7 @@ const labels = {
     Title,
     TitlePlc,
     NotePlc,
+    recordNotFounded,
     Phone,
     PhonePlc,
     Username,
@@ -712,7 +747,33 @@ const labels = {
     Request,
     Accomplishment,
     Event,
-    SearchByName
+    SearchByName,
+    Search,
+    Advancedsearch,
+    Page_My_Request_Page__c,
+    Page_Request_Management_page__c,
+    Page_RHTimeSheet__c,
+    Page_Event__c,
+    Page_Event_Management__c,
+    Page_Accomplishment__c,
+    Page_rhusers__c,
+    Page_RHGroup__c,
+    Page_RHProject__c,
+    Page_bannerConfiguration__c,
+    Page_rhProfile__c,
+    Page_rh_Invoices__c,
+    Page_Sub_My_Request_Page__c,
+    Page_Sub_Request_Management_page__c,
+    Page_Sub_RHTimeSheet__c,
+    Page_Sub_Event__c,
+    Page_Sub_Event_Management__c,
+    Page_Sub_Accomplishment__c,
+    Page_Sub_rhusers__c,
+    Page_Sub_RHGroup__c,
+    Page_Sub_RHProject__c,
+    Page_Sub_bannerConfiguration__c,
+    Page_Sub_rhProfile__c,
+    Page_Sub_rh_Invoices__c
 };
 
 export { labels }

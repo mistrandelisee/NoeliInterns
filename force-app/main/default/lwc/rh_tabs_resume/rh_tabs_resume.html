@@ -1,6 +1,6 @@
 <template> 
     <lightning-tabset>
-        <lightning-tab label="Request" value="Request" onactive={handleActive}>
+        <lightning-tab label={label.Request} value="Request" onactive={handleActive}>
             <template if:true={enablelist}>
                 <c-rh_list 
             css-class="listStyle slds-has-dividers_bottom slds-has-block-links_space slds-p-horizontal_medium"
@@ -11,9 +11,9 @@
             onaction={goToRequest}
             ></c-rh_list>
             </template>
-            
+
         </lightning-tab>
-        <lightning-tab label="Event"  value="Event"  onactive={handleActive}>
+        <lightning-tab label={label.Event}  value="Event"  onactive={handleActive}>
             <template if:true={enablelist}>
                 <c-rh_list 
                 css-class="listStyle slds-has-dividers_bottom slds-has-block-links_space slds-p-horizontal_medium"
@@ -26,7 +26,7 @@
             </template>
             
         </lightning-tab>
-        <lightning-tab label="Accomplishment"  value="Accomplishment"  onactive={handleActive}>
+        <lightning-tab label={label.Accomplishment}  value="Accomplishment"  onactive={handleActive}>
             <template if:true={enablelist}>
                 <c-rh_list 
                 css-class="listStyle slds-has-dividers_bottom slds-has-block-links_space slds-p-horizontal_medium"

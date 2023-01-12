@@ -83,6 +83,8 @@ export default class Rh_display_news_config extends NavigationMixin(LightningEle
     
     bannerConfigAction= [];
 
+    hasRecords;
+
 
     @wire(CurrentPageReference) pageRef;
 
@@ -92,8 +94,16 @@ export default class Rh_display_news_config extends NavigationMixin(LightningEle
     get hasrecordid(){
         return this.recordId?true:false;
     }
+    
     get isfilterBuild(){
-        return  this.inputFilter?.length>0;
+
+        filterNews({searchText: null, name: null ,description: null , isactive: null })
+        .then(result => {
+            this.hasRecords = result != null;
+        })
+
+        return this.hasRecords;
+    
     }
 
     get enableList(){
@@ -516,7 +526,7 @@ export default class Rh_display_news_config extends NavigationMixin(LightningEle
 
     getNews(){
         this.startSpinner(true);
-        filterNews({name: null ,description: null , isactive: null })
+        filterNews({searchText: null, name: null ,description: null , isactive: null })
         .then(result => {
               if(result){
                 this.builAllNews(result);
@@ -535,11 +545,12 @@ export default class Rh_display_news_config extends NavigationMixin(LightningEle
     filterNews(event){
         this.startSpinner(true);
 
+        const searchText = event.detail.searchText;
         const description= event.detail.Description__c;
         const isActive= event.detail.IsActive__c;
         const name= event.detail.Name;
 
-        filterNews({name: name ,description: description , isactive: isActive })
+        filterNews({searchText: searchText, name: name ,description: description , isactive: isActive })
         .then(result => {
               if(result){
                 this.builAllNews(result);

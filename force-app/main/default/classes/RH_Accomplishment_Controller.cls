@@ -23,6 +23,12 @@ public without sharing class RH_Accomplishment_Controller {
     }
 
     @AuraEnabled
+    public static Map<String,Object> getStatus(){
+        Map<String,Object> mapReturn = RH_Utility.getPickListOptions(new List<String>{'RH_Status__c'}, 'RH_Accomplishment__c');
+        return mapReturn;
+    }
+
+    @AuraEnabled
     public static Boolean checkCurrentContact(String idAcc){
         RH_Accomplishment__c accom =  accomQry.getAccomplishmentById(idAcc);
         List<User> currentU = userQry.getUserById(UserInfo.getUserId());
@@ -90,8 +96,8 @@ public without sharing class RH_Accomplishment_Controller {
     }
 
     @AuraEnabled
-    public static List<RH_Accomplishment__c> filterAccomplishment(String title, String status){
-        return accomQry.filterAccomplishment(title, status);
+    public static List<RH_Accomplishment__c> filterAccomplishment(String title, String status, String searchText){
+        return accomQry.filterAccomplishment(title, status, searchText);
     }
 
     public class Accomplishmentdetailswrapper {

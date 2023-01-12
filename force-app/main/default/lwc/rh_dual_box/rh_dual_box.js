@@ -9,11 +9,8 @@ export default class rh_dual_box extends LightningElement {
     @api sourceLabel;
     @api selectedLabel;
     @api fieldLevel;
-    @api options;
-    @api values;
-
-    options = [];
-    values = [];
+    @api options= [];
+    @api values= [];
 
   
     handleChange(e) {

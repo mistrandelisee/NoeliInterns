@@ -1,8 +1,10 @@
 import { api, LightningElement } from 'lwc';
 import getContactLeader from '@salesforce/apex/RH_groupController.getContactLeader';
 import createGroupe from '@salesforce/apex/RH_groupController.createGroupe';
+import { labels } from 'c/rh_label';
 
 export default class Rh_group_create extends LightningElement {
+    l={...labels}
     @api
     fieldInputs;
     leaders=[]; 
@@ -10,11 +12,11 @@ export default class Rh_group_create extends LightningElement {
     @api groupeId;
     @api labelButton='Next';
     @api logo="utility:chevronright";
-    @api newGroup = 'new group';
+    @api newGroup = this.l.NewGroup;
     @api name = 'Next';
     @api statusGroup;
     updateView;
-    handleClick (event){
+    handleClick (event){       
         console.log('source du button --->:', event.target.name);
         console.log('updateView dans le save--->:', this.updateView);
         console.log('statut groupe --->:', this.statusGroup);
@@ -24,7 +26,12 @@ export default class Rh_group_create extends LightningElement {
        let form=this.template.querySelector('c-rh_dynamic_form');
         let saveResult=form.save();
         let outputs = saveResult.outputs;
-     
+
+        if (!outputs?.length > 0) {
+             console.log('----required field missing -----');
+             return ;        
+        }
+        this.template.querySelector('c-rh_spinner').start();
             createGroupe({ name: saveResult.obj.Namex, 
                            description: saveResult.obj.Description, 
                            Leader: saveResult.obj.Leader,
@@ -32,10 +39,12 @@ export default class Rh_group_create extends LightningElement {
                            statut: this.statusGroup})
               .then(result => {
                 console.log('Result:', result); 
-                    this.dispatchEvent(new CustomEvent('groupmember',{detail: result}));               
+                    this.dispatchEvent(new CustomEvent('groupmember',{detail: result})); 
+                    this.template.querySelector('c-rh_spinner').stop();              
               })
               .catch(error => {
                 console.error('Error:', error);
+                this.template.querySelector('c-rh_spinner').stop();
             });
                          
     }
@@ -46,7 +55,7 @@ export default class Rh_group_create extends LightningElement {
     initDefault(){
         this.fieldInputs= [
             {
-                label:'Name',
+                label: this.l.Name,
                 placeholder:'Enter Name',
                 name:'Namex',
                 value: this.objGroupe?.Name,
@@ -55,8 +64,8 @@ export default class Rh_group_create extends LightningElement {
                 ly_lg:'6'
             },
             {
-                label:'Leader',
-                placeholder:'Leader',
+                label:this.l.Leader,
+                placeholder:this.l.Leader,
                 name:'Leader',
                 value: this.objGroupe?.RH_Team_Leader__c,
                 picklist:true,
@@ -66,10 +75,10 @@ export default class Rh_group_create extends LightningElement {
                 ly_lg:'6'
             },
             {
-                label:'Description',
+                label:this.l.Description,
                 name:'Description',
                 value:this.objGroupe?.RH_Description__c,
-                placeholder:'Give a description for the group',
+                placeholder:this.l.DescriptionPlc,
                 className:'textarea',
                 maxlength:25000,
                 type:'textarea',

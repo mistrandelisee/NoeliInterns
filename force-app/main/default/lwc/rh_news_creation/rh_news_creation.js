@@ -62,7 +62,7 @@ export default class Rh_news_creation extends LightningElement {
                 value: '',
                 required:true,
                 className:'textarea',
-                maxlength:25000,
+                maxlength:255,
                 type:'textarea',
                 ly_md:'12', 
                 ly_lg:'12'          

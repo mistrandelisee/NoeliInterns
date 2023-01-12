@@ -227,7 +227,7 @@ export default class Rh_accomplishment extends NavigationMixin(LightningElement)
         filterAccomplishment({title: title , status: status ,searchText: searchText})
         .then(result => {
             console.log('result', result);
-            if(result){
+            
                 this.itemCard = [];
                 const self=this;
                 result.forEach(elt => { 
@@ -269,7 +269,7 @@ export default class Rh_accomplishment extends NavigationMixin(LightningElement)
                 }); 
                 this.setviewsList( this.itemCard)
                 console.log(this.itemCard);
-            }
+            
         })
         .catch(error => {
             this.startSpinner(false);

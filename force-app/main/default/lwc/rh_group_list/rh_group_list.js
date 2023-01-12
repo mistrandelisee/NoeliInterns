@@ -1,15 +1,20 @@
 import { LightningElement, api } from 'lwc';
 import getListeGroupe from '@salesforce/apex/RH_groupController.getListeGroupe';
 import updateGroupStatut from '@salesforce/apex/RH_groupController.updateGroupStatut';
+import checkRole from '@salesforce/apex/RH_Utility.checkRole';
+import { labels } from 'c/rh_label';
 
 export default class Rh_group_list extends LightningElement {
+    l={...labels}
     @api listeGroup=[];
     hideCp = true;
+    @api isAdmin;
 
     keysFields={groupeName:'ok'};
     keysLabels={
-      Name:'Name', leader:'Group Leader',
-      RH_Description__c:'Description',
+      Name:this.l.Name, 
+      leader:this.l.Leader,
+      RH_Description__c:this.l.Description,
     };
     fieldsToShow={
       Name:'ok', leader:'',
@@ -17,10 +22,10 @@ export default class Rh_group_list extends LightningElement {
     };
 
  //   desc = this.stringLenght(item.RH_Description__c, 20);
-    connectedCallback(){ 
-        
+    connectedCallback(){  
+      console.log('-------- IN Rh_group_list -------'); 
       this.handlegetGroupe();
-        }
+    }
 
     handlegetGroupe(){
       getListeGroupe({  })
@@ -43,34 +48,36 @@ export default class Rh_group_list extends LightningElement {
               
               const badge={
                 name: 'badge',
-                label: e.RH_Status__c,
-                class: self.classStyle(e.RH_Status__c),
+                label: e.Status,
+                class: self.classStyle(e.Status),
               }
               item.addons = {badge: badge}
 
-              let Actions=[];
-              if((e.RH_Status__c==='Desactived')||(e.RH_Status__c==='Draft')){
-                    Actions.push( {   variant:"brand-outline",
-                    class:" slds-m-left_x-small",
-                    label:"Active",
-                    name:'Activated',
-                    title:"Active",
-                    iconName:"utility:add",
-                    // class:"active-item"
-                  })
-              }
-              if(e.RH_Status__c==='Activated'){
-                  Actions.push({   variant:"brand-outline",
-                    class:" slds-m-left_x-small",
-                    label:"Desactive",
-                    name:'Desactived',
-                    title:"Active",
-                    iconName:"utility:deprecate",
-                    // class:"active-item"
-                  })
-              }
-          
-              item.actions=Actions;
+              if (self.isAdmin) {
+                  let Actions=[];
+                  if((e.RH_Status__c==='Desactived')||(e.RH_Status__c==='Draft')){
+                        Actions.push( {   variant:"brand-outline",
+                        class:" slds-m-left_x-small",
+                        label:self.l.Activate,
+                        name:'Activated',
+                        title:"Active",
+                        iconName:"utility:add",
+                        // class:"active-item"
+                      })
+                  }
+                  if(e.RH_Status__c==='Activated'){
+                      Actions.push({   variant:"brand-outline",
+                        class:" slds-m-left_x-small",
+                        label:self.l.Desactivated,
+                        name:'Desactived',
+                        title:"Active",
+                        iconName:"utility:deprecate",
+                        // class:"active-item"
+                      })
+                  }            
+                  item.actions=Actions;
+                }
+
               return item; 
                });
                this.setviewsList(this.listeGroup)

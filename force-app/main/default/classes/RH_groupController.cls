@@ -18,7 +18,7 @@ public without sharing class RH_groupController {
     @AuraEnabled
     public static Map<String, Object>  getListeGroupe(){
         Map<String, Object> mapListeGroupe = new Map<String, Object>();
-        List<RH_WorkGroup__c> liste = [SELECT Name, RH_Team_Leader__c,RH_Status__c, RH_Description__c, RH_Team_Leader__r.Name FROM RH_WorkGroup__c
+        List<RH_WorkGroup__c> liste = [SELECT Name, RH_Team_Leader__c,toLabel(RH_Status__c) Status, RH_Status__c, RH_Description__c, RH_Team_Leader__r.Name FROM RH_WorkGroup__c
                 WHERE RH_Status__c != 'Desactived'];
         mapListeGroupe.put('listeGroupe', liste);
         return mapListeGroupe;

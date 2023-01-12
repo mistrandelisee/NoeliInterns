@@ -46,14 +46,18 @@ public  class RH_WorkGroup_Query {
 
         String query = 'SELECT Id,RH_Status__c, Name, RH_Description__c,  RH_Team_Leader__r.Name '
                             +'FROM RH_WorkGroup__c';
-        String queryWHERE = ' WHERE ';
+        String queryWHERE = ' ';
         if(String.isNotBlank(text)){
-			queryWHERE = queryWHERE + 'Name LIKE: text ';
+			queryWHERE = ' WHERE Name LIKE: text ';
 		}
-        if (String.isNotBlank(status)) {
-            queryWHERE = queryWHERE + 'AND (RH_Status__c =: status)';
+        if (String.isNotBlank(status) && String.isNotBlank(text)) {
+            queryWHERE = queryWHERE + ' AND (RH_Status__c =: status)';
+        }
+        if (String.isNotBlank(status) && !(String.isNotBlank(text))) {
+            queryWHERE = ' WHERE RH_Status__c =: status';
         }  
         String queryORDER='';
+        System.debug('queryWHERE-->>>>'+ queryWHERE);
         if(String.isNotBlank(ordBy)){
 
 			queryORDER = queryORDER
