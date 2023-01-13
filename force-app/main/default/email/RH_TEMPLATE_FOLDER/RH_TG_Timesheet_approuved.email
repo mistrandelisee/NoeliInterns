@@ -1,5 +1,5 @@
 <pre>
-Hi<b>{{!User.Name}}</b>,
+Hi<b>{{!Contact.Name}}</b>,
 
 your timesheet from [[!Start_Dates__c]] to [[!End_Dates__c]] has been approved by {Leader_Name}.
 

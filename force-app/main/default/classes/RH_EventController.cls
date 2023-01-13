@@ -4,6 +4,10 @@ public without sharing class RH_EventController implements RH_SummarizeInterface
     private static RH_User_Query userQuery = RH_User_Query.getInstance();
     private static RH_Contact_Query contactQry = RH_Contact_Query.getInstance();
     
+    static String EVENT_SUBMITTED_ACTION= 'TG_EVENT_SUBMITTED';
+    static String EVENT_REJECTED_ACTION= 'TG_EVENT_REJECTED';
+    static String EVENT_PUBLISHED_ACTION= 'TG_EVENT_PUBLISHED';
+    
     private static final String APPROVE_STATUS='Approved';
     private static final String REJECT_STATUS='Rejected';
     private static final String SUBMITTED_STATUS='Submitted';
@@ -257,7 +261,6 @@ public without sharing class RH_EventController implements RH_SummarizeInterface
         
         return even;
     }
-    
     private static void sendEvent(Event__c event) {
         Event__c evt = eventQuery.getEvent(event.Id);
         String strBody = String.isBlank(evt.Description__c)? evt.Name : evt.Description__c;
@@ -269,13 +272,15 @@ public without sharing class RH_EventController implements RH_SummarizeInterface
                 receivers.add(rcv.RH_User__c);
             }
         }
-        notify(strBody,recordId,strTitle,receivers);
+        notify(EVENT_SUBMITTED_ACTION,strBody,recordId,strTitle,receivers);
     }
-    private static void notify(String strBody, String pgRefId,  String strTitle,List<String> setUserIds) {
-        system.debug('@@@@pgRefIdId--->  ' + pgRefId);
-        String pgRef = '{type : \'comm__namedPage\',attributes : {pageName : \'Event\'},state: {\'recordId\': '+pgRefId+'}}' ;
+    
+    private static void notify(String action,String strBody, String recordId,  String strTitle,List<String> setUserIds) {
+        system.debug('@@@@pgRefIdId--->  ' + recordId);
+        String pgRef = '{type : \'comm__namedPage\',attributes : {pageName : \'Event\'},state: {\'recordId\': '+recordId+'}}' ;
         system.debug('@@@@pgRef--->  ' + pgRef);
         RH_Notification_Utility.notify(strBody, pgRef,  strTitle, setUserIds);
+        RH_telegramMessageConfigImpl.notifyTelegramAsync(action, recordId, setUserIds);
     }
     @AuraEnabled 
     public static Event__c approvalEvent(String eventJson){
@@ -308,7 +313,7 @@ public without sharing class RH_EventController implements RH_SummarizeInterface
         for (User rcv : userQuery.getUserByContactId(evt.Contact_Id__c)) {
             receivers.add(rcv.Id);
         }
-        notify(strBody,recordId,strTitle,receivers);
+        notify(EVENT_REJECTED_ACTION,strBody,recordId,strTitle,receivers);
     }
     private static void notifyAll(Event__c event) {
         Event__c evt = eventQuery.getEvent(event.Id);
@@ -321,7 +326,7 @@ public without sharing class RH_EventController implements RH_SummarizeInterface
                 receivers.add(rcv.RH_User__c);
             }
         }
-        notify(strBody,recordId,strTitle,receivers);
+        notify(EVENT_PUBLISHED_ACTION,strBody,recordId,strTitle,receivers);
     }
 
 

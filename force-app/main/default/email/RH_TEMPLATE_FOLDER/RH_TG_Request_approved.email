@@ -1,9 +1,14 @@
 <pre>
-Hi {{!User.Name}},
+Hi {{!Contact.Name}},
 
-Your request has been approved by {Leader_Name}
+Your request : 
 
-<code>[[!Contact_Id__r.Account.Name]]</code>
+[[!RH_Description__c]]
+
+has been approved by [[!RH_Addressed_To__r.Name]]
 
 </pre>
+
+<code>[[!RH_Addressed_To__r.Account.Name]]</code>
+
 <a href="{!$Setup.RH_Settings__c.record_page_Link__c}" >More details</a>

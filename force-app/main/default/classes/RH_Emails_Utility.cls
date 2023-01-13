@@ -25,11 +25,11 @@ public  class RH_Emails_Utility {
         
         EmailTemplate emailT =[SELECT id,name,HtmlValue,subject,description,Body FROM EmailTemplate where DeveloperName='RH_USER_RESET_PWD'];
          System.debug('add EmailTemplate ==> '+ emailT );
-        Messaging.SingleEmailMessage mail = Messaging.renderStoredEmailTemplate(emailT.Id, userId, null);
+        Messaging.SingleEmailMessage mail = Messaging.renderStoredEmailTemplate(emailT.Id, userId, userId);
         // mail.setTemplateId(emailT.Id);
         //Flag to false to stop inserting activity history
         mail.setSaveAsActivity(false);
-        // mail.setTargetObjectId(userId);
+        mail.setWhatId(userId);
         //This will not send email to account  
         mail.setTreatTargetObjectAsRecipient(false);
         // String tmpBody=emailT.Body;

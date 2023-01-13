@@ -1,12 +1,14 @@
 <pre>
-Hi<b>{{!User.Name}}</b>,
+Hi<b>{{!Contact.Name}}</b>,
 
-I'm sorry, but your event was declined by <b>{Leader_Name}</b> because :
+I'm sorry, but your event  <b>[[!Name]]</b> 
 
 <b>[[Description]]</b>.
 
-<code>[[!Contact_Id__r.Account.Name]]</code>
+Due to:
+[[!Message__c]]
 
 </pre>
+<code>[[!Contact_Id__r.Account.Name]]</code>
 
 <a href="{!$Setup.RH_Settings__c.record_page_Link__c}" >More details</a>

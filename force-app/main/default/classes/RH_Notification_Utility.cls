@@ -31,7 +31,7 @@ public  without sharing class RH_Notification_Utility {
         // send used to send the notification, pass the set of user ids , Group or Queue member
         obj.send(setUserId);
 
-        notifyTelegram(strBody, strTitle, setUserIds);
+        // notifyTelegram(strBody, strTitle, setUserIds);
     }
     @future(callout = true)
     public static void notifyTelegram(String strBody,String strTitle,List<String> setUserIds){

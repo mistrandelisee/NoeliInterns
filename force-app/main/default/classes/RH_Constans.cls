@@ -54,4 +54,11 @@ public  class RH_Constans {
     public   String LWC_FREEZE_CONTACT_STATUS ='Frozen';
      @AuraEnabled
     public   String LWC_DISABLE_CONTACT_STATUS ='Banned';
+
+
+    public static String EVENT_SUBMITTED_ACTION= 'TG_EVENT_SUBMITTED';
+    public static String EVENT_REJECTED_ACTION= 'TG_EVENT_REJECTED';
+    public static String EVENT_PUBLISHED_ACTION= 'TG_EVENT_PUBLISHED';
+    public static String PERSONAL_BIRTHDAY_ACTION= 'TG_PERSONAL_BIRTHDAY';
+    public static String WORK_BIRTHDAY_ACTION= 'TG_WORK_BIRTHDAY';
 }

@@ -1,5 +1,5 @@
 <pre>
-Hi {!User.Name},
+Hi {!Contact.Name},
 
 I come to announce that my <b>[[!Name]]</b> will be from  <b>[[!Start_Dates__c]]</b> to  <b>[[!End_Dates__c]]</b>.
 

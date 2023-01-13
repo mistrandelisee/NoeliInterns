@@ -1,5 +1,5 @@
 <pre>
-Hi<b>{{!User.Name}}</b>,
+Hi<b>{{!Contact.Name}}</b>,
 
 Your request has been rejected by <b>{Leader_Name}</b> because :
 

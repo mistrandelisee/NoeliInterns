@@ -8,7 +8,7 @@ global without sharing class RH_telegramMessageConfigImpl  implements RH_telegra
     private static Integer N_SIZE=cs.RH_Message_Queue_Size__c != null ? cs.RH_Message_Queue_Size__c.intValue() : 80; // store in custom setting
 
     
-    public static  String WHOIDKEY='RH_User__c';
+    public static  String WHOIDKEY='Id';
     /** action : custom metadata name 
      * 
     */
@@ -46,9 +46,11 @@ global without sharing class RH_telegramMessageConfigImpl  implements RH_telegra
         messages=new List<RH_Telegram_Utility.Message>();
     }
     /** METHODS */
-    public RH_Telegram_Utility.Message buildMessage(String chat_id,String user_id) {
-
-        Messaging.SingleEmailMessage mail =  Messaging.renderStoredEmailTemplate(this.template.id,user_id, null);// SOQL
+    public RH_Telegram_Utility.Message buildMessage(String who_id_key,contact receiver) {
+        String user_id= receiver.get(who_id_key)!=null ? String.valueOf(receiver.get(who_id_key)) : null;//'RH_User__c';
+        String chat_id= receiver.RH_tgUserId__c;
+        // chat_id= receiver.
+        Messaging.SingleEmailMessage mail =  Messaging.renderStoredEmailTemplate(this.template.id,null, user_id);// SOQL
         System.debug('>>>>>>>>>>>>>this.template.id ' + this.template.id);
         
         //build default mapping
@@ -58,7 +60,13 @@ global without sharing class RH_telegramMessageConfigImpl  implements RH_telegra
         //build immplementation mapping
         String className=String.isBlank(this.config.RH_Class_Name__c) ? 'RH_telegramMessageConfigImpl' : this.config.RH_Class_Name__c;
         RH_telegramMessageConfigInterface telegramMessageConfigInterface = (RH_telegramMessageConfigInterface) Type.forName(className).newInstance();
-        mappings= telegramMessageConfigInterface.buildMapping(mappings);
+        Map<String,Object> inputs=new map<String,Object>{
+            'mappings' => mappings,
+            'record' => this.record,
+            'action'=>this.action,
+            'receiver'=> receiver
+        };
+        mappings= telegramMessageConfigInterface.buildMapping(inputs);
 
         //format mail content body 
         String html_full= '<u><b>'+mail.getSubject()+'</b></u>';
@@ -69,10 +77,11 @@ global without sharing class RH_telegramMessageConfigImpl  implements RH_telegra
         RH_Telegram_Utility.Message tg_message= new RH_Telegram_Utility.Message(chat_id,messagetext);
 
         //build  tg message according to the implementation
-        Map<String,Object> inputs= new Map<String,Object>{
+        inputs= new Map<String,Object>{
             'message'=>tg_message,
             'action'=>this.action,
-            'record'=>this.record
+            'record'=>this.record,
+            'receiver'=> receiver
         };
         tg_message=(RH_Telegram_Utility.Message) telegramMessageConfigInterface.buildMessage(inputs);
         System.debug('>>>>>>>>>>>>>tg_message ' + tg_message);
@@ -83,8 +92,9 @@ global without sharing class RH_telegramMessageConfigImpl  implements RH_telegra
     }
 
     // Interface Implementation --- START
-    public Map<String,String> buildMapping(Map<String,String> mappings){
-            return mappings;
+    public Map<String,String> buildMapping(Object o){
+            Map<String,Object> inputs = (Map<String,Object>) o;
+            return (Map<String,String>) inputs.get('mappings');
     }
     public Object buildMessage(Object o){
         Map<String,Object> inputs= (Map<String,Object>) o;
@@ -135,6 +145,11 @@ global without sharing class RH_telegramMessageConfigImpl  implements RH_telegra
             System.debug('missing object');
             return null;
         }
+        if (String.isBlank(recordId)) {
+            // throw new messageConfigException('missing object');
+            System.debug('missing record');
+            return null;
+        }
         String query='SELECT '+config.RH_fields__c+' FROM '+config.RH_ObjectApiName__c+' WHERE Id =\''+String.escapeSingleQuotes(recordId) +'\'';
         
         return Database.query(query);
@@ -160,7 +175,7 @@ global without sharing class RH_telegramMessageConfigImpl  implements RH_telegra
         }else{
             object obj=record.get(field);
             String value=String.valueOf(formatObj(obj));
-            return value;
+            return String.isBlank(value)?'':value;
         }
     }
     static object formatObj(object o){
@@ -217,9 +232,9 @@ global without sharing class RH_telegramMessageConfigImpl  implements RH_telegra
     private static void doNotif(RH_telegramMessageConfigImpl impl,String who_id_key,List<String> uIds){ 
         for (Contact rcv : contactQry.getContactByUserIds(uIds)) { //  SOQL N 1
             if(String.isNotBlank(rcv.RH_tgUserId__c)){
-                String userId= rcv.get(who_id_key)!=null ? String.valueOf(rcv.get(who_id_key)) : null;//'RH_User__c';
-                String chatId= rcv.RH_tgUserId__c;
-                impl.buildMessage(chatId, userId);// SOQL 1 * N (/ N < N_Size)
+                // String userId= rcv.get(who_id_key)!=null ? String.valueOf(rcv.get(who_id_key)) : null;//'RH_User__c';
+                // String chatId= rcv.RH_tgUserId__c;
+                impl.buildMessage(who_id_key, rcv);// SOQL 1 * N (/ N < N_Size)
             }
         }
         if (! impl.messages.isEmpty()) {
@@ -232,7 +247,7 @@ global without sharing class RH_telegramMessageConfigImpl  implements RH_telegra
         public RH_telegramMessageConfigImpl impl;
         public List<String> receiversIds=new List<String>();
         public List<String> allIds=new List<String>();
-        string who_id_key='RH_User__c';
+        string who_id_key='Id';
 
         
         public messageQueue(String action,String recordId,List<String> uIds){
