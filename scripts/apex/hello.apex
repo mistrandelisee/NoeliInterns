@@ -62,12 +62,11 @@ impl.buildMessage(chatId, UserInfo.getUserId());
 RH_Telegram_Utility.sendMessages(impl.messages);
 
 
-for (Integer i = 0; i < 25; i++) {
-    Messaging.SingleEmailMessage mail =  Messaging.renderStoredEmailTemplate('00X7Q000000uHUBUA2', UserInfo.getUserId(), null);
-    if (i==0) {
-        System.debug(mail.getHtmlBody()); 
-    }
-}
+String conId='0037Q000007qVNJQA2';//Mako user Mistrano  base	
+String uId='0057Q000003l0JBQAY';//Me test Mistrand CEO	
+Messaging.SingleEmailMessage mail =  Messaging.renderStoredEmailTemplate('00X7Q000000uHUBUA2', conId, null);
+System.debug(mail.getHtmlBody());
+
 
 
 String action= 'TG_EVENT_SUBMITTED';
