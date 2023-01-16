@@ -1,8 +1,8 @@
 <pre>
-    
+
 Hi {!Contact.Name},
 
-For your  [[!Work_Age]] year(s) in the company, the entire <b><code>{!Contact.RH_Company__c}</code></b>team wishes you a happy working anniversary.
+For your [[!Age]] year(s), the whole <b><code>{!Contact.RH_Company__c}</code></b> team wishes you a happy birthday.
 
 <code>{!Contact.RH_Company__c}</code>
 

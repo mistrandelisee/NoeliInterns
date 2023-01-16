@@ -1,11 +1,15 @@
 <pre>
-Hi<b>{{!Contact.Name}}</b>,
 
-Your request has been rejected by <b>{Leader_Name}</b> because :
+Hi <b>{!Contact.Name}</b>,
 
-Description: <b>[[Description]]</b>.
+Your request has been rejected.
 
-<code>[[!Contact_Id__r.Account.Name]]</code>
+[[!RH_Description__c]]
+
+Due to:
+[[!RH_Reason__c]]
+
+<code>{!Contact.RH_Company__c}</code>
 
 </pre>
 

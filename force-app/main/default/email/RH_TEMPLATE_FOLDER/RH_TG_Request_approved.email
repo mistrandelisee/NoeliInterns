@@ -1,11 +1,14 @@
 <pre>
-Hi {{!Contact.Name}},
+
+Hi <b>{!Contact.Name}</b>,
 
 Your request : 
 
 [[!RH_Description__c]]
 
-has been approved by [[!RH_Addressed_To__r.Name]]
+has been approved By [[!RH_Approver__r.Name]] .
+
+<code>{!Contact.RH_Company__c}</code>
 
 </pre>
-<a href="{!$Setup.RH_Settings__c.community_profile_Link__c}" >View your profile</a>
+<a href="{!$Setup.RH_Settings__c.record_page_Link__c}" >More details</a>

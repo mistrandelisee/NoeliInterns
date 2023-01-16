@@ -280,7 +280,7 @@ public without sharing class RH_EventController implements RH_SummarizeInterface
         String pgRef = '{type : \'comm__namedPage\',attributes : {pageName : \'Event\'},state: {\'recordId\': '+recordId+'}}' ;
         system.debug('@@@@pgRef--->  ' + pgRef);
         RH_Notification_Utility.notify(strBody, pgRef,  strTitle, setUserIds);
-        RH_telegramMessageConfigImpl.notifyTelegramAsync(action, recordId, setUserIds);
+        // RH_telegramMessageConfigImpl.notifyTelegramAsync(action, recordId, setUserIds);
     }
     @AuraEnabled 
     public static Event__c approvalEvent(String eventJson){

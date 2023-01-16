@@ -1,4 +1,4 @@
-public  without sharing class RH_Notification_Utility {
+global   without sharing class RH_Notification_Utility {
     
     private static final String NOTIFICATION_NAME = 'Test_Notification';
     private static RH_Contact_Query contactQry = RH_Contact_Query.getInstance();
@@ -48,5 +48,32 @@ public  without sharing class RH_Notification_Utility {
         }
         RH_Telegram_Utility.sendMessages(messages);
     }
+
+    @InvocableMethod(label='Notification Apex' description='Notification' )
+    global  static void execute (List<NotifInput> inputs) {
+        System.debug('inputs2' + inputs);
+        NotifInput n_imput= inputs.get(0);
+        if (n_imput.runAsync) {
+            RH_telegramMessageConfigImpl.notifyTelegramAsync(n_imput.action, n_imput.recordId, n_imput.receipientIds);
+        }else{
+            RH_telegramMessageConfigImpl.notifyTelegram(n_imput.action, n_imput.recordId, n_imput.receipientIds);
+        }
+        
+    }
+    global class NotifInput {
+        @InvocableVariable(required=true)
+        global String action;
+    
+        @InvocableVariable(required=true)
+        global String recordId;
+
+        @InvocableVariable
+        global List<String> receipientIds;
+
+        @InvocableVariable
+        global Boolean runAsync=false;
+
+    }    
+    
 
 }

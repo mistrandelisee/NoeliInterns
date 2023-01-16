@@ -1,11 +1,13 @@
 <pre>
-Hi<b>{Leader_Name}</b>,
+
+Hi <b>{!Contact.Name}</b>,
 
 I present to you my timesheet:
 
-<b>{timesheet}</b>.
+<b>[[!RH_Name__c]]</b>.
 
-<code>[[!Contact_Id__r.Account.Name]]</code>
+
+<code>{!Contact.RH_Company__c}</code>
 
 </pre>
 

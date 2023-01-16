@@ -1,9 +1,10 @@
 <pre>
-Hi<b>{{!Contact.Name}}</b>,
 
-your timesheet from [[!Start_Dates__c]] to [[!End_Dates__c]] has been approved by {Leader_Name}.
+Hi <b>{!Contact.Name}</b>,
 
-<code>[[!Contact_Id__r.Account.Name]]</code>
+your timesheet from <b>[[!StartDate]]</b> to <b>[[!EndDate]]</b> has been approved.
+
+<code>{!Contact.RH_Company__c}</code>
 
 </pre>
 

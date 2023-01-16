@@ -1,11 +1,11 @@
 <pre>
-Hi<b>{{!Contact.Name}}</b>,
 
-your timesheet from [[!Start_Dates__c]] to [[!End_Dates__c]] has been rejected by {Leader_Name} because:
+Hi <b>{!Contact.Name}</b>,
 
-Description: [[!Description__c]].
+your timesheet from [[!StartDate]] to [[!EndDate]] has been rejected by [[!RH_Approver__r.Name]].
 
-<code>[[!Contact_Id__r.Account.Name]]</code>
+
+<code>{!Contact.RH_Company__c}</code>
 
 </pre>
 

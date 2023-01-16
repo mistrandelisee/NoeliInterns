@@ -37,7 +37,7 @@ public  class RH_Contact_Query {
                 FROM Contact WHERE RH_User__c=:userId];
     }
     public List<Contact> getContactByUserIds(List<String> userIds) {
-        return [SELECT Name, LastName, RH_tgUserId__c,RH_User__c,Email,RH_Status__c FROM Contact WHERE RH_User__c IN:userIds];
+        return [SELECT Name, LastName,Birthdate,RH_Started_Date__c, RH_tgUserId__c,RH_User__c,Email,RH_Status__c FROM Contact WHERE RH_User__c IN:userIds OR ID IN:userIds];
     }
 
     public  List<Contact> getContact(List<String> listcontactId){

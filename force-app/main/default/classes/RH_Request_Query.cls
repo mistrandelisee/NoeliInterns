@@ -16,19 +16,19 @@ public class RH_Request_Query {
 
     /* pb avec le oznerId qui doit etre lid du rh contact*/
 	public List<RH_Request__c> getLastrequest(Integer edLimit) {
-        return [SELECT id,Name,RH_Description__c,Rh_Status__c,RH_Addressed_To__r.Name,RecordType.Name ,CreatedDate,RH_RequestTypeName__c FROM RH_Request__c WHERE ownerId =:UserInfo.getUserId() order by createddate desc limit : edLimit ];
+        return [SELECT id,Name,RH_Description__c,Rh_Status__c,RH_Addressed_To__r.Name,RecordType.Name ,CreatedDate,RH_Request_Type__c FROM RH_Request__c WHERE ownerId =:UserInfo.getUserId() order by createddate desc limit : edLimit ];
     }
 /** 
     public List<RH_Request__c> getAllMyRequestByYear(Integer year,String contactId) {
-        return [SELECT id,Name,RH_Description__c,Rh_Status__c,RH_Addressed_To__r.Name,RecordType.Name ,CreatedDate,RH_RequestTypeName__c FROM RH_Request__c WHERE  CALENDAR_YEAR(CreatedDate) =: year AND (Rh_Status__c='Submited' OR Rh_Status__c='Approved' OR Rh_Status__c='Rejected' OR Rh_Status__c='Draft' )];
+        return [SELECT id,Name,RH_Description__c,Rh_Status__c,RH_Addressed_To__r.Name,RecordType.Name ,CreatedDate,RH_Request_Type__c FROM RH_Request__c WHERE  CALENDAR_YEAR(CreatedDate) =: year AND (Rh_Status__c='Submited' OR Rh_Status__c='Approved' OR Rh_Status__c='Rejected' OR Rh_Status__c='Draft' )];
     }*/
 
     public List<RH_Request__c> getAllMyRequestByYear(Integer year,String contactId) {
-        return [SELECT id,Name,RH_Description__c,Rh_Status__c,RH_Addressed_To__r.Name,RecordType.Name ,CreatedDate,RH_RequestTypeName__c FROM RH_Request__c WHERE ownerId =: UserInfo.getUserId() AND CALENDAR_YEAR(CreatedDate) =: year AND (Rh_Status__c='Submited' OR Rh_Status__c='Approved' OR Rh_Status__c='Rejected' OR Rh_Status__c='Draft' )];
+        return [SELECT id,Name,RH_Description__c,Rh_Status__c,RH_Addressed_To__r.Name,RecordType.Name ,CreatedDate,RH_Request_Type__c FROM RH_Request__c WHERE ownerId =: UserInfo.getUserId() AND CALENDAR_YEAR(CreatedDate) =: year AND (Rh_Status__c='Submited' OR Rh_Status__c='Approved' OR Rh_Status__c='Rejected' OR Rh_Status__c='Draft' )];
     } 
 
     public List<RH_Request__c> getRequest() {
-        return [SELECT id,Name,RH_Description__c,toLabel(Rh_Status__c) Rh_Status,Rh_Status__c, RH_Addressed_To__r.Name,RH_Note__c,toLabel(RecordType.Name) ,CreatedDate,RH_RequestTypeName__c FROM RH_Request__c WHERE ownerId =: UserInfo.getUserId() ORDER BY CreatedDate desc];
+        return [SELECT id,Name,RH_Description__c,toLabel(Rh_Status__c) Rh_Status,Rh_Status__c, RH_Addressed_To__r.Name,RH_Note__c,toLabel(RecordType.Name) ,CreatedDate,RH_Request_Type__c FROM RH_Request__c WHERE ownerId =: UserInfo.getUserId() ORDER BY CreatedDate desc];
     }
 
     public RH_Request__c retreiveRequest(String requestId){
@@ -57,7 +57,7 @@ public class RH_Request_Query {
     }
 
     public List<RH_Request__c> getRequestToManage(String currentContact, List<String> requestIds){
-        return [SELECT id,Name,RH_Description__c,toLabel(Rh_Status__c) Rh_Status,RH_Note__c,Rh_Status__c,CreatedBy.Name,RH_Addressed_Cc__c, RH_Addressed_To__r.Name,toLabel(RecordType.Name), RecordType.DeveloperName,CreatedDate,RH_RequestTypeName__c 
+        return [SELECT id,Name,RH_Description__c,toLabel(Rh_Status__c) Rh_Status,RH_Note__c,Rh_Status__c,CreatedBy.Name,RH_Addressed_Cc__c, RH_Addressed_To__r.Name,toLabel(RecordType.Name), RecordType.DeveloperName,CreatedDate,RH_Request_Type__c 
                  FROM RH_Request__c 
                  WHERE (RH_Addressed_To__c = :currentContact OR Id IN :requestIds) AND Rh_Status__c != 'Draft' ORDER BY CreatedDate DESC];
     }
@@ -69,7 +69,7 @@ public class RH_Request_Query {
     public List<RH_Request__c> filterRequest(String searchText, String requestType, String status, Datetime dateFrom, Datetime dateTo, Integer type, String currentContact, List<String> requestIds){
 
         searchText = String.isNotBlank(searchText) ? searchText : '';
-        String query= 'SELECT Id,Name,RH_Description__c,toLabel(Rh_Status__c) Rh_Status,Rh_Status__c,CreatedBy.Name,RH_Addressed_Cc__c,RH_Addressed_To__r.Name,RH_Note__c,toLabel(RecordType.Name),CreatedDate,RH_RequestTypeName__c FROM RH_Request__c ';
+        String query= 'SELECT Id,Name,RH_Description__c,toLabel(Rh_Status__c) Rh_Status,Rh_Status__c,CreatedBy.Name,RH_Addressed_Cc__c,RH_Addressed_To__r.Name,RH_Note__c,toLabel(RecordType.Name),CreatedDate,RH_Request_Type__c FROM RH_Request__c ';
         Boolean check = false;
         String currentUser = UserInfo.getUserId();
         String draftStatus = 'Draft';

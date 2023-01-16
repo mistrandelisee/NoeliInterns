@@ -4,7 +4,7 @@
     <encodingKey>UTF-8</encodingKey>
     <name>Request approved</name>
     <style>none</style>
-    <subject>Request approved</subject>
+    <subject>Request approved By [[!RH_Addressed_To__r.Name]]</subject>
     <type>custom</type>
     <uiType>Aloha</uiType>
 </EmailTemplate>

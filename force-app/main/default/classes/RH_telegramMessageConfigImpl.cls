@@ -264,6 +264,7 @@ global without sharing class RH_telegramMessageConfigImpl  implements RH_telegra
             prepareList(uIds);
         }
         void prepareList(List<String> uIds){
+            if (uIds==null) { uIds=new list<String>();}
             if (uIds.size() > N_SIZE) {
                 for (Integer i = 0; i < N_SIZE; i++) {
                     this.receiversIds.add(uIds.remove(0));
