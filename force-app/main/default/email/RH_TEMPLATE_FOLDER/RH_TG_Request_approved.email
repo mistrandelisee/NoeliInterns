@@ -8,7 +8,4 @@ Your request :
 has been approved by [[!RH_Addressed_To__r.Name]]
 
 </pre>
-
-<code>[[!RH_Addressed_To__r.Account.Name]]</code>
-
-<a href="{!$Setup.RH_Settings__c.record_page_Link__c}" >More details</a>
+<a href="{!$Setup.RH_Settings__c.community_profile_Link__c}" >View your profile</a>
