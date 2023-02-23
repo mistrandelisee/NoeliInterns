@@ -1,0 +1,63 @@
+<template>
+    <!-- path: {path}   -->
+
+    <lightning-card  variant="Narrow" class="slds-border"  title={title} icon-name="standard:file">
+        <template if:true={isLoading}>
+            <div>
+                <lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
+            </div>
+        </template>
+        <lightning-button-menu alternative-text="Action" menu-alignment="center" onselect={handleMenuSelect} label={pageSizeLabel} slot="actions" class="slds-m-right_large">
+            <template for:each={pageList} for:item="action">
+                <lightning-menu-item
+                    id="action-id"
+                    label={action.label}
+                    value={action.value}
+                    key={action.label}
+                >
+                </lightning-menu-item>
+            </template>
+        </lightning-button-menu>
+        <!-- <lightning-button-group slot="actions" class="slds-m-right_large">
+            
+            <lightning-button-icon-stateful icon-name="utility:tile_card_list" selected={isTile} data-name="Tile"  onclick={setView} variant="border-filled" alternative-text="Tile"></lightning-button-icon-stateful>
+            <lightning-button-icon-stateful icon-name="utility:list" selected={isList} data-name="List" onclick={setView} variant="border-filled" alternative-text="List"></lightning-button-icon-stateful>
+            
+        </lightning-button-group> -->
+        <lightning-button-icon  icon-name="utility:refresh" variant="border-filled" alternative-text="refresh" slot="actions" onclick={doRefresh}></lightning-button-icon>
+        <template if:true={hasFiles}>
+            <template if:true={isTile}>
+                <lightning-layout multiple-rows>
+                    <template for:each={filesToShow} for:item="file">
+                        <lightning-layout-item key={file.UniqueId} size="12" padding="around-small"  small-device-size="6" medium-device-size="6" large-device-size="6" >
+                            <c-rh_sharepoint_item item={file}></c-rh_sharepoint_item>
+                        </lightning-layout-item>
+                    </template>
+                </lightning-layout>
+
+            </template>
+            <template if:true={isList}>
+                <lightning-datatable key-field="UniqueId" data={filesToShow} columns={columns} resize-column-disabled={resizeColumn}
+                        hide-checkbox-column="true" onrowaction={goToDetail} show-row-number-column ={statutRowNumber}
+                        default-sort-direction={defaultSortDirection} sorted-direction={sortDirection}
+                        sorted-by={sortedBy} onsort={onHandleSort}></lightning-datatable>
+            </template>
+        </template>
+        <!-- <p slot="footer">Card Footer with the pagination</p> -->
+        <div slot="footer">
+            <template if:true={showPagination}>
+                <div class="custom-box slds-align_absolute-center">
+                    <lightning-button label="Prev" onclick={handlePrev} title="Download action" variant=" brand-outline"
+                        icon-name="utility:chevronleft" disabled={isFirstIndex} class="slds-m-left_x-small">
+                    </lightning-button>
+                    <lightning-button label="Next" onclick={handleNext} title="Download action" variant=" brand-outline"
+                        icon-name="utility:chevronright" disabled={isLastIndex} icon-position="right"
+                        class="slds-m-left_x-small"></lightning-button>
+                </div>
+                
+            </template>
+            
+        </div>
+    </lightning-card>
+
+</template>

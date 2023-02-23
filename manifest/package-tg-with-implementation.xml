@@ -8,6 +8,7 @@
 		<members>RH_Notification_Utility</members>
 		<members>RH_TelegramIntegration</members>
 		<members>RH_Telegram_Utility</members>
+		<members>RH_Logs_Utility</members>
 		<members>RH_telegramMessageConfigImpl</members>
 		<members>RH_telegramMessageConfigInterface</members>
 		<members>rh_mainController</members>
@@ -57,6 +58,12 @@
 		<members>RH_TEMPLATE_FOLDER/RH_TG_Timesheet_submitted</members>
 		<members>RH_TEMPLATE_FOLDER/RH_TG_Work_birthday</members>
 		<name>EmailTemplate</name>
+	</types>
+	<types>
+		<members>Event_Notification_Management</members>
+		<members>Request_Notification_Management</members>
+		<members>Timesheet_Management</members>
+		<name>Flow</name>
 	</types>
 	<version>55.0</version>
 </Package>

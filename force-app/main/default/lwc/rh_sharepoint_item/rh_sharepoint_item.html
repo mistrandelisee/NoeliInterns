@@ -1,0 +1,36 @@
+<template>
+    <!-- <lightning-tile label={title} type="media" onclick={gotolink} href="#">
+        <lightning-icon slot="media" icon-name={icon}></lightning-icon>
+        <ul class="slds-list_horizontal slds-has-dividers_right">
+            <li class="slds-item"><lightning-formatted-date-time value={createdDate} year="2-digit" month="short"
+                    day="2-digit" hour="numeric" weekday="long" era="short"></lightning-formatted-date-time></li>
+            <li class="slds-item">{extension}</li>
+            <li class="slds-item">{source}</li>
+        </ul>
+    </lightning-tile>
+
+    --------------------------------------------- -->
+<!-- style="width:30rem" -->
+    <div class="demo-only" >
+        <article class="slds-tile slds-media">
+            <div class="slds-media__figure">
+                <span class="slds-icon_container" >
+                    <lightning-icon icon-name={icon} alternative-text={extension} title={extension}></lightning-icon>
+                </span>
+            </div>
+            <div class="slds-media__body">
+                <h3 class="slds-tile__title slds-truncate" title={title}>
+                    <a  onclick={gotolink}>{title}</a>
+                </h3>
+                <div class="slds-tile__detail">
+                    <ul class="slds-list_horizontal slds-has-dividers_right">
+                        <li class="slds-item"><lightning-formatted-date-time value={createdDate} year="2-digit" month="short"
+                                day="2-digit" hour="2-digit"  minute="2-digit"></lightning-formatted-date-time></li>
+                        <li class="slds-item">{extension}</li>
+                        <li class="slds-item">{source}</li>
+                    </ul>
+                </div>
+            </div>
+        </article>
+    </div>
+</template>

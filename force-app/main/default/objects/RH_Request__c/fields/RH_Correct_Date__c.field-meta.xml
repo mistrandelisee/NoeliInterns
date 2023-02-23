@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>RH_Correct_Date__c</fullName>
+    <externalId>false</externalId>
+    <formula>IF( RH_Sumit_Day__c = 7 ,  RH_Submit_Date__c +2,  IF(RH_Sumit_Day__c = 1, RH_Submit_Date__c + 1, RH_Submit_Date__c))</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Correct Date</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>DateTime</type>
+</CustomField>

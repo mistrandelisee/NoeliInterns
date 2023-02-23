@@ -5,6 +5,6 @@
     <label>Response</label>
     <length>130999</length>
     <trackTrending>false</trackTrending>
-    <type>Html</type>
+    <type>LongTextArea</type>
     <visibleLines>25</visibleLines>
 </CustomField>

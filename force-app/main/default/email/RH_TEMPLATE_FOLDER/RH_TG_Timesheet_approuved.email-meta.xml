@@ -4,7 +4,7 @@
     <encodingKey>UTF-8</encodingKey>
     <name>Timesheet approuved</name>
     <style>none</style>
-    <subject>Timesheet approuved By [[!RH_Approver__r.Name]]</subject>
+    <subject>Timesheet approved By [[!RH_Approver__r.Name]]</subject>
     <type>custom</type>
     <uiType>Aloha</uiType>
 </EmailTemplate>

@@ -9,16 +9,14 @@
                 
            </div>
         </lightning-layout-item>
-        <lightning-layout-item size="12" padding="around-smallx" 
-        small-device-size="12" medium-device-size="6" large-device-size="3">
+        <lightning-layout-item size="12" padding="around-smallx"  small-device-size="12" medium-device-size="6" large-device-size="3">
             <div class="custom-box">
                 <div class="slds-p-around_small account">
                     <c-rh_display_fields title={l.AccountInfoTitle} iconsrc={icon.organization} column="3" output-fields={accountFields} ></c-rh_display_fields>
                 </div>
            </div>
         </lightning-layout-item>
-        <lightning-layout-item size="12" padding="around-smallx" 
-        small-device-size="12" medium-device-size="6" large-device-size="9">
+        <lightning-layout-item size="12" padding="around-smallx" small-device-size="12" medium-device-size="6" large-device-size="9">
             <div class="custom-box">
                 <div class="slds-p-around_small profile_user_info">
                     <c-rh_profile_user_info 
@@ -31,6 +29,17 @@
                 </div>
                 <div class="slds-p-horizontal_small extra_info">
                     <c-rh_extra_fields json-field={jsonInfo} onaction={UpdateExtraInfo} hasaction></c-rh_extra_fields>
+                </div>
+
+           </div>
+        </lightning-layout-item>
+        <lightning-layout-item size="12" padding="around-smallx" small-device-size="12" medium-device-size="12" large-device-size="12">
+            <div class="custom-box">
+                <div class="slds-p-around_small profile_user_skill">
+                    <c-rh_employee_skill 
+                        record-id={recordId}
+                        editable
+                    ></c-rh_employee_skill>
                 </div>
 
            </div>

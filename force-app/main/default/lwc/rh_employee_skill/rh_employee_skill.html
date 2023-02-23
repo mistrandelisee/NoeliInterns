@@ -1,0 +1,57 @@
+<template>
+    <template if:true={hasSkill}>
+        <lightning-card class="custom-card">
+            <div  slot="actions">
+                <c-rh_helper_info help-text=""></c-rh_helper_info>
+            </div>
+            <h3 slot="title">
+                <lightning-icon icon-name={icon.user_info_edit} size="small" class="slds-m-right_small"></lightning-icon>
+                User Skill
+            </h3>
+            <lightning-layout multiple-rows>
+                <template for:each={skillCategories} for:item="cat" for:index="type_name">
+                    
+                    <lightning-layout-item key={cat.type_name} size="12" padding="around-small" small-device-size="12" medium-device-size="12" large-device-size="12" >
+                        <div class="cat-container slds-clearfix">
+                            <p class="slds-text-heading_medium slds-p-around_small">{cat.type_label}</p>
+                            <c-rh_dynamic_form data-form-key={cat.type_name} inputs-items={cat.skills}></c-rh_dynamic_form>
+                        </div>
+                    </lightning-layout-item>
+                </template>
+                
+            </lightning-layout>
+
+            
+
+
+            <div class="card-footer" slot="footer">
+                <div class="slds-clearfix">
+                    <div class="slds-float_left">
+                        <template if:true={editMode}>
+                            <lightning-button variant="base" label={l.Cancel} data-action-name="Cancel" title={l.Cancel} icon-name={icon.close} onclick={handleCancel} class="icon-md slds-m-left_x-small"></lightning-button>
+                        </template>
+                    </div>
+                    <div class="slds-float_right">
+                        <template if:true={editMode}>
+                            <lightning-button variant="base" label={l.Save} data-action-name="Save" title={l.Save} icon-name={icon.Save} onclick={handleSave} class="icon-md slds-m-left_medium"></lightning-button>
+                        </template>
+                        <template if:true={is_editable}>
+                            <lightning-button variant="base" label={l.Edit} data-action-name="Edit" title={l.Edit} icon-name={icon.Edit} onclick={handleEdit} class="icon-md slds-m-left_medium"></lightning-button>
+                        </template>
+                    </div>
+                </div>
+                
+            </div>
+            <!-- this.actionAvailable =[
+            {
+                variant:"base",
+                label:this.l.Edit,
+                name:"Edit",
+                title:this.l.Edit,
+                iconName:this.icon.Edit,
+                class:" icon-md slds-m-left_x-small"
+            },
+        ]; -->
+        </lightning-card>
+    </template>
+</template>

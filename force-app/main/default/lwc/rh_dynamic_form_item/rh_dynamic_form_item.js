@@ -52,8 +52,8 @@ export default class Rh_dynamic_form_item extends LightningElement {
     get toggleActiveText(){ return this.item?.toggleActiveText || 'Active'};
     get toggleInactiveText(){ return this.item?.toggleInactiveText || 'Inactive'};
     connectedCallback(){
-        console.log('ITEM');
-        console.log(this.item);
+        //console.log('ITEM');
+        //console.log(this.item);
         this.countrySelected=this.item?.country || '';
         this.provinceSelected=this.item?.province || '';
     }
@@ -63,8 +63,8 @@ export default class Rh_dynamic_form_item extends LightningElement {
         const value = event.detail.value;
         const name = event.currentTarget.dataset.id;
         const file=event.target.files?event.target.files[0]:null; 
-        console.log('OUTPUT : ',value);
-        console.log('OUTPUT :name  ',name);
+        //console.log('OUTPUT : ',value);
+        //console.log('OUTPUT :name  ',name);
         clearTimeout(this.timer);
         this.timer=setTimeout(() => {
             this.publishChangedEvt({info: {name, value,file} , event:event});
@@ -84,7 +84,7 @@ export default class Rh_dynamic_form_item extends LightningElement {
                this.dispatchEvent(createEvent);
     }
     publishChangedEvt(evt){
-        console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$4 Publish evt ' ,evt);
+        //console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$4 Publish evt ' ,evt);
         
         const event = new CustomEvent('inputchanged', {detail: evt});
                this.dispatchEvent(event);
@@ -102,7 +102,7 @@ export default class Rh_dynamic_form_item extends LightningElement {
     saveLookupField(){
         const isvalid =this.validateLookupField(); 
         const item=this.item;
-        console.log('######### SAVE LOOKUP >> '+item.name );
+        //console.log('######### SAVE LOOKUP >> '+item.name );
         let output={};
         let outputs=[];
         let outputsItems=[];
@@ -111,7 +111,7 @@ export default class Rh_dynamic_form_item extends LightningElement {
             let lookupCmp=this.template.querySelector(`c-rh_custom_lookup_adv[data-id="${key}"]`);
             if (lookupCmp) {
                 const retunrObj=lookupCmp.saveField();
-                console.log(retunrObj);
+                //console.log(retunrObj);
                 output[key]=retunrObj.value || null;
                 outputs.push({label:item.label,name:key,value:retunrObj.value});
                 outputsItems.push({...item,value:retunrObj.value,...retunrObj});
@@ -147,7 +147,7 @@ export default class Rh_dynamic_form_item extends LightningElement {
                             outputs.push({label:datelabel,name:key+'d',value:datevalue});
                             outputs.push({label:timelabel,name:key+'t',value:timevalue});
                         } catch (error) {
-                            console.log('OUTPUT  : Error while spliting date time output ',error);
+                            //console.log('OUTPUT  : Error while spliting date time output ',error);
                             outputs.push({label:item.label,name:key,value:fieldvalue});
                         }
                         break;
@@ -180,10 +180,10 @@ export default class Rh_dynamic_form_item extends LightningElement {
             }
            
         }
-        // console.log('OUTPUT VALUE : ',output);
-        // console.log('OUTPUT FIELD VALUES : ',outputs);
-        // console.log('OUTPUT FIELD VALUES outputsItems : ',outputsItems);
-        // console.log('OUTPUT FIELD VALUES ALL : ',{isvalid,outputs,obj:output,outputsItems});
+        // //console.log('OUTPUT VALUE : ',output);
+        // //console.log('OUTPUT FIELD VALUES : ',outputs);
+        // //console.log('OUTPUT FIELD VALUES outputsItems : ',outputsItems);
+        // //console.log('OUTPUT FIELD VALUES ALL : ',{isvalid,outputs,obj:output,outputsItems});
         return {isvalid,outputs,obj:output,outputsItems};
     }
      validateDefaultField() {
@@ -195,8 +195,8 @@ export default class Rh_dynamic_form_item extends LightningElement {
         if (fieldInput) {
             isvalid = isvalid && fieldInput.reportValidity('');
         }
-        console.log('######### VALIDATION >> '+item.name +' IS VALIDATION >>'+isvalid); 
-    //    console.log('@@@@@@@@@@ isvalid '+isvalid);
+        //console.log('######### VALIDATION >> '+item.name +' IS VALIDATION >>'+isvalid); 
+    //    //console.log('@@@@@@@@@@ isvalid '+isvalid);
        return isvalid;
    }
    validateLookupField(){
@@ -208,7 +208,7 @@ export default class Rh_dynamic_form_item extends LightningElement {
         if (lookupCmp) {
             isvalid = isvalid && lookupCmp.validateField();
         }
-        console.log('######### LOOKUP VALIDATION >> '+item.name +' IS VALIDATION >>'+isvalid);
+        //console.log('######### LOOKUP VALIDATION >> '+item.name +' IS VALIDATION >>'+isvalid);
         return isvalid;
     }
    @api validateField() {
@@ -257,7 +257,7 @@ export default class Rh_dynamic_form_item extends LightningElement {
     handleChangeAddress(event) {
         (this.countrySelected != event.detail.country)?this.provinceSelected='':'';//change province alnly if country is selected
         this.countrySelected = event.detail.country;
-        // console.log('this.item.countryP');
+        // //console.log('this.item.countryP');
         
     }
 

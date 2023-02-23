@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>Request rejected Message</label>
+    <protected>false</protected>
+    <values>
+        <field>RH_Class_Name__c</field>
+        <value xsi:type="xsd:string">RH_telegramMessageConfigImpl</value>
+    </values>
+    <values>
+        <field>RH_ObjectApiName__c</field>
+        <value xsi:type="xsd:string">RH_Request__c</value>
+    </values>
+    <values>
+        <field>RH_Template_Name__c</field>
+        <value xsi:type="xsd:string">RH_TG_Request_rejected</value>
+    </values>
+    <values>
+        <field>RH_fields__c</field>
+        <value xsi:type="xsd:string">Id,Name,RH_Description__c,RH_Reason__c,Rh_Status__c,RH_Addressed_To__r.Name,RecordType.Name ,CreatedDate,RH_Request_Type__c,RH_Approver__r.Name</value>
+    </values>
+</CustomMetadata>

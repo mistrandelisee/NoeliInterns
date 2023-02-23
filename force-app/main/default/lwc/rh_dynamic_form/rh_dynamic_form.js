@@ -20,12 +20,12 @@ export default class Rh_dynamic_form extends LightningElement {
             elt.ly_md=  elt.ly_md ?  elt.ly_md: '4';
             elt.ly_lg=  elt.ly_lg ?  elt.ly_lg: '3';
             elt.keyField=  elt.name+ new Date().getTime();
-            console.log({...elt});
+            //console.log({...elt});
 
             return elt;
         });
 
-        console.log(`this.inputsItems`, this.inputsItems);
+        //console.log(`this.inputsItems`, this.inputsItems);
         
         
         
@@ -37,10 +37,10 @@ export default class Rh_dynamic_form extends LightningElement {
             return elt;
         });
 
-        console.log(`this.inputsItems`, this.inputsItems);
+        //console.log(`this.inputsItems`, this.inputsItems);
     }
      backgroundcolor(){
-        console.log('get');
+        //console.log('get');
         let addbackgroung = this.template.querySelector('[data-id="section"]');
         if(this.backcolor && addbackgroung){
            return addbackgroung.classList.add('backgroundcolor');
@@ -49,7 +49,7 @@ export default class Rh_dynamic_form extends LightningElement {
     
     connectedCallback(){
         this.timeOut=this.timeOut || 0;
-        console.log('ddd');
+        //console.log('ddd');
         // let addbackgroung = this.template.querySelector('[class="form-section"]');
         // let addbackgroung = this.template.querySelector('[data-id="section"]');
         // if(this.backcolor){
@@ -60,13 +60,13 @@ export default class Rh_dynamic_form extends LightningElement {
        this.preCompileDefaultValues();
     //    setTimeout(() => {
     //     this.inputsItems=[]
-    //     console.log(`@@@@@@@@@@@@@@@@@@@@@@@@@@@in Timeout`);
+    //     //console.log(`@@@@@@@@@@@@@@@@@@@@@@@@@@@in Timeout`);
     //   }, 10e3);
     // this.items=[...this.inputsItems];
         
     }
     renderedCallback(){
-        console.log('renderedCallback >>>> Rh_dynamic_form');
+        //console.log('renderedCallback >>>> Rh_dynamic_form');
     }
     
     @api save(){
@@ -88,15 +88,15 @@ export default class Rh_dynamic_form extends LightningElement {
                 }
             });
         }
-        // console.log('OUTPUT VALUE : ',output);
-        console.log('OUTPUTS VALUES  PARENT outputsItems111 : ',{isvalid,outputs,obj:output,outputsItems});
+        // //console.log('OUTPUT VALUE : ',output);
+        //console.log('OUTPUTS VALUES  PARENT outputsItems111 : ',{isvalid,outputs,obj:output,outputsItems});
         return {isvalid,outputs,obj:output,outputsItems};
     }
 
     timer;
     handleChanged(event){
         // this.rendered=false;
-        console.log(event.detail.info);
+        //console.log(event.detail.info);
         this.publishChangedEvt({info: event.detail.info , event:event.detail.event});
     }
     handleLookupCreation(event){
@@ -105,7 +105,7 @@ export default class Rh_dynamic_form extends LightningElement {
                this.dispatchEvent(createEvent);
     }
     publishChangedEvt(evt){
-        console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$4 Publish evt ' ,evt);
+        //console.log('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$4 Publish evt ' ,evt);
         
         const event = new CustomEvent('inputchanged', {detail: evt});
                this.dispatchEvent(event);
@@ -113,7 +113,7 @@ export default class Rh_dynamic_form extends LightningElement {
     }
 
    @api validateFields() {
-    console.log('start verification');   
+    //console.log('start verification');   
     let isvalid = true;
     let self=this;
     this.inputsItems.forEach(function(item){
@@ -128,8 +128,8 @@ export default class Rh_dynamic_form extends LightningElement {
         }
     });
    
-        // console.log('>>>>>> inputsItems ',this.inputsItems);
-    console.log('@@@@@@@@@@ isvalid '+isvalid);
+        // //console.log('>>>>>> inputsItems ',this.inputsItems);
+    //console.log('@@@@@@@@@@ isvalid '+isvalid);
     return isvalid;
     }
     @api updateField(key,updates,type='default') {
@@ -143,11 +143,11 @@ export default class Rh_dynamic_form extends LightningElement {
     attachDataListsToTextBox(){
     const dataLists=this.template.querySelectorAll('[data-type="dataList"]');
     dataLists.forEach(dataList => {
-        console.log(`dataList>>> element`);
-        console.log(dataList);
+        //console.log(`dataList>>> element`);
+        //console.log(dataList);
         const dataListId = dataList.id;
         const key = dataList.dataset.listid;
-        console.log(`dataList>>> key `,key);
+        //console.log(`dataList>>> key `,key);
         const input = this.template.querySelector('[data-id="' + key + '"]')
         if (input) {
             input.setAttribute("list", dataListId);

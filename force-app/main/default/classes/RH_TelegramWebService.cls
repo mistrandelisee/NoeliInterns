@@ -9,6 +9,7 @@ global without sharing class RH_TelegramWebService {
         'SF','TELEGRAM'
     };
     private static  Boolean SKIP_AUTH = false;
+    private static  Boolean started = false;
     private static final String CLOSED_INTERACTION = 'Closed';
     private static final String MESSAGE_TYPE = 'message';
     private static final String CALLBACK_QUERY_TYPE = 'callback_query';
@@ -79,6 +80,7 @@ global without sharing class RH_TelegramWebService {
             
             if((contacts.size() == 0) && (Interactions.size() == 0) ) {
                 logx.message=JSON.serialize(doStart());
+                started=true;
             }
            
             if(contacts.size() > 0) {
@@ -237,7 +239,10 @@ global without sharing class RH_TelegramWebService {
         }  
         if (START_CMD.equalsIgnoreCase(data)) {
             // logx.message='Start';
-            return startInteraction();
+            if (!started) {
+                return startInteraction();
+                
+            }
         }  
         //manage response from a callback query response of the user
         if(Interactions.size() > 0) {

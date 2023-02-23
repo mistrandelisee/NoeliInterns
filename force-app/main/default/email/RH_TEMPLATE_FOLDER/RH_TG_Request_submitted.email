@@ -2,7 +2,11 @@
 
 Hi <b>{!Contact.Name}</b>,
 
-I am coming to you to ask for [[!RH_Request_Type__c]] from <b>[[!RH_Start_date__c]]</b> to <b>[[!RH_End_date__c]]</b>.
+I am coming to you to ask for [[!RH_Request_Type__c]] </b>.
+
+Details:
+[[!RH_Description__c]]
+
 
 <code>{!Contact.RH_Company__c}</code>
 

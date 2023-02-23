@@ -2,7 +2,7 @@
 
 Hi <b>{!Contact.Name}</b>,
 
-Sorry, your event  <b>[[!Name]] has been rejected</b> 
+Sorry, your event:  <b>[[!Name]] has been rejected</b> 
 
 Description : [[!Description__c]]
 

@@ -495,6 +495,17 @@ public without sharing class RH_Users_controller implements RH_SummarizeInterfac
         return mapReturn;
     }
 
+    @AuraEnabled(cacheable=true)
+    public static Map<String, Object> getEmployeeSkills(String recordId,Boolean readOnly){
+        RH_Skills_Manager.READ_ONLY = readOnly;
+        return RH_Skills_Manager.getSkills(recordId);
+    }
+
+    @AuraEnabled
+    public static void updateEmployeeSkills(String recordId,String infoJson){
+        update new contact(Id=recordId,RH_Skill_Infos__c=infoJson);
+    }
+
     @AuraEnabled 
     public static String getExtraFields(String recordId){
        List<Contact>  extrafield = contactQry.getExtrafied(recordId);

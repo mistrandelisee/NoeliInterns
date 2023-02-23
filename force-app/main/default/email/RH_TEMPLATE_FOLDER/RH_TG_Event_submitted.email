@@ -2,7 +2,7 @@
 
 Hi <b>{!Contact.Name}</b>,
 
-I come to announce that my <b>[[!Name]]</b> will be from  <b>[[!Start_Dates__c]]</b> to  <b>[[!End_Dates__c]]</b>.
+I come to announce that my Event <b>[[!Name]]</b> will be from  <b>[[!Start_Dates__c]]</b> to  <b>[[!End_Dates__c]]</b>.
 
 Description : [[!Description__c]]
 
