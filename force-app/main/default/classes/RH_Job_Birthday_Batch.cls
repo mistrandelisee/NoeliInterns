@@ -1,4 +1,3 @@
-
 public class RH_Job_Birthday_Batch implements Schedulable, Database.Batchable<sObject>, Database.AllowsCallouts,Database.Stateful, RH_telegramMessageConfigInterface {
     
     public void execute(SchedulableContext SC) {

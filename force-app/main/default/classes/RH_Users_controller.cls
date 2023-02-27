@@ -1,4 +1,4 @@
-public without sharing class RH_Users_controller implements RH_SummarizeInterface{
+public without sharing class RH_Users_controller implements RH_SummarizeInterface,RH_ExportInterface{
     private static RH_User_Query userQry = RH_User_Query.getInstance();
     private static RH_Contact_Query contactQry = RH_Contact_Query.getInstance();
     private static RH_WorkGroup_Query workGroupQry = RH_WorkGroup_Query.getInstance();
@@ -130,8 +130,109 @@ public without sharing class RH_Users_controller implements RH_SummarizeInterfac
         return lb;
     }
 
+    /**
+     * export implementation
+     */
+    public Object getColumns(Object args){
+        Map<String, Object> styleMap = new Map<String, Object>();
+        List<RH_Export_Controller.columnsWrapper> columns = new List<RH_Export_Controller.columnsWrapper>();
+        
+        RH_Export_Controller.columnsWrapper col=new RH_Export_Controller.columnsWrapper(System.Label.rh_Name, 'Name', 'String', true);
+        styleMap =(Map<String, Object>) col.defaultHeaderStyle();
+        styleMap.put('width',30);
+        col.setheaderStyle(styleMap);
+        columns.add(col);
 
-    
+        col=new RH_Export_Controller.columnsWrapper(System.Label.rh_Phone, 'Phone', 'Phone', true);
+        styleMap.put('width',20);
+        col.setheaderStyle(styleMap);
+        columns.add(col);
+
+        col=new RH_Export_Controller.columnsWrapper(System.Label.rh_Email, 'Email', 'email');
+        styleMap.put('width',50);
+        col.setheaderStyle(styleMap);
+        columns.add( col);
+        
+        col=(new RH_Export_Controller.columnsWrapper(System.Label.rh_Certification, 'Certification', 'String', true)).Logic('CUSTOM');
+        styleMap.put('width',60);
+        col.setheaderStyle(styleMap);
+        columns.add( col);
+
+        col=(new RH_Export_Controller.columnsWrapper(System.Label.rh_Skill, 'Skill', 'String')).Logic('CUSTOM');
+        styleMap.put('width',60);
+        col.setheaderStyle(styleMap);
+        columns.add(col );
+
+        col=new RH_Export_Controller.columnsWrapper(System.Label.rh_StartDate, 'RH_Started_Date__c', 'date');
+        styleMap.put('width',15);
+        col.setheaderStyle(styleMap);
+        columns.add( col);
+
+
+        col=(new RH_Export_Controller.columnsWrapper(System.Label.rh_YearOfExperience, 'YearOfExperience', 'number')).Logic('CUSTOM');
+        styleMap.put('width',15);
+        col.setheaderStyle(styleMap);
+        columns.add( col);
+
+        System.debug('columns: ' + columns);
+        return columns;
+        // return null;
+    }  
+    public object getExportfield(String col_name){
+        switch on col_name {
+            when 'Certification' {
+                return 'RH_Skill_Infos__c';
+            }
+            when 'Skill' {
+                return 'RH_Skill_Infos__c';
+            }
+            when 'YearOfExperience' {
+                return 'RH_Started_Date__c';
+            }
+            when else {
+            
+            }
+        }
+        throw new RH_ControllerException('unknow column name');
+    }
+    public  Object getExportValue(sObject record ,String field ){
+        List<String> types = new List<String>{'Certification','Skill'};
+
+        if(types.contains(field)){
+            Map<String,RH_Skill_Config__mdt> skillsConfig= RH_Skill_Config__mdt.getAll();
+            List<String> values = new List<String>();
+            String skill_json=String.valueOf(record.get('RH_Skill_Infos__c'));
+            System.debug('skill_json << ' + skill_json);
+            if (String.isBlank(skill_json)) {
+                skill_json='[]';
+            }
+            List<String> skill_ids= (List<String>) JSON.deserialize(skill_json, List<String>.class);
+            for (String s_id : skill_ids) {
+                RH_Skill_Config__mdt config=skillsConfig.get(s_id);
+                if (config!=null) {
+                    if(config.rh_type__c==field) {
+                        string skill_label=config.RH_Full_Label__c;
+                        // skill_label = (Math.mod(values.size(), 2)==0) ? skill_label +'\n' :skill_label;
+                        // skill_label = (String.isBlank(skill_label)) ? skill_label  :'-'+skill_label;
+                        values.add(skill_label);
+                    }
+                }
+            }
+            String arg1='; ';
+            if(field=='Certification') arg1= '\n\n';
+            return String.join(values,arg1);
+        }
+        if(field=='YearOfExperience'){
+            Date dt =(Date) record.get('RH_Started_Date__c');
+            Date td= system.today();
+            if(dt==null) return 0;
+            Decimal years=dt.monthsBetween(td) / 12;
+            return years.intValue();
+        }
+        return null;
+    }
+
+    //---impl end
 
 
     @AuraEnabled 

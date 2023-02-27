@@ -20,6 +20,9 @@ export default class Rh_cards_view extends LightningElement {
     @api ly_lg = '4';
     @api columns = [];
     @api noRecordsLabel=this.l.recordNotFounded;
+    @api provider;
+    @api sobject;
+
     get existElements(){
         return this.items && this.items.length > 0 ? true : false;
     }
@@ -27,6 +30,10 @@ export default class Rh_cards_view extends LightningElement {
         return (this.existElements && this.items.length > this.pageSize ) ? true : false;
     }
 
+    get disableExportBtn(){
+        return !this.items?.length>0;
+    }
+    
     get ready(){
         return this.items?.length>0;
     }

@@ -1,0 +1,56 @@
+<template>
+    <c-rh_export_excel hide-btn mode="CUSTOM" file-name={_filename}> </c-rh_export_excel>
+    <template if:false={hideBtn}>
+        <!-- this.l.ExportXLS,this.icon.exportXls -->
+        <lightning-button variant="brand-outline" label={l.ExportXLS} title={l.ExportXLS} icon-name={icon.exportXls} onclick={showModalBox} disabled={disableBtn}></lightning-button>
+    </template>
+
+       <!-- modal start -->      
+    <template if:true={isShowModal}>
+        <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <header class="slds-modal__header">
+                    <button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse" title="Close" onclick={hideModalBox}>
+                    <lightning-icon icon-name="utility:close"
+                        alternative-text="close"
+                        variant="inverse"
+                        size="small" ></lightning-icon>
+                    <span class="slds-assistive-text">{l.Close}</span>
+                    </button>
+                    <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate"> {l.ExportTitle}</h2>
+                </header>
+            
+                <!-- modal body -->
+                <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                    <c-rh_dual_box  source-label={l.Avaible} selected-label={l.Selected} label={l.SlctExportFields}  options={options} values={values}> </c-rh_dual_box>
+                </div>
+
+                <!-- modal footer -->
+                <footer class="slds-modal__footer">
+                    <div class="slds-clearfix">
+                        <div class="slds-float_left">
+                            <lightning-button variant="brand-outline" class="btn-action prev"
+                              label={l.Cancel} onclick={hideModalBox}></lightning-button>
+                          </div>
+                          <div class="slds-float_right">
+                            <lightning-button variant="brand-outline" label={l.ExportXLS} title={l.ExportXLS} icon-name={icon.exportXls} onclick={handleExportData} disabled={disableExportBtn}></lightning-button>
+                          </div>
+                    </div>
+                    <!-- <button class="slds-button slds-button_neutral" onclick={hideModalBox}>Cancel</button>
+                    <c-rh_export_excel  
+                            export-not-ready={disableExportBtn} 
+                            file-name= 'Data User' 
+                            objects-data={data} 
+                            schema-obj={headerData} 
+                            mode={excelMode} 
+                            onaction={handleExportData}
+                    >
+                    </c-rh_export_excel> -->
+                </footer>
+            
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+       <!-- modal end -->
+</template>

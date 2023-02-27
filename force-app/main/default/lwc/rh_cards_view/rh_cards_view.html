@@ -10,9 +10,9 @@
                         <template if:true={showExport}>
                             <lightning-layout-item size="12"  padding="around-small" small-device-size="12" medium-device-size="12"
                                 large-device-size="12" >
-                                 <div class="custom-box" >
-                                    <c-rh_export_excel items={items} export-not-ready={isLoading} header={columns}>
-                                    </c-rh_export_excel>
+                                 <div class="custom-box slds-align_absolute-center" >
+                                    <!-- <c-rh_export disable-btn={enableExport} provider={provider} items={items}> </c-rh_export> -->
+                                    <c-rh_export_xlsx  disable-btn={enableExport} sobject={sobject} provider={provider} items={items}> </c-rh_export_xlsx>
                                 </div>
                             </lightning-layout-item>
                         </template>

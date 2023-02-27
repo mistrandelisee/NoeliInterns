@@ -4,7 +4,7 @@
     <protected>false</protected>
     <values>
         <field>RH_Full_Label__c</field>
-        <value xsi:type="xsd:string">Salesforce Certified Platform Developer II</value>
+        <value xsi:type="xsd:string">Platform Developer II</value>
     </values>
     <values>
         <field>rh_type__c</field>

@@ -13,7 +13,7 @@ export default class Rh_export_excel extends LightningElement {
     exportNotReady;
     rows;
     librariesLoaded = false;
-    objectsData = [
+    @api objectsData = [
         // Object #1
         {
             name: 'John Smith',
@@ -29,7 +29,7 @@ export default class Rh_export_excel extends LightningElement {
             paid: false
         }
     ]
-    schemaObj = [
+    @api schemaObj = [
         // Column #1
         {   key:'name',
             column: 'Name',
@@ -121,12 +121,13 @@ export default class Rh_export_excel extends LightningElement {
         header.forEach(e => {
             headerKeys.push(e.key),
             columns.push({ width: 20 });
-            headerRow.push({value: e.column , fontWeight: 'bold'})
+            headerRow.push({value: e.column ,...e.style})
         });
         rows.push(headerRow);
         data.forEach(item => {
           let row=[];
-          headerKeys.forEach(hk => {
+          header.forEach(head => {
+            let hk=head.key;
             let t=hk.split('.');//multilevel object
             let value=item;
             while(t.length>0 && value){
@@ -134,7 +135,7 @@ export default class Rh_export_excel extends LightningElement {
                 let k=t.shift();
                 value=value[k];
             }
-            row.push({value,wrap:true})
+            row.push({value,wrap:true,...head.rowStyle})
           });
           rows.push(row);
   
@@ -173,7 +174,7 @@ console.error(e);
         let _self = this;
         if (STD_MODE.toLowerCase() == this.mode?.toLowerCase()) {
             this.rows=_self.objectsToRows();
-            await launchExport();
+            await this.launchExport();
         }else{
             this.callParent('EXPORT',{});
         }

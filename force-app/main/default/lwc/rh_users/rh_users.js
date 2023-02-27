@@ -44,6 +44,7 @@ export default class Rh_users extends NavigationMixin(LightningElement) {
     @track userDetails = [];
     // userFormInputs=[];
     currUser = {};
+    provider='RH_Export_Controller';
 
     keysFields = { accountName: 'ok' };
     keysLabels = {

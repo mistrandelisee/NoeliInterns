@@ -390,6 +390,11 @@ import Page_Sub_bannerConfiguration__c from '@salesforce/label/c.rh_Page_SubTitl
 import Page_Sub_rhProfile__c from '@salesforce/label/c.rh_Page_SubTitle_rhProfile';
 import Page_Sub_rh_Invoices__c from '@salesforce/label/c.rh_Page_SubTitle_rh_Invoices';
 
+
+import Avaible from '@salesforce/label/c.rh_Avaible';
+import Selected from '@salesforce/label/c.rh_Selected';
+import SlctExportFields from '@salesforce/label/c.rh_SlctExportFields';
+import ExportTitle from '@salesforce/label/c.rh_ExportTitle';
 const labels = {
     addUser,
     ProjectNamePlc,
@@ -773,7 +778,11 @@ const labels = {
     Page_Sub_RHProject__c,
     Page_Sub_bannerConfiguration__c,
     Page_Sub_rhProfile__c,
-    Page_Sub_rh_Invoices__c
+    Page_Sub_rh_Invoices__c,
+    Avaible,
+    Selected,
+    SlctExportFields,
+    ExportTitle,
 };
 
 export { labels }
