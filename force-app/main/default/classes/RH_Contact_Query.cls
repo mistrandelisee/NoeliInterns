@@ -15,7 +15,7 @@ public  class RH_Contact_Query {
     }
 
     public List<Contact> getContactById(String contactId) {
-        return [SELECT Name,LastName,AccountId,toLabel(RH_Role__c) RoleLabel,RH_Started_Date__c,RH_Role__c, FirstName,RH_User__c,Email,MailingCity,MailingCountry,MailingStreet,MailingState,MailingPostalCode,Languages__c,RH_Extra_Infos__c ,RH_Number_Groups_Leaded__c,OtherAddress,Birthdate,Phone,Description,RH_Status__c,toLabel(RH_Status__c) statusLabel,
+        return [SELECT Name,LastName,AccountId,toLabel(RH_Role__c) RoleLabel,RH_Started_Date__c,RH_Role__c, FirstName,RH_User__c,Email,MailingCity,MailingCountry,MailingStreet,MailingState,MailingPostalCode,Languages__c,RH_Extra_Infos__c ,RH_Number_Groups_Leaded__c,OtherAddress,Birthdate,Phone,Description,RH_Status__c,toLabel(RH_Status__c) statusLabel,RH_Salary__c,
                     Account.Name,Account.NumberOfEmployees,Account.Website,Account.Phone,Account.Description,Account.YearStarted,Account.Industry,
                     RH_WorkGroup__r.Name,RH_WorkGroup__r.CreatedDate,RH_WorkGroup__r.RH_Team_Leader__r.Phone,RH_WorkGroup__r.RH_Team_Leader__c,RH_WorkGroup__r.RH_Team_Leader__r.name,RH_WorkGroup__r.RH_Team_Leader__r.RH_User__c,
                     (SELECT Name,CreatedDate,CreatedBy.Name FROM WorkGroups_Leader__r WHERE RH_Status__c =:RH_Constans.ACTIVATED_WORKGROUP_STATUS ORDER BY CreatedDate DESC),
@@ -23,7 +23,8 @@ public  class RH_Contact_Query {
                     (SELECT Name,Link__c,Start_Date__c,Description__c,End_Date__c  FROM Projects_Leaded__r WHERE Is_Effective__c =true AND recordTypeId=:RH_Constans.RH_PROJECT_RT ORDER BY CreatedDate DESC),
                     (SELECT Id ,TimeSheetNumber, RH_Name__c FROM RH_TimeSheets__r WHERE  Status IN:RH_Constans.TIMESHEET_PUBLIC_STATUS ORDER BY CreatedDate DESC),
                     (SELECT Id ,Name, RH_Title__c FROM Accomplishments__r WHERE RH_Status__c=:RH_Constans.ACTIVATED_ACCOMPLISHMENT_STATUS AND RH_Visibility__c=true ORDER BY CreatedDate DESC)
-                FROM Contact WHERE Id=:contactId];
+                    ,(SELECT Id,Body FROM Notes)
+                    FROM Contact WHERE Id=:contactId];
     }
     public List<Contact> getContactByUserId(String userId) {
         return [SELECT Name,LastName,AccountId,toLabel(RH_Role__c) RoleLabel,RH_Started_Date__c,RH_Role__c, FirstName,RH_User__c,Email,MailingCity,MailingCountry,MailingStreet,MailingState,MailingPostalCode,Languages__c,RH_Extra_Infos__c ,RH_Number_Groups_Leaded__c,OtherAddress,Birthdate,Phone,Description,RH_Status__c,toLabel(RH_Status__c) statusLabel,

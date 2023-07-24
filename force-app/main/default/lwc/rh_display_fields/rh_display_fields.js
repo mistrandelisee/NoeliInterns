@@ -143,20 +143,23 @@ export default class Rh_display_fields extends NavigationMixin(LightningElement)
       this.dispatchEvent(actionEvt);
     }
     goToLink(event){
+        const detail={...event.detail};
+        
         console.log(`############################ goToLink`);
-       let name=event.currentTarget.dataset.name;
-       let info=this.outputFields.find(field => field.name== name);
+        /*let name=event.currentTarget.dataset.name;
+        let info=this.outputFields.find(field => field.name== name);
 
-       if (info?.url) {
+        if (info?.url) {
             this.navigateToWebPage(info?.url);
-       }else{
+        }else{
         var actionEvt =new CustomEvent('action',
             {detail: { action : 'goToLink',eltName: name,info }}
         );
-        console.log("Watch: goToLink info  ->"+info); /*eslint-disable-line*/
-        
+        console.log("Watch: goToLink info  ->"+info); 
+            */
+        var actionEvt =new CustomEvent('action', {detail} );
         this.dispatchEvent(actionEvt);
-       }
+        //}
        
     }
     navigateToWebPage(url) {

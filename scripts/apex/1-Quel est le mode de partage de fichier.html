@@ -1,0 +1,67 @@
+1-Quel est le mode de partage de fichier?
+For File Sharing, select one of the following:
+Copy 
+— stores a copy of external files in Salesforce. If files are shared with a Chatter group, all group members can access the files, even if they lack access to the external system.
+Reference 
+— points to external files stored outside Salesforce. No file previews are available, and file downloads require user access to the external system. (Users must enter credentials for the system in the Authentication Settings for External Systems section of personal setup).
+
+
+<AppPermissionRequests AllowAppOnlyPolicy="true">
+ <AppPermissionRequest Scope="http://sharepoint/content/sitecollection/" Right="FullControl"/>
+</AppPermissionRequests>
+
+App Display Name	App Identifier
+RH Files App	i:0i.t|ms.sp.ext|69435dc7-6d0b-4af0-b27f-3a019fbb418f@4b22ec35-7462-49b7-a35c-5db772f8124f
+
+
+
+
+tenant ID: 4b22ec35-7462-49b7-a35c-5db772f8124f
+
+https://noeliit.sharepoint.com/_layouts/15/OauthAuthorize.aspx
+https://your company name.sharepoint.com/site collection path/_layouts/15/OauthAuthorize.aspx
+
+https://accounts.accesscontrol.windows.net/4b22ec35-7462-49b7-a35c-5db772f8124f/tokens/OAuth/2?resource=00000003-0000-0ff1-ce00-000000000000/noeliit.sharepoint.com@4b22ec35-7462-49b7-a35c-5db772f8124f
+
+
+
+The app identifier has been successfully created.
+Client Id:  	b7f5e6a2-85a7-449c-aeef-8e75c93ee3fe
+Client Secret:  	sfkX5ZRKHpF3SDhGVPmdJ2yCUIYu01U5zeRNVXwqm7s=
+Title:  	RH Files App NEW
+App Domain:  	noeli33-dev-ed.my.salesforce.com
+Redirect URI:  	https://noeli33-dev-ed.my.salesforce.com/services/authcallback/Sharepoint_Files_Provider
+
+
+Authorize Endpoint URL  https://noeliit.sharepoint.com/sites/RHSiteSF/_layouts/15/OauthAuthorize.aspx
+App Display Name	App Identifier
+	RH Files App NEW	i:0i.t|ms.sp.ext|b7f5e6a2-85a7-449c-aeef-8e75c93ee3fe@4b22ec35-7462-49b7-a35c-5db772f8124f
+https://accounts.accesscontrol.windows.net/4b22ec35-7462-49b7-a35c-5db772f8124f/tokens/OAuth/2?resource=00000003-0000-0ff1-ce00-000000000000/noeliit.sharepoint.com@4b22ec35-7462-49b7-a35c-5db772f8124f
+
+
+
+
+Site : ForceSite
+
+The app identifier has been successfully created.
+Client Id:  	3d7baa60-5c1f-4ff2-b11f-5ded5ffac95f
+Client Secret:  	B+rwlvtXie8cseX9wWvR1mM4/v5qslCMh9FzLrlP4hQ=
+Title:  	Force Files App
+App Domain:  	noeli33-dev-ed.my.salesforce.com
+Redirect URI:  	https://noeli33-dev-ed.my.salesforce.com/services/authcallback/Sharepoint_Provider_New
+
+App Display Name	App Identifier
+Force Files App	i:0i.t|ms.sp.ext|3d7baa60-5c1f-4ff2-b11f-5ded5ffac95f@4b22ec35-7462-49b7-a35c-5db772f8124f
+
+
+
+Authorize Endpoint URL — Enter the URL of the OAuthAuthorize.aspx page in Office 365. The URL format is as follows.
+SharePoint Online
+https://your company name.sharepoint.com/site collection path/_layouts/15/OauthAuthorize.aspx
+
+https://noeliit.sharepoint.com/sites/ForceSite/_layouts/15/OauthAuthorize.aspx
+
+SharePoint Online
+https://accounts.accesscontrol.windows.net/your company name.onmicrosoft.com/tokens/OAuth/2?resource=00000003-0000-0ff1-ce00-000000000000/your company name.sharepoint.com@your company name.onmicrosoft.com
+
+https://accounts.accesscontrol.windows.net/4b22ec35-7462-49b7-a35c-5db772f8124f/tokens/OAuth/2?resource=00000003-0000-0ff1-ce00-000000000000/noeliit.sharepoint.com@4b22ec35-7462-49b7-a35c-5db772f8124f

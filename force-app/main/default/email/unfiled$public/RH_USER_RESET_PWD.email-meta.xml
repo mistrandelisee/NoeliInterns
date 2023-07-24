@@ -6,12 +6,12 @@
     <style>none</style>
     <subject>User Recovering</subject>
     <textOnly>Dear Operator,
-You Requested a reset password, here is your new password
-$pass
+    You Requested a reset password, here is your new password
+    $pass
 
-Follow this link to access to your private space to reset your password
-
-Best Regards,
+    Follow this link to access to your private space to reset your password
+    $urlToSend
+    Best Regards,
 
 Noeli Team</textOnly>
     <type>custom</type>

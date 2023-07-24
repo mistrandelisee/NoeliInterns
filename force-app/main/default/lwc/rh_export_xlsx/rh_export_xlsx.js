@@ -27,7 +27,7 @@ export default class Rh_export extends LightningElement {
     icon={...icons}
     options=[];
     values=[];
-    initHeaderFields=[];
+    // initHeaderFields=[];
     selectedHeaderFields=[];
     
     @api hideBtn= false;
@@ -38,6 +38,8 @@ export default class Rh_export extends LightningElement {
     
     isShowModal = false;
 
+
+    mapHeaders=new Map();
     get disableExportBtn(){
        return this.selectedField?.length==0 ? true: false;
     }
@@ -51,10 +53,12 @@ export default class Rh_export extends LightningElement {
     get _filename(){
         return this.filename || 'Export_data'+(this.sobject|| '')+'_'+(new Date().getTime());
     }
+    get initHeaderFields(){
+        return  Array.from(this.mapHeaders.values()) || [];
+    }
 
     connectedCallback() {
 		registerListener('valueMember', this.handleSelectedExportValues, this);
-        this.initialize();
 	}
 
     
@@ -67,14 +71,21 @@ export default class Rh_export extends LightningElement {
         .then(result => {
             if(!result.error){
                 // process
-                this.initHeaderFields= result.COLUMNS;
+                this.mapHeaders=new Map();
+                const self = this;
+                // this.initHeaderFields= result.COLUMNS;
                 let optionsList=[];
                 let defaultSelected=[];
                 result.COLUMNS.forEach(elt => {
-                    optionsList.push({'label': elt.label, 'value':elt.name})
-                    if (elt.selected) {
+                    const col={...elt}
+                    const label= col.label?.replace('!','');
+                    col.label= col.label?.includes('!') ? ( self.l[label] || label) : label;
+
+                    optionsList.push({'label': col.label, 'value':col.name})
+                    if (col.selected) {
                         defaultSelected.push(elt.name)
                     }
+                    self.mapHeaders.set(col.name,col)
                 });
                 this.options=[...optionsList];
                 this.values=[...defaultSelected];
@@ -91,13 +102,14 @@ export default class Rh_export extends LightningElement {
             this.showToast(ERROR_VARIANT,this.l.errorOp, error);
         })
         .finally(() => {
-            
-        this.startSpinner(false);
+            this.isShowModal = true;
+            this.startSpinner(false);
         });
     }
 
     showModalBox() {  
-        this.isShowModal = true;
+        // this.isShowModal = true;
+        this.initialize();
     }
 
     hideModalBox() {  
@@ -130,7 +142,7 @@ export default class Rh_export extends LightningElement {
             this.handlePromptClick();
         }else{
             this.doExportData();
-        }- 
+        }
     }
     doExportData(event){
         // let recordIds=[];
@@ -139,6 +151,7 @@ export default class Rh_export extends LightningElement {
         // this.items?.forEach(elt => {
         //     recordIds.push(elt.id);
         // });
+        this.selectedHeaderFields=[]
         const recordIds=this.items?.map(elt => elt.id);
         if (recordIds.length>0) {
             // this.initHeaderFields.forEach(elt=> {
@@ -146,7 +159,13 @@ export default class Rh_export extends LightningElement {
             //         header.push(elt);
             //     }
             // });
-            this.selectedHeaderFields=this.initHeaderFields.filter((elt)=>this.selectedField.includes(elt.name));
+            this.selectedField.forEach(key=> {
+                const col=this.mapHeaders.get(key);
+                if (!!col) {
+                    this.selectedHeaderFields.push(col);
+                }
+            });
+            // this.selectedHeaderFields=this.initHeaderFields.filter((elt)=>this.selectedField.includes(elt.name));
             // this.selectedHeaderFields=[...header];
 
             const input={

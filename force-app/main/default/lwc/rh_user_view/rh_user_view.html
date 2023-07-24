@@ -24,51 +24,133 @@
             </template>
             <lightning-layout-item size="12" padding="around-smallx" small-device-size="12" medium-device-size={md_user} large-device-size={lg_user} >
                 <div class="custom-box">
-                        <div class="slds-p-around_medium profile_user_info">
-                            <template if:false={editContactMode}>
-                                <c-rh_display_fields 
-                                title={l.UserProfileTitle}
-                                iconsrc={icon.user_info}
-                                column="2"
-                                output-fields={userDetails}
-                                onaction={handleUserDetails}
-                                action-available={actionAvailable}
-                                has-action={hasAction}
-                                badges={badge}
-                                ></c-rh_display_fields>
-                            </template>
-                            <template if:true={editContactMode}>
-                                <lightning-card class="custom-card">
-                                    <h3 slot="title">
-                                        <lightning-icon icon-name={icon.user_info_edit} size="small" class="slds-m-right_small"></lightning-icon>
-                                        {l.UserProfileTitle}
-                                    </h3>
-                                    <c-rh_dynamic_form inputs-items={userFormInputs}></c-rh_dynamic_form>
-                                    <div class="card-footer" slot="footer">
-                                        <div class="slds-clearfix">
-                                            <div class="slds-float_left">
-                                                <lightning-button variant="base" label={l.Cancel} data-action-name="Cancel" title={l.Cancel} icon-name={icon.close} onclick={handleCancel} class="icon-md slds-m-left_x-small"></lightning-button>
-                                            </div>
-                                            <div class="slds-float_right">
-                                                <lightning-button variant="base" label={l.Save} data-action-name="Edit" title={l.Save} icon-name={icon.Save} onclick={handleSave} class="icon-md slds-m-left_medium"></lightning-button>
-                        
-                                            </div>
-                                        </div>
-                                        
-                                    </div>
-                                </lightning-card>
-                            </template>
-                        </div>
-                         <!--<template if:true={isUser}>
-                            <template if:true={isAdmin}>
-                                //reset passzord 
-                                <div class="slds-p-around_medium profile_reset_password ">
-                                    <c-rh_reset_password title={l.ChangePasswordTitle} onaction={handleAction} ></c-rh_reset_password>
-                                </div>
-                                            
-                            </template>
+                    <div class="slds-p-around_medium profile_user_info">
+                        <template if:false={editContactMode}>
+                            <c-rh_display_fields 
+                            title={l.UserProfileTitle}
+                            iconsrc={icon.user_info}
+                            column="2"
+                            output-fields={userDetails}
+                            onaction={handleUserDetails}
+                            action-available={actionAvailable}
+                            has-action={hasAction}
+                            badges={badge}
+                            ></c-rh_display_fields>
                         </template>
-                        -->
+                        <template if:true={editContactMode}>
+                            <lightning-card class="custom-card">
+                                <h3 slot="title">
+                                    <lightning-icon icon-name={icon.user_info_edit} size="small" class="slds-m-right_small"></lightning-icon>
+                                    {l.UserProfileTitle}
+                                </h3>
+                                <c-rh_dynamic_form inputs-items={userFormInputs}></c-rh_dynamic_form>
+                                <div class="card-footer" slot="footer">
+                                    <div class="slds-clearfix">
+                                        <div class="slds-float_left">
+                                            <lightning-button variant="base" label={l.Cancel} data-action-name="Cancel" title={l.Cancel} icon-name={icon.close} onclick={handleCancel} class="icon-md slds-m-left_x-small"></lightning-button>
+                                        </div>
+                                        <div class="slds-float_right">
+                                            <lightning-button variant="base" label={l.Save} data-action-name="Edit" title={l.Save} icon-name={icon.Save} onclick={handleSave} class="icon-md slds-m-left_medium"></lightning-button>
+                    
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                            </lightning-card>
+                        </template>
+                    </div>
+                        
+                    <template if:true={isUser}>
+                        <lightning-layout multiple-rows>
+
+                            <lightning-layout-item size="12" padding="around-smallx" small-device-size="12" medium-device-size="6" large-device-size="6">
+                                <div class="custom-box">
+                                <div class="slds-p-around_medium extra_info">
+                                    <c-rh_list 
+                                        css-class="list-bordered list-centered min-h_10 list-hover_underline slds-has-dividers_bottom slds-has-block-links_space slds-p-horizontal_medium"
+                                        header-title={TimeSheetsTitle}
+                                        key-id="Id"
+                                        css-style="max-height:40vh;overflow-y:auto"
+                                        header-icon={icon.timesheet}
+                    
+                                        key-value="RH_Name__c"
+                                        records={timeSheets}
+                                        onaction={goToTimsheet}
+                                    ></c-rh_list>
+                                </div>
+                                </div>
+                            </lightning-layout-item>
+                            
+                            <lightning-layout-item size="12" padding="around-smallx" small-device-size="12" medium-device-size="6" large-device-size="6">
+                                <div class="custom-box">
+                                <div class="slds-p-around_medium extra_info">
+                                    <c-rh_list 
+                                        css-class="list-bordered list-centered min-h_10 list-hover_underline slds-has-dividers_bottom slds-has-block-links_space slds-p-horizontal_medium"
+                                        header-title={AccomplishmentsTitle}
+                                        key-id="Id"
+                                        css-style="max-height:40vh;overflow-y:auto"
+                                        header-icon={icon.Accomplishment}
+                    
+                                        key-value="RH_Title__c"
+                                        records={accomplishments}
+                                        onaction={goToAccomplishment}
+                                    ></c-rh_list>
+                                </div>
+                                </div>
+                            </lightning-layout-item>
+                            
+                            <lightning-layout-item size="12" padding="around-smallx" small-device-size="12" medium-device-size="6" large-device-size="6">
+                                <div class="custom-box">
+                                <div class="slds-p-around_medium extra_info">
+                                    <c-rh_list 
+                                        css-class="list-bordered list-centered min-h_10 list-hover_underline slds-has-dividers_bottom slds-has-block-links_space slds-p-horizontal_medium"
+                                        header-title={LeadedGroupTitle}
+                                        key-id="Id"
+                                        css-style="max-height:40vh;overflow-y:auto"
+                                        header-icon={icon.group}
+                                        key-value="Name"
+                                        records={leadedGroups}
+                                        onaction={goToGroup}
+                                    ></c-rh_list>
+                                </div>
+                                </div>
+                            </lightning-layout-item>
+                            
+                            <lightning-layout-item size="12" padding="around-smallx" small-device-size="12" medium-device-size="6" large-device-size="6">
+                                <div class="custom-box">
+                                <div class="slds-p-around_medium extra_info">
+                                    <c-rh_list 
+                                        css-class="list-bordered list-centered min-h_10 list-hover_underline slds-has-dividers_bottom slds-has-block-links_space slds-p-horizontal_medium"
+                                        header-title={projectTitle}
+                                        key-id="Id"
+                                        css-style="max-height:40vh;overflow-y:auto"
+                                        header-icon={icon.project}
+                                        key-value="Name"
+                                        records={userProjects}
+                                        onaction={goToProject}
+                                    ></c-rh_list>
+                                </div>
+                                </div>
+                            </lightning-layout-item>
+                            
+                            <lightning-layout-item size="12" padding="around-smallx" small-device-size="12" medium-device-size="6" large-device-size="6">
+                                <div class="custom-box">
+                                <div class="slds-p-around_medium extra_info">
+                                    <c-rh_list 
+                                    css-class="list-bordered list-centered min-h_10 list-hover_underline slds-has-dividers_bottom slds-has-block-links_space slds-p-horizontal_medium"
+                                    header-title={LeadedProjectTitle}
+                                        key-id="Id"
+                                        css-style="max-height:40vh;overflow-y:auto"
+                                        header-icon={icon.project}
+                                        key-value="Name"
+                                        records={leadedProjects}
+                                        onaction={goToProject}
+                                    ></c-rh_list>
+                                </div>
+                                </div>
+                            </lightning-layout-item>
+                        </lightning-layout>
+                    </template>
                 </div>
             </lightning-layout-item>
             <template if:true={isUser}>
@@ -78,101 +160,17 @@
                        <div class="slds-p-around_medium extra_info">
                            <c-rh_extra_fields json-field={jsonInfo} ></c-rh_extra_fields>
                        </div>
-                    </div>
-                </lightning-layout-item>
-
-            </template>
-
-            <template if:true={isUser}>
-
-
-                <lightning-layout-item size="12" padding="around-smallx" small-device-size="6" medium-device-size="6" large-device-size="4">
-                    <div class="custom-box">
-                       <div class="slds-p-around_medium extra_info">
-                           <c-rh_list 
-                            css-class="list-bordered list-centered min-h_10 list-hover_underline slds-has-dividers_bottom slds-has-block-links_space slds-p-horizontal_medium"
-                            header-title={TimeSheetsTitle}
-                            key-id="Id"
-                            css-style="max-height:40vh;overflow-y:auto"
-                            header-icon={icon.timesheet}
-        
-                            key-value="RH_Name__c"
-                            records={timeSheets}
-                            onaction={goToTimsheet}
-                           ></c-rh_list>
-                       </div>
-                    </div>
-                </lightning-layout-item>
-
-                
-                    <lightning-layout-item size="12" padding="around-smallx" small-device-size="6" medium-device-size="6" large-device-size="4">
-                        <div class="custom-box">
-                           <div class="slds-p-around_medium extra_info">
-                               <c-rh_list 
-                                css-class="list-bordered list-centered min-h_10 list-hover_underline slds-has-dividers_bottom slds-has-block-links_space slds-p-horizontal_medium"
-                                header-title={AccomplishmentsTitle}
-                                key-id="Id"
-                                css-style="max-height:40vh;overflow-y:auto"
-                                header-icon={icon.Accomplishment}
-            
-                                key-value="RH_Title__c"
-                                records={accomplishments}
-                                onaction={goToAccomplishment}
-                               ></c-rh_list>
-                           </div>
+                       <div class="slds-p-around_small profile_user_skill">
+                            <c-rh_employee_skill 
+                                record-id={recordId}
+                                config={skill_config}
+                                editable={isAdmin}
+                            ></c-rh_employee_skill>
                         </div>
-                    </lightning-layout-item>
-
-                
-                <lightning-layout-item size="12" padding="around-smallx" small-device-size="6" medium-device-size="6" large-device-size="4">
-                    <div class="custom-box">
-                       <div class="slds-p-around_medium extra_info">
-                           <c-rh_list 
-                            css-class="list-bordered list-centered min-h_10 list-hover_underline slds-has-dividers_bottom slds-has-block-links_space slds-p-horizontal_medium"
-                            header-title={LeadedGroupTitle}
-                            key-id="Id"
-                            css-style="max-height:40vh;overflow-y:auto"
-                            header-icon={icon.group}
-                            key-value="Name"
-                            records={leadedGroups}
-                            onaction={goToGroup}
-                           ></c-rh_list>
-                       </div>
-                    </div>
-                </lightning-layout-item>
-                <lightning-layout-item size="12" padding="around-smallx" small-device-size="6" medium-device-size="6" large-device-size="4">
-                    <div class="custom-box">
-                       <div class="slds-p-around_medium extra_info">
-                           <c-rh_list 
-                            css-class="list-bordered list-centered min-h_10 list-hover_underline slds-has-dividers_bottom slds-has-block-links_space slds-p-horizontal_medium"
-                            header-title={projectTitle}
-                            key-id="Id"
-                            css-style="max-height:40vh;overflow-y:auto"
-                            header-icon={icon.project}
-                            key-value="Name"
-                            records={userProjects}
-                            onaction={goToProject}
-                           ></c-rh_list>
-                       </div>
-                    </div>
-                </lightning-layout-item>
-                <lightning-layout-item size="12" padding="around-smallx" small-device-size="6" medium-device-size="6" large-device-size="4">
-                    <div class="custom-box">
-                       <div class="slds-p-around_medium extra_info">
-                           <c-rh_list 
-                           css-class="list-bordered list-centered min-h_10 list-hover_underline slds-has-dividers_bottom slds-has-block-links_space slds-p-horizontal_medium"
-                           header-title={LeadedProjectTitle}
-                            key-id="Id"
-                            css-style="max-height:40vh;overflow-y:auto"
-                            header-icon={icon.project}
-                            key-value="Name"
-                            records={leadedProjects}
-                            onaction={goToProject}
-                           ></c-rh_list>
-                       </div>
                     </div>
                 </lightning-layout-item>
             </template>
+
             
         </lightning-layout>
         

@@ -13,9 +13,12 @@ export default class Rh_employee_skill extends LightningElement {
     @api mode;
     @api recordId;
     @api editable;
+    @api config;
     @track
     skillCategories=[];
-
+    get ly_xs(){ return this.config?.ly_xs ?  this.config?.ly_xs: '12'; }
+    get ly_md(){ return this.config?.ly_md ?  this.config?.ly_md: '4'; }
+    get ly_lg(){ return this.config?.ly_lg ?  this.config?.ly_lg: '3'; }
     get readOnly(){
         return  (this.mode===READ_ONLY || !this.mode) 
     }
@@ -35,8 +38,18 @@ export default class Rh_employee_skill extends LightningElement {
             console.error('OUTPUT: error');
             console.error(error);
         } else if (data) {
-            // TODO: Data handling
-            this.skillCategories=data.data;
+            const self=this;
+            this.skillCategories=data.data?.map(function(data) {
+                const skillCategory=data;
+                let skills=[];
+                skillCategory?.skills?.forEach(skill => {
+                    if (self.editable || (skill.checked && !self.editable)) {
+                        skills.push ({ ...skill, ly_xs: self.ly_xs, ly_md: self.ly_md, ly_lg: self.ly_lg,})
+                    }
+                });
+                // skillCategory.skills=skills;
+                return {...skillCategory,skills};
+            });
             console.log(`data ` );
             console.log(data );
         }
@@ -74,11 +87,7 @@ export default class Rh_employee_skill extends LightningElement {
             console.log('Result', result);
             this.mode='';
             // refreshApex(this.skills_callback);
-            refreshApex(this.skills_callback)
-            .then((data) => {
-                console.log(data);
-                // do something with the refreshed data in this.opptiesOverAmount
-            });
+            
           })
           .catch(error => {
             console.error('Error:', error);

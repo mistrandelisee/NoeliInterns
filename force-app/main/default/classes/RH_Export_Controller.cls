@@ -44,8 +44,9 @@ public without sharing class RH_Export_Controller implements RH_ExportInterface 
         mapInputs=new Map<String, Object> (additionalInputs);
         className=String.isBlank(className)? 'RH_Export_Controller' : className;
         mapInputs.put(CLASS_KEY,className);
-        RH_ExportInterface ExportInterface = (RH_ExportInterface) Type.forName(className).newInstance();
-        return ExportInterface.getColumns(mapInputs);
+        // RH_ExportInterface ExportInterface = (RH_ExportInterface) Type.forName(className).newInstance();
+        // return ExportInterface.getColumns(mapInputs);
+        return buildColumns(mapInputs);
     }
     public static Object performExport(String className,Map<String,Object> additionalInputs){
         mapInputs=new Map<String, Object> (additionalInputs);
@@ -76,7 +77,8 @@ public without sharing class RH_Export_Controller implements RH_ExportInterface 
                 
             }else{
                 if (col.logicType=='CUSTOM') {
-                    fieldsSetToQuery.add(String.valueOf(ExportInterface.getExportfield(col.name)));
+                    // fieldsSetToQuery.add(String.valueOf(ExportInterface.getExportfield(col.name)));
+                    fieldsSetToQuery.add(String.valueOf(getExportInterface(col.impl).getExportfield(col.name)));
                 }
             }
         }
@@ -99,7 +101,8 @@ public without sharing class RH_Export_Controller implements RH_ExportInterface 
                     value=record.get(field);
                 }else{
                     if (col.logicType=='CUSTOM') {
-                        value=(ExportInterface.getExportValue(record,field));
+                        // value=(ExportInterface.getExportValue(record,field));
+                        value=(getExportInterface(col.impl).getExportValue(record,field));
                     }
                 }
                 output.put(field, value);
@@ -109,6 +112,9 @@ public without sharing class RH_Export_Controller implements RH_ExportInterface 
         // System.debug('result >> ' + result);
 
         return result.values();
+    }
+    private static RH_ExportInterface getExportInterface(String className) {
+        return (RH_ExportInterface) Type.forName(className).newInstance();
     }
     /*
     public Object buildExportData(Object obj){
@@ -216,7 +222,47 @@ public without sharing class RH_Export_Controller implements RH_ExportInterface 
         }*/
         return null;
     }
-   
+    public static Object buildColumns(Map<String,Object> mapInputs){
+        List<columnsWrapper> columns = new List<columnsWrapper>();
+        String sobj =(mapInputs.get(OBJECT_KEY) != null) ? String.valueOf(mapInputs.get(OBJECT_KEY)) :'';
+        sobj = String.isBlank(sobj)? 'null' :'%'+sobj+'%';
+        Contact userContact=RH_Utility.getCurentContact();
+        String role=userContact?.RH_Role__c;
+        List<String> Visibilities = new List<String>{'ALL', role};
+        for (RH_Excel_Field_Config__mdt  column_config : [SELECT  Id,DeveloperName, MasterLabel,ImplementationClass__c,type__c,Selected__c,
+                                                            Name__c, Label__c,Object__c, logicType__c, headerStyle__c, rowStyle__c,label FROM RH_Excel_Field_Config__mdt 
+                                                            WHERE Object__c LIKE :sobj AND (Visibility__c IN :Visibilities ) ORDER BY Name__c]) {
+             columnsWrapper col=new  columnsWrapper(column_config.Label__c, column_config.Name__c,  column_config.type__c,  column_config.Selected__c,column_config.logicType__c);
+             col.rowStyle= getStyle(column_config.rowStyle__c) ;
+             col.style=getStyle(column_config.headerStyle__c) ;
+             col.impl=column_config.ImplementationClass__c;
+             columns.add(col);
+             System.debug('coll ' + col);
+        }
+        return columns;
+    }
+    public static string getStyle(String style_id ) {
+        RH_Excel_Style__mdt e_style_config = RH_Excel_Style__mdt.getInstance(style_id);
+        if (e_style_config == null) {
+            return '';
+        }
+        return JSON.serialize(buildStyleMap(e_style_config));
+    }
+    private static Map<String, Object> buildStyleMap(RH_Excel_Style__mdt e_style_config ) {
+        Map<String, Object> styleMap = new Map<String, Object>();
+        Map<String, Object> response = (Map<String, Object>) JSON.deserializeUntyped(JSON.serialize(e_style_config));
+       
+        for(string str : response.keyset() ){
+            // System.debug('key ==>>'+str);
+            object value= response.get(str);
+            if((!str.contains('__'))|| value==null){ continue;  }
+            String key= str.substringBefore('__c');
+            
+            styleMap.put(key, value);
+        }
+        // System.debug('styleMap ' + styleMap);
+        return styleMap;
+    }
     public class columnsWrapper  {
         @AuraEnabled public String label;
         @AuraEnabled public String name;
@@ -225,7 +271,14 @@ public without sharing class RH_Export_Controller implements RH_ExportInterface 
         @AuraEnabled public boolean selected;
         @AuraEnabled public String style;
         @AuraEnabled public String rowStyle;
-
+        @AuraEnabled public String impl;
+        public  columnsWrapper(String label, String name, String dataType, boolean selected,String logicType){
+            this.label= label;
+            this.name= name;
+            this.dataType= dataType;
+            this.selected= selected;
+            this.logicType=logicType ;
+        }
         public  columnsWrapper(String label, String name, String dataType, boolean selected){
             this.label= label;
             this.name= name;

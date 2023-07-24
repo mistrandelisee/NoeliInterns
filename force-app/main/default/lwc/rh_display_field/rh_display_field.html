@@ -1,0 +1,27 @@
+<template>
+    
+    <span class="slds-form-element__label">{field.label}</span>
+    <div class="slds-form-element__control">
+        <div class="slds-form-element__static">
+            <template if:true={isLink}>
+                <a href={field.href} data-name={field.name} onclick={goToLink} class={field.class}> {field.value} </a>
+            </template>
+            <template if:true={isDatetime}>
+                <lightning-formatted-date-time value={field.value} year="numeric" month="short" day="2-digit" hour="numeric" weekday="long" ></lightning-formatted-date-time>
+            </template>
+            <template if:true={isCurrency}>
+                <lightning-formatted-number  value={field.value} format-style="currency" currency-code={field.code} >  </lightning-formatted-number>
+            </template>
+            <template if:true={isTextarea}>
+                <lightning-formatted-rich-text value={field.value} ></lightning-formatted-rich-text>
+            </template>
+            <template if:true={isEmail}>
+                <lightning-formatted-email value={field.value} ></lightning-formatted-email>
+            </template>
+            <template if:true={isBase}>
+                <lightning-formatted-text value={field.value} linkify></lightning-formatted-text>
+               
+            </template>
+        </div>
+    </div>
+</template>

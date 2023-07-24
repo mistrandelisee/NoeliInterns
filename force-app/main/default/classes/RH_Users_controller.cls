@@ -137,7 +137,7 @@ public without sharing class RH_Users_controller implements RH_SummarizeInterfac
         Map<String, Object> styleMap = new Map<String, Object>();
         List<RH_Export_Controller.columnsWrapper> columns = new List<RH_Export_Controller.columnsWrapper>();
         
-        RH_Export_Controller.columnsWrapper col=new RH_Export_Controller.columnsWrapper(System.Label.rh_Name, 'Name', 'String', true);
+        /*RH_Export_Controller.columnsWrapper col=new RH_Export_Controller.columnsWrapper(System.Label.rh_Name, 'Name', 'String', true);
         styleMap =(Map<String, Object>) col.defaultHeaderStyle();
         styleMap.put('width',30);
         col.setheaderStyle(styleMap);
@@ -174,7 +174,7 @@ public without sharing class RH_Users_controller implements RH_SummarizeInterfac
         col.setheaderStyle(styleMap);
         columns.add( col);
 
-        System.debug('columns: ' + columns);
+        System.debug('columns: ' + columns);*/
         return columns;
         // return null;
     }  
@@ -368,7 +368,6 @@ public without sharing class RH_Users_controller implements RH_SummarizeInterfac
             conctactUser.Languages__c=mapInputs.Language;
             conctactUser.RH_Role__c= mapInputs.Role;
             conctactUser.RH_Started_Date__c = mapInputs.startDate;
-            conctactUser.RH_Status__c=RH_Constans.DRAFT_STATUS;
             String grp=mapInputs.wGroup;
             if (String.isNotBlank(grp)) {
                 conctactUser.RH_WorkGroup__c=  grp;
@@ -393,10 +392,15 @@ public without sharing class RH_Users_controller implements RH_SummarizeInterfac
            
             conctactUser.recordTypeId=RH_Constans.RH_CONTACT_RT;
             if(isInsert){
+                conctactUser.RH_Status__c=RH_Constans.DRAFT_STATUS;
                 insert conctactUser;
             }else{
                 conctactUser.Id=mapInputs.Id;
+                conctactUser.RH_Salary__c=mapInputs.Salary;
                 update conctactUser;
+            }
+            if (String.isNotBlank(mapInputs.Notes)) {
+                insert new Note(ParentId=conctactUser.Id,Title='Note'+system.now().getTime(), Body=mapInputs.Notes);
             }
             //conctactUser.Account= String.valueOf(mapInputs.get('Account'));
             mapReturn.put('Input',contactJson); 
@@ -604,7 +608,13 @@ public without sharing class RH_Users_controller implements RH_SummarizeInterfac
 
     @AuraEnabled
     public static void updateEmployeeSkills(String recordId,String infoJson){
-        update new contact(Id=recordId,RH_Skill_Infos__c=infoJson);
+        List<Contact>  cons = contactQry.getContactByUserIds(new list<String>{recordId});
+       if(cons.size()>0){
+        update new contact(Id=cons[0].Id,RH_Skill_Infos__c=infoJson);
+       }else {
+        throw new AuraHandledException('missing user');
+       }
+        
     }
 
     @AuraEnabled 
@@ -638,12 +648,14 @@ public without sharing class RH_Users_controller implements RH_SummarizeInterfac
         @AuraEnabled public String Id{get;set;}
         @AuraEnabled public String LastName{get;set;}
         @AuraEnabled public String FirstName{get;set;}
+        @AuraEnabled public String Notes{get;set;}
         @AuraEnabled public String Language{get;set;}
         @AuraEnabled public String Email{get;set;}
         @AuraEnabled public String Role{get;set;}
         @AuraEnabled public String wGroup{get;set;}
         @AuraEnabled public Boolean Activated{get;set;}
         @AuraEnabled public Date  startDate{get;set;}
+        @AuraEnabled public Decimal Salary ;
         
     }
     public class changepasswordwrapper  {

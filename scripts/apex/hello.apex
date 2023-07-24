@@ -79,3 +79,15 @@ RH_telegramMessageConfigImpl.WHOIDKEY='Id';
 RH_telegramMessageConfigImpl.notifyTelegram(action, recordId, uIds);
 
 
+Map<string,Schema.sObjectType> standardObj = Schema.getGlobalDescribe();
+for(string str : standardObj.keyset() ){
+    if(!str.contains('__')){
+        System.debug('Standard Object ==>>'+str);
+        
+    }
+    if(str.contains('__')){
+        System.debug('Custom Object ==>>'+str);
+    }
+    System.debug(standardObj.get(str));
+}
+    

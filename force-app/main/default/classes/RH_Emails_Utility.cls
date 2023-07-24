@@ -1,5 +1,7 @@
 public  class RH_Emails_Utility {
     private static final  RH_Settings__c cs = RH_Settings__c.getOrgDefaults();
+    private static RH_Contact_Query contactQry = RH_Contact_Query.getInstance();
+
     public static void sendMailMethod(List<String> recipients,String emailSubject, String body, String useHTML, Messaging.EmailFileAttachment fileAttachments){
         Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage(); 
         mail.setToAddresses(recipients);
@@ -11,10 +13,11 @@ public  class RH_Emails_Utility {
             }
         Messaging.sendEmail(new Messaging.SingleEmailMessage[] {mail});
     }
+
     public static void sendUserResetPassword(Map<String, Object> emailInputMap){
         try{
-            
-        //  OrgWideEmailAddress[] owea = [select Id from OrgWideEmailAddress where DisplayName =: ORG_WIDE_DSP_NAME];
+        String ORG_WIDE_DSP_NAME = cs.Display_Name__c;
+        OrgWideEmailAddress[] owea = [select Id from OrgWideEmailAddress where DisplayName =: ORG_WIDE_DSP_NAME];
         String userId=string.valueOf(emailInputMap.get('userId'));
         String password=string.valueOf(emailInputMap.get('Password'));
         String profilePage=cs.community_profile_Link__c;//'https://noeli-interns-developer-edition.eu44.force.com/NoeliInterns/s/rhprofile';//
@@ -46,9 +49,12 @@ public  class RH_Emails_Utility {
         mail.setSubject(subject);
         mail.setHtmlBody(htmlBody);
         mail.setPlainTextBody(plainBody);
-        // if(owea.size()>0) {
-        //     mail.setOrgWideEmailAddressId(owea.get(0).Id);
-        // }
+        if(owea.size()>0) {
+            mail.setOrgWideEmailAddressId(owea.get(0).Id);
+        }
+        if(!System.isFuture()){
+            doNotif(plainBody,new List<String> {userId});
+        }
         System.debug('mail var ' + mail.getSubject());
         Messaging.SendEmailResult[] results = Messaging.sendEmail(
                                  new Messaging.SingleEmailMessage[] { mail });
@@ -75,5 +81,19 @@ public  class RH_Emails_Utility {
         }
         
         return sendResult;
+    }
+    @future(callout=true)
+    private static void doNotif(String messagetext,List<String> uIds){ 
+        List<RH_Telegram_Utility.Message> messages = new List<RH_Telegram_Utility.Message>();
+        for (Contact rcv : contactQry.getContactByUserIds(uIds)) { //  SOQL N 1
+            String chat_id=rcv.RH_tgUserId__c;
+            if(String.isNotBlank(chat_id)){
+                RH_Telegram_Utility.Message tg_message= new RH_Telegram_Utility.Message(chat_id,messagetext);
+                messages.add(tg_message);
+            }
+        }
+        if (! messages.isEmpty()) {
+            RH_Telegram_Utility.sendMessages(messages);//callout + DML
+        }
     }
 }

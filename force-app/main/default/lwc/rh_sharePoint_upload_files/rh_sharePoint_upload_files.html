@@ -1,0 +1,30 @@
+<template>
+    <lightning-card  variant="Narrow" class="slds-border"  title="Upload Share Point File" icon-name="standard:file">
+
+        <lightning-layout multiple-rows>
+            <lightning-layout-item padding="around-small" size="12" medium-device-size="12" large-device-size="12">
+                <lightning-input label="File" name="file uploader"
+                                 onchange={handleFileChange} type="file"
+                                 accept=".jpg, .csv, .png, .doc, .pdf"
+                                 multiple>
+                </lightning-input>
+            </lightning-layout-item>
+            <lightning-layout-item padding="around-small" size="12" medium-device-size="12" large-device-size="12">
+                    <lightning-datatable
+                        key-field="id"
+                        data={data}
+                        columns={columns}
+                        onrowaction={handleActionRow}>
+                    </lightning-datatable>
+            </lightning-layout-item>
+        </lightning-layout>
+        <lightning-layout multiple-rows>
+            <lightning-layout-item padding="around-small" size="6" medium-device-size="6" large-device-size="6">
+                <lightning-button variant="brand" label="Upload File" title="Primary action"  class="slds-m-left_x-small" onclick={deleteFolderRecord}></lightning-button>
+            </lightning-layout-item>
+            <lightning-layout-item padding="around-small" size="6" medium-device-size="6" large-device-size="6">
+                <lightning-button variant="success" label="Add File" title="Primary action"  class="slds-m-left_x-small" onclick={CreateFolderPathRoot}></lightning-button>
+            </lightning-layout-item>
+        </lightning-layout>
+    </lightning-card>
+</template>

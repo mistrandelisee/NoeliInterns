@@ -320,7 +320,7 @@ import Subject from '@salesforce/label/c.rh_subject';
 import activatedQst from '@salesforce/label/c.rh_activated';
 
 import NewGroup from '@salesforce/label/c.rh_NewGroup';
-import detailGroupName from '@salesforce/label/c.rh_Name';
+// import detailGroupName from '@salesforce/label/c.rh_Name';
 import leaderGroup from '@salesforce/label/c.rh_leaderGroups';
 import DescriptionPlcGroup from '@salesforce/label/c.rh_DescriptionPlc';
 import Desactivated from '@salesforce/label/c.rh_Deactivated';
@@ -395,6 +395,20 @@ import Avaible from '@salesforce/label/c.rh_Avaible';
 import Selected from '@salesforce/label/c.rh_Selected';
 import SlctExportFields from '@salesforce/label/c.rh_SlctExportFields';
 import ExportTitle from '@salesforce/label/c.rh_ExportTitle';
+
+import Certification from '@salesforce/label/c.rh_Certification';
+import Skill from '@salesforce/label/c.rh_Skill';
+import YearOfExperience from '@salesforce/label/c.rh_YearOfExperience';
+/**
+ *         
+rh_Name
+rh_Phone
+rh_Email
+rh_Certification
+rh_Skill
+rh_StartDate
+rh_YearOfExperience
+ */
 const labels = {
     addUser,
     ProjectNamePlc,
@@ -702,7 +716,7 @@ const labels = {
     RespondedDate,
     requestDetail,
     NewGroup,
-    detailGroupName,
+    detailGroupName:Name,
     leaderGroup,
     DescriptionPlcGroup,
     Desactivated,
@@ -783,6 +797,11 @@ const labels = {
     Selected,
     SlctExportFields,
     ExportTitle,
+    Certification,
+    Skill,
+    YearOfExperience,
+    ApprNote:'Appreciation',
+    Salary:'Salary'
 };
 
 export { labels }

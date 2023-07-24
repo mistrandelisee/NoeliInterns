@@ -44,6 +44,7 @@ const OK_DISABLE='OK_DISABLE';
 const OK_FREEZE='OK_FREEZE';
 
 const KEY_NB='#NB';
+const DEFAULT_CURRENCY='EUR';
 export default class Rh_user_view extends NavigationMixin(LightningElement) {
     
 l={...labels,
@@ -65,6 +66,11 @@ currUser={};
 
 constants={};
 
+@track skill_config={
+    ly_xs:'12',
+    ly_md:'12',
+    ly_lg:'12',
+}
 
 RoleActions=[
     {
@@ -73,6 +79,8 @@ RoleActions=[
         name:PROMOTE_ACTION,
         title:this.l.PromoteBaseUser,
         iconName:this.icon.promote,
+        class:'slds-m-left_x-small',
+        pclass :' slds-float_right'
         // class:"active-item"
     }
 ]
@@ -82,6 +90,10 @@ action='';
 isUser;
 jsonInfo=[];
 actionAvailable=[];
+curriencies=[
+    { label: 'EUR', value: 'EUR' },
+    { label: 'FCFA', value: 'FCFA' },
+];
 
 get lg_user(){
     return this.isUser ? '6' : '12'
@@ -294,7 +306,7 @@ hasAction;
                 this.buildExtraField(this.contactrecord?.RH_Extra_Infos__c);
                 if(this.isAdmin){
                     this.buildDetailsActions(this.contactrecord);
-                    if(! this.isUser){
+                    // if(! this.isUser){
                         this.hasAction=true;
                         this.actionAvailable =[
                             {
@@ -307,7 +319,7 @@ hasAction;
                             },
                         ];
                         //this.buildForm();
-                    }
+                    // }
                 }
                     
             }else{
@@ -754,6 +766,7 @@ hasAction;
                 label:this.l.Email,
                 name:'Email',
                 value:profileinformation?.Email,
+                type:'email',
             },
             {
                 label:this.l.Language,
@@ -783,6 +796,15 @@ hasAction;
             
     
         ];
+        if (this.isAdmin) {
+            this.userDetails.push({
+                label: this.l.Salary,
+                name: 'Salary',
+                value: profileinformation?.RH_Salary__c,
+                isCurrency:true,
+                code:DEFAULT_CURRENCY,
+            })
+        }
         if (this.isUser) {
             
             this.userDetails=this.userDetails.concat([
@@ -795,27 +817,27 @@ hasAction;
                 {
                     label:this.l.Country,
                     name:'Country',
-                    value:this.profileinformation?.contact?.MailingCountry
+                    value:profileinformation?.MailingCountry
                 },
                 {
                     label:this.l.Province,
                     name:'Province',
-                    value:this.profileinformation?.contact?.MailingState
+                    value:profileinformation?.MailingState
                 },
                 {
                     label:this.l.City,
                     name:'City',
-                    value:this.profileinformation?.contact?.MailingCity
+                    value:profileinformation?.MailingCity
                 },
                 {
                     label:this.l.Street,
                     name:'Street',
-                    value:this.profileinformation?.contact?.MailingStreet
+                    value:profileinformation?.MailingStreet
                 },
                 {
                     label:this.l.PostalCode,
                     name:'Postal Code',
-                    value:this.profileinformation?.contact?.MailingPostalCode
+                    value:profileinformation?.MailingPostalCode
                 },
                 {
                     label:this.l.Birthday,
@@ -830,7 +852,19 @@ hasAction;
         
             ]);
         }
+        if (this.isAdmin) {
+            this.userDetails.push({
+                label: this.l.ApprNote,
+                name: 'Note',
+                value: this.notes,
+                type:'textarea'
+            })
+        }
     
+    }
+    get notes() {
+        const notes=this.contactrecord?.Notes?.map(x=>x.Body)|| [];
+        return notes.join('<br>');
     }
     buildForm(){
         this.userFormInputs=[
@@ -898,7 +932,45 @@ hasAction;
                 ly_md:'6', 
                 ly_lg:'6',
                 isText:true,//for avoid render blank field
-            }
+            },
+            {
+                label:`${this.l.Salary} (${DEFAULT_CURRENCY})`,
+                placeholder:this.l.Salary,
+                name:'Salary',
+                required:true,
+                min:1,
+                value:this.contactrecord?.RH_Salary__c || 0,
+                type:'number',
+                // readOnly:this.isEntryReadOnly,
+                ly_xs:'12', 
+                ly_md:'6', 
+                ly_lg:'6'
+            },
+            {
+                label:this.l.ApprNote,
+                name:'Notes',
+                value:this.notes,
+                placeholder:this.l.ApprNote,
+                className:'textarea',
+                maxlength:32000,
+                type:'textarea',
+                ly_md:'12', 
+                ly_xs:'12', 
+                ly_lg:'12'
+            },/*,
+            {
+                label:this.l.Currency,
+                name:'currencyCode',
+                type:'radio',
+                variant:'label-inline',
+                value: DEFAULT_CURRENCY,
+                required:true,
+                options : this.curriencies,
+                readOnly:true,
+                ly_xs:'12', 
+                ly_md:'6', 
+                ly_lg:'6'
+            },*/
          
         
         ]

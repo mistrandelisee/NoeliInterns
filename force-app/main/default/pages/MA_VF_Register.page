@@ -1,0 +1,21 @@
+<apex:page showHeader="false" sidebar="false"  doctype="html-5.0" standardStylesheets="false">
+<head>
+    <title>HomePage</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/10.1.0/firebase-app.min.js" integrity="sha512-lklkjLWFekpsZclg18KAsrBb8nD4cV4Jpgh2Ok+KFQfSkPmdWNei29lmxmCBJAusHBhmgu4rPh2DXobkPZjNlQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/10.1.0/firebase-app.js" integrity="sha512-nWCmkwitC7m1WQUCXcZg3AN8neYCqNc/r84T7Z3hV8rKgJxTleduuamrFhBeJHNHSXNpRdBGf6RXhpZSL9kTDA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script> -->
+    <script>
+        function checkload(){
+            console.log(`window`, window);
+            debugger;
+            console.log(window);
+        }
+        checkload()
+    </script>
+</head>
+<!-- Begin Default Content REMOVE THIS -->
+<h1>Congratulations</h1>
+This is your new Page
+<!-- End Default Content REMOVE THIS -->
+
+</apex:page>

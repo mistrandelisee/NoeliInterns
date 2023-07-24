@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+	
+    <types>
+        <members>RH_Settings__c.Display_Name__c</members>
+        <name>CustomField</name>
+    </types>
+    <types>
+		<members>RH_ForgotPassword</members>
+        <members>RH_Emails_Utility</members>
+		<name>ApexClass</name>
+	</types>
+	<types>
+		<members>rh_forgotPassword</members>
+		<name>LightningComponentBundle</name>
+	</types>
+	<version>55.0</version>
+</Package>

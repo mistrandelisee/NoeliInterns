@@ -36,46 +36,8 @@
                     <div class="slds-form__row" key={row.index}>
                         <template  for:each={row.fields} for:item="field" for:index="index">
                             <div class="slds-form__item" role="listitem" key={field.name}>
-                                <div
-                                    class="slds-form-element slds-form-element_edit slds-form-element_readonly slds-form-element_stacked slds-hint-parent">
-                                    <span class="slds-form-element__label">{field.label}</span>
-                                    <div class="slds-form-element__control">
-                                        <div class="slds-form-element__static">
-                                            
-                                            <template if:true={field.isLink}>
-                                                <a href={field.href} data-name={field.name} onclick={goToLink} class={field.class}>
-                                                    {field.value}
-                                                    </a>
-                                            </template>
-                                            <template if:false={field.isLink}>
-                                                
-                                                 <template if:true={field.isDatetime}>
-                                                    <lightning-formatted-date-time value={field.value} year="numeric" month="short" day="2-digit" hour="numeric"
-                                                        weekday="long" ></lightning-formatted-date-time>
-                                                </template>
-                                                <template if:false={field.isDatetime}>
-                                                    <template if:true={field.isCurrency}>
-                                                        <lightning-formatted-number
-                                                                value={field.value}
-                                                                format-style="currency"
-                                                                currency-code={field.code}
-                                                            >
-                                                            </lightning-formatted-number>
-                                                    </template>
-                                                    <template if:false={field.isCurrency}>
-                                                        {field.value}
-                                                    </template>
-                                                </template>
-                                            </template>
-                                            
-                                        </div>
-                                        <!-- <button class="slds-button slds-button_icon" title="Edit: Location">
-                                            <svg class="slds-button__icon slds-button__icon_hint" aria-hidden="true">
-                                                <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#edit"></use>
-                                            </svg>
-                                            <span class="slds-assistive-text">Edit: Location</span>
-                                        </button> -->
-                                    </div>
+                                <div class="slds-form-element slds-form-element_edit slds-form-element_readonly slds-form-element_stacked slds-hint-parent">
+                                    <c-rh_display_field field={field} onaction={goToLink} ></c-rh_display_field>
                                 </div>
                             </div>
                         </template>
