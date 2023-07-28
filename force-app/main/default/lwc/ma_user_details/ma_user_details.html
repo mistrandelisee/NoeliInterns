@@ -1,0 +1,15 @@
+<template>
+    <template if:true={isReady}>
+        <c-rh_display_fields 
+        title={l.UserProfileTitle}
+        iconsrc={icon.user_info}
+        column="2"
+        output-fields={userDetails}
+        onaction={handleUserDetails}
+        action-available={actionAvailable}
+        has-action
+        badges={badge}
+        ></c-rh_display_fields>
+
+    </template>
+</template>

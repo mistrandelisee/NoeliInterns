@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>Default Row</label>
+    <protected>false</protected>
+    <values>
+        <field>align__c</field>
+        <value xsi:type="xsd:string">center</value>
+    </values>
+    <values>
+        <field>borderColor__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>borderStyle__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>bottomBorderColor__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>bottomBorderStyle__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>color__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>fontFamily__c</field>
+        <value xsi:type="xsd:string">Calibri</value>
+    </values>
+    <values>
+        <field>fontSize__c</field>
+        <value xsi:type="xsd:double">20.0</value>
+    </values>
+    <values>
+        <field>fontStyle__c</field>
+        <value xsi:type="xsd:string">italic</value>
+    </values>
+    <values>
+        <field>fontWeight__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>format__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>height__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>leftBorderColor__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>leftBorderStyle__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>rightBorderColor__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>rightBorderStyle__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>topBorderColor__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>topBorderStyle__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>width__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>wrap__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+</CustomMetadata>

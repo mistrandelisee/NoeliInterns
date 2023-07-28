@@ -91,3 +91,35 @@ for(string str : standardObj.keyset() ){
     System.debug(standardObj.get(str));
 }
     
+MA_CallFunctionController.TOKEN_REQUIRED =true;
+MA_CallFunctionController.getRequests();
+
+
+MA_CallFunctionController.TOKEN_REQUIRED =true;
+String CONST_REQUEST_FUNCION = 'nl_manage_request';
+Map<String, Object> data = new Map<String, Object>{
+    'action'=> 'GET-ALL'
+};
+MA_CallFunctionController.getData(CONST_REQUEST_FUNCION, data);
+
+
+MA_Zone_Controller.getCountries();
+MA_Zone_Controller.getCities();
+MA_Zone_Controller.getCountry('CMR');
+
+
+
+MA_UsersController.getAllUsers();
+MA_UsersController.getUser('0Bbi2TgA3bR3TnMbwgb1Dw962jp1');
+MA_UsersController.getProfile();
+
+
+MA_UsersController.getAdmins();
+
+MA_UsersController.getManagers();
+
+MA_UsersController.getClients();
+
+
+MA_UsersController.getAgents();
+

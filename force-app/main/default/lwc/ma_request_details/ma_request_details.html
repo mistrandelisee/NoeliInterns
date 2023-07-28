@@ -1,0 +1,15 @@
+<template>
+    <template if:true={isReady}>
+        <c-rh_display_fields 
+        title={l.requestDetail}
+        iconsrc={icon.request_info}
+        column="2"
+        output-fields={requestDetails}
+        onaction={handlerequestDetails}
+        action-available={actionAvailable}
+        has-action
+        badges={badge}
+        ></c-rh_display_fields>
+
+    </template>
+</template>

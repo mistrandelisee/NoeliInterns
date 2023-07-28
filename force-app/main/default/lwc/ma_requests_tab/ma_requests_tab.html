@@ -1,0 +1,17 @@
+<template>
+
+    <template if:true={_isloading}>
+        <div>
+            <lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
+        </div>
+    </template>
+    
+    <lightning-card class="slds-p-around_small" >
+        <div if:false={showDetail}>
+            <c-ma_requests_list  onrefreshtoken={handleOnRefreshToken} onloading={isloading}></c-ma_requests_list>
+        </div>
+        <div if:true={showDetail}>
+            <c-ma_request_details record-id={recordId} onrefreshtoken={handleOnRefreshToken} onloading={isloading}> </c-ma_request_details>
+        </div>
+    </lightning-card>
+</template>

@@ -1,6 +1,16 @@
 <template>
     <lightning-layout multiple-rows>
-        
+        <lightning-card title="Login">
+            <p class="slds-p-horizontal_small">
+                <c-rh_dynamic_form inputs-items={loginForm}>
+                    
+                </c-rh_dynamic_form>
+    
+            </p>
+            <p slot="footer">
+                <lightning-button variant="brand" label="Login" title="label" onclick={login}  disabled={notReady}></lightning-button>
+            </p>
+        </lightning-card>
         
 
         <lightning-button variant="brand" label="register" title="label" onclick={register}  disabled={notReady}></lightning-button>

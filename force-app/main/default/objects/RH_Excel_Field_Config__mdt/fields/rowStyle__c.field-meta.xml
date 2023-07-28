@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>rowStyle__c</fullName>
+    <description>style configuration key from RH_Excel_Style__mdt table</description>
+    <externalId>false</externalId>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <inlineHelpText>style configuration key from RH_Excel_Style__mdt table</inlineHelpText>
+    <label>row Style</label>
+    <referenceTo>RH_Excel_Style__mdt</referenceTo>
+    <relationshipLabel>Excel Fields Config (row Style)</relationshipLabel>
+    <relationshipName>Excel_Fields_Config1</relationshipName>
+    <required>false</required>
+    <type>MetadataRelationship</type>
+    <unique>false</unique>
+</CustomField>

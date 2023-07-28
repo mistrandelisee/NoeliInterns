@@ -1,0 +1,9 @@
+<template>
+    <div if:true={showTable}>
+        <c-rh_datatable_component items={_data}
+        columns={columns}
+        onrowselected={handleRowAction}>
+
+        </c-rh_datatable_component>
+    </div>
+</template>

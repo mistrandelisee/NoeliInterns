@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningMessageChannel xmlns="http://soap.sforce.com/2006/04/metadata">
+    <masterLabel>authorizationChannel</masterLabel>
+    <isExposed>true</isExposed>
+    <description>This is a authorization Lightning Message Channel. In order to refresh the session token</description>
+    <lightningMessageFields>
+        <fieldName>action</fieldName>
+        <description>refresh,refreshed</description>
+    </lightningMessageFields>
+    <lightningMessageFields>
+        <fieldName>toDo</fieldName>
+        <description>the action to do</description>
+    </lightningMessageFields>
+</LightningMessageChannel>

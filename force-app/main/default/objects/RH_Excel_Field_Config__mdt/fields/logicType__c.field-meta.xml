@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>logicType__c</fullName>
+    <defaultValue>&apos;STD&apos;</defaultValue>
+    <externalId>false</externalId>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <inlineHelpText>the logic based on the field and the implementation class...
+Standard : the filed name and the value will by get in a standard way by a query
+Custom : the field real name (s) to be included and the value will be get by doing some calculations</inlineHelpText>
+    <label>logic Type</label>
+    <required>false</required>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>STD</fullName>
+                <default>true</default>
+                <label>STD</label>
+            </value>
+            <value>
+                <fullName>CUSTOM</fullName>
+                <default>false</default>
+                <label>CUSTOM</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

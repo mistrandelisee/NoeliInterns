@@ -1,0 +1,21 @@
+<template>
+    <template if:true={_isloading}>
+        <div>
+            <lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
+        </div>
+    </template>
+    
+    <lightning-card class="slds-p-around_small" >
+        <lightning-tabset if:false={showDetail}>
+            <template for:each={tabSet} for:item="tab">
+                <lightning-tab key={tab.name} label={tab.label}>
+                    <c-ma_users_list role={tab.name} onrefreshtoken={handleOnRefreshToken} onloading={isloading}></c-ma_users_list>
+                </lightning-tab>
+            </template>
+        </lightning-tabset>
+        <div if:true={showDetail}>
+            <c-ma_user_details record-id={recordId} onrefreshtoken={handleOnRefreshToken} onloading={isloading}> </c-ma_user_details>
+        </div>
+    </lightning-card>
+   
+</template>
