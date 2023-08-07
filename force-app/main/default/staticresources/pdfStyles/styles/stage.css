@@ -1,0 +1,76 @@
+img { border:0; }
+.body{  
+    margin: 0px !important;
+    
+   font-size: medium;
+}
+.s-content-tab{
+    height: 800px;
+}
+.body table {
+    width: 100%;
+    
+    /* border: 1px black solid; */
+}
+.s-logo img{
+    width: 30vw;
+    position: absolute;
+    top:0%;
+    height: 120px;
+}
+.top{
+    min-height: 30%;
+}
+.s-company-info{
+    padding-bottom: 150px;
+    
+}
+.s-company-info td{
+    padding: 2px !important;
+}
+
+.s-value{
+    font-weight:550
+}
+.delimiter-hr {
+    margin-top: 5px;
+    margin-bottom: 5px;
+    border-color: black;
+}
+.s-footer{
+    text-align: right;
+    /* position: absolute;
+    bottom: 5px; */
+}
+.s-where{
+    text-decoration: underline dotted;
+    text-underline-offset: 8px;
+    font-weight:650;
+}
+.s-when{
+    text-decoration: underline dotted;
+    text-underline-offset: 8px;
+    font-weight:650;
+}
+.s-title{
+    text-align: center;
+}
+.box{
+    border: 1px black solid;
+    border-radius: 5px;
+    padding: 15px;
+    margin: 15px;
+    line-height: 30px;
+}
+.s-disclaimer{
+    padding: 15px;
+}
+.box b{
+    border-bottom: 1px black dotted;
+    padding: 5px;
+}
+.s-refernt .box b{
+    padding-right: 250px;
+    padding-left: 20px;
+}
+

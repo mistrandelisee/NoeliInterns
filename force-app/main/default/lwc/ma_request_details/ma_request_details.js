@@ -1,10 +1,12 @@
 
 import { LightningElement, api, wire } from 'lwc';
+import { NavigationMixin } from "lightning/navigation";
 import getTransfert from '@salesforce/apex/MA_RequestController.getTransfert';
 import { labels } from 'c/rh_label';
 import { icons } from 'c/rh_icons';
 const EDIT_ACTION='Edit';
-export default class Ma_request_details extends LightningElement {
+const OWNER_LINK='owner';
+export default class Ma_request_details extends NavigationMixin(LightningElement) {
     l={...labels}
     badge=[]; 
     data;
@@ -24,7 +26,7 @@ export default class Ma_request_details extends LightningElement {
                     outLocation,
                     owner,
                     name: codeReception || (inLocation +' - >'+outLocation) || email,
-                    createdDate : createdDate ? new Date(createdDate) : null}|| {};
+                    createdDate : createdDate ? new Date(createdDate._seconds * 1000)?.toISOString() : null}|| {};
     }
     get requestDetails(){
         console.log({...this._request});
@@ -102,11 +104,43 @@ export default class Ma_request_details extends LightningElement {
         console.log('>>>>>>>>>>>>>. action ',action);
         /*if (action==EDIT_ACTION) {
             this.handleEdit();
-        }else if(action=='goToLink'){
+        }else */
+        if(action=='goToLink'){
             const info = event.detail.info;
             let record={eltName:info.name,recordId:info.dataId}
             this.handleGoToLink(record);
-        }*/
+        }
+    }
+    handleGoToLink(data){
+        console.log(`handleGoToLink data `, JSON.stringify(data));
+        
+        switch (data?.eltName) {
+            case OWNER_LINK:
+                this.navigateToUser(data?.recordId)
+                break;
+            // case APPROVER_LINK:
+            //     this.goToPage('rhusers',{recordId:data?.recordId})
+            //     break;
+            // case 'Group':
+            //     this.goToPage('rhgroup',{recordId:data?.recordId})
+            //     break;
+        
+            default:
+                break;
+        }
+    }
+    navigateToUser(userId) {
+        this[NavigationMixin.Navigate]({
+            type: "standard__navItemPage",
+            attributes: {
+                apiName: 'Users',
+            }
+            ,
+            state: {
+            c__recordId: userId,
+            c__returnUrl: window.location.href.split('/n/')[1],
+            }
+        });
     }
     
     classStyle(className){

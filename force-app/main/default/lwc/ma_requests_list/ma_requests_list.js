@@ -29,7 +29,15 @@ export default class Ma_requests_list extends NavigationMixin(LightningElement) 
         },
     
         {
-          label:'created Date', fieldName:'createdDate', type:'datetime',sortable:true
+            label:'created Date', fieldName:'createdDate', type:'date',
+            sortable:true,
+            typeAttributes:{
+              year: "numeric",
+              month: "long",
+              day: "2-digit",
+              hour: "2-digit",
+              minute: "2-digit"
+          }
         },
       ]
     connectedCallback(){
@@ -50,7 +58,7 @@ export default class Ma_requests_list extends NavigationMixin(LightningElement) 
                         outLocation,
                         owner,
                         name: codeReception || (inLocation +' - >'+outLocation) || email,
-                        createdDate : createdDate ? new Date(createdDate) : null
+                        createdDate : createdDate ? new Date(createdDate._seconds * 1000)?.toISOString() : null
         } 
         }) || [];
     }

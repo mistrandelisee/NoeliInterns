@@ -1,4 +1,4 @@
-import { LightningElement } from 'lwc';
+import { LightningElement, api } from 'lwc';
 import firebaseRS from '@salesforce/resourceUrl/firebase';
 import { updateRecord } from "lightning/uiRecordApi";
 import { ShowToastEvent } from "lightning/platformShowToastEvent";
@@ -6,12 +6,28 @@ import { loadStyle, loadScript } from 'lightning/platformResourceLoader';
 import Id from '@salesforce/user/Id';
 export default class Ma_register extends LightningElement {
     userId = Id;
+    @api emp={
+        email:'mistrandelisee@gmail.com',
+        password:'trefdgfggh'
+    };
     _scriptLoaded;
     firebase={}
     app={}
     isLoggedIn;
     get notReady(){
         return !this._scriptLoaded
+    }
+    isModal=true;
+    closeModal(){
+        this.isModal=false;
+    }
+    handleCancel(){
+        this.closeModal();
+        this.callParent('close',{create:false})
+    }
+    callParent(action,detail){
+        var actionEvt =new CustomEvent(action, {detail} );
+        this.dispatchEvent(actionEvt); 
     }
     renderedCallback(){
         if(!this._scriptLoaded) {
@@ -69,7 +85,7 @@ export default class Ma_register extends LightningElement {
         });
 
     }
-    emp={};
+    
     updatToken(token,uid){
         console.log('------------------------ updatToken userId :' + this.userId, 'updatToken user' + token);
         const recordInput = { fields:{
@@ -90,6 +106,8 @@ export default class Ma_register extends LightningElement {
                 variant: "success",
               }),
             );
+            this.closeModal();
+            this.callParent('close',{create:true})
             // Display fresh data in the form
             return true;
           })
@@ -169,7 +187,7 @@ export default class Ma_register extends LightningElement {
             label:'Email',
             name:'email',
             required:true,
-            value: 'mistrandelisee@gmail.com',
+            value: this.emp?.email,
             placeholder:'Email',
             maxlength:100,
             type:'email',
@@ -181,7 +199,7 @@ export default class Ma_register extends LightningElement {
             placeholder:' ',
             name:'password',
             type:'password',
-            value: 'trefdgfggh',
+            value: this.emp?.password,
             required:true,
             ly_md:'6', 
             ly_lg:'6'

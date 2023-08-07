@@ -1,0 +1,119 @@
+<apex:page renderAs="pdf" standardController="RH_Stage__c" extensions="RH_PDF_Stage_Controller"  showHeader="false" sidebar="false" standardStylesheets="false" applyBodyTag="false" applyHtmlTag="false">
+ 	<apex:stylesheet value="{!URLFOR($Resource.pdfStyles, '/styles/stage.css')}"/>
+    <!-- renderAs="pdf" -->
+	<div class="body">
+        <table class="s-content-tab" cellpadding="0" cellspacing="0">
+            <tr class="top">
+                <td style="width:20%; ">
+                    <div class="s-logo">
+                        <apex:image value="{!$Resource.WR_logoPDF}" />
+                    </div>
+                </td>
+                <td  style="width:40%;"></td>
+                <td style="width:40%;">
+                    
+                    <table class="s-company-info">
+                        <!-- <tr>
+                            <td class="s-label"> <span> Company Name : </span>  </td>
+                            <td class="s-value"> <span> {!header.CompanyName} </span> </td>
+                        </tr> -->
+                        
+                        <tr>
+                            <td class="s-label"> <span> Company Id : </span>  </td>
+                            <td class="s-value"> <b> {!header.CompanyId} </b> </td>
+                        </tr>
+                        
+                        <tr>
+                            <td class="s-label"> <span> Tax Id : </span>  </td>
+                            <td class="s-value"> <b> {!header.TaxId} </b> </td>
+                        </tr>
+                        
+                        <tr>
+                            <td class="s-label"> <span> Location : </span>  </td>
+                            <td class="s-value"> <b> {!header.Place} </b> </td>
+                        </tr>
+                        
+                        <tr>
+                            <td class="s-label"> <span> PO Box : </span>  </td>
+                            <td class="s-value"> <b> {!header.PoBox} </b> </td>
+                        </tr>
+                        
+                        <tr>
+                            <td class="s-label"> <span> Phone : </span>  </td>
+                            <td class="s-value"> <b> {!header.Phone} </b> </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="3" class="s-title">
+                   <b>ATTESTATION DE STAGE</b>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="3" class="s-refernt">
+                    <div class="box">
+                        <p>
+                            Je soussigné(e), M/Mme <b>{!RH_Stage__c.Referent__r.Name}</b>
+                        </p>
+                        <p>
+                            Fonction : <b>{!RH_Stage__c.Referent__r.Title}</b>
+                        </p>
+                    </div>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="3" class="s-stagiaire">
+                    <div class="box">
+                        <p>
+                            Atteste que M/Mme <b> {!RH_Stage__c.Stagiaire__r.Name}  {!RH_Stage__c.Stagiaire__r.firstname__c} </b> , Né(e) le  
+                            <b>
+                                <apex:outputText value="{0,date,dd' 'MMMMM' 'yyyy}">
+                                    <apex:param value="{!RH_Stage__c.Stagiaire__r.Birthdate__c}" /> 
+                                </apex:outputText>
+                            </b>
+                            de sexe <b>{!RH_Stage__c.Stagiaire__r.sexe__c}</b>
+                        <!-- </p>
+                        <p> -->
+                            a effectué un stage <b style="text-transform: lowercase;">
+                                {!RH_Stage__c.recordType.Name}
+                            </b> dans notre établissement à partir
+                            du <b> 
+                                <apex:outputText value="{0,date,dd' 'MMMMM' 'yyyy}">
+                                    <apex:param value="{!RH_Stage__c.StartDate__c}" /> 
+                                </apex:outputText>
+
+                            </b>
+                            jusqu'au
+                            <b> 
+                                <apex:outputText value="{0,date,dd' 'MMMMM' 'yyyy}">
+                                    <apex:param value="{!RH_Stage__c.endDate__c}" /> 
+                                </apex:outputText>
+
+                            </b>
+                        </p>
+                    </div>
+                    
+                </td>
+            </tr>
+            <tr>
+                <td colspan="3" class="s-disclaimer">
+                   <p>
+                    Nous délivrons la présente attestation pour servir et valoir ce que 
+                    de droit. 
+                   </p>
+                </td>
+            </tr>
+        </table>
+        <footer class="s-footer">
+            <p>
+                Fait à <b class="s-where">Yaounde</b>, le <b class="s-when">
+                    
+                    <apex:outputText value="{0,date,dd' 'MMMMM' 'yyyy}">
+                        <apex:param value="{!TODAY()}" /> 
+                    </apex:outputText>
+                </b>
+            </p>
+        </footer>
+    </div>
+</apex:page>

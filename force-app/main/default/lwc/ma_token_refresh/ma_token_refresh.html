@@ -1,3 +1,7 @@
 <template>
-    
+    <template if:true={openLogin}>
+        <c-ma_register
+        
+        onclose={handleClose}></c-ma_register>
+    </template>
 </template>

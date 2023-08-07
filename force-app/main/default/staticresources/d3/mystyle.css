@@ -1,0 +1,23 @@
+.arc text {
+    font: 12px arial;
+    text-anchor: middle;
+ }
+ 
+ .arc path {
+    stroke: #fff;
+ }
+
+.title {
+    stroke: green;
+    font-weight: italic;
+ }
+.bar {
+  fill: green;
+}
+.highlight {
+  fill: red;
+}
+.title {
+  fill: blue;
+  font-weight: bold;
+}

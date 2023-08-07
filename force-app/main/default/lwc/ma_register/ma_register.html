@@ -1,11 +1,8 @@
 <template>
-    <lightning-layout multiple-rows>
+    <!-- <lightning-layout multiple-rows>
         <lightning-card title="Login">
             <p class="slds-p-horizontal_small">
-                <c-rh_dynamic_form inputs-items={loginForm}>
-                    
-                </c-rh_dynamic_form>
-    
+                
             </p>
             <p slot="footer">
                 <lightning-button variant="brand" label="Login" title="label" onclick={login}  disabled={notReady}></lightning-button>
@@ -15,5 +12,32 @@
 
         <lightning-button variant="brand" label="register" title="label" onclick={register}  disabled={notReady}></lightning-button>
 
-    </lightning-layout>
+    </lightning-layout> -->
+
+    <template if:true={isModal}>
+        <div class="slds-modal slds-fade-in-open slds-backdrop slds-modal_medium">
+            <div class="slds-modal__container" style="max-width: 20vw;">
+                    <div class="slds-modal__content" style="min-height: 15vh;">
+                    <div class="slds-modal__header">
+                        <h1 id="modal-heading-01" class="slds-modal__title slds-hyphenate">
+                            Login
+                        </h1>
+                    </div>
+                    <section class="pink slds-var-p-around_medium">
+                        <c-rh_dynamic_form inputs-items={loginForm}> </c-rh_dynamic_form>
+                    </section>
+                    </div>
+
+                <footer class="slds-modal__footer">
+                        <div class="slds-float_left">
+                        <lightning-button variant="brand-outline" class="btn-action prev" data-action-name="KO"
+                            label="Cancel" onclick={handleCancel}></lightning-button>
+                        </div>
+                        <div class="slds-float_right">
+                            <lightning-button variant="brand" label="Login" title="label" onclick={login}  disabled={notReady}></lightning-button>
+                        </div>
+                </footer>
+            </div>
+        </div>
+    </template>
 </template>

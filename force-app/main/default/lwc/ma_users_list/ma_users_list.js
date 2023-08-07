@@ -22,7 +22,15 @@ export default class Ma_users_list extends NavigationMixin(LightningElement) {
         },
     
         {
-          label:'created Date', fieldName:'createdDate', type:'datetime',sortable:true
+          label:'created Date', fieldName:'createdDate', type:'date',
+          sortable:true,
+          typeAttributes:{
+            year: "numeric",
+            month: "long",
+            day: "2-digit",
+            hour: "2-digit",
+            minute: "2-digit"
+        }
         },
       ]
     connectedCallback(){

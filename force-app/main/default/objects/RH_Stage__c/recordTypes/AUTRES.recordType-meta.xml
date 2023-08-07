@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RecordType xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AUTRES</fullName>
+    <active>true</active>
+    <label>AUTRES</label>
+    <picklistValues>
+        <picklist>Grade__c</picklist>
+        <values>
+            <fullName>BAC</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Licence</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Master</fullName>
+            <default>false</default>
+        </values>
+    </picklistValues>
+</RecordType>

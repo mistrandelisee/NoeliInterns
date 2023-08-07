@@ -1,0 +1,45 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.container0{
+    background-color: white;
+    padding-top: 1px;
+    padding-bottom: 1px;
+}
+
+.container {
+    /* background-color: white; */
+    padding: 10px;
+    /* margin: 50px; */
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+
+}
+.title{
+    background-color: #cacaca;
+    border-radius: 10px 10px 10px 10px;
+    padding: 7px;
+    height: 38px
+}
+span{
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.item {
+    /* background-color: yellowgreen; */
+    padding: 20px;
+    color: #fff;
+    font-size: 70px;
+    margin: 10px;
+    flex: 1;
+    /* flex-grow: 10; */
+    text-align: center;
+}
+.green-non-utility-icon{
+    --sds-c-icon-color-foreground-default: white;
+}

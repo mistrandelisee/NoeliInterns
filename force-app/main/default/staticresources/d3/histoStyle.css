@@ -1,0 +1,36 @@
+.arc text {
+    font: 12px arial;
+    text-anchor: middle;
+ }
+ 
+ .arc path {
+    stroke: #fff;
+ }
+
+.title {
+    stroke: green;
+    font-weight: italic;
+ }
+ .bar {
+    fill: gray;
+  }
+  .highlight {
+    fill: red;
+  }
+  .title {
+    fill: blue;
+    font-weight: bold;
+  }
+  .y-axis g.tick line{
+    stroke: rgb(143, 126, 126);
+  }
+  .y-axis path{
+    stroke: transparent;
+  }
+  .tooltip{
+    position: absolute;
+    padding: 5px;
+    color:#fff;
+    background-color: rgb(0, 22, 57);
+    border-radius:5px;
+  }

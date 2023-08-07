@@ -3,7 +3,16 @@
 	<types>
 		<members>RH_ExportInterface</members>
 		<members>RH_Export_Controller</members>
+		<members>RH_ControllerException</members>
 		<name>ApexClass</name>
+	</types>
+	<types>
+		<members>rh_Name</members>
+		<members>rh_ExportTitle</members>
+		<members>rh_Selected</members>
+		<members>rh_Skill</members>
+		<members>rh_SlctExportFields</members>
+		<name>CustomLabel</name>
 	</types>
 	<types>
 		<members>RH_Excel_Field_Config__mdt.ImplementationClass__c</members>
@@ -53,6 +62,7 @@
 		<members>RH_Excel_Style.HEADER_W20</members>
 		<members>RH_Excel_Style.HEADER_W30</members>
 		<members>RH_Excel_Style.HEADER_W60</members>
+		<members>RH_Excel_Style.ROW_AL_RG</members>
 		<name>CustomMetadata</name>
 	</types>
 	<types>
@@ -64,6 +74,8 @@
 		<members>rh_export</members>
 		<members>rh_export_excel</members>
 		<members>rh_export_xlsx</members>
+		<members>pubsub</members>
+		<members>rh_dual_box</members>
 		<name>LightningComponentBundle</name>
 	</types>
 	<version>55.0</version>
