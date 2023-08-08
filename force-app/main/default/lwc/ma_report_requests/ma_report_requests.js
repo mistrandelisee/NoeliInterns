@@ -3,7 +3,6 @@ import { LightningElement, track } from 'lwc';
 export default class Ma_report_requests extends LightningElement {
 
     @track _items=[]
-    _counts=0;
     connectedCallback(){
         this.getReports()
     }
@@ -34,6 +33,5 @@ export default class Ma_report_requests extends LightningElement {
                 link:'http://'
             }
         ]
-        this._counts=95
     }
 }

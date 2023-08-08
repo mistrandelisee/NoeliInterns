@@ -1,0 +1,19 @@
+<template>
+    <lightning-card variant="base" class="v-card">
+        <div slot="title">
+             <p class="v-title">{title}</p>
+             <p class="slds-text-heading_small v-sub-title">{subtitle}</p>
+        </div>
+        <div class="slds-p-horizontal_small">
+            <template if:true={items} for:each={items} for:item="item" for:index="key">
+                <c-lwc_progress_tile class="slds-p-around_small" key={item.key} item={item} count={_counts} icon={icon}></c-lwc_progress_tile>
+            </template>
+        </div>
+        <div slot="footer">
+            <p class="slds-text-heading_small">
+                {_footertext}
+                <span class="v-count">{_counts}</span>
+            </p>
+        </div>
+    </lightning-card>
+</template>

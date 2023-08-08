@@ -1,11 +1,26 @@
 <template>
    
-    <lightning-tile label={_label} href="/path/to/my-open-cases" type="media">
+    <lightning-tile  type="media" class="v-tile">
         <lightning-icon slot="media" icon-name={_icon}></lightning-icon>
-        <lightning-progress-bar value={_value} 
-        aria-label="Progress bar showing 50 percent progress" 
-        size="small"
-            variant="base"></lightning-progress-bar>
+        
+        <div class="slds-clearfix slds-p-bottom_xxx-small">
+            <p class="slds-float_left slds-text-heading_small v-title"> {_label} </p>
+            <p class="slds-float_right">  {_count} </p>
+        </div>
+
+
+        <lightning-progress-bar value={_value} style={_style}
+            aria-label="Progress bar showing 50 percent progress" 
+            size="large"  variant="circular">
+        </lightning-progress-bar>
+
+        <lightning-button variant="base"  label={label.viewAll}
+            title={label.viewAll}
+            icon-name="utility:internal_share" 
+            icon-position="right"
+            class="slds-align_absolute-center">
+        </lightning-button>
+
     </lightning-tile>
 
 </template>

@@ -1,0 +1,14 @@
+.v-cardx{
+    --sds-c-card-heading-font-weight: 700;
+    --lwc-fontSize5: 1.7rem;
+}
+.v-title{
+    font-size: 1.7rem !important
+}
+.v-count{
+    font-weight: 700;
+    font-size: 1.3rem;
+}
+.v-sub-title{
+    font-weight: 500 !important;
+}

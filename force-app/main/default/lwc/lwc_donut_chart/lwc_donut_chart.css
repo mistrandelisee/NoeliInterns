@@ -1,0 +1,5 @@
+.tooltip{
+    position: absolute;
+    border: 1px skyblue solid;
+    background-color: beige;
+}

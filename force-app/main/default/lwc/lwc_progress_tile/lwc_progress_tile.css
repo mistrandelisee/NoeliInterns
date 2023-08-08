@@ -1,3 +1,14 @@
-body{
-    color:black
+:host{
+    color:black;
+   
+    --lwc-brandAccessible: #332727; /* view all button color */
+    /* icon */
+    --lwc-colorTextIconInverse: #fff; /* color */
+    --sds-c-icon-color-background: #F24E1E; /* background */
+    --lwc-squareIconMediumBoundary: 3.2rem; /* size */
+
+}
+
+.v-title{
+    font-weight: 500;
 }

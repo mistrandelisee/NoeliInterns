@@ -1,20 +1,7 @@
 <template>
-    <lightning-card icon-name="standard:account" variant="base">
-      <div slot="title">
-          Card Title
-      </div>
-      <div slot="actions">
-    
-      </div>
-      <div slot="footer">
-    
-      </div>
-      <div class="slds-p-around_small">
-        <!-- Card Body  -->
-        request reports
-        <template if:true={_items} for:each={_items} for:item="item" for:index="key">
-           <c-lwc_progress_tile class="slds-p-around_small" key={item.key} item={item} count={_counts}></c-lwc_progress_tile>
-        </template>
-      </div>
-    </lightning-card>
+    <c-lwc_report_card 
+        items={_items} title="Requests" 
+        subtitle="View requests by state"
+        icon="standard:case"  >
+    </c-lwc_report_card>
 </template>
